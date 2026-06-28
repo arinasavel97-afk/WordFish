@@ -1,5 +1,6 @@
 let cards = [];
 let savedSets = [];
+let gameCards = [];
 let currentIndex = 0;
 let score = 0;
 let answerShown = false;
@@ -8,15 +9,24 @@ let editingSetId = null;
 let currentSetName = "";
 let draggedIndex = null;
 let currentGameMode = "translation";
+let autoSaveTimer = null;
+let autoSaveInProgress = false;
+let isGameRunning = false;
+let selectedPlaySetIndex = null;
+let currentCardMistakes = 0;
+let totalWrongAttempts = 0;
+let lastGameOrderSignature = "";
+let currentScreenId = "";
+let suppressHistoryPush = false;
 
 const praiseWords = [
-    "Great job! 🌟",
-    "Excellent! 🐠",
-    "Amazing! 🫧",
-    "Fantastic! 🐚",
-    "Well done! ⭐",
-    "Super! 🌊",
-    "Brilliant! 🦪"
+    "Great catch! 🐠",
+    "Pearl found! 🦪",
+    "Splash-tastic! 🌊",
+    "Nice swimming! 🫧",
+    "You got it! ⭐",
+    "Fin-tastic! 🐟",
+    "Brilliant! 🐚"
 ];
 
 function hideAllScreens() {
@@ -28,14 +38,72 @@ function hideAllScreens() {
     document.getElementById("resultsScreen").style.display = "none";
 }
 
-async function showDashboard() {
+function displayScreen(screenId, addToHistory = true) {
     hideAllScreens();
-    document.getElementById("dashboardScreen").style.display = "block";
+    document.getElementById(screenId).style.display = "block";
+    currentScreenId = screenId;
+
+    if (addToHistory && !suppressHistoryPush) {
+        history.pushState({ screen: screenId }, "", "#" + screenId.replace("Screen", ""));
+    }
+}
+
+window.addEventListener("popstate", (event) => {
+    if (!event.state || !event.state.screen) return;
+
+    suppressHistoryPush = true;
+
+    const screenId = event.state.screen;
+    if (screenId === "dashboardScreen") {
+        showDashboard(false);
+    } else if (screenId === "teacherScreen") {
+        hideAllScreens();
+        document.getElementById("teacherScreen").style.display = "block";
+    } else if (screenId === "cardsScreen") {
+        showCardsScreen(false);
+    } else if (screenId === "gameScreen") {
+        hideAllScreens();
+        document.getElementById("gameScreen").style.display = "block";
+    } else if (screenId === "authScreen") {
+        hideAllScreens();
+        document.getElementById("authScreen").style.display = "block";
+    }
+
+    suppressHistoryPush = false;
+});
+
+let toastTimer = null;
+
+function showToast(message, type = "info") {
+    const toast = document.getElementById("toast");
+    if (!toast) return;
+
+    clearTimeout(toastTimer);
+    toast.textContent = message;
+    toast.className = "toast show " + type;
+
+    toastTimer = setTimeout(() => {
+        toast.className = "toast " + type;
+    }, 2600);
+}
+
+function setSaveStatus(message, type = "saved") {
+    const saveStatus = document.getElementById("saveStatus");
+    if (!saveStatus) return;
+
+    saveStatus.textContent = message;
+    saveStatus.className = "save-status " + type;
+}
+
+async function showDashboard(addToHistory = true) {
+    isGameRunning = false;
+    clearTimeout(autoSaveTimer);
+    displayScreen("dashboardScreen", addToHistory);
 
     let savedSetsList = document.getElementById("savedSetsList");
     savedSetsList.innerHTML = `
-        <div class="card">
-            <h2>🫧 Loading your sets...</h2>
+        <div class="card loading-card">
+            <h2>🫧 Fishing for your sets...</h2>
         </div>
     `;
 
@@ -58,9 +126,9 @@ function renderDashboard() {
 
     if (savedSets.length === 0) {
         savedSetsList.innerHTML = `
-            <div class="card">
-                <h2>🐚 No saved sets yet</h2>
-                <p>Create your first vocabulary set.</p>
+            <div class="card empty-library-card">
+                <h2>🐚 Your library is empty</h2>
+                <p>Make your first vocabulary set and start collecting pearls.</p>
             </div>
         `;
         return;
@@ -68,16 +136,18 @@ function renderDashboard() {
 
     for (let i = 0; i < savedSets.length; i++) {
         let wordCount = savedSets[i].cards ? savedSets[i].cards.length : 0;
+        let imageCount = (savedSets[i].cards || []).filter(card => card.imageUrl).length;
 
         savedSetsList.innerHTML += `
             <div class="card set-card">
+                <div class="set-card-topline">🐠 Ready to play</div>
                 <h2>📚 ${escapeHTML(savedSets[i].name)}</h2>
                 <p><span class="small-label">Words:</span> ${wordCount}</p>
+                <p><span class="small-label">Images:</span> ${imageCount}</p>
 
                 <div class="set-actions">
-                    <button class="green-button" onclick="playSavedSet(${i})">▶️ Open</button>
+                    <button class="green-button" onclick="openPlayChoice(${i})">▶️ Play</button>
                     <button onclick="editSet(${i})">✏️ Edit</button>
-                    <button class="soft-button" onclick="duplicateSet(${i})">📄 Duplicate</button>
                     <button class="red-button" onclick="deleteSet(${i})">🗑️ Delete</button>
                 </div>
             </div>
@@ -85,12 +155,35 @@ function renderDashboard() {
     }
 }
 
+
+function openPlayChoice(index) {
+    selectedPlaySetIndex = index;
+    const selectedSet = savedSets[index];
+    document.getElementById("playChoiceTitle").textContent = "Play: " + selectedSet.name;
+    document.getElementById("playChoiceModal").style.display = "flex";
+}
+
+function closePlayChoice() {
+    selectedPlaySetIndex = null;
+    document.getElementById("playChoiceModal").style.display = "none";
+}
+
+async function startChosenSetGame(mode) {
+    if (selectedPlaySetIndex === null) return;
+
+    const selectedSet = savedSets[selectedPlaySetIndex];
+    editingSetId = selectedSet.id;
+    currentSetName = selectedSet.name;
+    cards = prepareCards(selectedSet.cards || []);
+    closePlayChoice();
+    await startGame(mode);
+}
+
 function showTeacherScreen() {
-    hideAllScreens();
+    displayScreen("teacherScreen");
     editingSetId = null;
     currentSetName = "";
 
-    document.getElementById("teacherScreen").style.display = "block";
     document.getElementById("setName").value = "";
     document.getElementById("wordList").value = "";
 }
@@ -100,12 +193,12 @@ async function createSetAndOpenCards() {
     let words = document.getElementById("wordList").value;
 
     if (setName.trim() === "") {
-        alert("Please enter a set name");
+        showToast("🐚 Please give this set a name.", "warning");
         return;
     }
 
     if (words.trim() === "") {
-        alert("Please enter some words");
+        showToast("🐟 Add at least one English word.", "warning");
         return;
     }
 
@@ -123,8 +216,9 @@ async function createSetAndOpenCards() {
         editingSetId = newSet.id;
         currentSetName = newSet.name;
         showCardsScreen();
+        showToast("Set created! 🐠", "success");
     } catch (error) {
-        alert("Could not create set: " + error.message);
+        showToast("Could not create set: " + error.message, "error");
     }
 }
 
@@ -138,21 +232,9 @@ function editSet(index) {
     showCardsScreen();
 }
 
-function playSavedSet(index) {
-    editSet(index);
-}
-
-async function duplicateSet(index) {
-    try {
-        await dbDuplicateSet(savedSets[index]);
-        await showDashboard();
-    } catch (error) {
-        alert("Could not duplicate set: " + error.message);
-    }
-}
-
 async function deleteSet(index) {
-    let confirmed = confirm("Delete this set?");
+    const setName = savedSets[index].name;
+    const confirmed = window.confirm(`Delete "${setName}"?`);
 
     if (!confirmed) {
         return;
@@ -160,9 +242,10 @@ async function deleteSet(index) {
 
     try {
         await dbDeleteSet(savedSets[index].id);
+        showToast("Set deleted 🗑️", "success");
         await showDashboard();
     } catch (error) {
-        alert("Could not delete set: " + error.message);
+        showToast("Could not delete set: " + error.message, "error");
     }
 }
 
@@ -175,11 +258,11 @@ function prepareCards(oldCards) {
     }));
 }
 
-function showCardsScreen() {
-    hideAllScreens();
-
-    document.getElementById("cardsScreen").style.display = "block";
+function showCardsScreen(addToHistory = true) {
+    isGameRunning = false;
+    displayScreen("cardsScreen", addToHistory);
     document.getElementById("builderSetName").value = currentSetName || "";
+    setSaveStatus("✅ Saved", "saved");
 
     renderCards();
 }
@@ -190,7 +273,7 @@ function renderCards() {
 
     if (cards.length === 0) {
         cardsList.innerHTML = `
-            <div class="card">
+            <div class="card empty-library-card">
                 <h2>🐚 No cards yet</h2>
                 <p>Click + New Word to add your first card.</p>
             </div>
@@ -225,7 +308,7 @@ function renderCards() {
                         <label>🇬🇧 English word</label>
                         <input 
                             value="${escapeAttribute(cards[i].english)}" 
-                            oninput="cards[${i}].english = this.value"
+                            oninput="updateCardField(${i}, 'english', this.value)"
                             placeholder="English word"
                         >
                     </div>
@@ -234,20 +317,20 @@ function renderCards() {
                         <label>🇹🇭 Thai translation</label>
                         <input 
                             value="${escapeAttribute(cards[i].thai)}" 
-                            oninput="cards[${i}].thai = this.value"
+                            oninput="updateCardField(${i}, 'thai', this.value)"
                             placeholder="Thai translation"
                         >
                     </div>
                 </div>
 
                 <div class="image-preview">
-                    <strong>🖼️ Image</strong>
+                    <strong>🖼️ Picture clue</strong>
 
                     ${cards[i].imageUrl ? `<img src="${escapeAttribute(cards[i].imageUrl)}">` : `<p>🐚 No image yet</p>`}
 
                     <input 
                         value="${escapeAttribute(cards[i].imageUrl)}"
-                        oninput="cards[${i}].imageUrl = this.value"
+                        oninput="updateCardField(${i}, 'imageUrl', this.value)"
                         placeholder="Image URL"
                     >
 
@@ -268,8 +351,18 @@ function renderCards() {
     }
 }
 
+function updateSetName(value) {
+    currentSetName = value;
+    scheduleAutoSave();
+}
+
+function updateCardField(index, field, value) {
+    cards[index][field] = value;
+    scheduleAutoSave();
+}
+
 function aiComingSoon() {
-    alert("AI image generation is coming soon! 🤖✨");
+    showToast("🤖 AI image generation is coming soon!", "info");
 }
 
 function addNewWord() {
@@ -280,11 +373,13 @@ function addNewWord() {
     });
 
     renderCards();
+    scheduleAutoSave();
 }
 
 function deleteWord(index) {
     cards.splice(index, 1);
     renderCards();
+    scheduleAutoSave();
 }
 
 function dragStart(event, index) {
@@ -309,6 +404,7 @@ function dropCard(dropIndex) {
 
     draggedIndex = null;
     renderCards();
+    scheduleAutoSave();
 }
 
 async function uploadImage(event, index) {
@@ -319,19 +415,24 @@ async function uploadImage(event, index) {
     try {
         cards[index].imageUrl = "Uploading...";
         renderCards();
+        setSaveStatus("🫧 Uploading image...", "saving");
 
         const imageUrl = await dbUploadImage(file);
 
         cards[index].imageUrl = imageUrl;
         renderCards();
+        scheduleAutoSave(100);
+        showToast("Image uploaded 🖼️", "success");
     } catch (error) {
-        alert("Could not upload image: " + error.message);
+        showToast("Could not upload image: " + error.message, "error");
         cards[index].imageUrl = "";
         renderCards();
     }
 }
 
 async function translateAllToThai() {
+    setSaveStatus("🌐 Translating...", "saving");
+
     for (let i = 0; i < cards.length; i++) {
         if (cards[i].thai.trim() === "" && cards[i].english.trim() !== "") {
             cards[i].thai = await translateWordToThai(cards[i].english);
@@ -339,6 +440,8 @@ async function translateAllToThai() {
     }
 
     renderCards();
+    scheduleAutoSave(100);
+    showToast("Translations added 🌐", "success");
 }
 
 async function translateWordToThai(word) {
@@ -367,30 +470,61 @@ function cleanCardsForSaving() {
         }));
 }
 
-async function saveCards() {
-    let setName = document.getElementById("builderSetName").value;
+function scheduleAutoSave(delay = 1200) {
+    if (!editingSetId || isGameRunning) return;
+
+    clearTimeout(autoSaveTimer);
+    setSaveStatus("💾 Saving...", "saving");
+
+    autoSaveTimer = setTimeout(() => {
+        autoSaveNow();
+    }, delay);
+}
+
+async function autoSaveNow() {
+    if (!editingSetId || autoSaveInProgress) return;
+
+    let setName = document.getElementById("builderSetName")?.value || currentSetName;
 
     if (setName.trim() === "") {
-        alert("Please enter a set name.");
+        setSaveStatus("⚠️ Add set name", "warning");
         return;
     }
 
-    cards = cleanCardsForSaving();
+    const cleaned = cleanCardsForSaving();
 
-    if (cards.length === 0) {
-        alert("Please add at least one word.");
+    if (cleaned.length === 0) {
+        setSaveStatus("⚠️ Add a word", "warning");
         return;
     }
+
+    autoSaveInProgress = true;
 
     try {
-        const savedSet = await dbSaveSetWithCards(editingSetId, setName.trim(), cards);
+        const savedSet = await dbSaveSetWithCards(editingSetId, setName.trim(), cleaned);
         editingSetId = savedSet.id;
         currentSetName = savedSet.name;
-        alert("Changes saved to cloud! 🐚");
-        showCardsScreen();
+        cards = prepareCards(cleaned);
+        setSaveStatus("✅ Saved", "saved");
     } catch (error) {
-        alert("Could not save cards: " + error.message);
+        setSaveStatus("⚠️ Not saved", "error");
+        showToast("Could not autosave: " + error.message, "error");
+    } finally {
+        autoSaveInProgress = false;
     }
+}
+
+async function backToDashboard() {
+    clearTimeout(autoSaveTimer);
+    await autoSaveNow();
+    await showDashboard();
+}
+
+async function saveCardsBeforePlay() {
+    if (!editingSetId) return;
+
+    clearTimeout(autoSaveTimer);
+    await autoSaveNow();
 }
 
 async function startGame(mode) {
@@ -398,37 +532,41 @@ async function startGame(mode) {
 
     await saveCardsBeforePlay();
 
-    if (cards.length === 0) {
-        alert("Please add at least one word.");
+    const playableCards = cleanCardsForSaving();
+
+    if (playableCards.length === 0) {
+        showToast("🐟 Add at least one English word before playing.", "warning");
         showCardsScreen();
         return;
     }
 
     if (mode === "translation") {
-        let missingTranslations = cards.filter(card => card.thai.trim() === "").length;
+        let missingTranslations = playableCards.filter(card => card.thai.trim() === "").length;
 
         if (missingTranslations > 0) {
-            alert("Some cards have no Thai translation. English words will be shown instead for those cards.");
+            showToast("Some cards have no translation, so English will appear for them.", "warning");
         }
     }
 
     if (mode === "picture") {
-        let missingImages = cards.filter(card => !card.imageUrl).length;
+        let missingImages = playableCards.filter(card => !card.imageUrl).length;
 
         if (missingImages > 0) {
-            alert(missingImages + " card(s) have no image. Please add images before playing with pictures.");
+            showToast(`${missingImages} card(s) need images before Picture mode.`, "warning");
             showCardsScreen();
             return;
         }
     }
 
+    gameCards = shuffleCards(playableCards);
     currentIndex = 0;
     score = 0;
     hintsUsed = 0;
+    totalWrongAttempts = 0;
+    currentCardMistakes = 0;
+    isGameRunning = true;
 
-    hideAllScreens();
-
-    document.getElementById("gameScreen").style.display = "block";
+    displayScreen("gameScreen");
 
     if (mode === "picture") {
         document.getElementById("gameTitle").textContent = "🖼️ Look and Type the English Word";
@@ -439,75 +577,101 @@ async function startGame(mode) {
     showCard();
 }
 
-async function saveCardsBeforePlay() {
-    if (!editingSetId) return;
+function shuffleCards(cardList) {
+    if (cardList.length <= 1) return [...cardList];
 
-    let setName = document.getElementById("builderSetName").value || "Untitled Set";
-    cards = cleanCardsForSaving();
+    let shuffled = [...cardList];
+    let attempts = 0;
 
-    await dbSaveSetWithCards(editingSetId, setName.trim(), cards);
-    currentSetName = setName.trim();
+    do {
+        shuffled = [...cardList];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        attempts++;
+    } while (getOrderSignature(shuffled) === lastGameOrderSignature && attempts < 8);
+
+    lastGameOrderSignature = getOrderSignature(shuffled);
+    return shuffled;
+}
+
+function getOrderSignature(cardList) {
+    return cardList.map(card => card.id || card.english).join("|");
+}
+
+function exitGame() {
+    isGameRunning = false;
+    showCardsScreen();
 }
 
 function showCard() {
     answerShown = false;
+    currentCardMistakes = 0;
 
-    if (cards.length === 0) {
+    if (gameCards.length === 0) {
         showDashboard();
         return;
     }
 
+    let currentCard = gameCards[currentIndex];
     let gameImage = document.getElementById("gameImage");
     let currentPrompt = document.getElementById("currentPrompt");
 
     if (currentGameMode === "picture") {
-        gameImage.src = cards[currentIndex].imageUrl;
+        gameImage.src = currentCard.imageUrl;
         gameImage.style.display = "block";
 
         currentPrompt.textContent = "What is it?";
-        currentPrompt.style.fontSize = "38px";
+        currentPrompt.style.fontSize = "";
 
     } else {
         gameImage.style.display = "none";
 
-        let promptText = cards[currentIndex].thai;
+        let promptText = currentCard.thai;
 
         if (promptText.trim() === "") {
-            promptText = cards[currentIndex].english;
+            promptText = currentCard.english;
         }
 
         currentPrompt.textContent = promptText;
-        currentPrompt.style.fontSize = "52px";
+        currentPrompt.style.fontSize = "";
     }
 
     document.getElementById("answerInput").value = "";
     document.getElementById("feedback").textContent = "";
-    document.getElementById("scoreText").textContent = "Score: " + score + " / " + cards.length;
+    document.getElementById("scoreText").textContent = "Score: " + score + " / " + gameCards.length;
 
     updatePearls();
 }
 
 function checkAnswer() {
     let answer = document.getElementById("answerInput").value;
-    let correctAnswer = cards[currentIndex].english;
+    let correctAnswer = gameCards[currentIndex].english;
 
     if (answer.toLowerCase().trim() == correctAnswer.toLowerCase().trim()) {
-        if (!answerShown) {
+        const perfectAnswer = !answerShown && currentCardMistakes === 0;
+
+        if (perfectAnswer) {
             score++;
         }
 
         let randomPraise = praiseWords[Math.floor(Math.random() * praiseWords.length)];
-        document.getElementById("feedback").textContent = randomPraise;
+        document.getElementById("feedback").textContent = perfectAnswer
+            ? randomPraise
+            : "Correct! Keep practising 🐚";
 
         currentIndex++;
 
-        if (currentIndex < cards.length) {
+        if (currentIndex < gameCards.length) {
             setTimeout(showCard, 900);
         } else {
             setTimeout(showResults, 900);
         }
 
     } else {
+        currentCardMistakes++;
+        totalWrongAttempts++;
         document.getElementById("feedback").textContent = "Try again! 🐠";
         document.getElementById("answerInput").value = "";
     }
@@ -520,7 +684,7 @@ function showAnswer() {
 
     answerShown = true;
 
-    let correctAnswer = cards[currentIndex].english;
+    let correctAnswer = gameCards[currentIndex].english;
 
     document.getElementById("feedback").textContent = "Answer: " + correctAnswer;
 }
@@ -528,7 +692,7 @@ function showAnswer() {
 function updatePearls() {
     let pearls = "";
 
-    for (let i = 0; i < cards.length; i++) {
+    for (let i = 0; i < gameCards.length; i++) {
         if (i < score) {
             pearls += "🦪 ";
         } else {
@@ -540,11 +704,10 @@ function updatePearls() {
 }
 
 function showResults() {
-    hideAllScreens();
+    isGameRunning = false;
+    displayScreen("resultsScreen");
 
-    document.getElementById("resultsScreen").style.display = "block";
-
-    let accuracy = Math.round(score / cards.length * 100);
+    let accuracy = Math.round(score / gameCards.length * 100);
     let stars = getStars(accuracy);
     let title = getResultTitle(accuracy);
 
@@ -552,8 +715,9 @@ function showResults() {
 
     document.getElementById("finalScore").innerHTML = `
         <div class="sea-stars">${stars}</div>
-        <h2>🏆 Score: ${score} / ${cards.length}</h2>
+        <h2>🏆 Perfect answers: ${score} / ${gameCards.length}</h2>
         <h3>💡 Hints used: ${hintsUsed}</h3>
+        <h3>🐠 Wrong tries: ${totalWrongAttempts}</h3>
         <h3>📚 Accuracy: ${accuracy}%</h3>
     `;
 }
@@ -594,8 +758,8 @@ async function checkAuth() {
     if (data.session) {
         showDashboard();
     } else {
-        hideAllScreens();
-        document.getElementById("authScreen").style.display = "block";
+        displayScreen("authScreen", false);
+        history.replaceState({ screen: "authScreen" }, "", "#auth");
     }
 }
 
@@ -649,9 +813,10 @@ async function logout() {
 
     cards = [];
     savedSets = [];
+    gameCards = [];
     editingSetId = null;
     currentSetName = "";
+    isGameRunning = false;
 
-    hideAllScreens();
-    document.getElementById("authScreen").style.display = "block";
+    displayScreen("authScreen");
 }

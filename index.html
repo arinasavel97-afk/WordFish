@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Word Fish</title>
     <link rel="stylesheet" href="style.css">
@@ -44,6 +45,17 @@
         <div id="savedSetsList"></div>
     </div>
 
+    <div id="playChoiceModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closePlayChoice()">✕</button>
+            <div class="sea-header">🐠 🫧 🦪</div>
+            <h2 id="playChoiceTitle">Choose game mode</h2>
+            <p class="subtitle">How should students practise this set?</p>
+            <button class="yellow-button" onclick="startChosenSetGame('translation')">🇹🇭 Play with Translation</button>
+            <button class="yellow-button" onclick="startChosenSetGame('picture')">🖼️ Play with Pictures</button>
+        </div>
+    </div>
+
     <div id="teacherScreen" class="screen" style="display: none;">
         <div class="sea-header">🐚 📚 🫧</div>
         <h1>📚 Create Vocabulary Set</h1>
@@ -65,22 +77,23 @@
         <h1>📝 Vocabulary Builder</h1>
 
         <div class="editor-toolbar">
-            <input id="builderSetName" placeholder="Set name">
+            <input id="builderSetName" placeholder="Set name" oninput="updateSetName(this.value)">
+            <div id="saveStatus" class="save-status">✅ Saved</div>
             <br>
 
             <button class="green-button" onclick="addNewWord()">➕ New Word</button>
             <button onclick="translateAllToThai()">🌐 Auto Translate Thai</button>
-            <button onclick="saveCards()">💾 Save Changes</button>
             <br>
             <button class="yellow-button" onclick="startGame('translation')">▶️ Play with Translation</button>
             <button class="yellow-button" onclick="startGame('picture')">🖼️ Play with Pictures</button>
-            <button onclick="showDashboard()">🏠 Back to Dashboard</button>
+            <button onclick="backToDashboard()">🏠 Back to Dashboard</button>
         </div>
 
         <div id="cardsList"></div>
     </div>
 
     <div id="gameScreen" style="display: none;">
+        <button class="game-exit-button" onclick="exitGame()">✕</button>
         <h1 id="gameTitle">Type the English Word</h1>
 
         <div id="pearlBar"></div>
@@ -115,6 +128,8 @@
         <button class="green-button" onclick="startGame(currentGameMode)">🔁 Play Again</button>
         <button onclick="showDashboard()">🏠 Back to Dashboard</button>
     </div>
+
+    <div id="toast" class="toast"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="database.js"></script>
