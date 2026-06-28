@@ -173,3 +173,34 @@ async function dbDuplicateSet(sourceSet) {
     const copiedCards = JSON.parse(JSON.stringify(sourceSet.cards || []));
     return await dbCreateSetWithCards(sourceSet.name + " Copy", copiedCards);
 }
+
+async function dbUploadImage(file) {
+    const user = await dbGetCurrentUser();
+
+    if (!user) {
+        throw new Error("You must be logged in to upload images.");
+    }
+
+    const safeFileName = file.name
+        .toLowerCase()
+        .replace(/[^a-z0-9.]/g, "-");
+
+    const filePath = `${user.id}/${Date.now()}-${safeFileName}`;
+
+    const { error: uploadError } = await supabaseClient.storage
+        .from("wordfish-images")
+        .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: false
+        });
+
+    if (uploadError) {
+        throw uploadError;
+    }
+
+    const { data } = supabaseClient.storage
+        .from("wordfish-images")
+        .getPublicUrl(filePath);
+
+    return data.publicUrl;
+}

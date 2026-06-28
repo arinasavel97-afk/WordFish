@@ -311,19 +311,24 @@ function dropCard(dropIndex) {
     renderCards();
 }
 
-function uploadImage(event, index) {
+async function uploadImage(event, index) {
     let file = event.target.files[0];
 
     if (!file) return;
 
-    let reader = new FileReader();
-
-    reader.onload = function(e) {
-        cards[index].imageUrl = e.target.result;
+    try {
+        cards[index].imageUrl = "Uploading...";
         renderCards();
-    };
 
-    reader.readAsDataURL(file);
+        const imageUrl = await dbUploadImage(file);
+
+        cards[index].imageUrl = imageUrl;
+        renderCards();
+    } catch (error) {
+        alert("Could not upload image: " + error.message);
+        cards[index].imageUrl = "";
+        renderCards();
+    }
 }
 
 async function translateAllToThai() {
