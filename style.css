@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
 :root {
     --ink: #073B4C;
     --sea-deep: #0B6E8A;
@@ -31,7 +32,7 @@ html {
 body {
     margin: 0;
     min-height: 100vh;
-    font-family: Arial, sans-serif;
+    font-family: "Fredoka", Arial, sans-serif;
     color: var(--ink);
     text-align: center;
     padding: clamp(12px, 3vw, 28px);
@@ -41,6 +42,12 @@ body {
         radial-gradient(circle at 92% 16%, rgba(239, 71, 111, 0.12) 0 90px, transparent 92px),
         radial-gradient(circle at 50% 100%, rgba(6, 214, 160, 0.12) 0 220px, transparent 230px),
         linear-gradient(180deg, #E9FBFF 0%, #BAF1FF 48%, #F6FFF9 100%);
+}
+
+button,
+input,
+textarea {
+    font-family: "Fredoka", Arial, sans-serif;
 }
 
 body::before {
@@ -175,6 +182,7 @@ textarea:focus {
 }
 
 button {
+    font-family: "Fredoka", Arial, sans-serif;
     min-height: 48px;
     font-size: clamp(16px, 2vw, 19px);
     font-weight: 900;
