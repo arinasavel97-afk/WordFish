@@ -295,3 +295,24 @@
                 max-width: 360px;
             }
         }
+
+        .auth-card {
+    background: white;
+    max-width: 480px;
+    margin: 24px auto;
+    padding: 28px;
+    border-radius: 30px;
+    box-shadow: 0 10px 22px rgba(7,59,76,0.13);
+    border: 2px solid rgba(142,220,230,0.75);
+}
+
+.auth-card input {
+    display: block;
+    margin: 12px auto;
+}
+
+#authMessage {
+    font-weight: bold;
+    color: #0B6E8A;
+    margin-top: 16px;
+}

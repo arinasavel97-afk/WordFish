@@ -7,7 +7,30 @@
 
 </head>
 
-<body onload="showDashboard()">
+<body onload="checkAuth()">
+
+    <div id="authScreen" class="screen">
+    <div class="sea-header">🫧 🐠 🪸 🫧</div>
+
+    <h1>🐠 Word Fish</h1>
+    <h2>Welcome, Teacher!</h2>
+
+    <p class="subtitle">Create vocabulary sets and play ocean-style ESL games.</p>
+
+    <div class="auth-card">
+        <input id="authEmail" type="email" placeholder="Email">
+
+        <input id="authPassword" type="password" placeholder="Password">
+
+        <br>
+
+        <button class="green-button" onclick="login()">🔐 Log In</button>
+
+        <button onclick="signUp()">✨ Create Account</button>
+
+        <p id="authMessage"></p>
+    </div>
+</div>
 
     <div id="dashboardScreen" class="screen">
         <div class="sea-header">🫧 🐠 🪸 🫧</div>
@@ -16,7 +39,7 @@
         <p class="subtitle">Create vocabulary sets and play ocean-style word games.</p>
 
         <button class="green-button" onclick="showTeacherScreen()">➕ New Set</button>
-
+<button class="red-button" onclick="logout()">🚪 Log Out</button>
         <div id="savedSetsList"></div>
     </div>
 
@@ -92,7 +115,7 @@
         <button onclick="showDashboard()">🏠 Back to Dashboard</button>
     </div>
 
-    <script src="script.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
 </body>
 </html>

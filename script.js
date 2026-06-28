@@ -1,3 +1,9 @@
+ const SUPABASE_URL = "https://hnmaohnkagrknuuhygtj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_xdhhXoyxJPfth8qMoS_ekQ_Vnd-CYOS";
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+console.log("Supabase connected:", supabaseClient);
  let cards = [];
         let currentIndex = 0;
         let score = 0;
@@ -18,6 +24,7 @@
         ];
 
         function hideAllScreens() {
+            document.getElementById("authScreen").style.display = "none";
             document.getElementById("dashboardScreen").style.display = "none";
             document.getElementById("teacherScreen").style.display = "none";
             document.getElementById("cardsScreen").style.display = "none";
@@ -35,6 +42,7 @@
 
         function showDashboard() {
             hideAllScreens();
+
             document.getElementById("dashboardScreen").style.display = "block";
 
             let savedSets = getSavedSets();
@@ -595,3 +603,66 @@
                 .replaceAll("<", "&lt;")
                 .replaceAll(">", "&gt;");
         }
+
+        async function checkAuth() {
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (data.session) {
+        showDashboard();
+    } else {
+        hideAllScreens();
+        document.getElementById("authScreen").style.display = "block";
+    }
+}
+
+async function signUp() {
+    let email = document.getElementById("authEmail").value.trim();
+    let password = document.getElementById("authPassword").value;
+
+    if (email === "" || password === "") {
+        document.getElementById("authMessage").textContent = "Please enter email and password.";
+        return;
+    }
+
+    const { error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        document.getElementById("authMessage").textContent = error.message;
+        return;
+    }
+
+    document.getElementById("authMessage").textContent =
+        "Account created! Check your email if confirmation is required. 🐚";
+}
+
+async function login() {
+    let email = document.getElementById("authEmail").value.trim();
+    let password = document.getElementById("authPassword").value;
+
+    if (email === "" || password === "") {
+        document.getElementById("authMessage").textContent = "Please enter email and password.";
+        return;
+    }
+
+    const { error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        document.getElementById("authMessage").textContent = error.message;
+        return;
+    }
+
+    showDashboard();
+}
+
+async function logout() {
+    await supabaseClient.auth.signOut();
+
+    hideAllScreens();
+    document.getElementById("authScreen").style.display = "block";
+}
