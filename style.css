@@ -1190,3 +1190,91 @@ h2 {
         padding-right: 12px;
     }
 }
+
+/* Design System Phase 1D-2 — Picture Mode Image Frame */
+#gameScreen #gameImage {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    flex-shrink: 0;
+    object-fit: contain;
+    width: auto;
+    height: auto;
+    max-width: 320px;
+    max-height: 240px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(34, 51, 68, 0.12);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+@media (max-width: 860px) {
+    #gameScreen #gameImage {
+        max-width: 280px;
+        max-height: 210px;
+    }
+}
+
+@media (max-width: 620px) {
+    #gameScreen #gameImage {
+        max-width: 220px;
+        max-height: 165px;
+        padding: 8px;
+    }
+}
+
+/* Results Screen — Mobile overflow fix */
+@media (max-width: 620px) {
+    #resultsScreen {
+        box-sizing: border-box;
+        max-width: 100%;
+        overflow-x: hidden;
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
+    }
+
+    #resultsScreen #finalScore {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        padding: clamp(16px, 4vw, 24px);
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #resultsScreen #resultTitle {
+        font-size: clamp(22px, 7vw, 34px);
+        padding: 0 4px;
+        word-break: break-word;
+    }
+
+    #resultsScreen .sea-stars {
+        font-size: clamp(22px, 5.5vw, 40px);
+        margin: 10px 0;
+        line-height: 1.3;
+        overflow-wrap: anywhere;
+    }
+
+    #resultsScreen #finalScore h2,
+    #resultsScreen #finalScore h3 {
+        font-size: clamp(15px, 4.2vw, 19px);
+        margin: 8px 0;
+        word-break: break-word;
+    }
+
+    #resultsScreen .sea-header {
+        font-size: clamp(20px, 5vw, 32px);
+        letter-spacing: 4px;
+    }
+
+    #resultsScreen button {
+        width: 100%;
+        max-width: 100%;
+        min-height: 48px;
+    }
+}
