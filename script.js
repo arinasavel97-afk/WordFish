@@ -733,9 +733,28 @@ async function startStudentGame(mode) {
     await startGame(mode);
 }
 
-function showStudentUnavailable() {
+function showStudentLoading() {
+    document.getElementById("studentScreen").classList.add("student-loading-active");
+    document.getElementById("studentLoadingPanel").style.display = "flex";
+    document.getElementById("studentSetTitle").style.display = "none";
     document.getElementById("studentChoicePanel").style.display = "none";
-    document.getElementById("studentSetTitle").textContent = "";
+    document.getElementById("studentUnavailable").style.display = "none";
+}
+
+function showStudentChoice(setName) {
+    document.getElementById("studentScreen").classList.remove("student-loading-active");
+    document.getElementById("studentLoadingPanel").style.display = "none";
+    document.getElementById("studentSetTitle").style.display = "block";
+    document.getElementById("studentSetTitle").textContent = setName;
+    document.getElementById("studentChoicePanel").style.display = "block";
+    document.getElementById("studentUnavailable").style.display = "none";
+}
+
+function showStudentUnavailable() {
+    document.getElementById("studentScreen").classList.remove("student-loading-active");
+    document.getElementById("studentLoadingPanel").style.display = "none";
+    document.getElementById("studentSetTitle").style.display = "none";
+    document.getElementById("studentChoicePanel").style.display = "none";
     document.getElementById("studentUnavailable").style.display = "block";
 }
 
@@ -745,9 +764,7 @@ async function enterStudentMode(setId) {
     displayScreen("studentScreen", false);
     history.replaceState({ screen: "studentScreen" }, "", "?play=" + encodeURIComponent(setId));
 
-    document.getElementById("studentSetTitle").textContent = "Loading...";
-    document.getElementById("studentChoicePanel").style.display = "none";
-    document.getElementById("studentUnavailable").style.display = "none";
+    showStudentLoading();
 
     try {
         const set = await dbLoadPublicSetById(setId);
@@ -761,8 +778,7 @@ async function enterStudentMode(setId) {
         currentSetName = set.name;
         cards = prepareCards(set.cards);
 
-        document.getElementById("studentSetTitle").textContent = set.name;
-        document.getElementById("studentChoicePanel").style.display = "block";
+        showStudentChoice(set.name);
     } catch (error) {
         console.error("Student set load failed:", error);
         showStudentUnavailable();
@@ -1028,5 +1044,6 @@ initStudentShareLink();
 if (studentShareSetId) {
     document.getElementById("authScreen").style.display = "none";
     document.getElementById("studentScreen").style.display = "block";
+    showStudentLoading();
 }
 checkAuth();

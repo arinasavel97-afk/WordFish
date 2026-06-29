@@ -47,7 +47,18 @@
 
     <div id="studentScreen" class="screen" style="display: none;">
         <h1>WordFish</h1>
-        <h2 id="studentSetTitle">Loading...</h2>
+
+        <div id="studentLoadingPanel" class="student-loading-panel" style="display: none;" aria-live="polite" aria-busy="true">
+            <div class="student-loading-bubbles" aria-hidden="true">
+                <span class="student-bubble"></span>
+                <span class="student-bubble"></span>
+                <span class="student-bubble"></span>
+                <span class="student-bubble"></span>
+            </div>
+            <p class="student-loading-text">Loading vocabulary set...</p>
+        </div>
+
+        <h2 id="studentSetTitle" style="display: none;">Loading...</h2>
 
         <div id="studentChoicePanel" style="display: none;">
             <p class="subtitle">Choose your game</p>
@@ -57,8 +68,10 @@
         </div>
 
         <div id="studentUnavailable" style="display: none;">
-            <p class="student-unavailable-message">This set is not available.</p>
-            <button onclick="backToWordFishHome()">Back to WordFish</button>
+            <div class="sea-header">🫧 🐠 🪸 🫧</div>
+            <h2 class="student-unavailable-title">Set not found</h2>
+            <p class="student-unavailable-message">This vocabulary set is unavailable or has been removed.</p>
+            <button onclick="backToWordFishHome()">Back to Home</button>
         </div>
     </div>
 
