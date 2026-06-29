@@ -19,6 +19,33 @@
     --radius-xl: 36px;
     --radius-lg: 26px;
     --radius-md: 18px;
+
+    /* Design System — Phase 1A tokens */
+    --color-primary: #3FA9F5;
+    --color-primary-hover: #2F8FE0;
+    --color-primary-dark: #2580C8;
+    --color-accent: #FFB703;
+    --color-accent-dark: #E5A503;
+    --color-success: #6DDC91;
+    --color-success-dark: #4FC878;
+    --color-danger: #FF6B6B;
+    --color-danger-dark: #E85555;
+    --color-text: #223344;
+    --color-input-bg: #FFFFFF;
+    --color-input-border: rgba(63, 169, 245, 0.28);
+    --color-soft: #D6EEFB;
+    --color-soft-dark: #B8DFF5;
+    --radius-button: 18px;
+    --radius-input: 16px;
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --shadow-button: 0 5px 0 rgba(34, 51, 68, 0.15);
+    --shadow-focus: 0 0 0 4px rgba(63, 169, 245, 0.22);
+    --font-family: "Fredoka", Arial, sans-serif;
+    --font-weight-ui: 500;
+    --font-weight-button: 700;
 }
 
 * {
@@ -47,7 +74,7 @@ body {
 button,
 input,
 textarea {
-    font-family: "Fredoka", Arial, sans-serif;
+    font-family: var(--font-family);
 }
 
 body::before {
@@ -156,15 +183,19 @@ p {
 input,
 textarea {
     width: min(92%, 620px);
+    min-height: 48px;
+    font-family: var(--font-family);
     font-size: clamp(17px, 2.2vw, 21px);
-    padding: 16px 18px;
+    font-weight: var(--font-weight-ui);
+    padding: 14px 18px;
     margin: 10px;
-    border-radius: 22px;
-    border: 3px solid var(--line);
+    border-radius: var(--radius-input);
+    border: 2px solid var(--color-input-border);
     outline: none;
-    background: rgba(255,255,255,0.96);
-    color: var(--ink);
-    transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
 }
 
 textarea {
@@ -172,68 +203,90 @@ textarea {
     height: min(32vh, 300px);
     resize: vertical;
     line-height: 1.45;
+    padding-top: var(--space-md);
 }
 
 input:focus,
 textarea:focus {
-    border-color: var(--sea);
-    box-shadow: 0 0 0 5px rgba(0, 166, 200, 0.15);
-    transform: translateY(-1px);
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-focus);
 }
 
 button {
-    font-family: "Fredoka", Arial, sans-serif;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-button);
     min-height: 48px;
     font-size: clamp(16px, 2vw, 19px);
-    font-weight: 900;
-    padding: 13px 24px;
+    padding: 12px var(--space-lg);
     border: none;
-    border-radius: 999px;
-    background: var(--sea);
-    color: white;
+    border-radius: var(--radius-button);
+    background: var(--color-primary);
+    color: #fff;
     cursor: pointer;
-    margin: 8px;
-    box-shadow: 0 6px 0 var(--sea-dark);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    margin: var(--space-sm);
+    box-shadow: var(--shadow-button), 0 5px 0 var(--color-primary-dark);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 button:hover {
+    background: var(--color-primary-hover);
     transform: translateY(-2px);
-    filter: brightness(0.98);
 }
 
 button:active {
-    transform: translateY(3px);
-    box-shadow: 0 3px 0 rgba(7, 59, 76, 0.25);
+    transform: translateY(2px);
+    box-shadow: var(--shadow-button), 0 2px 0 var(--color-primary-dark);
 }
 
 .green-button {
-    background: var(--mint);
-    box-shadow: 0 6px 0 var(--mint-dark);
+    background: var(--color-success);
+    box-shadow: var(--shadow-button), 0 5px 0 var(--color-success-dark);
 }
+
+.green-button:hover { background: #5FD085; }
+.green-button:active { box-shadow: var(--shadow-button), 0 2px 0 var(--color-success-dark); }
 
 .yellow-button {
-    background: var(--sun);
-    box-shadow: 0 6px 0 var(--sun-dark);
-    color: #073B4C;
+    background: var(--color-accent);
+    box-shadow: var(--shadow-button), 0 5px 0 var(--color-accent-dark);
+    color: var(--color-text);
 }
 
+.yellow-button:hover { background: #FFC933; }
+.yellow-button:active { box-shadow: var(--shadow-button), 0 2px 0 var(--color-accent-dark); }
+
 .red-button {
-    background: var(--coral);
-    box-shadow: 0 6px 0 var(--coral-dark);
+    background: var(--color-danger);
+    box-shadow: var(--shadow-button), 0 5px 0 var(--color-danger-dark);
 }
+
+.red-button:hover { background: #FF8585; }
+.red-button:active { box-shadow: var(--shadow-button), 0 2px 0 var(--color-danger-dark); }
 
 .soft-button,
 .disabled-button {
-    background: #E0F7FA;
-    color: var(--ink);
-    box-shadow: 0 6px 0 #9BD9E2;
+    background: var(--color-soft);
+    color: var(--color-text);
+    box-shadow: var(--shadow-button), 0 5px 0 var(--color-soft-dark);
 }
+
+.soft-button:hover { background: #E4F4FD; }
+.soft-button:active,
+.disabled-button:active { box-shadow: var(--shadow-button), 0 2px 0 var(--color-soft-dark); }
 
 .disabled-button {
     cursor: not-allowed;
-    opacity: 0.9;
+    opacity: 0.85;
+}
+
+.disabled-button:hover {
+    transform: none;
+    background: var(--color-soft);
 }
 
 .card {
