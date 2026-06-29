@@ -20,6 +20,7 @@ let totalWrongAttempts = 0;
 let lastGameOrderSignature = "";
 let currentScreenId = "";
 let suppressHistoryPush = false;
+let gameLaunchSource = "editor";
 
 /*
  * Student Share Links — detect ?play=<setId> or /play/<setId>
@@ -258,7 +259,7 @@ async function startChosenSetGame(mode) {
     currentSetName = selectedSet.name;
     cards = prepareCards(selectedSet.cards || []);
     closePlayChoice();
-    await startGame(mode);
+    await startGame(mode, "dashboard");
 }
 
 function showTeacherScreen() {
@@ -642,7 +643,13 @@ async function saveCardsBeforePlay() {
     await autoSaveNow();
 }
 
-async function startGame(mode) {
+async function startGame(mode, fromSource) {
+    if (fromSource) {
+        gameLaunchSource = fromSource;
+    } else if (currentScreenId === "cardsScreen") {
+        gameLaunchSource = "editor";
+    }
+
     currentGameMode = mode;
 
     await saveCardsBeforePlay();
@@ -720,17 +727,29 @@ function exitGame() {
     returnToPreGameScreen();
 }
 
-function returnToPreGameScreen() {
-    if (isStudentMode) {
+function navigateAfterGame() {
+    if (gameLaunchSource === "student" || isStudentMode) {
         displayScreen("studentScreen", false);
+        if (currentSetName) {
+            showStudentChoice(currentSetName);
+        }
+        return;
+    }
+
+    if (gameLaunchSource === "dashboard") {
+        showDashboard();
         return;
     }
 
     showCardsScreen();
 }
 
+function returnToPreGameScreen() {
+    navigateAfterGame();
+}
+
 async function startStudentGame(mode) {
-    await startGame(mode);
+    await startGame(mode, "student");
 }
 
 function showStudentLoading() {
@@ -792,15 +811,7 @@ function backToWordFishHome() {
 }
 
 function leaveGameResults() {
-    if (isStudentMode) {
-        displayScreen("studentScreen", false);
-        if (currentSetName) {
-            showStudentChoice(currentSetName);
-        }
-        return;
-    }
-
-    showDashboard();
+    navigateAfterGame();
 }
 
 function showCard() {
@@ -808,11 +819,7 @@ function showCard() {
     currentCardMistakes = 0;
 
     if (gameCards.length === 0) {
-        if (isStudentMode) {
-            displayScreen("studentScreen", false);
-        } else {
-            showDashboard();
-        }
+        returnToPreGameScreen();
         return;
     }
 
