@@ -1324,3 +1324,22 @@ h2 {
         font-size: 13px;
     }
 }
+
+/* Dashboard Share button — soft purple */
+#savedSetsList .set-actions .share-button,
+#savedSetsList .set-actions button[onclick^="openShareDialog"] {
+    background: #A78BFA;
+    color: #ffffff;
+    box-shadow: var(--shadow-button), 0 5px 0 #7C3AED;
+}
+
+#savedSetsList .set-actions .share-button:hover,
+#savedSetsList .set-actions button[onclick^="openShareDialog"]:hover {
+    background: #8B5CF6;
+}
+
+#savedSetsList .set-actions .share-button:active,
+#savedSetsList .set-actions button[onclick^="openShareDialog"]:active {
+    background: #7C3AED;
+    box-shadow: var(--shadow-button), 0 2px 0 #7C3AED;
+}
