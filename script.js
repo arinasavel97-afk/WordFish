@@ -767,6 +767,21 @@ function showStudentChoice(setName) {
     document.getElementById("studentSetTitle").textContent = setName;
     document.getElementById("studentChoicePanel").style.display = "block";
     document.getElementById("studentUnavailable").style.display = "none";
+    updateStudentPictureModeAvailability();
+}
+
+function updateStudentPictureModeAvailability() {
+    const pictureButton = document.getElementById("studentPictureButton");
+    const pictureUnavailableNote = document.getElementById("studentPictureUnavailable");
+
+    if (!pictureButton || !pictureUnavailableNote) return;
+
+    const playableCards = cleanCardsForSaving();
+    const hasAllImages = playableCards.length > 0
+        && playableCards.every((card) => card.imageUrl);
+
+    pictureButton.disabled = !hasAllImages;
+    pictureUnavailableNote.style.display = hasAllImages ? "none" : "block";
 }
 
 function showStudentUnavailable() {

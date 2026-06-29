@@ -1526,18 +1526,111 @@ h2 {
 
 #studentScreen #studentSetTitle {
     color: var(--sea-deep);
-    margin-bottom: var(--space-md);
-    word-break: break-word;
-}
-
-#studentScreen .subtitle {
     margin-bottom: var(--space-lg);
+    word-break: break-word;
+    font-size: clamp(22px, 4vw, 30px);
 }
 
-#studentScreen .yellow-button {
-    width: min(100%, 360px);
-    min-height: 48px;
-    margin: var(--space-sm);
+#studentScreen .student-choice-panel .subtitle {
+    margin-bottom: var(--space-sm);
+}
+
+.student-choice-panel {
+    max-width: min(100%, 420px);
+    margin: 0 auto;
+}
+
+.student-choice-heading {
+    margin-bottom: var(--space-sm);
+}
+
+.student-choice-helper {
+    margin: 0 auto var(--space-lg);
+    max-width: 360px;
+    color: var(--color-text-muted, #4A6278);
+    font-size: clamp(15px, 2.5vw, 17px);
+    font-weight: var(--font-weight-ui);
+    line-height: 1.45;
+}
+
+.student-mode-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    align-items: stretch;
+}
+
+.student-mode-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 18px;
+    border: 2px solid rgba(255, 255, 255, 0.65);
+    border-radius: var(--radius-button);
+    color: white;
+    font-family: var(--font-family);
+    font-size: clamp(16px, 2.8vw, 18px);
+    font-weight: var(--font-weight-button);
+    cursor: pointer;
+    box-shadow: var(--shadow-button);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.student-mode-button-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+}
+
+.student-mode-button-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.student-mode-button-picture {
+    background: linear-gradient(180deg, #A78BFA 0%, #8B5CF6 100%);
+}
+
+.student-mode-button-picture:hover:not(:disabled) {
+    background: linear-gradient(180deg, #9575F7 0%, #7C3AED 100%);
+}
+
+.student-mode-button-translation {
+    background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+}
+
+.student-mode-button-translation:hover {
+    background: linear-gradient(180deg, var(--color-primary-hover) 0%, var(--color-primary-dark) 100%);
+}
+
+.student-mode-button:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 rgba(34, 51, 68, 0.15);
+}
+
+.student-mode-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.student-picture-unavailable {
+    margin: calc(var(--space-sm) * -1) 0 0;
+    color: var(--color-text-muted, #4A6278);
+    font-size: var(--font-size-sm, 14px);
+    font-weight: var(--font-weight-ui);
+    line-height: 1.4;
+}
+
+.student-mode-note {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid rgba(142, 220, 230, 0.45);
+    color: var(--color-text-muted, #4A6278);
+    font-size: var(--font-size-sm, 15px);
+    font-weight: var(--font-weight-button);
 }
 
 .student-loading-panel {
@@ -1615,11 +1708,15 @@ h2 {
     font-weight: var(--font-weight-button);
 }
 
-.student-mode-note {
-    margin-top: var(--space-md);
-    color: var(--color-text-muted, #4A6278);
-    font-size: var(--font-size-sm, 15px);
-    font-weight: var(--font-weight-button);
+@media (max-width: 620px) {
+    .student-mode-button {
+        min-height: 48px;
+        padding: 11px 16px;
+    }
+
+    .student-choice-helper {
+        margin-bottom: var(--space-md);
+    }
 }
 
 .student-unavailable-title {
