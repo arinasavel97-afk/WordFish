@@ -1143,3 +1143,50 @@ h2 {
         font-size: 21px;
     }
 }
+
+/* Design System Phase 1D-1 — Game Progress Bar */
+#gameScreen #pearlBar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    gap: 12px;
+    width: fit-content;
+    max-width: min(100%, 520px);
+    margin-left: auto;
+    margin-right: auto;
+    overflow-wrap: normal;
+}
+
+#gameScreen #pearlBar .pearl-shell,
+#gameScreen #pearlBar .pearl-empty {
+    flex: 0 0 auto;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+}
+
+#gameScreen #pearlBar .pearl-shell {
+    object-fit: contain;
+    display: block;
+}
+
+#gameScreen #pearlBar .pearl-empty {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+}
+
+@media (max-width: 620px) {
+    #gameScreen #pearlBar {
+        gap: 8px;
+        max-width: 100%;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}
