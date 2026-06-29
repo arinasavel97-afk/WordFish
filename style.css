@@ -844,6 +844,14 @@ button:active {
         radial-gradient(circle at 50% 20%, rgba(255,255,255,0.35), transparent 20%),
         linear-gradient(180deg, #7FE7FF 0%, #1CA7C9 100%);
     color: white;
+    max-width: min(560px, 100%);
+}
+
+#resultsScreen #resultTitle {
+    font-size: clamp(32px, 7vw, 48px);
+    margin: var(--space-sm) auto var(--space-md);
+    line-height: 1.15;
+    text-shadow: 0 2px 0 rgba(7, 59, 76, 0.12);
 }
 
 #finalScore {
@@ -851,9 +859,60 @@ button:active {
     color: var(--ink);
     border-radius: 32px;
     padding: clamp(24px, 4vw, 36px);
-    display: inline-block;
-    min-width: min(340px, 92vw);
+    display: block;
+    width: min(100%, 420px);
+    margin: 0 auto;
+    box-sizing: border-box;
     box-shadow: var(--soft-shadow);
+}
+
+#resultsScreen .result-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: var(--space-md);
+    text-align: left;
+}
+
+#resultsScreen .result-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(142, 220, 230, 0.55);
+}
+
+#resultsScreen .result-stat-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+#resultsScreen .result-stat-label {
+    color: var(--sea-deep);
+    font-weight: var(--font-weight-button);
+    font-size: clamp(15px, 3.8vw, 17px);
+}
+
+#resultsScreen .result-stat-value {
+    color: var(--ink);
+    font-weight: 800;
+    font-size: clamp(16px, 4vw, 19px);
+    text-align: right;
+}
+
+#resultsScreen .results-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    width: min(100%, 360px);
+    margin: var(--space-lg) auto 0;
+}
+
+#resultsScreen .results-actions button {
+    width: 100%;
+    min-height: 48px;
+    margin: 0;
 }
 
 .sea-stars {
@@ -1251,7 +1310,7 @@ h2 {
     }
 
     #resultsScreen #resultTitle {
-        font-size: clamp(22px, 7vw, 34px);
+        font-size: clamp(28px, 8vw, 40px);
         padding: 0 4px;
         word-break: break-word;
     }
@@ -1263,16 +1322,23 @@ h2 {
         overflow-wrap: anywhere;
     }
 
-    #resultsScreen #finalScore h2,
-    #resultsScreen #finalScore h3 {
-        font-size: clamp(15px, 4.2vw, 19px);
-        margin: 8px 0;
-        word-break: break-word;
+    #resultsScreen .result-stat-row {
+        padding: 10px 0;
+    }
+
+    #resultsScreen .result-stat-label,
+    #resultsScreen .result-stat-value {
+        font-size: clamp(14px, 3.8vw, 17px);
     }
 
     #resultsScreen .sea-header {
         font-size: clamp(20px, 5vw, 32px);
         letter-spacing: 4px;
+    }
+
+    #resultsScreen .results-actions {
+        width: 100%;
+        max-width: 100%;
     }
 
     #resultsScreen button {

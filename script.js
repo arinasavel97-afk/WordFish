@@ -794,6 +794,9 @@ function backToWordFishHome() {
 function leaveGameResults() {
     if (isStudentMode) {
         displayScreen("studentScreen", false);
+        if (currentSetName) {
+            showStudentChoice(currentSetName);
+        }
         return;
     }
 
@@ -921,11 +924,43 @@ function showResults() {
 
     document.getElementById("finalScore").innerHTML = `
         <div class="sea-stars">${stars}</div>
-        <h2>🏆 Perfect answers: ${score} / ${gameCards.length}</h2>
-        <h3>💡 Hints used: ${hintsUsed}</h3>
-        <h3>🐠 Wrong tries: ${totalWrongAttempts}</h3>
-        <h3>📚 Accuracy: ${accuracy}%</h3>
+        <div class="result-stats">
+            <div class="result-stat-row">
+                <span class="result-stat-label">Perfect answers</span>
+                <span class="result-stat-value">${score} / ${gameCards.length}</span>
+            </div>
+            <div class="result-stat-row">
+                <span class="result-stat-label">Accuracy</span>
+                <span class="result-stat-value">${accuracy}%</span>
+            </div>
+            <div class="result-stat-row">
+                <span class="result-stat-label">Hints used</span>
+                <span class="result-stat-value">${hintsUsed}</span>
+            </div>
+            <div class="result-stat-row">
+                <span class="result-stat-label">Wrong tries</span>
+                <span class="result-stat-value">${totalWrongAttempts}</span>
+            </div>
+        </div>
     `;
+
+    ensureResultsActions();
+
+    const resultsButtons = document.querySelectorAll("#resultsScreen .results-actions button");
+    if (resultsButtons.length >= 2) {
+        resultsButtons[0].textContent = "Play Again";
+        resultsButtons[1].textContent = "Choose Another Game";
+    }
+}
+
+function ensureResultsActions() {
+    const resultsScreen = document.getElementById("resultsScreen");
+    if (resultsScreen.querySelector(".results-actions")) return;
+
+    const actions = document.createElement("div");
+    actions.className = "results-actions";
+    resultsScreen.querySelectorAll("button").forEach((button) => actions.appendChild(button));
+    resultsScreen.appendChild(actions);
 }
 
 function getStars(accuracy) {
@@ -937,10 +972,9 @@ function getStars(accuracy) {
 }
 
 function getResultTitle(accuracy) {
-    if (accuracy >= 90) return "Excellent! 🌟";
-    if (accuracy >= 70) return "Great Job! 🐠";
-    if (accuracy >= 50) return "Good Try! 🐚";
-    return "Let's Practice Again! 💪";
+    if (accuracy === 100) return "Perfect!";
+    if (accuracy >= 70) return "Great job!";
+    return "Keep practicing!";
 }
 
 function escapeAttribute(text) {
