@@ -13,6 +13,7 @@ let autoSaveTimer = null;
 let autoSaveInProgress = false;
 let isGameRunning = false;
 let selectedPlaySetIndex = null;
+let selectedShareSetIndex = null;
 let currentCardMistakes = 0;
 let totalWrongAttempts = 0;
 let lastGameOrderSignature = "";
@@ -168,6 +169,7 @@ function renderDashboard() {
                 <div class="set-actions">
                     <button class="green-button" onclick="openPlayChoice(${i})">▶️ Play</button>
                     <button onclick="editSet(${i})">✏️ Edit</button>
+                    <button onclick="openShareDialog(${i})">🔗 Share</button>
                     <button class="red-button" onclick="deleteSet(${i})">🗑️ Delete</button>
                 </div>
             </div>
@@ -186,6 +188,23 @@ function openPlayChoice(index) {
 function closePlayChoice() {
     selectedPlaySetIndex = null;
     document.getElementById("playChoiceModal").style.display = "none";
+}
+
+function openShareDialog(index) {
+    selectedShareSetIndex = index;
+    const selectedSet = savedSets[index];
+    const shareUrl = "https://word-fish.vercel.app/play/" + selectedSet.id;
+    document.getElementById("shareLinkInput").value = shareUrl;
+    document.getElementById("shareModal").style.display = "flex";
+}
+
+function closeShareDialog() {
+    selectedShareSetIndex = null;
+    document.getElementById("shareModal").style.display = "none";
+}
+
+function copyShareLinkPlaceholder() {
+    showToast("Copy feature coming soon", "info");
 }
 
 async function startChosenSetGame(mode) {

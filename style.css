@@ -393,7 +393,7 @@ button:active {
 }
 
 #savedSetsList .set-actions button {
-    flex: 1 1 calc(33.333% - 6px);
+    flex: 1 1 calc(50% - 6px);
     min-height: 40px;
     margin: 0;
     padding: 8px 10px;
@@ -1276,5 +1276,51 @@ h2 {
         width: 100%;
         max-width: 100%;
         min-height: 48px;
+    }
+}
+
+/* Phase 2B — Share dialog */
+.share-modal h2 {
+    margin-top: 8px;
+}
+
+.share-modal .subtitle {
+    margin-bottom: var(--space-md);
+}
+
+.share-link-field {
+    text-align: left;
+    margin: 0 auto var(--space-md);
+    max-width: 100%;
+}
+
+.share-link-field label {
+    display: block;
+    color: var(--sea-deep);
+    font-weight: var(--font-weight-button);
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+#shareLinkInput {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    font-size: 14px;
+    word-break: break-all;
+}
+
+.share-modal .green-button,
+.share-modal button:not(.modal-close) {
+    width: min(100%, 380px);
+}
+
+@media (max-width: 620px) {
+    .share-modal {
+        padding: 20px;
+    }
+
+    #shareLinkInput {
+        font-size: 13px;
     }
 }
