@@ -521,7 +521,8 @@ button:active {
     position: relative;
 }
 
-.word-card.drag-over {
+.word-card.drag-over,
+.word-card.sortable-ghost {
     border-color: var(--color-accent);
     background: #fffdf6;
     box-shadow: 0 0 0 3px rgba(255, 183, 3, 0.18);
@@ -812,9 +813,25 @@ button:active {
     background: rgba(255,255,255,0.25);
     border-radius: 999px;
     padding: 12px 20px;
-    display: inline-block;
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     max-width: 95%;
     overflow-wrap: anywhere;
+}
+
+#pearlBar .pearl-shell {
+    width: clamp(28px, 4vw, 36px);
+    height: clamp(28px, 4vw, 36px);
+    object-fit: contain;
+    display: block;
+}
+
+#pearlBar .pearl-empty {
+    opacity: 0.55;
+    line-height: 1;
 }
 
 #scoreText {

@@ -7,7 +7,7 @@ let answerShown = false;
 let hintsUsed = 0;
 let editingSetId = null;
 let currentSetName = "";
-let draggedIndex = null;
+let cardsSortable = null;
 let currentGameMode = "translation";
 let autoSaveTimer = null;
 let autoSaveInProgress = false;
@@ -21,7 +21,7 @@ let suppressHistoryPush = false;
 
 const praiseWords = [
     "Great catch! 🐠",
-    "Pearl found! 🦪",
+    "Pearl found!",
     "Splash-tastic! 🌊",
     "Nice swimming! 🫧",
     "You got it! ⭐",
@@ -278,25 +278,20 @@ function renderCards() {
                 <p>Click + New Word to add your first card.</p>
             </div>
         `;
+        if (cardsSortable) {
+            cardsSortable.destroy();
+            cardsSortable = null;
+        }
         return;
     }
 
     for (let i = 0; i < cards.length; i++) {
         cardsList.innerHTML += `
-            <div 
-                class="card word-card"
-                ondragover="dragOver(event, ${i})"
-                ondragleave="dragLeave(event)"
-                ondrop="dropCard(${i})"
-            >
+            <div class="card word-card">
                 <div class="word-card-header">
                     <div class="card-number">🐟 Card ${i + 1}</div>
 
-                    <div 
-                        class="drag-handle"
-                        draggable="true"
-                        ondragstart="dragStart(event, ${i})"
-                    >
+                    <div class="drag-handle">
                         ↕ Drag
                     </div>
 
@@ -349,6 +344,40 @@ function renderCards() {
             </div>
         `;
     }
+
+    initCardsSortable();
+}
+
+function initCardsSortable() {
+    const cardsList = document.getElementById("cardsList");
+
+    if (cardsSortable) {
+        cardsSortable.destroy();
+        cardsSortable = null;
+    }
+
+    if (!cardsList || cards.length === 0 || typeof Sortable === "undefined") {
+        return;
+    }
+
+    cardsSortable = new Sortable(cardsList, {
+        animation: 150,
+        handle: ".drag-handle",
+        draggable: ".word-card",
+        filter: "input, textarea, button, select, a",
+        preventOnFilter: false,
+        delayOnTouchOnly: true,
+        delay: 120,
+        touchStartThreshold: 4,
+        onEnd(evt) {
+            if (evt.oldIndex === evt.newIndex) return;
+
+            const moved = cards.splice(evt.oldIndex, 1)[0];
+            cards.splice(evt.newIndex, 0, moved);
+            renderCards();
+            scheduleAutoSave();
+        }
+    });
 }
 
 function updateSetName(value) {
@@ -378,31 +407,6 @@ function addNewWord() {
 
 function deleteWord(index) {
     cards.splice(index, 1);
-    renderCards();
-    scheduleAutoSave();
-}
-
-function dragStart(event, index) {
-    draggedIndex = index;
-    event.stopPropagation();
-}
-
-function dragOver(event, index) {
-    event.preventDefault();
-    event.currentTarget.classList.add("drag-over");
-}
-
-function dragLeave(event) {
-    event.currentTarget.classList.remove("drag-over");
-}
-
-function dropCard(dropIndex) {
-    if (draggedIndex === null) return;
-
-    let draggedCard = cards.splice(draggedIndex, 1)[0];
-    cards.splice(dropIndex, 0, draggedCard);
-
-    draggedIndex = null;
     renderCards();
     scheduleAutoSave();
 }
@@ -690,17 +694,24 @@ function showAnswer() {
 }
 
 function updatePearls() {
-    let pearls = "";
+    const pearlBar = document.getElementById("pearlBar");
+    pearlBar.innerHTML = "";
 
     for (let i = 0; i < gameCards.length; i++) {
         if (i < score) {
-            pearls += "🦪 ";
+            const shell = document.createElement("img");
+            shell.src = "assets/shell.png";
+            shell.alt = "Shell collected";
+            shell.className = "pearl-shell";
+            pearlBar.appendChild(shell);
         } else {
-            pearls += "○ ";
+            const empty = document.createElement("span");
+            empty.className = "pearl-empty";
+            empty.textContent = "○";
+            empty.setAttribute("aria-hidden", "true");
+            pearlBar.appendChild(empty);
         }
     }
-
-    document.getElementById("pearlBar").textContent = pearls;
 }
 
 function showResults() {
