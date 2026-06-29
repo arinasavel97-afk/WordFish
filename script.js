@@ -210,7 +210,7 @@ function closePlayChoice() {
 function openShareDialog(index) {
     selectedShareSetIndex = index;
     const selectedSet = savedSets[index];
-    const shareUrl = "https://word-fish.vercel.app/play/" + selectedSet.id;
+    const shareUrl = "https://word-fish.vercel.app/?play=" + encodeURIComponent(selectedSet.id);
     document.getElementById("shareLinkInput").value = shareUrl;
     document.getElementById("shareModal").style.display = "flex";
 }
@@ -955,6 +955,12 @@ async function checkAuth() {
     if (data.session) {
         showDashboard();
     } else {
+        const playParam = new URLSearchParams(window.location.search).get("play");
+        if (playParam && playParam.trim() !== "") {
+            await enterStudentMode(playParam.trim());
+            return;
+        }
+
         displayScreen("authScreen", false);
         history.replaceState({ screen: "authScreen" }, "", "#auth");
     }
@@ -1017,3 +1023,10 @@ async function logout() {
 
     displayScreen("authScreen");
 }
+
+initStudentShareLink();
+if (studentShareSetId) {
+    document.getElementById("authScreen").style.display = "none";
+    document.getElementById("studentScreen").style.display = "block";
+}
+checkAuth();
