@@ -169,6 +169,38 @@ async function dbDeleteSet(setId) {
     }
 }
 
+async function dbLoadPublicSetById(setId) {
+    const { data: set, error: setError } = await supabaseClient
+        .from("sets")
+        .select("id, name")
+        .eq("id", setId)
+        .maybeSingle();
+
+    if (setError) {
+        throw setError;
+    }
+
+    if (!set) {
+        return null;
+    }
+
+    const { data: setCards, error: cardsError } = await supabaseClient
+        .from("cards")
+        .select("id, set_id, english, translation, thai, image_url, position")
+        .eq("set_id", setId)
+        .order("position", { ascending: true });
+
+    if (cardsError) {
+        throw cardsError;
+    }
+
+    return {
+        id: set.id,
+        name: set.name,
+        cards: (setCards || []).map(mapDatabaseCard)
+    };
+}
+
 async function dbDuplicateSet(sourceSet) {
     const copiedCards = JSON.parse(JSON.stringify(sourceSet.cards || []));
     return await dbCreateSetWithCards(sourceSet.name + " Copy", copiedCards);

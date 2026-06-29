@@ -22,22 +22,28 @@ let currentScreenId = "";
 let suppressHistoryPush = false;
 
 /*
- * Phase 2A — Student Share Links (foundation)
- *
- * Teachers will share URLs like:  ?play=<setId>
- *
- * Future phases will use studentShareSetId to load a public set for students
- * without opening the teacher dashboard. Login bypass and set loading are not
- * implemented yet — detection and storage only.
+ * Student Share Links — detect ?play=<setId> or /play/<setId>
  */
 let studentShareSetId = null;
+let isStudentMode = false;
 
 function initStudentShareLink() {
-    const params = new URLSearchParams(window.location.search);
-    const playSetId = params.get("play");
+    studentShareSetId = null;
 
-    if (playSetId && playSetId.trim() !== "") {
-        studentShareSetId = playSetId.trim();
+    const params = new URLSearchParams(window.location.search);
+    const queryPlayId = params.get("play");
+
+    if (queryPlayId && queryPlayId.trim() !== "") {
+        studentShareSetId = queryPlayId.trim();
+        return;
+    }
+
+    const pathname = window.location.pathname;
+    if (pathname.includes("/play/")) {
+        const pathMatch = pathname.match(/\/play\/([^/]+)/);
+        if (pathMatch && pathMatch[1]) {
+            studentShareSetId = decodeURIComponent(pathMatch[1]).trim();
+        }
     }
 }
 
@@ -54,6 +60,7 @@ const praiseWords = [
 function hideAllScreens() {
     document.getElementById("authScreen").style.display = "none";
     document.getElementById("dashboardScreen").style.display = "none";
+    document.getElementById("studentScreen").style.display = "none";
     document.getElementById("teacherScreen").style.display = "none";
     document.getElementById("cardsScreen").style.display = "none";
     document.getElementById("gameScreen").style.display = "none";
@@ -89,6 +96,9 @@ window.addEventListener("popstate", (event) => {
     } else if (screenId === "authScreen") {
         hideAllScreens();
         document.getElementById("authScreen").style.display = "block";
+    } else if (screenId === "studentScreen") {
+        hideAllScreens();
+        document.getElementById("studentScreen").style.display = "block";
     }
 
     suppressHistoryPush = false;
@@ -576,7 +586,7 @@ function cleanCardsForSaving() {
 }
 
 function scheduleAutoSave(delay = 1200) {
-    if (!editingSetId || isGameRunning) return;
+    if (!editingSetId || isGameRunning || isStudentMode) return;
 
     clearTimeout(autoSaveTimer);
     setSaveStatus("💾 Saving...", "saving");
@@ -587,7 +597,7 @@ function scheduleAutoSave(delay = 1200) {
 }
 
 async function autoSaveNow() {
-    if (!editingSetId || autoSaveInProgress) return;
+    if (isStudentMode || !editingSetId || autoSaveInProgress) return;
 
     let setName = document.getElementById("builderSetName")?.value || currentSetName;
 
@@ -626,7 +636,7 @@ async function backToDashboard() {
 }
 
 async function saveCardsBeforePlay() {
-    if (!editingSetId) return;
+    if (isStudentMode || !editingSetId) return;
 
     clearTimeout(autoSaveTimer);
     await autoSaveNow();
@@ -641,7 +651,7 @@ async function startGame(mode) {
 
     if (playableCards.length === 0) {
         showToast("🐟 Add at least one English word before playing.", "warning");
-        showCardsScreen();
+        returnToPreGameScreen();
         return;
     }
 
@@ -658,7 +668,7 @@ async function startGame(mode) {
 
         if (missingImages > 0) {
             showToast(`${missingImages} card(s) need images before Picture mode.`, "warning");
-            showCardsScreen();
+            returnToPreGameScreen();
             return;
         }
     }
@@ -707,7 +717,71 @@ function getOrderSignature(cardList) {
 
 function exitGame() {
     isGameRunning = false;
+    returnToPreGameScreen();
+}
+
+function returnToPreGameScreen() {
+    if (isStudentMode) {
+        displayScreen("studentScreen", false);
+        return;
+    }
+
     showCardsScreen();
+}
+
+async function startStudentGame(mode) {
+    await startGame(mode);
+}
+
+function showStudentUnavailable() {
+    document.getElementById("studentChoicePanel").style.display = "none";
+    document.getElementById("studentSetTitle").textContent = "";
+    document.getElementById("studentUnavailable").style.display = "block";
+}
+
+async function enterStudentMode(setId) {
+    isStudentMode = true;
+    editingSetId = null;
+    displayScreen("studentScreen", false);
+    history.replaceState({ screen: "studentScreen" }, "", "?play=" + encodeURIComponent(setId));
+
+    document.getElementById("studentSetTitle").textContent = "Loading...";
+    document.getElementById("studentChoicePanel").style.display = "none";
+    document.getElementById("studentUnavailable").style.display = "none";
+
+    try {
+        const set = await dbLoadPublicSetById(setId);
+
+        if (!set || !set.cards || set.cards.length === 0) {
+            showStudentUnavailable();
+            return;
+        }
+
+        editingSetId = set.id;
+        currentSetName = set.name;
+        cards = prepareCards(set.cards);
+
+        document.getElementById("studentSetTitle").textContent = set.name;
+        document.getElementById("studentChoicePanel").style.display = "block";
+    } catch (error) {
+        console.error("Student set load failed:", error);
+        showStudentUnavailable();
+    }
+}
+
+function backToWordFishHome() {
+    isStudentMode = false;
+    studentShareSetId = null;
+    window.location.href = window.location.pathname;
+}
+
+function leaveGameResults() {
+    if (isStudentMode) {
+        displayScreen("studentScreen", false);
+        return;
+    }
+
+    showDashboard();
 }
 
 function showCard() {
@@ -715,7 +789,11 @@ function showCard() {
     currentCardMistakes = 0;
 
     if (gameCards.length === 0) {
-        showDashboard();
+        if (isStudentMode) {
+            displayScreen("studentScreen", false);
+        } else {
+            showDashboard();
+        }
         return;
     }
 
@@ -866,6 +944,11 @@ function escapeHTML(text) {
 
 async function checkAuth() {
     initStudentShareLink();
+
+    if (studentShareSetId) {
+        await enterStudentMode(studentShareSetId);
+        return;
+    }
 
     const { data } = await supabaseClient.auth.getSession();
 

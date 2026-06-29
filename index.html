@@ -45,6 +45,23 @@
         <div id="savedSetsList"></div>
     </div>
 
+    <div id="studentScreen" class="screen" style="display: none;">
+        <h1>WordFish</h1>
+        <h2 id="studentSetTitle">Loading...</h2>
+
+        <div id="studentChoicePanel" style="display: none;">
+            <p class="subtitle">Choose your game</p>
+            <button class="yellow-button" onclick="startStudentGame('picture')">Play with Pictures</button>
+            <button class="yellow-button" onclick="startStudentGame('translation')">Play with Translation</button>
+            <p class="student-mode-note">Student mode — view only</p>
+        </div>
+
+        <div id="studentUnavailable" style="display: none;">
+            <p class="student-unavailable-message">This set is not available.</p>
+            <button onclick="backToWordFishHome()">Back to WordFish</button>
+        </div>
+    </div>
+
     <div id="playChoiceModal" class="modal-backdrop" style="display: none;">
         <div class="modal-card">
             <button class="modal-close" onclick="closePlayChoice()">✕</button>
@@ -153,7 +170,7 @@
         <br><br>
 
         <button class="green-button" onclick="startGame(currentGameMode)">🔁 Play Again</button>
-        <button onclick="showDashboard()">🏠 Back to Dashboard</button>
+        <button onclick="leaveGameResults()">🏠 Back to Dashboard</button>
     </div>
 
     <div id="toast" class="toast"></div>

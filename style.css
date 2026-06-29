@@ -1443,3 +1443,47 @@ h2 {
         max-width: none;
     }
 }
+
+/* Student Mode 2D-1 — entry screen */
+#studentScreen {
+    max-width: min(520px, 100%);
+}
+
+#studentScreen h1 {
+    margin-bottom: var(--space-sm);
+}
+
+#studentScreen #studentSetTitle {
+    color: var(--sea-deep);
+    margin-bottom: var(--space-md);
+    word-break: break-word;
+}
+
+#studentScreen .subtitle {
+    margin-bottom: var(--space-lg);
+}
+
+#studentScreen .yellow-button {
+    width: min(100%, 360px);
+    min-height: 48px;
+    margin: var(--space-sm);
+}
+
+.student-mode-note {
+    margin-top: var(--space-md);
+    color: var(--color-text-muted, #4A6278);
+    font-size: var(--font-size-sm, 15px);
+    font-weight: var(--font-weight-button);
+}
+
+.student-unavailable-message {
+    margin: var(--space-lg) auto;
+    color: var(--color-text);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-button);
+}
+
+#studentUnavailable button {
+    min-height: 48px;
+    width: min(100%, 320px);
+}
