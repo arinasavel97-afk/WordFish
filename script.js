@@ -210,8 +210,34 @@ function closeShareDialog() {
     document.getElementById("shareModal").style.display = "none";
 }
 
-function copyShareLinkPlaceholder() {
-    showToast("Copy feature coming soon", "info");
+async function copyShareLinkPlaceholder() {
+    const shareInput = document.getElementById("shareLinkInput");
+    if (!shareInput) return;
+
+    const link = shareInput.value.trim();
+    if (link === "") {
+        showToast("Could not copy link", "error");
+        return;
+    }
+
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(link);
+        } else {
+            shareInput.removeAttribute("readonly");
+            shareInput.select();
+            shareInput.setSelectionRange(0, link.length);
+            const copied = document.execCommand("copy");
+            shareInput.setAttribute("readonly", "");
+            if (!copied) {
+                throw new Error("Copy failed");
+            }
+        }
+
+        showToast("Link copied!", "success");
+    } catch (error) {
+        showToast("Could not copy link", "error");
+    }
 }
 
 async function startChosenSetGame(mode) {
