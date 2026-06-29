@@ -19,6 +19,26 @@ let lastGameOrderSignature = "";
 let currentScreenId = "";
 let suppressHistoryPush = false;
 
+/*
+ * Phase 2A — Student Share Links (foundation)
+ *
+ * Teachers will share URLs like:  ?play=<setId>
+ *
+ * Future phases will use studentShareSetId to load a public set for students
+ * without opening the teacher dashboard. Login bypass and set loading are not
+ * implemented yet — detection and storage only.
+ */
+let studentShareSetId = null;
+
+function initStudentShareLink() {
+    const params = new URLSearchParams(window.location.search);
+    const playSetId = params.get("play");
+
+    if (playSetId && playSetId.trim() !== "") {
+        studentShareSetId = playSetId.trim();
+    }
+}
+
 const praiseWords = [
     "Great catch! 🐠",
     "Pearl found!",
@@ -764,6 +784,8 @@ function escapeHTML(text) {
 }
 
 async function checkAuth() {
+    initStudentShareLink();
+
     const { data } = await supabaseClient.auth.getSession();
 
     if (data.session) {
