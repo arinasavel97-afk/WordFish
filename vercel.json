@@ -1,0 +1,9 @@
+{
+    "rewrites": [
+      {
+        "source": "/play/:path*",
+        "destination": "/index.html"
+      }
+    ]
+  }
+  
