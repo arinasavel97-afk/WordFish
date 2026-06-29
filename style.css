@@ -1538,6 +1538,34 @@ h2 {
 .student-choice-panel {
     max-width: min(100%, 420px);
     margin: 0 auto;
+    position: relative;
+}
+
+.student-choice-back {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 6px 14px;
+    margin-bottom: var(--space-md);
+    border: 2px solid rgba(142, 220, 230, 0.75);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--sea-deep);
+    font-family: var(--font-family);
+    font-size: 14px;
+    font-weight: var(--font-weight-button);
+    cursor: pointer;
+    box-shadow: var(--soft-shadow);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.student-choice-back:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 16px rgba(7, 59, 76, 0.14);
+}
+
+.student-choice-back:active {
+    transform: scale(0.98);
 }
 
 .student-choice-heading {
@@ -1590,23 +1618,32 @@ h2 {
 }
 
 .student-mode-button-picture {
-    background: linear-gradient(180deg, #A78BFA 0%, #8B5CF6 100%);
+    background: linear-gradient(180deg, var(--sun) 0%, var(--sun-dark) 100%);
+    color: var(--ink);
 }
 
 .student-mode-button-picture:hover:not(:disabled) {
-    background: linear-gradient(180deg, #9575F7 0%, #7C3AED 100%);
+    background: linear-gradient(180deg, #FFC533 0%, var(--sun-dark) 100%);
 }
 
 .student-mode-button-translation {
-    background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    background: linear-gradient(180deg, var(--sea) 0%, var(--sea-dark) 100%);
+    color: white;
 }
 
-.student-mode-button-translation:hover {
-    background: linear-gradient(180deg, var(--color-primary-hover) 0%, var(--color-primary-dark) 100%);
+.student-mode-button-translation:hover:not(:disabled) {
+    background: linear-gradient(180deg, #1BB8D9 0%, var(--sea-dark) 100%);
+}
+
+@media (hover: hover) {
+    .student-mode-button:hover:not(:disabled) {
+        transform: scale(1.02);
+        box-shadow: 0 8px 0 rgba(34, 51, 68, 0.2);
+    }
 }
 
 .student-mode-button:active:not(:disabled) {
-    transform: translateY(2px);
+    transform: scale(0.99) translateY(1px);
     box-shadow: 0 2px 0 rgba(34, 51, 68, 0.15);
 }
 
