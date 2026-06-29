@@ -365,6 +365,7 @@ button:active {
 #savedSetsList .set-card h2 {
     color: var(--color-text);
     margin: 0;
+    padding-right: 72px;
     font-size: clamp(18px, 2.2vw, 22px);
     line-height: 1.2;
     word-break: break-word;
@@ -394,9 +395,9 @@ button:active {
 
 #savedSetsList .set-actions button {
     flex: 1 1 calc(50% - 6px);
-    min-height: 40px;
+    min-height: 44px;
     margin: 0;
-    padding: 8px 10px;
+    padding: 10px 12px;
     font-size: 14px;
 }
 
@@ -899,7 +900,9 @@ button:active {
     }
 
     #savedSetsList .set-actions button {
-        flex: 1 1 100%;
+        flex: 1 1 calc(50% - 6px);
+        min-width: 0;
+        min-height: 44px;
     }
 }
 
@@ -1342,4 +1345,101 @@ h2 {
 #savedSetsList .set-actions button[onclick^="openShareDialog"]:active {
     background: #7C3AED;
     box-shadow: var(--shadow-button), 0 2px 0 #7C3AED;
+}
+
+/* Dashboard Card Action Layout v2 — icon actions */
+#savedSetsList .set-card-icon-actions {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    display: flex;
+    gap: 4px;
+    z-index: 2;
+}
+
+#savedSetsList .set-icon-button {
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: var(--radius-button);
+    background: transparent;
+    color: #6B7280;
+    box-shadow: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+#savedSetsList .set-icon-button svg {
+    width: 18px;
+    height: 18px;
+}
+
+#savedSetsList .set-icon-button:hover {
+    transform: none;
+}
+
+#savedSetsList .set-icon-edit:hover {
+    background: #F3F4F6;
+    color: #374151;
+}
+
+#savedSetsList .set-icon-delete:hover {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+#savedSetsList .set-icon-button:active {
+    transform: scale(0.96);
+    box-shadow: none;
+}
+
+/* Delete confirmation modal */
+.delete-confirm-modal h2 {
+    margin-top: 8px;
+}
+
+.delete-confirm-body {
+    margin: var(--space-md) 0 var(--space-sm);
+    color: var(--color-text);
+}
+
+.delete-confirm-set-name {
+    margin: 0 0 var(--space-md);
+    font-size: clamp(18px, 2.4vw, 22px);
+    font-weight: var(--font-weight-button);
+    color: var(--color-text);
+    word-break: break-word;
+}
+
+.delete-confirm-warning {
+    margin: 0 0 var(--space-lg);
+    color: var(--color-text-muted, #4A6278);
+    font-size: var(--font-size-sm, 15px);
+}
+
+.delete-confirm-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+.delete-confirm-actions button {
+    flex: 1 1 140px;
+    max-width: 180px;
+    min-height: 48px;
+    margin: 0;
+}
+
+@media (max-width: 620px) {
+    .delete-confirm-actions button {
+        flex: 1 1 100%;
+        max-width: none;
+    }
 }
