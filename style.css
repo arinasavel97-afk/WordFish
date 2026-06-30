@@ -2248,6 +2248,75 @@ h2 {
     text-align: center;
 }
 
+.classroom-activity-menu-empty {
+    max-width: 640px;
+    margin: 0 auto var(--space-md);
+}
+
+.classroom-no-cards-screen {
+    max-width: min(760px, 100%);
+    text-align: center;
+}
+
+.classroom-no-cards-card h2 {
+    margin: 0 0 var(--space-sm);
+    color: var(--sea-deep);
+}
+
+.classroom-no-cards-card p {
+    margin: 0 0 var(--space-lg);
+    color: var(--color-text);
+    line-height: 1.45;
+}
+
+.classroom-no-cards-back-button {
+    min-width: 180px;
+    min-height: 48px;
+    margin: 0 auto;
+}
+
+.classroom-set-empty-note {
+    margin: var(--space-sm) 0 var(--space-md);
+    font-size: clamp(14px, 2vw, 15px);
+    color: var(--color-text-muted, #4A6278);
+    font-style: italic;
+}
+
+.classroom-set-card-empty {
+    border-color: rgba(142, 220, 230, 0.85);
+}
+
+.classroom-image-placeholder {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    width: 100%;
+    height: 100%;
+    min-height: 120px;
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    background: rgba(186, 241, 255, 0.35);
+    color: var(--color-text-muted, #4A6278);
+    box-sizing: border-box;
+}
+
+.classroom-image-placeholder-icon {
+    width: clamp(40px, 8vw, 56px);
+    height: clamp(40px, 8vw, 56px);
+    flex-shrink: 0;
+    color: var(--sea-deep);
+    opacity: 0.55;
+}
+
+.classroom-image-placeholder-label {
+    margin: 0;
+    font-size: clamp(14px, 2vw, 16px);
+    font-weight: var(--font-weight-ui);
+    color: var(--color-text-muted, #4A6278);
+}
+
 .classroom-activity-menu-screen {
     max-width: min(760px, 100%);
 }
@@ -2322,6 +2391,7 @@ h2 {
 /* Classroom Polish 6.5B — unified button feedback */
 #classroomPickerScreen,
 #classroomActivityMenuScreen,
+#classroomNoCardsScreen,
 #classroomPresentationScreen,
 #classroomFlashcardsScreen,
 #classroomTextFlashcardsScreen,
@@ -2352,6 +2422,11 @@ h2 {
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
         .classroom-random-word-pick-button
+    ),
+#classroomNoCardsScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-no-cards-back-button
     ),
 #classroomPresentationScreen :is(
         .green-button,
@@ -2503,6 +2578,7 @@ h2 {
     box-shadow: var(--shadow-button), 0 2px 0 var(--color-success-dark);
 }
 
+#classroomNoCardsScreen .soft-button:hover:not(:disabled):not(.disabled-button),
 #classroomPickerScreen .soft-button:hover:not(:disabled):not(.disabled-button),
 #classroomActivityMenuScreen .soft-button:hover:not(:disabled):not(.disabled-button),
 #classroomPresentationScreen .soft-button:hover:not(:disabled):not(.disabled-button),
@@ -2513,6 +2589,7 @@ h2 {
     box-shadow: var(--shadow-button), 0 7px 0 var(--color-soft-dark), 0 12px 24px rgba(7, 59, 76, 0.14);
 }
 
+#classroomNoCardsScreen .soft-button:active:not(:disabled):not(.disabled-button),
 #classroomPickerScreen .soft-button:active:not(:disabled):not(.disabled-button),
 #classroomActivityMenuScreen .soft-button:active:not(:disabled):not(.disabled-button),
 #classroomPresentationScreen .soft-button:active:not(:disabled):not(.disabled-button),
@@ -2837,27 +2914,8 @@ h2 {
     object-fit: contain;
 }
 
-.classroom-presentation-image-placeholder {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-sm);
-    width: 100%;
+.classroom-presentation-image-card .classroom-image-placeholder {
     max-height: 60vh;
-    padding: var(--space-lg);
-    color: var(--sea-deep);
-}
-
-.classroom-presentation-placeholder-art {
-    font-size: clamp(48px, 8vw, 72px);
-    line-height: 1;
-}
-
-.classroom-presentation-image-placeholder p {
-    margin: 0;
-    font-size: clamp(16px, 2.2vw, 20px);
-    font-weight: var(--font-weight-button);
 }
 
 .classroom-presentation-text-column {
@@ -2961,7 +3019,7 @@ h2 {
         max-height: min(42vh, 320px);
     }
 
-    .classroom-presentation-image-placeholder {
+    .classroom-presentation-image-card .classroom-image-placeholder {
         max-height: min(42vh, 320px);
     }
 
@@ -3134,22 +3192,6 @@ h2 {
     width: auto;
     height: auto;
     object-fit: contain;
-}
-
-.classroom-flashcard-image-placeholder {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    min-height: 120px;
-    border-radius: var(--radius-lg);
-    background: rgba(186, 241, 255, 0.35);
-}
-
-.classroom-flashcard-placeholder-art {
-    font-size: clamp(36px, 6vw, 56px);
-    line-height: 1;
 }
 
 .classroom-flashcard-english {
@@ -3432,14 +3474,6 @@ h2 {
     flex-shrink: 0;
 }
 
-.classroom-random-word-empty {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    min-height: 0;
-    padding: var(--space-lg);
-}
-
 .classroom-random-word-main {
     display: grid;
     grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
@@ -3482,28 +3516,8 @@ h2 {
     object-fit: contain;
 }
 
-.classroom-random-word-image-placeholder {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    min-height: 180px;
-    border-radius: var(--radius-lg);
-    background: rgba(186, 241, 255, 0.35);
-    color: var(--color-text);
-}
-
-.classroom-random-word-placeholder-art {
-    font-size: clamp(36px, 6vw, 56px);
-    line-height: 1;
-    margin-bottom: var(--space-sm);
-}
-
-.classroom-random-word-image-placeholder p {
-    margin: 0;
-    font-size: clamp(14px, 2vw, 16px);
+.classroom-random-word-image-card .classroom-image-placeholder {
+    max-height: 60vh;
 }
 
 .classroom-random-word-text-column {
@@ -3594,7 +3608,7 @@ h2 {
         max-height: min(42vh, 320px);
     }
 
-    .classroom-random-word-image-placeholder {
+    .classroom-random-word-image-card .classroom-image-placeholder {
         max-height: min(42vh, 320px);
     }
 

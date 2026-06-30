@@ -135,6 +135,13 @@
 
         <button type="button" class="soft-button classroom-nav-button" onclick="showClassroomPicker()">⬅ Back to set picker</button>
 
+        <div id="classroomActivityMenuEmpty" class="classroom-activity-menu-empty" style="display: none;">
+            <div class="card classroom-empty-card classroom-no-cards-card">
+                <h2>No cards in this set yet.</h2>
+                <p>Add vocabulary cards before using this activity.</p>
+            </div>
+        </div>
+
         <div class="classroom-activity-list">
             <article class="card classroom-activity-card">
                 <h2 class="classroom-activity-name">Presentation</h2>
@@ -166,6 +173,15 @@
         </div>
     </div>
 
+    <div id="classroomNoCardsScreen" class="screen classroom-no-cards-screen" style="display: none;">
+        <div class="sea-header">🫧 📽️ 🫧</div>
+        <div class="card classroom-empty-card classroom-no-cards-card">
+            <h2>No cards in this set yet.</h2>
+            <p>Add vocabulary cards before using this activity.</p>
+            <button type="button" class="soft-button classroom-no-cards-back-button" onclick="showClassroomActivityMenuForSelectedSet()">Back to activities</button>
+        </div>
+    </div>
+
     <div id="classroomPresentationScreen" class="classroom-presentation-screen" style="display: none;">
         <header class="classroom-presentation-header">
             <p id="classroomPresentationHeaderMeta" class="classroom-presentation-header-meta">Set Name • Card 1 of 1</p>
@@ -182,9 +198,11 @@
             <section class="classroom-presentation-image-column" aria-label="Vocabulary image">
                 <div class="classroom-presentation-image-card">
                     <img id="classroomPresentationImage" class="classroom-presentation-image" alt="">
-                    <div id="classroomPresentationImagePlaceholder" class="classroom-presentation-image-placeholder" aria-hidden="true">
-                        <div class="classroom-presentation-placeholder-art">🖼️ 🐠</div>
-                        <p>No image for this word</p>
+                    <div id="classroomPresentationImagePlaceholder" class="classroom-image-placeholder" aria-hidden="true">
+                        <svg class="classroom-image-placeholder-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+                        </svg>
+                        <p class="classroom-image-placeholder-label">No image</p>
                     </div>
                 </div>
             </section>
@@ -222,16 +240,22 @@
                     <div class="classroom-flashcard-face classroom-flashcard-front">
                         <div class="classroom-flashcard-image-wrap">
                             <img id="classroomFlashcardFrontImage" class="classroom-flashcard-image" alt="">
-                            <div id="classroomFlashcardFrontPlaceholder" class="classroom-flashcard-image-placeholder" aria-hidden="true">
-                                <div class="classroom-flashcard-placeholder-art">🖼️ 🐠</div>
+                            <div id="classroomFlashcardFrontPlaceholder" class="classroom-image-placeholder" aria-hidden="true">
+                                <svg class="classroom-image-placeholder-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+                                </svg>
+                                <p class="classroom-image-placeholder-label">No image</p>
                             </div>
                         </div>
                     </div>
                     <div class="classroom-flashcard-face classroom-flashcard-back">
                         <div class="classroom-flashcard-image-wrap">
                             <img id="classroomFlashcardBackImage" class="classroom-flashcard-image" alt="">
-                            <div id="classroomFlashcardBackPlaceholder" class="classroom-flashcard-image-placeholder" aria-hidden="true">
-                                <div class="classroom-flashcard-placeholder-art">🖼️ 🐠</div>
+                            <div id="classroomFlashcardBackPlaceholder" class="classroom-image-placeholder" aria-hidden="true">
+                                <svg class="classroom-image-placeholder-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+                                </svg>
+                                <p class="classroom-image-placeholder-label">No image</p>
                             </div>
                         </div>
                         <p id="classroomFlashcardBackEnglish" class="classroom-flashcard-english">Word</p>
@@ -297,20 +321,15 @@
             </div>
         </header>
 
-        <div id="classroomRandomWordEmpty" class="classroom-random-word-empty" style="display: none;">
-            <div class="card classroom-empty-card">
-                <h2>No words in this set</h2>
-                <p>Add vocabulary words to use Random Word review.</p>
-            </div>
-        </div>
-
         <main id="classroomRandomWordMain" class="classroom-random-word-main">
             <section class="classroom-random-word-image-column" aria-label="Vocabulary image">
                 <div class="classroom-random-word-image-card">
                     <img id="classroomRandomWordImage" class="classroom-random-word-image" alt="">
-                    <div id="classroomRandomWordImagePlaceholder" class="classroom-random-word-image-placeholder" aria-hidden="true">
-                        <div class="classroom-random-word-placeholder-art">🖼️ 🐠</div>
-                        <p>No image for this word</p>
+                    <div id="classroomRandomWordImagePlaceholder" class="classroom-image-placeholder" aria-hidden="true">
+                        <svg class="classroom-image-placeholder-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+                        </svg>
+                        <p class="classroom-image-placeholder-label">No image</p>
                     </div>
                 </div>
             </section>

@@ -115,6 +115,7 @@ function hideAllScreens() {
     const classroomFlashcardsScreen = document.getElementById("classroomFlashcardsScreen");
     const classroomTextFlashcardsScreen = document.getElementById("classroomTextFlashcardsScreen");
     const classroomRandomWordScreen = document.getElementById("classroomRandomWordScreen");
+    const classroomNoCardsScreen = document.getElementById("classroomNoCardsScreen");
     if (classroomPickerScreen) {
         classroomPickerScreen.style.display = "none";
     }
@@ -132,6 +133,9 @@ function hideAllScreens() {
     }
     if (classroomRandomWordScreen) {
         classroomRandomWordScreen.style.display = "none";
+    }
+    if (classroomNoCardsScreen) {
+        classroomNoCardsScreen.style.display = "none";
     }
     document.getElementById("studentScreen").style.display = "none";
     document.getElementById("teacherScreen").style.display = "none";
@@ -391,6 +395,8 @@ window.addEventListener("popstate", (event) => {
         showClassroomTextFlashcardsForSelectedSet(false);
     } else if (screenId === "classroomRandomWordScreen") {
         showClassroomRandomWordForSelectedSet(false);
+    } else if (screenId === "classroomNoCardsScreen") {
+        showClassroomNoCardsState(false);
     }
 
     suppressHistoryPush = false;
@@ -1009,12 +1015,17 @@ function renderClassroomPicker() {
         const setId = set.id;
         const wordCount = set.cards ? set.cards.length : 0;
         const imageCount = (set.cards || []).filter((card) => card.imageUrl).length;
+        const hasActivityCards = getClassroomActivityCards(set).length > 0;
+        const emptyNote = hasActivityCards
+            ? ""
+            : `<p class="classroom-set-empty-note">Add vocabulary cards before using this activity.</p>`;
 
         classroomSetsList.innerHTML += `
-            <div class="card classroom-set-card">
+            <div class="card classroom-set-card${hasActivityCards ? "" : " classroom-set-card-empty"}">
                 <h2 class="classroom-set-name">📚 ${escapeHTML(set.name)}</h2>
                 <p><span class="small-label">Words:</span> ${wordCount}</p>
                 <p><span class="small-label">Images:</span> ${imageCount}</p>
+                ${emptyNote}
                 <div class="classroom-set-actions">
                     <button type="button" class="green-button" onclick="openClassroomActivityMenu('${escapeAttribute(setId)}')">Choose Activity</button>
                 </div>
@@ -1037,12 +1048,73 @@ function openClassroomActivityMenu(setId) {
 
 function showClassroomActivityMenu(set, addToHistory = true) {
     document.getElementById("classroomActivityMenuTitle").textContent = set.name;
+    updateClassroomActivityMenuEmptyState(set);
     clearClassroomPresentationContext();
     clearClassroomFlashcardsContext();
     clearClassroomTextFlashcardsContext();
     clearClassroomRandomWordContext();
     displayScreen("classroomActivityMenuScreen", addToHistory);
     saveClassroomActivityContext();
+}
+
+function getClassroomActivityCards(set) {
+    return prepareCards(set.cards || [])
+        .filter((card) => card.english.trim() !== "");
+}
+
+function updateClassroomActivityMenuEmptyState(set) {
+    const activityList = document.querySelector("#classroomActivityMenuScreen .classroom-activity-list");
+    const emptyPanel = document.getElementById("classroomActivityMenuEmpty");
+    const hasCards = getClassroomActivityCards(set).length > 0;
+
+    if (activityList) {
+        activityList.style.display = hasCards ? "flex" : "none";
+    }
+
+    if (emptyPanel) {
+        emptyPanel.style.display = hasCards ? "none" : "block";
+    }
+}
+
+function showClassroomNoCardsState(addToHistory = true) {
+    displayScreen("classroomNoCardsScreen", addToHistory);
+}
+
+function showClassroomCardImagePlaceholder(imageEl, placeholderEl) {
+    imageEl.removeAttribute("src");
+    imageEl.alt = "";
+    imageEl.style.display = "none";
+    placeholderEl.style.display = "flex";
+    placeholderEl.removeAttribute("aria-hidden");
+    placeholderEl.setAttribute("role", "img");
+    placeholderEl.setAttribute("aria-label", "No image");
+}
+
+function setClassroomCardImage(imageEl, placeholderEl, card, options = {}) {
+    if (!imageEl || !placeholderEl) {
+        return;
+    }
+
+    const imageAlt = options.imageAlt !== undefined ? options.imageAlt : card.english;
+    const imageUrl = (card.imageUrl || "").trim();
+
+    imageEl.onerror = () => {
+        imageEl.onerror = null;
+        showClassroomCardImagePlaceholder(imageEl, placeholderEl);
+    };
+
+    if (imageUrl) {
+        imageEl.src = imageUrl;
+        imageEl.alt = imageAlt;
+        imageEl.style.display = "block";
+        placeholderEl.style.display = "none";
+        placeholderEl.setAttribute("aria-hidden", "true");
+        placeholderEl.removeAttribute("role");
+        placeholderEl.removeAttribute("aria-label");
+        return;
+    }
+
+    showClassroomCardImagePlaceholder(imageEl, placeholderEl);
 }
 
 function showClassroomActivityMenuForSelectedSet(addToHistory = true) {
@@ -1110,11 +1182,10 @@ function startClassroomRandomWordFromActivityMenu() {
 }
 
 function startClassroomPresentation(set, addToHistory = true) {
-    const presentationCards = prepareCards(set.cards || [])
-        .filter((card) => card.english.trim() !== "");
+    const presentationCards = getClassroomActivityCards(set);
 
     if (presentationCards.length === 0) {
-        showToast("This set has no words to present.", "warning");
+        showClassroomNoCardsState(addToHistory);
         return;
     }
 
@@ -1283,17 +1354,7 @@ function applyClassroomPresentationCardContent(options = {}) {
     const imageEl = document.getElementById("classroomPresentationImage");
     const placeholderEl = document.getElementById("classroomPresentationImagePlaceholder");
 
-    if (card.imageUrl) {
-        imageEl.src = card.imageUrl;
-        imageEl.alt = card.english;
-        imageEl.style.display = "block";
-        placeholderEl.style.display = "none";
-    } else {
-        imageEl.removeAttribute("src");
-        imageEl.alt = "";
-        imageEl.style.display = "none";
-        placeholderEl.style.display = "flex";
-    }
+    setClassroomCardImage(imageEl, placeholderEl, card);
 
     updateClassroomPresentationNav();
     saveClassroomPresentationContext();
@@ -1397,11 +1458,10 @@ function returnToClassroomActivityMenu() {
 }
 
 function startClassroomFlashcards(set, addToHistory = true) {
-    const flashcardsCards = prepareCards(set.cards || [])
-        .filter((card) => card.english.trim() !== "");
+    const flashcardsCards = getClassroomActivityCards(set);
 
     if (flashcardsCards.length === 0) {
-        showToast("This set has no words to practice.", "warning");
+        showClassroomNoCardsState(addToHistory);
         return;
     }
 
@@ -1431,19 +1491,7 @@ function showClassroomFlashcardsForSelectedSet(addToHistory = true) {
 }
 
 function setClassroomFlashcardImage(imageEl, placeholderEl, card, options = {}) {
-    const imageAlt = options.imageAlt !== undefined ? options.imageAlt : card.english;
-
-    if (card.imageUrl) {
-        imageEl.src = card.imageUrl;
-        imageEl.alt = imageAlt;
-        imageEl.style.display = "block";
-        placeholderEl.style.display = "none";
-    } else {
-        imageEl.removeAttribute("src");
-        imageEl.alt = "";
-        imageEl.style.display = "none";
-        placeholderEl.style.display = "flex";
-    }
+    setClassroomCardImage(imageEl, placeholderEl, card, options);
 }
 
 function updateClassroomFlashcardFlipUI() {
@@ -1674,11 +1722,10 @@ function initClassroomFlashcardsControls() {
 }
 
 function startClassroomTextFlashcards(set, addToHistory = true) {
-    const textFlashcardsCards = prepareCards(set.cards || [])
-        .filter((card) => card.english.trim() !== "");
+    const textFlashcardsCards = getClassroomActivityCards(set);
 
     if (textFlashcardsCards.length === 0) {
-        showToast("This set has no words to practice.", "warning");
+        showClassroomNoCardsState(addToHistory);
         return;
     }
 
@@ -1971,8 +2018,12 @@ function initClassroomTextFlashcardsControls() {
 }
 
 function startClassroomRandomWord(set, addToHistory = true) {
-    const randomWordCards = prepareCards(set.cards || [])
-        .filter((card) => card.english.trim() !== "");
+    const randomWordCards = getClassroomActivityCards(set);
+
+    if (randomWordCards.length === 0) {
+        showClassroomNoCardsState(addToHistory);
+        return;
+    }
 
     classroomRandomWordSetName = set.name;
     classroomRandomWordCards = randomWordCards;
@@ -1984,13 +2035,13 @@ function startClassroomRandomWord(set, addToHistory = true) {
 
 function showClassroomRandomWord(addToHistory = true) {
     document.getElementById("classroomRandomWordSetName").textContent = classroomRandomWordSetName;
-    displayScreen("classroomRandomWordScreen", addToHistory);
 
     if (classroomRandomWordCards.length === 0) {
-        showClassroomRandomWordEmptyState();
-        saveClassroomRandomWordContext();
+        showClassroomNoCardsState(addToHistory);
         return;
     }
+
+    displayScreen("classroomRandomWordScreen", addToHistory);
 
     if (classroomRandomWordIndex < 0) {
         pickRandomClassroomWord();
@@ -2011,34 +2062,18 @@ function showClassroomRandomWordForSelectedSet(addToHistory = true) {
     classroomRandomWordSetName = selectedSet.name;
 
     if (classroomRandomWordCards.length === 0) {
-        classroomRandomWordCards = prepareCards(selectedSet.cards || [])
-            .filter((card) => card.english.trim() !== "");
+        classroomRandomWordCards = getClassroomActivityCards(selectedSet);
     }
 
     showClassroomRandomWord(addToHistory);
 }
 
-function showClassroomRandomWordEmptyState() {
-    document.getElementById("classroomRandomWordEmpty").style.display = "flex";
-    document.getElementById("classroomRandomWordMain").style.display = "none";
-    document.getElementById("classroomRandomWordFooter").style.display = "none";
-}
-
 function setClassroomRandomWordImage(card) {
     const imageEl = document.getElementById("classroomRandomWordImage");
     const placeholderEl = document.getElementById("classroomRandomWordImagePlaceholder");
+    const imageAlt = classroomRandomWordVisible ? card.english : "";
 
-    if (card.imageUrl) {
-        imageEl.src = card.imageUrl;
-        imageEl.alt = classroomRandomWordVisible ? card.english : "";
-        imageEl.style.display = "block";
-        placeholderEl.style.display = "none";
-    } else {
-        imageEl.removeAttribute("src");
-        imageEl.alt = "";
-        imageEl.style.display = "none";
-        placeholderEl.style.display = "flex";
-    }
+    setClassroomCardImage(imageEl, placeholderEl, card, { imageAlt: imageAlt });
 }
 
 function updateClassroomRandomWordRevealUI() {
@@ -2058,14 +2093,9 @@ function updateClassroomRandomWordRevealUI() {
 
 function applyClassroomRandomWordContent() {
     if (classroomRandomWordCards.length === 0) {
-        showClassroomRandomWordEmptyState();
-        saveClassroomRandomWordContext();
+        showClassroomNoCardsState(false);
         return;
     }
-
-    document.getElementById("classroomRandomWordEmpty").style.display = "none";
-    document.getElementById("classroomRandomWordMain").style.display = "grid";
-    document.getElementById("classroomRandomWordFooter").style.display = "flex";
 
     const card = classroomRandomWordCards[classroomRandomWordIndex];
     document.getElementById("classroomRandomWordEnglish").textContent = card.english;
@@ -2087,8 +2117,7 @@ function renderClassroomRandomWord(options = {}) {
 
 function pickRandomClassroomWord() {
     if (classroomRandomWordCards.length === 0) {
-        showClassroomRandomWordEmptyState();
-        saveClassroomRandomWordContext();
+        showClassroomNoCardsState(false);
         return;
     }
 
@@ -4012,6 +4041,7 @@ async function restoreClassroomActivityMenuFromContext(context) {
         classroomSelectedSetId = set.id;
         displayScreen("classroomActivityMenuScreen", false);
         document.getElementById("classroomActivityMenuTitle").textContent = set.name;
+        updateClassroomActivityMenuEmptyState(set);
         saveClassroomActivityContext();
         return true;
     } catch (error) {
@@ -4078,18 +4108,14 @@ async function restoreClassroomRandomWordFromContext(context) {
             return false;
         }
 
-        const randomWordCards = prepareCards(set.cards || [])
-            .filter((card) => card.english.trim() !== "");
+        const randomWordCards = getClassroomActivityCards(set);
 
         classroomSelectedSetId = set.id;
         classroomRandomWordSetName = set.name;
         classroomRandomWordCards = randomWordCards;
 
         if (randomWordCards.length === 0) {
-            displayScreen("classroomRandomWordScreen", false);
-            document.getElementById("classroomRandomWordSetName").textContent = set.name;
-            showClassroomRandomWordEmptyState();
-            saveClassroomRandomWordContext();
+            displayScreen("classroomNoCardsScreen", false);
             return true;
         }
 
@@ -4171,14 +4197,15 @@ async function restoreClassroomTextFlashcardsFromContext(context) {
             return false;
         }
 
-        const textFlashcardsCards = prepareCards(set.cards || [])
-            .filter((card) => card.english.trim() !== "");
-
-        if (textFlashcardsCards.length === 0) {
-            return false;
-        }
+        const textFlashcardsCards = getClassroomActivityCards(set);
 
         classroomSelectedSetId = set.id;
+
+        if (textFlashcardsCards.length === 0) {
+            displayScreen("classroomNoCardsScreen", false);
+            return true;
+        }
+
         classroomTextFlashcardsSetName = set.name;
         classroomTextFlashcardsCards = textFlashcardsCards;
 
@@ -4262,14 +4289,15 @@ async function restoreClassroomFlashcardsFromContext(context) {
             return false;
         }
 
-        const flashcardsCards = prepareCards(set.cards || [])
-            .filter((card) => card.english.trim() !== "");
-
-        if (flashcardsCards.length === 0) {
-            return false;
-        }
+        const flashcardsCards = getClassroomActivityCards(set);
 
         classroomSelectedSetId = set.id;
+
+        if (flashcardsCards.length === 0) {
+            displayScreen("classroomNoCardsScreen", false);
+            return true;
+        }
+
         classroomFlashcardsSetName = set.name;
         classroomFlashcardsCards = flashcardsCards;
 
@@ -4349,14 +4377,15 @@ async function restoreClassroomPresentationFromContext(context) {
             return false;
         }
 
-        const presentationCards = prepareCards(set.cards || [])
-            .filter((card) => card.english.trim() !== "");
-
-        if (presentationCards.length === 0) {
-            return false;
-        }
+        const presentationCards = getClassroomActivityCards(set);
 
         classroomSelectedSetId = set.id;
+
+        if (presentationCards.length === 0) {
+            displayScreen("classroomNoCardsScreen", false);
+            return true;
+        }
+
         classroomPresentationSetName = set.name;
         classroomPresentationCards = presentationCards;
 
