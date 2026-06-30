@@ -36,7 +36,7 @@ function mapAppCard(card, position) {
 async function dbLoadSetsWithCards() {
     const { data: sets, error: setsError } = await supabaseClient
         .from("sets")
-        .select("id, name, created_at, updated_at, position")
+        .select("id, name, created_at, updated_at, position, is_favorite")
         .is("deleted_at", null)
         .order("position", { ascending: true, nullsFirst: false })
         .order("created_at", { ascending: true });
@@ -72,6 +72,7 @@ async function dbLoadSetsWithCards() {
             name: set.name,
             position: set.position,
             created_at: set.created_at,
+            is_favorite: !!set.is_favorite,
             cards: cardsForSet
         };
     });
@@ -91,6 +92,17 @@ async function dbUpdateSetPositions(orderedSets) {
         if (result.error) {
             throw result.error;
         }
+    }
+}
+
+async function dbUpdateSetFavorite(setId, isFavorite) {
+    const { error } = await supabaseClient
+        .from("sets")
+        .update({ is_favorite: isFavorite })
+        .eq("id", setId);
+
+    if (error) {
+        throw error;
     }
 }
 

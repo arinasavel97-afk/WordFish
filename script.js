@@ -11,6 +11,7 @@ let cardsSortable = null;
 let setsSortable = null;
 let dashboardSearchQuery = "";
 let dashboardSortMode = "custom";
+let dashboardFilterMode = "all";
 let dashboardSelectionMode = false;
 let dashboardSelectedSetIds = new Set();
 let currentGameMode = "translation";
@@ -181,8 +182,15 @@ function isDashboardSearchActive() {
     return dashboardSearchQuery.trim() !== "";
 }
 
+function isDashboardFavoritesFilterActive() {
+    return dashboardFilterMode === "favorites";
+}
+
 function isDashboardDragEnabled() {
-    return dashboardSortMode === "custom" && !isDashboardSearchActive() && !dashboardSelectionMode;
+    return dashboardSortMode === "custom"
+        && !isDashboardSearchActive()
+        && !dashboardSelectionMode
+        && !isDashboardFavoritesFilterActive();
 }
 
 function sortSavedSets(sets) {
@@ -208,14 +216,19 @@ function sortSavedSets(sets) {
 }
 
 function getVisibleSavedSets() {
-    const sortedSets = sortSavedSets(savedSets);
+    let visibleSets = sortSavedSets(savedSets);
+
+    if (isDashboardFavoritesFilterActive()) {
+        visibleSets = visibleSets.filter((set) => set.is_favorite);
+    }
+
     const query = dashboardSearchQuery.trim().toLowerCase();
 
     if (!query) {
-        return sortedSets;
+        return visibleSets;
     }
 
-    return sortedSets.filter((set) => set.name.toLowerCase().includes(query));
+    return visibleSets.filter((set) => set.name.toLowerCase().includes(query));
 }
 
 function onDashboardSearchInput(value) {
@@ -226,7 +239,7 @@ function onDashboardSearchInput(value) {
 function onDashboardSortChange(value) {
     const previousMode = dashboardSortMode;
     dashboardSortMode = value;
-    updateDashboardSortUI();
+    updateDashboardToolbarUI();
 
     if (previousMode !== value && value !== "custom") {
         showToast("Switch to Custom order to rearrange sets.", "info");
@@ -235,16 +248,41 @@ function onDashboardSortChange(value) {
     renderDashboard();
 }
 
-function updateDashboardSortUI() {
+function onDashboardFilterChange(value) {
+    const previousMode = dashboardFilterMode;
+    dashboardFilterMode = value;
+    updateDashboardToolbarUI();
+
+    if (previousMode !== value && value === "favorites") {
+        showToast("Switch to All Sets and Custom order to rearrange sets.", "info");
+    }
+
+    renderDashboard();
+}
+
+function updateDashboardToolbarUI() {
     const sortSelect = document.getElementById("dashboardSortSelect");
+    const filterSelect = document.getElementById("dashboardFilterSelect");
     const sortHint = document.getElementById("dashboardSortHint");
+    const hintMessages = [];
 
     if (sortSelect) {
         sortSelect.value = dashboardSortMode;
     }
 
+    if (filterSelect) {
+        filterSelect.value = dashboardFilterMode;
+    }
+
+    if (isDashboardFavoritesFilterActive()) {
+        hintMessages.push("Switch to All Sets and Custom order to rearrange sets.");
+    } else if (dashboardSortMode !== "custom") {
+        hintMessages.push("Switch to Custom order to rearrange sets.");
+    }
+
     if (sortHint) {
-        sortHint.style.display = dashboardSortMode === "custom" ? "none" : "block";
+        sortHint.textContent = hintMessages.join(" ");
+        sortHint.style.display = hintMessages.length > 0 ? "block" : "none";
     }
 }
 
@@ -320,7 +358,7 @@ function renderDashboard() {
     savedSetsList.innerHTML = "";
     savedSetsList.classList.toggle("dashboard-drag-disabled", !isDashboardDragEnabled());
     savedSetsList.classList.toggle("dashboard-selection-active", dashboardSelectionMode);
-    updateDashboardSortUI();
+    updateDashboardToolbarUI();
     updateDashboardSelectionUI();
 
     if (savedSets.length === 0) {
@@ -336,10 +374,20 @@ function renderDashboard() {
     const visibleSets = getVisibleSavedSets();
 
     if (visibleSets.length === 0) {
+        let emptyTitle = "No sets found.";
+        let emptyMessage = "Try another search.";
+
+        if (isDashboardFavoritesFilterActive() && !isDashboardSearchActive()) {
+            emptyTitle = "No favorite sets yet.";
+            emptyMessage = "Star a set to add it to Favorites.";
+        } else if (isDashboardFavoritesFilterActive()) {
+            emptyMessage = "Try another search within Favorites.";
+        }
+
         savedSetsList.innerHTML = `
             <div class="card empty-library-card dashboard-search-empty">
-                <h2>No sets found.</h2>
-                <p>Try another search.</p>
+                <h2>${escapeHTML(emptyTitle)}</h2>
+                <p>${escapeHTML(emptyMessage)}</p>
             </div>
         `;
         return;
@@ -356,6 +404,11 @@ function renderDashboard() {
         let duplicateAttrs = cardDisabled
             ? ' tabindex="-1" aria-label="Duplicate set" aria-disabled="true"'
             : ' tabindex="0" aria-label="Duplicate set" title="Duplicate" onclick="duplicateSet(\'' + escapeAttribute(setId) + '\')" onkeydown="handleDuplicateSetKeydown(event, \'' + escapeAttribute(setId) + '\')"';
+        let isFavorite = !!set.is_favorite;
+        let favoriteLabel = isFavorite ? "Remove from favorites" : "Add to favorites";
+        let favoriteStarSvg = isFavorite
+            ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd"/></svg>'
+            : '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.662-2.51a.563.563 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.563.563 0 0 0 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"/></svg>';
 
         savedSetsList.innerHTML += `
             <div class="card set-card${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
@@ -363,9 +416,14 @@ function renderDashboard() {
                     <input type="checkbox" class="set-card-select-input" aria-label="Select ${escapeAttribute(set.name)}" ${isSelected ? "checked" : ""} onchange="onSetSelectionChange('${escapeAttribute(setId)}', this.checked)">
                 </label>
                 <div class="set-card-header">
-                    <button type="button" class="set-drag-handle" aria-label="Drag to reorder set" title="Drag to reorder"${disabledAttr}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
-                    </button>
+                    <div class="set-card-header-left">
+                        <button type="button" class="set-favorite-button${isFavorite ? " is-favorite" : ""}" onclick="toggleSetFavorite('${escapeAttribute(setId)}')" aria-label="${escapeAttribute(favoriteLabel)}" aria-pressed="${isFavorite ? "true" : "false"}" title="${escapeAttribute(favoriteLabel)}">
+                            ${favoriteStarSvg}
+                        </button>
+                        <button type="button" class="set-drag-handle" aria-label="Drag to reorder set" title="Drag to reorder"${disabledAttr}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+                        </button>
+                    </div>
                     <div class="set-card-icon-actions">
                         <button type="button" class="set-icon-button set-icon-edit" onclick="editSet('${escapeAttribute(setId)}')" aria-label="Edit set" title="Edit"${disabledAttr}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
@@ -403,6 +461,23 @@ function resolveSetIndex(indexOrId) {
     }
 
     return savedSets.findIndex((set) => set.id === indexOrId);
+}
+
+async function toggleSetFavorite(indexOrId) {
+    const index = resolveSetIndex(indexOrId);
+    if (index < 0) {
+        return;
+    }
+
+    const newValue = !savedSets[index].is_favorite;
+
+    try {
+        await dbUpdateSetFavorite(savedSets[index].id, newValue);
+        savedSets[index].is_favorite = newValue;
+        renderDashboard();
+    } catch (error) {
+        showToast("Could not update favorite: " + error.message, "error");
+    }
 }
 
 function initSetsSortable() {

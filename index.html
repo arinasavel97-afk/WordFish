@@ -63,6 +63,13 @@
                     <option value="za">Z–A</option>
                 </select>
             </div>
+            <div class="dashboard-filter-field">
+                <label for="dashboardFilterSelect" class="dashboard-sort-label">Filter</label>
+                <select id="dashboardFilterSelect" onchange="onDashboardFilterChange(this.value)">
+                    <option value="all">All Sets</option>
+                    <option value="favorites">Favorites</option>
+                </select>
+            </div>
             <div class="dashboard-select-field">
                 <button id="dashboardSelectButton" type="button" class="soft-button dashboard-select-button" onclick="onDashboardSelectButtonClick()">Select</button>
             </div>
