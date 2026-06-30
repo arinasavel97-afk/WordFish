@@ -56,7 +56,19 @@
                     <option value="za">Z–A</option>
                 </select>
             </div>
+            <div class="dashboard-select-field">
+                <button id="dashboardSelectButton" type="button" class="soft-button dashboard-select-button" onclick="onDashboardSelectButtonClick()">Select</button>
+            </div>
             <p id="dashboardSortHint" class="dashboard-sort-hint" style="display: none;">Switch to Custom order to rearrange sets.</p>
+        </div>
+
+        <div id="dashboardSelectionBar" class="dashboard-selection-bar" hidden>
+            <span id="dashboardSelectionCount" class="dashboard-selection-count">✓ 0 selected</span>
+            <div class="dashboard-selection-bar-actions">
+                <button type="button" class="soft-button disabled-button" disabled>Duplicate</button>
+                <button type="button" class="red-button disabled-button" disabled>Delete</button>
+                <button type="button" class="soft-button" onclick="cancelDashboardSelection()">Cancel</button>
+            </div>
         </div>
 
         <div id="savedSetsList"></div>

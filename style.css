@@ -384,6 +384,57 @@ button:active {
     font-weight: var(--font-weight-ui);
 }
 
+.dashboard-select-field {
+    flex: 0 0 auto;
+}
+
+.dashboard-select-button {
+    min-height: 48px;
+    margin: 0;
+    min-width: 108px;
+}
+
+.dashboard-selection-bar {
+    position: sticky;
+    top: 12px;
+    z-index: 5;
+    max-width: 980px;
+    margin: var(--space-md) auto 0;
+    padding: var(--space-sm) var(--space-md);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    background: rgba(255, 255, 255, 0.96);
+    border: 2px solid rgba(63, 169, 245, 0.35);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 24px rgba(34, 51, 68, 0.12);
+    backdrop-filter: blur(8px);
+}
+
+.dashboard-selection-bar[hidden] {
+    display: none;
+}
+
+.dashboard-selection-count {
+    font-weight: var(--font-weight-button);
+    color: var(--sea-deep);
+    font-size: clamp(15px, 2vw, 17px);
+}
+
+.dashboard-selection-bar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
+.dashboard-selection-bar-actions button {
+    margin: 0;
+    min-height: 44px;
+}
+
 #savedSetsList.dashboard-drag-disabled .set-drag-handle {
     opacity: 0.35;
     pointer-events: none;
@@ -425,6 +476,70 @@ button:active {
     transform: translateY(-3px);
     box-shadow: 0 10px 24px rgba(34, 51, 68, 0.12);
     border-color: rgba(63, 169, 245, 0.42);
+}
+
+#savedSetsList.dashboard-selection-active .set-card:hover {
+    transform: none;
+}
+
+#savedSetsList .set-card.set-card-selected {
+    border-color: rgba(63, 169, 245, 0.78);
+    background: linear-gradient(180deg, #f0faff 0%, #e8f7ff 100%);
+    box-shadow: 0 0 0 3px rgba(63, 169, 245, 0.14), var(--soft-shadow);
+}
+
+.set-card-select {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    cursor: pointer;
+}
+
+#savedSetsList.dashboard-selection-active .set-card-select {
+    display: inline-flex;
+}
+
+.set-card-select-input {
+    width: 18px;
+    height: 18px;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    accent-color: var(--sea, #00A6C8);
+}
+
+#savedSetsList.dashboard-selection-active .set-card-header {
+    padding-left: 22px;
+}
+
+#savedSetsList.dashboard-selection-active .set-icon-button,
+#savedSetsList.dashboard-selection-active .set-actions button {
+    pointer-events: none;
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+#savedSetsList.dashboard-selection-active .set-icon-button:hover,
+#savedSetsList.dashboard-selection-active .set-actions button:hover {
+    transform: none;
+    background: transparent;
+    color: inherit;
+}
+
+#savedSetsList.dashboard-selection-active .set-icon-edit:hover,
+#savedSetsList.dashboard-selection-active .set-icon-delete:hover,
+#savedSetsList.dashboard-selection-active .set-icon-duplicate:hover {
+    background: transparent;
+    color: #6B7280;
+    transform: none;
 }
 
 #savedSetsList .set-card::after {
