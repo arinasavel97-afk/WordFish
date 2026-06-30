@@ -2161,6 +2161,77 @@ h2 {
     text-align: center;
 }
 
+.classroom-activity-menu-screen {
+    max-width: min(760px, 100%);
+}
+
+.classroom-activity-menu-title {
+    margin: 0 0 var(--space-sm);
+    color: var(--sea-deep);
+    word-break: break-word;
+}
+
+.classroom-activity-menu-subtitle {
+    margin-bottom: var(--space-lg);
+}
+
+.classroom-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.classroom-activity-card {
+    background: linear-gradient(180deg, #ffffff 0%, #EFFFFA 100%);
+    border: 2px solid var(--color-input-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--soft-shadow);
+    padding: var(--space-lg);
+}
+
+.classroom-activity-card-disabled {
+    opacity: 0.72;
+}
+
+.classroom-activity-name {
+    margin: 0 0 var(--space-sm);
+    font-size: clamp(20px, 3vw, 26px);
+    color: var(--sea-deep);
+}
+
+.classroom-activity-description {
+    margin: 0 0 var(--space-sm);
+    font-size: clamp(15px, 2vw, 17px);
+    color: var(--color-text);
+    line-height: 1.45;
+}
+
+.classroom-activity-status {
+    margin: 0 0 var(--space-md);
+    font-size: 14px;
+    font-weight: var(--font-weight-button);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.classroom-activity-status-available {
+    color: #07805F;
+}
+
+.classroom-activity-status-soon {
+    color: var(--color-text-muted, #4A6278);
+}
+
+.classroom-activity-card .green-button,
+.classroom-activity-card .soft-button {
+    min-width: 120px;
+    min-height: 48px;
+    margin: 0;
+}
+
 .classroom-presentation-screen {
     position: fixed;
     inset: 0;

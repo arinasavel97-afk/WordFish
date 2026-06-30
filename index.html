@@ -128,6 +128,37 @@
         <div id="classroomSetsList" class="classroom-sets-list"></div>
     </div>
 
+    <div id="classroomActivityMenuScreen" class="screen classroom-activity-menu-screen" style="display: none;">
+        <div class="sea-header">🫧 📽️ 🫧</div>
+        <h1 id="classroomActivityMenuTitle" class="classroom-activity-menu-title">Set Name</h1>
+        <p class="subtitle classroom-activity-menu-subtitle">Choose an activity for your lesson.</p>
+
+        <button type="button" class="soft-button classroom-nav-button" onclick="showClassroomPicker()">⬅ Back to set picker</button>
+
+        <div class="classroom-activity-list">
+            <article class="card classroom-activity-card">
+                <h2 class="classroom-activity-name">Presentation</h2>
+                <p class="classroom-activity-description">Show words and pictures on the board.</p>
+                <p class="classroom-activity-status classroom-activity-status-available">Available</p>
+                <button type="button" class="green-button" onclick="startClassroomPresentationFromActivityMenu()">Start</button>
+            </article>
+
+            <article class="card classroom-activity-card classroom-activity-card-disabled">
+                <h2 class="classroom-activity-name">Flashcards</h2>
+                <p class="classroom-activity-description">Flip cards and practice vocabulary.</p>
+                <p class="classroom-activity-status classroom-activity-status-soon">Coming soon</p>
+                <button type="button" class="soft-button disabled-button" disabled>Start</button>
+            </article>
+
+            <article class="card classroom-activity-card classroom-activity-card-disabled">
+                <h2 class="classroom-activity-name">Random Word</h2>
+                <p class="classroom-activity-description">Pick random words for quick review.</p>
+                <p class="classroom-activity-status classroom-activity-status-soon">Coming soon</p>
+                <button type="button" class="soft-button disabled-button" disabled>Start</button>
+            </article>
+        </div>
+    </div>
+
     <div id="classroomPresentationScreen" class="classroom-presentation-screen" style="display: none;">
         <header class="classroom-presentation-header">
             <p id="classroomPresentationHeaderMeta" class="classroom-presentation-header-meta">Set Name • Card 1 of 1</p>

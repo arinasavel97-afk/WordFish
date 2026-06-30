@@ -39,6 +39,7 @@ let classroomPresentationSetName = "";
 let classroomTranslationVisible = false;
 const GAME_CONTEXT_STORAGE_KEY = "wordfish_game_context";
 const CLASSROOM_PRESENTATION_CONTEXT_STORAGE_KEY = "wordfish_classroom_presentation_context";
+const CLASSROOM_ACTIVITY_CONTEXT_STORAGE_KEY = "wordfish_classroom_activity_context";
 const SETTINGS_KEYS = {
     trashAutoDelete: "wordfish_settings_trash_auto_delete",
     enableAnimations: "wordfish_settings_enable_animations",
@@ -91,9 +92,13 @@ function hideAllScreens() {
     document.getElementById("authScreen").style.display = "none";
     document.getElementById("dashboardScreen").style.display = "none";
     const classroomPickerScreen = document.getElementById("classroomPickerScreen");
+    const classroomActivityMenuScreen = document.getElementById("classroomActivityMenuScreen");
     const classroomPresentationScreen = document.getElementById("classroomPresentationScreen");
     if (classroomPickerScreen) {
         classroomPickerScreen.style.display = "none";
+    }
+    if (classroomActivityMenuScreen) {
+        classroomActivityMenuScreen.style.display = "none";
     }
     if (classroomPresentationScreen) {
         classroomPresentationScreen.style.display = "none";
@@ -171,6 +176,34 @@ function isClassroomPresentationRefreshRequested() {
     return window.location.hash.replace(/^#/, "") === "classroomPresentation";
 }
 
+function saveClassroomActivityContext() {
+    if (currentScreenId !== "classroomActivityMenuScreen" || !classroomSelectedSetId) {
+        return;
+    }
+
+    localStorage.setItem(CLASSROOM_ACTIVITY_CONTEXT_STORAGE_KEY, JSON.stringify({
+        mode: "classroomActivityMenu",
+        setId: classroomSelectedSetId
+    }));
+}
+
+function loadClassroomActivityContext() {
+    try {
+        const raw = localStorage.getItem(CLASSROOM_ACTIVITY_CONTEXT_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function clearClassroomActivityContext() {
+    localStorage.removeItem(CLASSROOM_ACTIVITY_CONTEXT_STORAGE_KEY);
+}
+
+function isClassroomActivityMenuRefreshRequested() {
+    return window.location.hash.replace(/^#/, "") === "classroomActivityMenu";
+}
+
 function displayScreen(screenId, addToHistory = true) {
     hideAllScreens();
     const screen = document.getElementById(screenId);
@@ -211,6 +244,8 @@ window.addEventListener("popstate", (event) => {
         document.getElementById("studentScreen").style.display = "block";
     } else if (screenId === "classroomPickerScreen") {
         showClassroomPicker(false);
+    } else if (screenId === "classroomActivityMenuScreen") {
+        showClassroomActivityMenuForSelectedSet(false);
     } else if (screenId === "classroomPresentationScreen") {
         showClassroomPresentationForSelectedSet(false);
     }
@@ -660,6 +695,7 @@ function renderDashboard() {
 function showClassroomPicker(addToHistory = true) {
     exitClassroomFullscreenIfActive();
     clearClassroomPresentationContext();
+    clearClassroomActivityContext();
     displayScreen("classroomPickerScreen", addToHistory);
     renderClassroomPicker();
 }
@@ -704,14 +740,14 @@ function renderClassroomPicker() {
                 <p><span class="small-label">Words:</span> ${wordCount}</p>
                 <p><span class="small-label">Images:</span> ${imageCount}</p>
                 <div class="classroom-set-actions">
-                    <button type="button" class="green-button" onclick="startClassroomSet('${escapeAttribute(setId)}')">Start</button>
+                    <button type="button" class="green-button" onclick="openClassroomActivityMenu('${escapeAttribute(setId)}')">Choose Activity</button>
                 </div>
             </div>
         `;
     }
 }
 
-function startClassroomSet(setId) {
+function openClassroomActivityMenu(setId) {
     const selectedSet = savedSets.find((set) => set.id === setId);
 
     if (!selectedSet) {
@@ -720,6 +756,35 @@ function startClassroomSet(setId) {
     }
 
     classroomSelectedSetId = setId;
+    showClassroomActivityMenu(selectedSet);
+}
+
+function showClassroomActivityMenu(set, addToHistory = true) {
+    document.getElementById("classroomActivityMenuTitle").textContent = set.name;
+    clearClassroomPresentationContext();
+    displayScreen("classroomActivityMenuScreen", addToHistory);
+    saveClassroomActivityContext();
+}
+
+function showClassroomActivityMenuForSelectedSet(addToHistory = true) {
+    const selectedSet = savedSets.find((set) => set.id === classroomSelectedSetId);
+
+    if (!selectedSet) {
+        showClassroomPicker(addToHistory);
+        return;
+    }
+
+    showClassroomActivityMenu(selectedSet, addToHistory);
+}
+
+function startClassroomPresentationFromActivityMenu() {
+    const selectedSet = savedSets.find((set) => set.id === classroomSelectedSetId);
+
+    if (!selectedSet) {
+        showToast("Could not find that set.", "error");
+        return;
+    }
+
     startClassroomPresentation(selectedSet);
 }
 
@@ -748,7 +813,7 @@ function showClassroomPresentationForSelectedSet(addToHistory = true) {
     const selectedSet = savedSets.find((set) => set.id === classroomSelectedSetId);
 
     if (!selectedSet || classroomPresentationCards.length === 0) {
-        showClassroomPicker(addToHistory);
+        showClassroomActivityMenuForSelectedSet(addToHistory);
         return;
     }
 
@@ -877,7 +942,14 @@ function pulseClassroomFinishButton() {
 
 function finishClassroomPresentation() {
     exitClassroomFullscreenIfActive();
-    showClassroomPicker();
+    clearClassroomPresentationContext();
+    showClassroomActivityMenuForSelectedSet();
+}
+
+function returnToClassroomActivityMenu() {
+    exitClassroomFullscreenIfActive();
+    clearClassroomPresentationContext();
+    showClassroomActivityMenuForSelectedSet();
 }
 
 function exitClassroomFullscreenIfActive() {
@@ -975,10 +1047,7 @@ function initClassroomPresentationControls() {
 
     if (backButton && backButton.dataset.handlerAttached !== "true") {
         backButton.dataset.handlerAttached = "true";
-        backButton.addEventListener("click", () => {
-            exitClassroomFullscreenIfActive();
-            showClassroomPicker();
-        });
+        backButton.addEventListener("click", returnToClassroomActivityMenu);
     }
 
     if (document.documentElement.dataset.classroomFullscreenListenerAttached !== "true") {
@@ -2602,6 +2671,75 @@ async function restoreGameFromRefresh(context) {
     }
 }
 
+async function restoreClassroomActivityMenuFromContext(context) {
+    const setId = context.setId;
+
+    if (!setId || context.mode !== "classroomActivityMenu") {
+        return false;
+    }
+
+    try {
+        const { data } = await supabaseClient.auth.getSession();
+
+        if (!data.session) {
+            return false;
+        }
+
+        savedSets = await dbLoadSetsWithCards();
+        const set = savedSets.find((item) => item.id === setId);
+
+        if (!set) {
+            return false;
+        }
+
+        classroomSelectedSetId = set.id;
+        displayScreen("classroomActivityMenuScreen", false);
+        document.getElementById("classroomActivityMenuTitle").textContent = set.name;
+        saveClassroomActivityContext();
+        return true;
+    } catch (error) {
+        console.error("Classroom activity menu restore failed:", error);
+        return false;
+    }
+}
+
+async function tryRestoreClassroomActivityMenuOnRefresh() {
+    if (!isClassroomActivityMenuRefreshRequested()) {
+        return false;
+    }
+
+    const context = loadClassroomActivityContext();
+
+    if (!context) {
+        return false;
+    }
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (!data.session) {
+        return false;
+    }
+
+    return restoreClassroomActivityMenuFromContext(context);
+}
+
+async function handleFailedClassroomActivityMenuRefresh() {
+    clearClassroomActivityContext();
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (data.session) {
+        savedSets = await dbLoadSetsWithCards();
+        showClassroomPicker(false);
+        return;
+    }
+
+    hideAppLoading();
+    displayScreen("authScreen", false);
+    history.replaceState({ screen: "authScreen" }, "", "#auth");
+}
+
 async function restoreClassroomPresentationFromContext(context) {
     const setId = context.setId;
 
@@ -2739,6 +2877,17 @@ async function checkAuth() {
     if (isClassroomPresentationRefreshRequested()) {
         hideAppLoading();
         await handleFailedClassroomPresentationRefresh();
+        return;
+    }
+
+    if (await tryRestoreClassroomActivityMenuOnRefresh()) {
+        hideAppLoading();
+        return;
+    }
+
+    if (isClassroomActivityMenuRefreshRequested()) {
+        hideAppLoading();
+        await handleFailedClassroomActivityMenuRefresh();
         return;
     }
 
