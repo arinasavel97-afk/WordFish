@@ -33,6 +33,10 @@ let currentScreenId = "";
 let suppressHistoryPush = false;
 let gameLaunchSource = "editor";
 let classroomSelectedSetId = null;
+let classroomPresentationCards = [];
+let classroomPresentationIndex = 0;
+let classroomPresentationSetName = "";
+let classroomTranslationVisible = false;
 const GAME_CONTEXT_STORAGE_KEY = "wordfish_game_context";
 const SETTINGS_KEYS = {
     trashAutoDelete: "wordfish_settings_trash_auto_delete",
@@ -86,12 +90,12 @@ function hideAllScreens() {
     document.getElementById("authScreen").style.display = "none";
     document.getElementById("dashboardScreen").style.display = "none";
     const classroomPickerScreen = document.getElementById("classroomPickerScreen");
-    const classroomPlaceholderScreen = document.getElementById("classroomPlaceholderScreen");
+    const classroomPresentationScreen = document.getElementById("classroomPresentationScreen");
     if (classroomPickerScreen) {
         classroomPickerScreen.style.display = "none";
     }
-    if (classroomPlaceholderScreen) {
-        classroomPlaceholderScreen.style.display = "none";
+    if (classroomPresentationScreen) {
+        classroomPresentationScreen.style.display = "none";
     }
     document.getElementById("studentScreen").style.display = "none";
     document.getElementById("teacherScreen").style.display = "none";
@@ -144,7 +148,7 @@ function displayScreen(screenId, addToHistory = true) {
         return;
     }
 
-    screen.style.display = "block";
+    screen.style.display = screenId === "classroomPresentationScreen" ? "grid" : "block";
     currentScreenId = screenId;
 
     if (addToHistory && !suppressHistoryPush) {
@@ -176,8 +180,8 @@ window.addEventListener("popstate", (event) => {
         document.getElementById("studentScreen").style.display = "block";
     } else if (screenId === "classroomPickerScreen") {
         showClassroomPicker(false);
-    } else if (screenId === "classroomPlaceholderScreen") {
-        showClassroomPlaceholderForSelectedSet(false);
+    } else if (screenId === "classroomPresentationScreen") {
+        showClassroomPresentationForSelectedSet(false);
     }
 
     suppressHistoryPush = false;
@@ -623,6 +627,7 @@ function renderDashboard() {
 }
 
 function showClassroomPicker(addToHistory = true) {
+    exitClassroomFullscreenIfActive();
     displayScreen("classroomPickerScreen", addToHistory);
     renderClassroomPicker();
 }
@@ -683,23 +688,230 @@ function startClassroomSet(setId) {
     }
 
     classroomSelectedSetId = setId;
-    showClassroomPlaceholder(selectedSet);
+    startClassroomPresentation(selectedSet);
 }
 
-function showClassroomPlaceholder(set, addToHistory = true) {
-    document.getElementById("classroomPlaceholderSetName").textContent = set.name;
-    displayScreen("classroomPlaceholderScreen", addToHistory);
+function startClassroomPresentation(set, addToHistory = true) {
+    const presentationCards = prepareCards(set.cards || [])
+        .filter((card) => card.english.trim() !== "");
+
+    if (presentationCards.length === 0) {
+        showToast("This set has no words to present.", "warning");
+        return;
+    }
+
+    classroomPresentationSetName = set.name;
+    classroomPresentationCards = presentationCards;
+    classroomPresentationIndex = 0;
+    classroomTranslationVisible = false;
+    showClassroomPresentation(addToHistory);
 }
 
-function showClassroomPlaceholderForSelectedSet(addToHistory = true) {
+function showClassroomPresentation(addToHistory = true) {
+    displayScreen("classroomPresentationScreen", addToHistory);
+    renderClassroomPresentationCard();
+}
+
+function showClassroomPresentationForSelectedSet(addToHistory = true) {
     const selectedSet = savedSets.find((set) => set.id === classroomSelectedSetId);
 
-    if (!selectedSet) {
+    if (!selectedSet || classroomPresentationCards.length === 0) {
         showClassroomPicker(addToHistory);
         return;
     }
 
-    showClassroomPlaceholder(selectedSet, addToHistory);
+    classroomPresentationSetName = selectedSet.name;
+    showClassroomPresentation(addToHistory);
+}
+
+function getClassroomCardTranslation(card) {
+    return (card.thai || "").trim();
+}
+
+function renderClassroomPresentationCard() {
+    const card = classroomPresentationCards[classroomPresentationIndex];
+    const total = classroomPresentationCards.length;
+    const current = classroomPresentationIndex + 1;
+
+    document.getElementById("classroomPresentationHeaderMeta").textContent =
+        `${classroomPresentationSetName} • Card ${current} of ${total}`;
+    document.getElementById("classroomPresentationEnglish").textContent = card.english;
+
+    const translationEl = document.getElementById("classroomPresentationTranslation");
+    translationEl.textContent = getClassroomCardTranslation(card) || "—";
+
+    classroomTranslationVisible = false;
+    updateClassroomTranslationUI();
+
+    const imageEl = document.getElementById("classroomPresentationImage");
+    const placeholderEl = document.getElementById("classroomPresentationImagePlaceholder");
+
+    if (card.imageUrl) {
+        imageEl.src = card.imageUrl;
+        imageEl.alt = card.english;
+        imageEl.style.display = "block";
+        placeholderEl.style.display = "none";
+    } else {
+        imageEl.removeAttribute("src");
+        imageEl.alt = "";
+        imageEl.style.display = "none";
+        placeholderEl.style.display = "flex";
+    }
+
+    updateClassroomPresentationNav();
+}
+
+function updateClassroomTranslationUI() {
+    const translationEl = document.getElementById("classroomPresentationTranslation");
+    const toggleButton = document.getElementById("classroomToggleTranslationButton");
+
+    translationEl.hidden = !classroomTranslationVisible;
+    toggleButton.textContent = classroomTranslationVisible ? "Hide Translation" : "Show Translation";
+}
+
+function toggleClassroomTranslation() {
+    if (currentScreenId !== "classroomPresentationScreen") {
+        return;
+    }
+
+    classroomTranslationVisible = !classroomTranslationVisible;
+    updateClassroomTranslationUI();
+}
+
+function updateClassroomPresentationNav() {
+    const prevButton = document.getElementById("classroomPrevButton");
+    const nextButton = document.getElementById("classroomNextButton");
+    const isFirst = classroomPresentationIndex === 0;
+    const isLast = classroomPresentationIndex === classroomPresentationCards.length - 1;
+
+    prevButton.disabled = isFirst;
+    prevButton.classList.toggle("disabled-button", isFirst);
+    nextButton.textContent = isLast ? "Finish" : "Next →";
+}
+
+function classroomPresentationPrevious() {
+    if (classroomPresentationIndex <= 0) {
+        return;
+    }
+
+    classroomPresentationIndex -= 1;
+    renderClassroomPresentationCard();
+}
+
+function classroomPresentationNext() {
+    if (classroomPresentationIndex >= classroomPresentationCards.length - 1) {
+        finishClassroomPresentation();
+        return;
+    }
+
+    classroomPresentationIndex += 1;
+    renderClassroomPresentationCard();
+}
+
+function finishClassroomPresentation() {
+    exitClassroomFullscreenIfActive();
+    showClassroomPicker();
+}
+
+function exitClassroomFullscreenIfActive() {
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    }
+}
+
+function toggleClassroomFullscreen() {
+    const presentationScreen = document.getElementById("classroomPresentationScreen");
+
+    if (!presentationScreen) {
+        return;
+    }
+
+    if (!document.fullscreenElement) {
+        presentationScreen.requestFullscreen().catch(() => {
+            showToast("Fullscreen is not available.", "warning");
+        });
+        return;
+    }
+
+    document.exitFullscreen();
+}
+
+function updateClassroomFullscreenButtonLabel() {
+    const label = document.getElementById("classroomFullscreenButtonLabel");
+    const button = document.getElementById("classroomFullscreenButton");
+
+    if (!label || !button) {
+        return;
+    }
+
+    const isFullscreen = document.fullscreenElement === document.getElementById("classroomPresentationScreen");
+    label.textContent = isFullscreen ? "Exit Fullscreen" : "Fullscreen";
+    button.setAttribute("aria-label", isFullscreen ? "Exit fullscreen" : "Enter fullscreen");
+    button.title = isFullscreen ? "Exit Fullscreen" : "Fullscreen";
+}
+
+function handleClassroomPresentationKeydown(event) {
+    if (currentScreenId !== "classroomPresentationScreen") {
+        return;
+    }
+
+    if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        classroomPresentationPrevious();
+        return;
+    }
+
+    if (event.key === "ArrowRight") {
+        event.preventDefault();
+        classroomPresentationNext();
+        return;
+    }
+
+    if (event.key === " " || event.code === "Space") {
+        event.preventDefault();
+        toggleClassroomTranslation();
+    }
+}
+
+function initClassroomPresentationControls() {
+    const prevButton = document.getElementById("classroomPrevButton");
+    const nextButton = document.getElementById("classroomNextButton");
+    const toggleButton = document.getElementById("classroomToggleTranslationButton");
+    const fullscreenButton = document.getElementById("classroomFullscreenButton");
+    const backButton = document.getElementById("classroomBackToPickerButton");
+
+    if (prevButton && prevButton.dataset.handlerAttached !== "true") {
+        prevButton.dataset.handlerAttached = "true";
+        prevButton.addEventListener("click", classroomPresentationPrevious);
+    }
+
+    if (nextButton && nextButton.dataset.handlerAttached !== "true") {
+        nextButton.dataset.handlerAttached = "true";
+        nextButton.addEventListener("click", classroomPresentationNext);
+    }
+
+    if (toggleButton && toggleButton.dataset.handlerAttached !== "true") {
+        toggleButton.dataset.handlerAttached = "true";
+        toggleButton.addEventListener("click", toggleClassroomTranslation);
+    }
+
+    if (fullscreenButton && fullscreenButton.dataset.handlerAttached !== "true") {
+        fullscreenButton.dataset.handlerAttached = "true";
+        fullscreenButton.addEventListener("click", toggleClassroomFullscreen);
+    }
+
+    if (backButton && backButton.dataset.handlerAttached !== "true") {
+        backButton.dataset.handlerAttached = "true";
+        backButton.addEventListener("click", () => {
+            exitClassroomFullscreenIfActive();
+            showClassroomPicker();
+        });
+    }
+
+    if (document.documentElement.dataset.classroomFullscreenListenerAttached !== "true") {
+        document.documentElement.dataset.classroomFullscreenListenerAttached = "true";
+        document.addEventListener("fullscreenchange", updateClassroomFullscreenButtonLabel);
+    }
 }
 
 function initClassroomModeButton() {
@@ -1592,6 +1804,8 @@ async function confirmDeleteAction() {
 }
 
 document.addEventListener("keydown", (event) => {
+    handleClassroomPresentationKeydown(event);
+
     if (event.key !== "Escape") return;
 
     const settingsModal = document.getElementById("settingsModal");
@@ -2437,6 +2651,7 @@ async function logout() {
 
 function initApp() {
     initClassroomModeButton();
+    initClassroomPresentationControls();
     checkAuth();
 }
 

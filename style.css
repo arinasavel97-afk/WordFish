@@ -2161,14 +2161,286 @@ h2 {
     text-align: center;
 }
 
-.classroom-placeholder-set-name {
-    margin: 0 0 var(--space-sm);
+.classroom-presentation-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: none;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    width: 100%;
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    padding: clamp(12px, 1.8vw, 20px) clamp(16px, 2.5vw, 28px);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    text-align: center;
+    background:
+        radial-gradient(circle at 12% 10%, rgba(255, 183, 3, 0.18) 0 90px, transparent 92px),
+        radial-gradient(circle at 88% 18%, rgba(63, 169, 245, 0.14) 0 100px, transparent 102px),
+        linear-gradient(180deg, #E9FBFF 0%, #BAF1FF 48%, #F6FFF9 100%);
+    overflow: hidden;
+    gap: clamp(10px, 1.6vh, 16px);
+}
+
+.classroom-presentation-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    min-width: 0;
+}
+
+.classroom-presentation-header-meta {
+    margin: 0;
+    text-align: left;
+    font-size: clamp(18px, 2.2vw, 24px);
+    font-weight: var(--font-weight-button);
     color: var(--sea-deep);
     word-break: break-word;
 }
 
-.classroom-placeholder-message {
-    margin-bottom: var(--space-lg);
+.classroom-presentation-header-actions {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+}
+
+.classroom-back-button {
+    min-height: 44px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.classroom-fullscreen-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    margin: 0;
+    padding: 8px 14px;
+    border: 2px solid rgba(142, 220, 230, 0.85);
+    border-radius: var(--radius-button);
+    background: rgba(255, 255, 255, 0.88);
+    color: var(--sea-deep);
+    box-shadow: 0 4px 0 rgba(34, 51, 68, 0.12);
+    white-space: nowrap;
+}
+
+.classroom-fullscreen-button svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.classroom-fullscreen-button:hover {
+    background: #EFFFFA;
+    border-color: rgba(63, 169, 245, 0.45);
+    color: var(--color-primary);
+}
+
+.classroom-presentation-main {
+    display: grid;
+    grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+    gap: clamp(16px, 2vw, 28px);
+    min-height: 0;
+    overflow: hidden;
+    align-items: center;
+}
+
+.classroom-presentation-image-column {
+    min-height: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.classroom-presentation-image-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-height: 60vh;
+    padding: clamp(12px, 1.8vw, 18px);
+    border-radius: var(--radius-xl);
+    border: 2px solid var(--color-input-border);
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: var(--soft-shadow);
+    overflow: hidden;
+}
+
+.classroom-presentation-image {
+    display: none;
+    max-width: 100%;
+    max-height: 60vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+.classroom-presentation-image-placeholder {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    width: 100%;
+    max-height: 60vh;
+    padding: var(--space-lg);
+    color: var(--sea-deep);
+}
+
+.classroom-presentation-placeholder-art {
+    font-size: clamp(48px, 8vw, 72px);
+    line-height: 1;
+}
+
+.classroom-presentation-image-placeholder p {
+    margin: 0;
+    font-size: clamp(16px, 2.2vw, 20px);
+    font-weight: var(--font-weight-button);
+}
+
+.classroom-presentation-text-column {
+    min-height: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(4px, 1vw, 12px);
+}
+
+.classroom-presentation-word-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    max-width: 520px;
+}
+
+.classroom-presentation-english {
+    margin: 0;
+    font-size: clamp(34px, 6vw, 64px);
+    line-height: 1.1;
+    font-weight: var(--font-weight-button);
+    color: var(--ink);
+    word-break: break-word;
+}
+
+.classroom-presentation-translation {
+    margin: 0;
+    font-size: clamp(24px, 4vw, 40px);
+    line-height: 1.2;
+    font-weight: var(--font-weight-ui);
+    color: var(--sea-deep);
+    word-break: break-word;
+}
+
+.classroom-presentation-translation[hidden] {
+    display: none;
+}
+
+.classroom-toggle-translation-button {
+    min-width: min(100%, 260px);
+    min-height: 48px;
+    margin: 0;
+}
+
+.classroom-presentation-footer {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    width: min(100%, 640px);
+    margin: 0 auto;
+    padding-top: clamp(8px, 1.2vh, 12px);
+    border-top: 1px solid rgba(142, 220, 230, 0.55);
+}
+
+.classroom-nav-prev-button,
+.classroom-nav-next-button {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 48px;
+    margin: 0;
+}
+
+.classroom-nav-prev-button.disabled-button,
+.classroom-nav-prev-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+    .classroom-presentation-main {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+        align-content: start;
+        align-items: start;
+    }
+
+    .classroom-presentation-image-column,
+    .classroom-presentation-text-column {
+        height: auto;
+    }
+
+    .classroom-presentation-image-card {
+        max-height: min(42vh, 320px);
+    }
+
+    .classroom-presentation-image {
+        max-height: min(42vh, 320px);
+    }
+
+    .classroom-presentation-image-placeholder {
+        max-height: min(42vh, 320px);
+    }
+
+    .classroom-presentation-text-column {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 620px) {
+    .classroom-presentation-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .classroom-presentation-header-meta {
+        text-align: center;
+    }
+
+    .classroom-presentation-header-actions {
+        justify-content: stretch;
+    }
+
+    .classroom-back-button,
+    .classroom-fullscreen-button {
+        flex: 1 1 0;
+        width: auto;
+    }
+
+    .classroom-presentation-footer {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .classroom-nav-prev-button,
+    .classroom-nav-next-button {
+        width: 100%;
+    }
 }
 
 @media (max-width: 620px) {

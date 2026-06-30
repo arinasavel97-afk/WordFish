@@ -128,13 +128,42 @@
         <div id="classroomSetsList" class="classroom-sets-list"></div>
     </div>
 
-    <div id="classroomPlaceholderScreen" class="screen" style="display: none;">
-        <div class="sea-header">🫧 📽️ 🫧</div>
-        <h1>Classroom Mode</h1>
-        <h2 id="classroomPlaceholderSetName" class="classroom-placeholder-set-name">Set Name</h2>
-        <p class="subtitle classroom-placeholder-message">Activities coming soon.</p>
+    <div id="classroomPresentationScreen" class="classroom-presentation-screen" style="display: none;">
+        <header class="classroom-presentation-header">
+            <p id="classroomPresentationHeaderMeta" class="classroom-presentation-header-meta">Set Name • Card 1 of 1</p>
+            <div class="classroom-presentation-header-actions">
+                <button id="classroomFullscreenButton" type="button" class="classroom-fullscreen-button" aria-label="Enter fullscreen" title="Fullscreen">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"/></svg>
+                    <span id="classroomFullscreenButtonLabel">Fullscreen</span>
+                </button>
+                <button id="classroomBackToPickerButton" type="button" class="soft-button classroom-back-button">Back</button>
+            </div>
+        </header>
 
-        <button type="button" class="soft-button classroom-nav-button" onclick="showClassroomPicker()">Back to set picker</button>
+        <main class="classroom-presentation-main">
+            <section class="classroom-presentation-image-column" aria-label="Vocabulary image">
+                <div class="classroom-presentation-image-card">
+                    <img id="classroomPresentationImage" class="classroom-presentation-image" alt="">
+                    <div id="classroomPresentationImagePlaceholder" class="classroom-presentation-image-placeholder" aria-hidden="true">
+                        <div class="classroom-presentation-placeholder-art">🖼️ 🐠</div>
+                        <p>No image for this word</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="classroom-presentation-text-column" aria-label="Vocabulary word">
+                <div class="classroom-presentation-word-group">
+                    <p id="classroomPresentationEnglish" class="classroom-presentation-english">Word</p>
+                    <p id="classroomPresentationTranslation" class="classroom-presentation-translation" hidden>Translation</p>
+                    <button id="classroomToggleTranslationButton" type="button" class="soft-button classroom-toggle-translation-button">Show Translation</button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="classroom-presentation-footer">
+            <button id="classroomPrevButton" type="button" class="soft-button classroom-nav-prev-button">← Previous</button>
+            <button id="classroomNextButton" type="button" class="green-button classroom-nav-next-button">Next →</button>
+        </footer>
     </div>
 
     <div id="studentScreen" class="screen" style="display: none;">
