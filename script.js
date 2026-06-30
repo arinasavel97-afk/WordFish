@@ -32,6 +32,7 @@ let lastGameOrderSignature = "";
 let currentScreenId = "";
 let suppressHistoryPush = false;
 let gameLaunchSource = "editor";
+let classroomSelectedSetId = null;
 const GAME_CONTEXT_STORAGE_KEY = "wordfish_game_context";
 const SETTINGS_KEYS = {
     trashAutoDelete: "wordfish_settings_trash_auto_delete",
@@ -84,6 +85,14 @@ function hideAllScreens() {
     document.getElementById("appLoadingScreen").style.display = "none";
     document.getElementById("authScreen").style.display = "none";
     document.getElementById("dashboardScreen").style.display = "none";
+    const classroomPickerScreen = document.getElementById("classroomPickerScreen");
+    const classroomPlaceholderScreen = document.getElementById("classroomPlaceholderScreen");
+    if (classroomPickerScreen) {
+        classroomPickerScreen.style.display = "none";
+    }
+    if (classroomPlaceholderScreen) {
+        classroomPlaceholderScreen.style.display = "none";
+    }
     document.getElementById("studentScreen").style.display = "none";
     document.getElementById("teacherScreen").style.display = "none";
     document.getElementById("cardsScreen").style.display = "none";
@@ -129,7 +138,13 @@ function isGameRefreshRequested() {
 
 function displayScreen(screenId, addToHistory = true) {
     hideAllScreens();
-    document.getElementById(screenId).style.display = "block";
+    const screen = document.getElementById(screenId);
+    if (!screen) {
+        console.error("Screen not found:", screenId);
+        return;
+    }
+
+    screen.style.display = "block";
     currentScreenId = screenId;
 
     if (addToHistory && !suppressHistoryPush) {
@@ -159,6 +174,10 @@ window.addEventListener("popstate", (event) => {
     } else if (screenId === "studentScreen") {
         hideAllScreens();
         document.getElementById("studentScreen").style.display = "block";
+    } else if (screenId === "classroomPickerScreen") {
+        showClassroomPicker(false);
+    } else if (screenId === "classroomPlaceholderScreen") {
+        showClassroomPlaceholderForSelectedSet(false);
     }
 
     suppressHistoryPush = false;
@@ -601,6 +620,99 @@ function renderDashboard() {
     }
 
     initSetsSortable();
+}
+
+function showClassroomPicker(addToHistory = true) {
+    displayScreen("classroomPickerScreen", addToHistory);
+    renderClassroomPicker();
+}
+
+function returnToDashboardFromClassroom(addToHistory = true) {
+    displayScreen("dashboardScreen", addToHistory);
+
+    const searchInput = document.getElementById("dashboardSearchInput");
+    if (searchInput) {
+        searchInput.value = dashboardSearchQuery;
+    }
+
+    updateDashboardToolbarUI();
+    renderDashboard();
+}
+
+function renderClassroomPicker() {
+    const classroomSetsList = document.getElementById("classroomSetsList");
+    classroomSetsList.innerHTML = "";
+
+    const classroomSets = sortSavedSets(savedSets);
+
+    if (classroomSets.length === 0) {
+        classroomSetsList.innerHTML = `
+            <div class="card empty-library-card classroom-empty-card">
+                <h2>No sets yet.</h2>
+                <p>Create a set first to use Classroom Mode.</p>
+            </div>
+        `;
+        return;
+    }
+
+    for (let i = 0; i < classroomSets.length; i++) {
+        const set = classroomSets[i];
+        const setId = set.id;
+        const wordCount = set.cards ? set.cards.length : 0;
+        const imageCount = (set.cards || []).filter((card) => card.imageUrl).length;
+
+        classroomSetsList.innerHTML += `
+            <div class="card classroom-set-card">
+                <h2 class="classroom-set-name">📚 ${escapeHTML(set.name)}</h2>
+                <p><span class="small-label">Words:</span> ${wordCount}</p>
+                <p><span class="small-label">Images:</span> ${imageCount}</p>
+                <div class="classroom-set-actions">
+                    <button type="button" class="green-button" onclick="startClassroomSet('${escapeAttribute(setId)}')">Start</button>
+                </div>
+            </div>
+        `;
+    }
+}
+
+function startClassroomSet(setId) {
+    const selectedSet = savedSets.find((set) => set.id === setId);
+
+    if (!selectedSet) {
+        showToast("Could not find that set.", "error");
+        return;
+    }
+
+    classroomSelectedSetId = setId;
+    showClassroomPlaceholder(selectedSet);
+}
+
+function showClassroomPlaceholder(set, addToHistory = true) {
+    document.getElementById("classroomPlaceholderSetName").textContent = set.name;
+    displayScreen("classroomPlaceholderScreen", addToHistory);
+}
+
+function showClassroomPlaceholderForSelectedSet(addToHistory = true) {
+    const selectedSet = savedSets.find((set) => set.id === classroomSelectedSetId);
+
+    if (!selectedSet) {
+        showClassroomPicker(addToHistory);
+        return;
+    }
+
+    showClassroomPlaceholder(selectedSet, addToHistory);
+}
+
+function initClassroomModeButton() {
+    const classroomButton = document.getElementById("dashboardClassroomButton");
+
+    if (!classroomButton || classroomButton.dataset.handlerAttached === "true") {
+        return;
+    }
+
+    classroomButton.dataset.handlerAttached = "true";
+    classroomButton.addEventListener("click", () => {
+        showClassroomPicker();
+    });
 }
 
 function resolveSetIndex(indexOrId) {
@@ -2323,4 +2435,13 @@ async function logout() {
     displayScreen("authScreen");
 }
 
-checkAuth();
+function initApp() {
+    initClassroomModeButton();
+    checkAuth();
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initApp);
+} else {
+    initApp();
+}

@@ -408,6 +408,21 @@ button:active {
     flex-shrink: 0;
 }
 
+.dashboard-classroom-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    margin: 10px;
+}
+
+.dashboard-classroom-button svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
 .dashboard-search-field {
     flex: 1 1 220px;
     max-width: 420px;
@@ -2090,6 +2105,79 @@ h2 {
 
     .settings-modal {
         padding: 20px 18px;
+    }
+}
+
+/* Classroom Mode */
+.classroom-nav-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    margin: 0 auto var(--space-lg);
+}
+
+.classroom-sets-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    max-width: 840px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.classroom-set-card {
+    background: linear-gradient(180deg, #ffffff 0%, #EFFFFA 100%);
+    border: 2px solid var(--color-input-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--soft-shadow);
+    padding: var(--space-lg);
+}
+
+.classroom-set-name {
+    margin: 0 0 var(--space-sm);
+    font-size: clamp(20px, 3vw, 26px);
+    color: var(--sea-deep);
+    word-break: break-word;
+}
+
+.classroom-set-card p {
+    margin: 0 0 6px;
+    font-size: clamp(15px, 2vw, 17px);
+}
+
+.classroom-set-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--space-md);
+}
+
+.classroom-set-actions .green-button {
+    min-width: 120px;
+    margin: 0;
+}
+
+.classroom-empty-card {
+    text-align: center;
+}
+
+.classroom-placeholder-set-name {
+    margin: 0 0 var(--space-sm);
+    color: var(--sea-deep);
+    word-break: break-word;
+}
+
+.classroom-placeholder-message {
+    margin-bottom: var(--space-lg);
+}
+
+@media (max-width: 620px) {
+    .classroom-set-actions {
+        justify-content: stretch;
+    }
+
+    .classroom-set-actions .green-button {
+        width: 100%;
     }
 }
 

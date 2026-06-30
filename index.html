@@ -69,6 +69,10 @@
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
                 Import Excel
             </button>
+            <button type="button" id="dashboardClassroomButton" class="soft-button dashboard-classroom-button">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21h16.5a2.25 2.25 0 0 0 2.25-2.25V5.25A2.25 2.25 0 0 0 20.25 3H3.75Zm0 0H20.25M9 16.5v.75m3-3v3m3-3v3"/></svg>
+                Classroom Mode
+            </button>
         </div>
         <input id="excelImportInput" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden onchange="handleExcelImportSelected(event)">
 
@@ -112,6 +116,25 @@
         </div>
 
         <div id="savedSetsList"></div>
+    </div>
+
+    <div id="classroomPickerScreen" class="screen" style="display: none;">
+        <div class="sea-header">🫧 📽️ 🫧</div>
+        <h1>Classroom Mode</h1>
+        <p class="subtitle">Choose a vocabulary set to use on the board.</p>
+
+        <button type="button" class="soft-button classroom-nav-button" onclick="returnToDashboardFromClassroom()">⬅ Back to Dashboard</button>
+
+        <div id="classroomSetsList" class="classroom-sets-list"></div>
+    </div>
+
+    <div id="classroomPlaceholderScreen" class="screen" style="display: none;">
+        <div class="sea-header">🫧 📽️ 🫧</div>
+        <h1>Classroom Mode</h1>
+        <h2 id="classroomPlaceholderSetName" class="classroom-placeholder-set-name">Set Name</h2>
+        <p class="subtitle classroom-placeholder-message">Activities coming soon.</p>
+
+        <button type="button" class="soft-button classroom-nav-button" onclick="showClassroomPicker()">Back to set picker</button>
     </div>
 
     <div id="studentScreen" class="screen" style="display: none;">
