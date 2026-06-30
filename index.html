@@ -565,6 +565,20 @@
 
     <div id="toast" class="toast"></div>
 
+    <div id="classroomShortcutsHint" class="classroom-shortcuts-hint" style="display: none;" role="status" aria-live="polite">
+        <button type="button" class="classroom-shortcuts-hint-close" aria-label="Close keyboard shortcuts hint">×</button>
+        <p class="classroom-shortcuts-hint-title">Use keyboard shortcuts:</p>
+        <ul class="classroom-shortcuts-hint-list">
+            <li>← Previous</li>
+            <li>→ Next</li>
+            <li id="classroomShortcutsHintSpaceLine">Space Flip card</li>
+        </ul>
+        <label class="classroom-shortcuts-hint-dismiss">
+            <input type="checkbox" id="classroomShortcutsHintDontShowAgain">
+            Don't show again
+        </label>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

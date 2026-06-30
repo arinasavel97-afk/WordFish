@@ -1144,6 +1144,93 @@ button:active {
 .toast.error { border-color: var(--coral); }
 .toast.info { border-color: var(--sea); }
 
+.classroom-shortcuts-hint {
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top));
+    right: max(16px, env(safe-area-inset-right));
+    left: auto;
+    z-index: 9100;
+    width: min(320px, calc(100vw - 32px));
+    padding: 16px 18px 14px;
+    border: 2px solid var(--color-input-border);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, #ffffff 0%, #EFFFFA 100%);
+    box-shadow: var(--soft-shadow);
+    text-align: left;
+    opacity: 0;
+    transform: translateY(-12px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    pointer-events: auto;
+}
+
+.classroom-shortcuts-hint.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.classroom-shortcuts-hint-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--sea-deep);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.classroom-shortcuts-hint-close:hover {
+    background: #EFFFFA;
+    color: var(--color-primary);
+}
+
+.classroom-shortcuts-hint-title {
+    margin: 0 36px 10px 0;
+    font-size: 15px;
+    font-weight: var(--font-weight-button);
+    color: var(--sea-deep);
+}
+
+.classroom-shortcuts-hint-list {
+    margin: 0 0 12px;
+    padding: 0;
+    list-style: none;
+}
+
+.classroom-shortcuts-hint-list li {
+    margin: 0 0 6px;
+    font-size: 14px;
+    color: var(--color-text);
+    line-height: 1.4;
+}
+
+.classroom-shortcuts-hint-dismiss {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-text);
+    cursor: pointer;
+    user-select: none;
+}
+
+.classroom-shortcuts-hint-dismiss input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+}
+
 #gameScreen {
     width: min(1120px, 100%);
     min-height: min(720px, calc(100vh - 32px));

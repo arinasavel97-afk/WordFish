@@ -57,6 +57,7 @@ const CLASSROOM_ACTIVITY_CONTEXT_STORAGE_KEY = "wordfish_classroom_activity_cont
 const CLASSROOM_FLASHCARDS_CONTEXT_STORAGE_KEY = "wordfish_classroom_flashcards_context";
 const CLASSROOM_TEXT_FLASHCARDS_CONTEXT_STORAGE_KEY = "wordfish_classroom_text_flashcards_context";
 const CLASSROOM_RANDOM_WORD_CONTEXT_STORAGE_KEY = "wordfish_classroom_random_word_context";
+const CLASSROOM_SHORTCUTS_HINT_STORAGE_KEY = "wordfish_hide_classroom_shortcuts_hint";
 const SETTINGS_KEYS = {
     trashAutoDelete: "wordfish_settings_trash_auto_delete",
     enableAnimations: "wordfish_settings_enable_animations",
@@ -326,6 +327,16 @@ function isClassroomRandomWordRefreshRequested() {
 }
 
 function displayScreen(screenId, addToHistory = true) {
+    const classroomShortcutsHintScreens = [
+        "classroomPresentationScreen",
+        "classroomFlashcardsScreen",
+        "classroomTextFlashcardsScreen"
+    ];
+
+    if (!classroomShortcutsHintScreens.includes(screenId)) {
+        hideClassroomShortcutsHint(false);
+    }
+
     hideAllScreens();
     const screen = document.getElementById(screenId);
     if (!screen) {
@@ -386,6 +397,136 @@ window.addEventListener("popstate", (event) => {
 });
 
 let toastTimer = null;
+let classroomShortcutsHintTimer = null;
+let classroomShortcutsHintInteractionPaused = false;
+
+function isClassroomShortcutsHintHiddenPermanently() {
+    return localStorage.getItem(CLASSROOM_SHORTCUTS_HINT_STORAGE_KEY) === "true";
+}
+
+function clearClassroomShortcutsHintTimer() {
+    if (classroomShortcutsHintTimer) {
+        clearTimeout(classroomShortcutsHintTimer);
+        classroomShortcutsHintTimer = null;
+    }
+}
+
+function hideClassroomShortcutsHint(savePermanent = false) {
+    if (savePermanent) {
+        localStorage.setItem(CLASSROOM_SHORTCUTS_HINT_STORAGE_KEY, "true");
+    }
+
+    clearClassroomShortcutsHintTimer();
+    classroomShortcutsHintInteractionPaused = false;
+
+    const hint = document.getElementById("classroomShortcutsHint");
+    if (hint) {
+        hint.style.display = "none";
+        hint.classList.remove("show");
+    }
+}
+
+function scheduleClassroomShortcutsHintAutoDismiss() {
+    if (classroomShortcutsHintInteractionPaused) {
+        return;
+    }
+
+    clearClassroomShortcutsHintTimer();
+    classroomShortcutsHintTimer = setTimeout(() => {
+        if (classroomShortcutsHintInteractionPaused) {
+            return;
+        }
+
+        hideClassroomShortcutsHint(false);
+    }, 8000);
+}
+
+function pauseClassroomShortcutsHintAutoDismiss() {
+    classroomShortcutsHintInteractionPaused = true;
+    clearClassroomShortcutsHintTimer();
+}
+
+function resumeClassroomShortcutsHintAutoDismiss() {
+    const hint = document.getElementById("classroomShortcutsHint");
+
+    if (!hint || hint.style.display === "none") {
+        classroomShortcutsHintInteractionPaused = false;
+        return;
+    }
+
+    classroomShortcutsHintInteractionPaused = false;
+    scheduleClassroomShortcutsHintAutoDismiss();
+}
+
+function maybeShowClassroomShortcutsHint(spaceLineText) {
+    if (isClassroomShortcutsHintHiddenPermanently()) {
+        return;
+    }
+
+    const hint = document.getElementById("classroomShortcutsHint");
+    const spaceLine = document.getElementById("classroomShortcutsHintSpaceLine");
+    const checkbox = document.getElementById("classroomShortcutsHintDontShowAgain");
+
+    if (!hint || !spaceLine) {
+        return;
+    }
+
+    spaceLine.textContent = spaceLineText;
+
+    if (checkbox) {
+        checkbox.checked = false;
+    }
+
+    hint.style.display = "block";
+    requestAnimationFrame(() => {
+        hint.classList.add("show");
+    });
+
+    classroomShortcutsHintInteractionPaused = false;
+    scheduleClassroomShortcutsHintAutoDismiss();
+}
+
+function initClassroomShortcutsHint() {
+    const hint = document.getElementById("classroomShortcutsHint");
+    const closeButton = hint ? hint.querySelector(".classroom-shortcuts-hint-close") : null;
+    const checkbox = document.getElementById("classroomShortcutsHintDontShowAgain");
+
+    if (!hint) {
+        return;
+    }
+
+    if (closeButton && closeButton.dataset.handlerAttached !== "true") {
+        closeButton.dataset.handlerAttached = "true";
+        closeButton.addEventListener("click", () => {
+            hideClassroomShortcutsHint(checkbox && checkbox.checked);
+        });
+    }
+
+    if (checkbox && checkbox.dataset.handlerAttached !== "true") {
+        checkbox.dataset.handlerAttached = "true";
+        checkbox.addEventListener("change", () => {
+            if (checkbox.checked) {
+                hideClassroomShortcutsHint(true);
+            }
+        });
+        checkbox.addEventListener("focus", pauseClassroomShortcutsHintAutoDismiss);
+        checkbox.addEventListener("blur", resumeClassroomShortcutsHintAutoDismiss);
+    }
+
+    if (hint.dataset.handlerAttached !== "true") {
+        hint.dataset.handlerAttached = "true";
+        hint.addEventListener("mouseenter", pauseClassroomShortcutsHintAutoDismiss);
+        hint.addEventListener("mouseleave", resumeClassroomShortcutsHintAutoDismiss);
+        hint.addEventListener("focusin", pauseClassroomShortcutsHintAutoDismiss);
+        hint.addEventListener("focusout", (event) => {
+            if (hint.contains(event.relatedTarget)) {
+                return;
+            }
+
+            resumeClassroomShortcutsHintAutoDismiss();
+        });
+    }
+}
 
 function showToast(message, type = "info") {
     const toast = document.getElementById("toast");
@@ -987,6 +1128,7 @@ function startClassroomPresentation(set, addToHistory = true) {
 function showClassroomPresentation(addToHistory = true) {
     displayScreen("classroomPresentationScreen", addToHistory);
     renderClassroomPresentationCard();
+    maybeShowClassroomShortcutsHint("Space Show / Hide translation");
 }
 
 function showClassroomPresentationForSelectedSet(addToHistory = true) {
@@ -1151,6 +1293,7 @@ function startClassroomFlashcards(set, addToHistory = true) {
 function showClassroomFlashcards(addToHistory = true) {
     displayScreen("classroomFlashcardsScreen", addToHistory);
     renderClassroomFlashcard();
+    maybeShowClassroomShortcutsHint("Space Flip card");
 }
 
 function showClassroomFlashcardsForSelectedSet(addToHistory = true) {
@@ -1415,6 +1558,7 @@ function showClassroomTextFlashcards(addToHistory = true) {
     displayScreen("classroomTextFlashcardsScreen", addToHistory);
     updateClassroomTextFlashcardDirectionButtonLabel();
     renderClassroomTextFlashcard();
+    maybeShowClassroomShortcutsHint("Space Flip card");
 }
 
 function showClassroomTextFlashcardsForSelectedSet(addToHistory = true) {
@@ -4292,6 +4436,7 @@ function initApp() {
     initClassroomFlashcardsControls();
     initClassroomTextFlashcardsControls();
     initClassroomRandomWordControls();
+    initClassroomShortcutsHint();
     checkAuth();
 }
 
