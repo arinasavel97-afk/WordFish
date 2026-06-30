@@ -36,8 +36,9 @@ function mapAppCard(card, position) {
 async function dbLoadSetsWithCards() {
     const { data: sets, error: setsError } = await supabaseClient
         .from("sets")
-        .select("id, name, created_at, updated_at")
-        .order("updated_at", { ascending: false });
+        .select("id, name, created_at, updated_at, position")
+        .order("position", { ascending: true, nullsFirst: false })
+        .order("created_at", { ascending: true });
 
     if (setsError) {
         throw setsError;
@@ -68,9 +69,27 @@ async function dbLoadSetsWithCards() {
         return {
             id: set.id,
             name: set.name,
+            position: set.position,
             cards: cardsForSet
         };
     });
+}
+
+async function dbUpdateSetPositions(orderedSets) {
+    const updates = orderedSets.map((set, index) =>
+        supabaseClient
+            .from("sets")
+            .update({ position: index + 1 })
+            .eq("id", set.id)
+    );
+
+    const results = await Promise.all(updates);
+
+    for (const result of results) {
+        if (result.error) {
+            throw result.error;
+        }
+    }
 }
 
 async function dbCreateSetWithCards(name, cards) {
