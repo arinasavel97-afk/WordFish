@@ -70,6 +70,7 @@ async function dbLoadSetsWithCards() {
             id: set.id,
             name: set.name,
             position: set.position,
+            created_at: set.created_at,
             cards: cardsForSet
         };
     });

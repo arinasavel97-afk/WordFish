@@ -10,6 +10,7 @@ let currentSetName = "";
 let cardsSortable = null;
 let setsSortable = null;
 let dashboardSearchQuery = "";
+let dashboardSortMode = "custom";
 let currentGameMode = "translation";
 let autoSaveTimer = null;
 let autoSaveInProgress = false;
@@ -168,18 +169,71 @@ function isDashboardSearchActive() {
     return dashboardSearchQuery.trim() !== "";
 }
 
-function getVisibleSavedSets() {
-    const query = dashboardSearchQuery.trim().toLowerCase();
-    if (!query) {
-        return savedSets;
+function isDashboardDragEnabled() {
+    return dashboardSortMode === "custom" && !isDashboardSearchActive();
+}
+
+function sortSavedSets(sets) {
+    const sorted = [...sets];
+
+    if (dashboardSortMode === "newest") {
+        return sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
 
-    return savedSets.filter((set) => set.name.toLowerCase().includes(query));
+    if (dashboardSortMode === "oldest") {
+        return sorted.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    }
+
+    if (dashboardSortMode === "az") {
+        return sorted.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }));
+    }
+
+    if (dashboardSortMode === "za") {
+        return sorted.sort((a, b) => b.name.localeCompare(a.name, undefined, { sensitivity: "base" }));
+    }
+
+    return sets;
+}
+
+function getVisibleSavedSets() {
+    const sortedSets = sortSavedSets(savedSets);
+    const query = dashboardSearchQuery.trim().toLowerCase();
+
+    if (!query) {
+        return sortedSets;
+    }
+
+    return sortedSets.filter((set) => set.name.toLowerCase().includes(query));
 }
 
 function onDashboardSearchInput(value) {
     dashboardSearchQuery = value;
     renderDashboard();
+}
+
+function onDashboardSortChange(value) {
+    const previousMode = dashboardSortMode;
+    dashboardSortMode = value;
+    updateDashboardSortUI();
+
+    if (previousMode !== value && value !== "custom") {
+        showToast("Switch to Custom order to rearrange sets.", "info");
+    }
+
+    renderDashboard();
+}
+
+function updateDashboardSortUI() {
+    const sortSelect = document.getElementById("dashboardSortSelect");
+    const sortHint = document.getElementById("dashboardSortHint");
+
+    if (sortSelect) {
+        sortSelect.value = dashboardSortMode;
+    }
+
+    if (sortHint) {
+        sortHint.style.display = dashboardSortMode === "custom" ? "none" : "block";
+    }
 }
 
 function renderDashboard() {
@@ -191,7 +245,8 @@ function renderDashboard() {
     }
 
     savedSetsList.innerHTML = "";
-    savedSetsList.classList.toggle("dashboard-search-active", isDashboardSearchActive());
+    savedSetsList.classList.toggle("dashboard-drag-disabled", !isDashboardDragEnabled());
+    updateDashboardSortUI();
 
     if (savedSets.length === 0) {
         savedSetsList.innerHTML = `
@@ -275,7 +330,7 @@ function initSetsSortable() {
         return;
     }
 
-    if (isDashboardSearchActive()) {
+    if (!isDashboardDragEnabled()) {
         return;
     }
 
