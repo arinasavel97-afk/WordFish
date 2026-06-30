@@ -1911,6 +1911,16 @@ h2 {
     }
 }
 
+#appLoadingScreen.app-loading-screen {
+    max-width: min(520px, 100%);
+    pointer-events: none;
+    user-select: none;
+}
+
+#appLoadingScreen .student-loading-panel {
+    display: flex;
+}
+
 /* Student Mode 2D-1 — entry screen */
 #studentScreen {
     max-width: min(520px, 100%);

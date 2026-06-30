@@ -5,12 +5,29 @@
 
     <title>Word Fish</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        #authScreen, #dashboardScreen { display: none; }
+        #appLoadingScreen { display: block; }
+    </style>
 
 </head>
 
 <body>
 
-    <div id="authScreen" class="screen">
+    <div id="appLoadingScreen" class="screen app-loading-screen" aria-live="polite" aria-busy="true">
+        <div class="sea-header">🫧 🐠 🪸 🫧</div>
+        <div class="student-loading-panel">
+            <div class="student-loading-bubbles" aria-hidden="true">
+                <span class="student-bubble"></span>
+                <span class="student-bubble"></span>
+                <span class="student-bubble"></span>
+                <span class="student-bubble"></span>
+            </div>
+            <p class="student-loading-text">Loading Word Fish...</p>
+        </div>
+    </div>
+
+    <div id="authScreen" class="screen" style="display: none;">
         <div class="sea-header">🫧 🐠 🪸 🫧</div>
 
         <h1>🐠 Word Fish</h1>
@@ -33,7 +50,7 @@
     </div>
 
 
-    <div id="dashboardScreen" class="screen">
+    <div id="dashboardScreen" class="screen" style="display: none;">
         <div class="sea-header">🫧 🐠 🪸 🫧</div>
         <h1>🐠 Word Fish</h1>
         <h2>Teacher Dashboard</h2>
