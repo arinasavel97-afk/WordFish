@@ -65,7 +65,7 @@
         <div id="dashboardSelectionBar" class="dashboard-selection-bar" hidden>
             <span id="dashboardSelectionCount" class="dashboard-selection-count">✓ 0 selected</span>
             <div class="dashboard-selection-bar-actions">
-                <button type="button" class="soft-button disabled-button" disabled>Duplicate</button>
+                <button id="dashboardBulkDuplicateButton" type="button" class="soft-button disabled-button" disabled onclick="openBulkDuplicateConfirm()">Duplicate</button>
                 <button id="dashboardBulkDeleteButton" type="button" class="red-button disabled-button" disabled onclick="openBulkDeleteConfirm()">Delete</button>
                 <button type="button" class="soft-button" onclick="cancelDashboardSelection()">Cancel</button>
             </div>
@@ -157,6 +157,17 @@
             <div class="delete-confirm-actions">
                 <button type="button" class="soft-button" onclick="closeDeleteConfirm()">Cancel</button>
                 <button id="deleteConfirmActionButton" type="button" class="red-button" onclick="confirmDeleteAction()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="duplicateConfirmModal" class="modal-backdrop" onclick="closeBulkDuplicateConfirmOnBackdrop(event)" style="display: none;">
+        <div class="modal-card delete-confirm-modal" onclick="event.stopPropagation()">
+            <h2>Duplicate selected sets?</h2>
+            <p class="delete-confirm-body">Copies will be created for all selected sets.</p>
+            <div class="delete-confirm-actions">
+                <button type="button" class="soft-button" onclick="closeBulkDuplicateConfirm()">Cancel</button>
+                <button type="button" class="green-button" onclick="confirmBulkDuplicate()">Duplicate</button>
             </div>
         </div>
     </div>

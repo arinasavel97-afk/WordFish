@@ -22,6 +22,7 @@ let selectedShareSetIndex = null;
 let pendingDeleteSetIndex = null;
 let deleteConfirmMode = "single";
 let pendingBulkDeleteSetIds = [];
+let pendingBulkDuplicateSetIds = [];
 let currentCardMistakes = 0;
 let totalWrongAttempts = 0;
 let lastGameOrderSignature = "";
@@ -299,6 +300,13 @@ function updateDashboardSelectionUI() {
         bulkDeleteButton.disabled = !canDelete;
         bulkDeleteButton.classList.toggle("disabled-button", !canDelete);
     }
+
+    const bulkDuplicateButton = document.getElementById("dashboardBulkDuplicateButton");
+    if (bulkDuplicateButton) {
+        const canDuplicate = dashboardSelectionMode && selectedCount > 0;
+        bulkDuplicateButton.disabled = !canDuplicate;
+        bulkDuplicateButton.classList.toggle("disabled-button", !canDuplicate);
+    }
 }
 
 function renderDashboard() {
@@ -574,17 +582,17 @@ function editSet(indexOrId) {
     showCardsScreen();
 }
 
-function getDuplicateSetName(originalName) {
+function getDuplicateSetName(originalName, existingNames = null) {
     const baseName = originalName.trim();
-    const existingNames = savedSets.map((set) => set.name);
+    const names = existingNames || savedSets.map((set) => set.name);
     const firstChoice = `${baseName} (Copy)`;
 
-    if (!existingNames.includes(firstChoice)) {
+    if (!names.includes(firstChoice)) {
         return firstChoice;
     }
 
     let counter = 2;
-    while (existingNames.includes(`${baseName} (Copy ${counter})`)) {
+    while (names.includes(`${baseName} (Copy ${counter})`)) {
         counter++;
     }
 
@@ -625,6 +633,55 @@ async function duplicateSet(indexOrId) {
         showToast("Set duplicated successfully.", "success");
     } catch (error) {
         showToast("Could not duplicate set: " + error.message, "error");
+    }
+}
+
+function openBulkDuplicateConfirm() {
+    if (!dashboardSelectionMode || dashboardSelectedSetIds.size === 0) {
+        return;
+    }
+
+    pendingBulkDuplicateSetIds = Array.from(dashboardSelectedSetIds);
+    document.getElementById("duplicateConfirmModal").style.display = "flex";
+}
+
+function closeBulkDuplicateConfirm() {
+    pendingBulkDuplicateSetIds = [];
+    document.getElementById("duplicateConfirmModal").style.display = "none";
+}
+
+function closeBulkDuplicateConfirmOnBackdrop(event) {
+    if (event.target === event.currentTarget) {
+        closeBulkDuplicateConfirm();
+    }
+}
+
+async function confirmBulkDuplicate() {
+    const selectedIds = pendingBulkDuplicateSetIds.slice();
+    closeBulkDuplicateConfirm();
+
+    if (selectedIds.length === 0) {
+        return;
+    }
+
+    const selectedIdSet = new Set(selectedIds);
+    const sourceSets = savedSets.filter((set) => selectedIdSet.has(set.id));
+    const workingNames = savedSets.map((set) => set.name);
+
+    try {
+        for (const sourceSet of sourceSets) {
+            const duplicateName = getDuplicateSetName(sourceSet.name, workingNames);
+            await dbDuplicateSet(sourceSet, duplicateName);
+            workingNames.push(duplicateName);
+        }
+
+        savedSets = await dbLoadSetsWithCards();
+        cancelDashboardSelection();
+        showToast("Sets duplicated successfully.", "success");
+    } catch (error) {
+        showToast("Could not duplicate sets: " + error.message, "error");
+        savedSets = await dbLoadSetsWithCards();
+        renderDashboard();
     }
 }
 
@@ -725,6 +782,12 @@ async function confirmDeleteAction() {
 
 document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
+
+    const duplicateModal = document.getElementById("duplicateConfirmModal");
+    if (duplicateModal && duplicateModal.style.display === "flex") {
+        closeBulkDuplicateConfirm();
+        return;
+    }
 
     const deleteModal = document.getElementById("deleteConfirmModal");
     if (deleteModal && deleteModal.style.display === "flex") {
