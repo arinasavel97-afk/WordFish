@@ -748,6 +748,184 @@ async function exportSet(indexOrId) {
     }
 }
 
+function createImportValidationError() {
+    const error = new Error("Invalid Excel file.");
+    error.isImportValidationError = true;
+    return error;
+}
+
+function excelCellToString(cell) {
+    if (!cell || cell.value == null) {
+        return "";
+    }
+
+    const value = cell.value;
+
+    if (typeof value === "object") {
+        if (Array.isArray(value.richText)) {
+            return value.richText.map((part) => part.text || "").join("");
+        }
+
+        if (value.text != null) {
+            return String(value.text);
+        }
+
+        if (value.result != null) {
+            return String(value.result);
+        }
+    }
+
+    if (value instanceof Date) {
+        return value.toISOString();
+    }
+
+    return String(value);
+}
+
+function getImportedSetNameFromFilename(filename) {
+    const baseName = String(filename || "")
+        .replace(/\.xlsx$/i, "")
+        .trim();
+
+    return baseName || "Imported Set";
+}
+
+function getImportedSetName(baseName) {
+    const names = savedSets.map((set) => set.name);
+    const base = baseName.trim() || "Imported Set";
+
+    if (!names.includes(base)) {
+        return base;
+    }
+
+    const firstChoice = `${base} (Imported)`;
+    if (!names.includes(firstChoice)) {
+        return firstChoice;
+    }
+
+    let counter = 2;
+    while (names.includes(`${base} (Imported ${counter})`)) {
+        counter++;
+    }
+
+    return `${base} (Imported ${counter})`;
+}
+
+async function parseExcelImportFile(file) {
+    if (typeof ExcelJS === "undefined") {
+        throw new Error("Excel import library is not available.");
+    }
+
+    const buffer = await file.arrayBuffer();
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(buffer);
+
+    const worksheet = workbook.worksheets[0];
+    if (!worksheet) {
+        throw createImportValidationError();
+    }
+
+    const headerRow = worksheet.getRow(1);
+    if (!headerRow || headerRow.cellCount === 0) {
+        throw createImportValidationError();
+    }
+
+    let englishCol = null;
+    let translationCol = null;
+
+    headerRow.eachCell({ includeEmpty: false }, (cell, colNumber) => {
+        const header = excelCellToString(cell).trim().toLowerCase();
+
+        if (header === "english") {
+            englishCol = colNumber;
+        }
+
+        if (header === "translation") {
+            translationCol = colNumber;
+        }
+    });
+
+    if (englishCol === null || translationCol === null) {
+        throw createImportValidationError();
+    }
+
+    const cards = [];
+
+    worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) {
+            return;
+        }
+
+        const english = excelCellToString(row.getCell(englishCol)).trim();
+        const translation = excelCellToString(row.getCell(translationCol)).trim();
+
+        if (english === "" && translation === "") {
+            return;
+        }
+
+        if (english === "") {
+            return;
+        }
+
+        cards.push({
+            english: english,
+            thai: translation,
+            imageUrl: ""
+        });
+    });
+
+    if (cards.length === 0) {
+        throw createImportValidationError();
+    }
+
+    return cards;
+}
+
+function openExcelImportPicker() {
+    const input = document.getElementById("excelImportInput");
+    if (!input) {
+        return;
+    }
+
+    input.value = "";
+    input.click();
+}
+
+function showExcelImportValidationError() {
+    showToast("Invalid Excel file. Please use columns: English and Translation.", "error");
+}
+
+async function handleExcelImportSelected(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) {
+        return;
+    }
+
+    if (!file.name.toLowerCase().endsWith(".xlsx")) {
+        showExcelImportValidationError();
+        return;
+    }
+
+    try {
+        const cards = await parseExcelImportFile(file);
+        const baseName = getImportedSetNameFromFilename(file.name);
+        const setName = getImportedSetName(baseName);
+        const newSet = await dbCreateSetWithCards(setName, cards);
+
+        savedSets = await dbLoadSetsWithCards();
+        renderDashboard();
+        scrollToDuplicatedSet(newSet.id);
+        showToast("Excel imported successfully.", "success");
+    } catch (error) {
+        if (error.isImportValidationError) {
+            showExcelImportValidationError();
+            return;
+        }
+
+        showToast("Could not import Excel: " + error.message, "error");
+    }
+}
+
 function openBulkDuplicateConfirm() {
     if (!dashboardSelectionMode || dashboardSelectedSetIds.size === 0) {
         return;

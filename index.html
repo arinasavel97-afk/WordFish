@@ -39,8 +39,15 @@
         <h2>Teacher Dashboard</h2>
         <p class="subtitle">Create vocabulary sets and play ocean-style word games.</p>
 
-        <button class="green-button" onclick="showTeacherScreen()">➕ New Set</button>
-        <button class="red-button" onclick="logout()">🚪 Log Out</button>
+        <div class="dashboard-primary-actions">
+            <button class="green-button" onclick="showTeacherScreen()">➕ New Set</button>
+            <button type="button" class="soft-button dashboard-import-button" onclick="openExcelImportPicker()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
+                Import Excel
+            </button>
+            <button class="red-button" onclick="logout()">🚪 Log Out</button>
+        </div>
+        <input id="excelImportInput" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden onchange="handleExcelImportSelected(event)">
 
         <div class="dashboard-toolbar">
             <div class="dashboard-search-field">
