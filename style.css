@@ -2382,6 +2382,20 @@ h2 {
     cursor: not-allowed;
 }
 
+.classroom-nav-next-button.classroom-finish-pulse {
+    animation: classroomFinishPulse 0.35s ease;
+}
+
+@keyframes classroomFinishPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.04);
+    }
+}
+
 @media (max-width: 900px) {
     .classroom-presentation-main {
         grid-template-columns: 1fr;

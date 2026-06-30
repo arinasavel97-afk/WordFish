@@ -798,14 +798,41 @@ function classroomPresentationPrevious() {
     renderClassroomPresentationCard();
 }
 
-function classroomPresentationNext() {
-    if (classroomPresentationIndex >= classroomPresentationCards.length - 1) {
-        finishClassroomPresentation();
+function isClassroomPresentationOnLastCard() {
+    return classroomPresentationIndex >= classroomPresentationCards.length - 1;
+}
+
+function classroomPresentationAdvance() {
+    if (isClassroomPresentationOnLastCard()) {
         return;
     }
 
     classroomPresentationIndex += 1;
     renderClassroomPresentationCard();
+}
+
+function classroomPresentationNextButtonClick() {
+    if (isClassroomPresentationOnLastCard()) {
+        finishClassroomPresentation();
+        return;
+    }
+
+    classroomPresentationAdvance();
+}
+
+function pulseClassroomFinishButton() {
+    const nextButton = document.getElementById("classroomNextButton");
+
+    if (!nextButton) {
+        return;
+    }
+
+    nextButton.classList.remove("classroom-finish-pulse");
+    void nextButton.offsetWidth;
+    nextButton.classList.add("classroom-finish-pulse");
+    nextButton.addEventListener("animationend", () => {
+        nextButton.classList.remove("classroom-finish-pulse");
+    }, { once: true });
 }
 
 function finishClassroomPresentation() {
@@ -863,7 +890,13 @@ function handleClassroomPresentationKeydown(event) {
 
     if (event.key === "ArrowRight") {
         event.preventDefault();
-        classroomPresentationNext();
+
+        if (isClassroomPresentationOnLastCard()) {
+            pulseClassroomFinishButton();
+            return;
+        }
+
+        classroomPresentationAdvance();
         return;
     }
 
@@ -887,7 +920,7 @@ function initClassroomPresentationControls() {
 
     if (nextButton && nextButton.dataset.handlerAttached !== "true") {
         nextButton.dataset.handlerAttached = "true";
-        nextButton.addEventListener("click", classroomPresentationNext);
+        nextButton.addEventListener("click", classroomPresentationNextButtonClick);
     }
 
     if (toggleButton && toggleButton.dataset.handlerAttached !== "true") {
