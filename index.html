@@ -143,11 +143,11 @@
                 <button type="button" class="green-button" onclick="startClassroomPresentationFromActivityMenu()">Start</button>
             </article>
 
-            <article class="card classroom-activity-card classroom-activity-card-disabled">
+            <article class="card classroom-activity-card">
                 <h2 class="classroom-activity-name">Flashcards</h2>
                 <p class="classroom-activity-description">Flip cards and practice vocabulary.</p>
-                <p class="classroom-activity-status classroom-activity-status-soon">Coming soon</p>
-                <button type="button" class="soft-button disabled-button" disabled>Start</button>
+                <p class="classroom-activity-status classroom-activity-status-available">Available</p>
+                <button type="button" class="green-button" onclick="startClassroomFlashcardsFromActivityMenu()">Start</button>
             </article>
 
             <article class="card classroom-activity-card classroom-activity-card-disabled">
@@ -194,6 +194,49 @@
         <footer class="classroom-presentation-footer">
             <button id="classroomPrevButton" type="button" class="soft-button classroom-nav-prev-button">← Previous</button>
             <button id="classroomNextButton" type="button" class="green-button classroom-nav-next-button">Next →</button>
+        </footer>
+    </div>
+
+    <div id="classroomFlashcardsScreen" class="classroom-flashcards-screen" style="display: none;">
+        <header class="classroom-flashcards-header">
+            <p id="classroomFlashcardsHeaderMeta" class="classroom-flashcards-header-meta">Set Name • Card 1 of 1</p>
+            <div class="classroom-flashcards-header-actions">
+                <button id="classroomFlashcardsFullscreenButton" type="button" class="classroom-fullscreen-button" aria-label="Enter fullscreen" title="Fullscreen">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"/></svg>
+                    <span id="classroomFlashcardsFullscreenButtonLabel">Fullscreen</span>
+                </button>
+                <button id="classroomFlashcardsBackButton" type="button" class="soft-button classroom-back-button">Back</button>
+            </div>
+        </header>
+
+        <main class="classroom-flashcards-main">
+            <div id="classroomFlashcard" class="classroom-flashcard" role="button" tabindex="0" aria-label="Flip card">
+                <div id="classroomFlashcardInner" class="classroom-flashcard-inner">
+                    <div class="classroom-flashcard-face classroom-flashcard-front">
+                        <div class="classroom-flashcard-image-wrap">
+                            <img id="classroomFlashcardFrontImage" class="classroom-flashcard-image" alt="">
+                            <div id="classroomFlashcardFrontPlaceholder" class="classroom-flashcard-image-placeholder" aria-hidden="true">
+                                <div class="classroom-flashcard-placeholder-art">🖼️ 🐠</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="classroom-flashcard-face classroom-flashcard-back">
+                        <div class="classroom-flashcard-image-wrap">
+                            <img id="classroomFlashcardBackImage" class="classroom-flashcard-image" alt="">
+                            <div id="classroomFlashcardBackPlaceholder" class="classroom-flashcard-image-placeholder" aria-hidden="true">
+                                <div class="classroom-flashcard-placeholder-art">🖼️ 🐠</div>
+                            </div>
+                        </div>
+                        <p id="classroomFlashcardBackEnglish" class="classroom-flashcard-english">Word</p>
+                        <p id="classroomFlashcardBackTranslation" class="classroom-flashcard-translation">Translation</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="classroom-flashcards-footer">
+            <button id="classroomFlashcardsPrevButton" type="button" class="soft-button classroom-nav-prev-button">← Previous</button>
+            <button id="classroomFlashcardsNextButton" type="button" class="green-button classroom-nav-next-button">Next →</button>
         </footer>
     </div>
 
