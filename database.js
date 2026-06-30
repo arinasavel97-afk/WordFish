@@ -78,6 +78,51 @@ async function dbLoadSetsWithCards() {
     });
 }
 
+async function dbLoadTrashedSetsWithCards() {
+    const { data: sets, error: setsError } = await supabaseClient
+        .from("sets")
+        .select("id, name, created_at, updated_at, position, is_favorite, deleted_at")
+        .not("deleted_at", "is", null)
+        .order("deleted_at", { ascending: false });
+
+    if (setsError) {
+        throw setsError;
+    }
+
+    if (!sets || sets.length === 0) {
+        return [];
+    }
+
+    const setIds = sets.map(set => set.id);
+
+    const { data: allCards, error: cardsError } = await supabaseClient
+        .from("cards")
+        .select("id, set_id, english, translation, thai, image_url, position")
+        .in("set_id", setIds)
+        .order("position", { ascending: true });
+
+    if (cardsError) {
+        throw cardsError;
+    }
+
+    return sets.map(set => {
+        const cardsForSet = (allCards || [])
+            .filter(card => card.set_id === set.id)
+            .sort((a, b) => (a.position || 0) - (b.position || 0))
+            .map(mapDatabaseCard);
+
+        return {
+            id: set.id,
+            name: set.name,
+            position: set.position,
+            created_at: set.created_at,
+            deleted_at: set.deleted_at,
+            is_favorite: !!set.is_favorite,
+            cards: cardsForSet
+        };
+    });
+}
+
 async function dbUpdateSetPositions(orderedSets) {
     const updates = orderedSets.map((set, index) =>
         supabaseClient
@@ -100,6 +145,32 @@ async function dbUpdateSetFavorite(setId, isFavorite) {
         .from("sets")
         .update({ is_favorite: isFavorite })
         .eq("id", setId);
+
+    if (error) {
+        throw error;
+    }
+}
+
+async function dbRestoreSet(setId) {
+    const { error } = await supabaseClient
+        .from("sets")
+        .update({ deleted_at: null })
+        .eq("id", setId);
+
+    if (error) {
+        throw error;
+    }
+}
+
+async function dbRestoreSets(setIds) {
+    if (!setIds || setIds.length === 0) {
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from("sets")
+        .update({ deleted_at: null })
+        .in("id", setIds);
 
     if (error) {
         throw error;
@@ -214,6 +285,30 @@ async function dbSoftDeleteSets(setIds) {
 
     if (error) {
         throw error;
+    }
+}
+
+async function dbPermanentlyDeleteSets(setIds) {
+    if (!setIds || setIds.length === 0) {
+        return;
+    }
+
+    const { error: cardsError } = await supabaseClient
+        .from("cards")
+        .delete()
+        .in("set_id", setIds);
+
+    if (cardsError) {
+        throw cardsError;
+    }
+
+    const { error: setsError } = await supabaseClient
+        .from("sets")
+        .delete()
+        .in("id", setIds);
+
+    if (setsError) {
+        throw setsError;
     }
 }
 

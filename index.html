@@ -68,6 +68,7 @@
                 <select id="dashboardFilterSelect" onchange="onDashboardFilterChange(this.value)">
                     <option value="all">All Sets</option>
                     <option value="favorites">Favorites</option>
+                    <option value="trash">Trash</option>
                 </select>
             </div>
             <div class="dashboard-select-field">
@@ -79,8 +80,10 @@
         <div id="dashboardSelectionBar" class="dashboard-selection-bar" hidden>
             <span id="dashboardSelectionCount" class="dashboard-selection-count">✓ 0 selected</span>
             <div class="dashboard-selection-bar-actions">
-                <button id="dashboardBulkDuplicateButton" type="button" class="soft-button disabled-button" disabled onclick="openBulkDuplicateConfirm()">Duplicate</button>
+                <button id="dashboardBulkDuplicateButton" type="button" class="duplicate-button disabled-button" disabled onclick="openBulkDuplicateConfirm()">Duplicate</button>
                 <button id="dashboardBulkDeleteButton" type="button" class="red-button disabled-button" disabled onclick="openBulkDeleteConfirm()">Delete</button>
+                <button id="dashboardBulkRestoreButton" type="button" class="green-button disabled-button" disabled onclick="restoreSelectedSets()" hidden>Restore</button>
+                <button id="dashboardBulkDeleteForeverButton" type="button" class="red-button disabled-button" disabled onclick="openBulkDeleteForeverConfirm()" hidden>Delete Forever</button>
                 <button type="button" class="soft-button" onclick="cancelDashboardSelection()">Cancel</button>
             </div>
         </div>
@@ -181,7 +184,7 @@
             <p class="delete-confirm-body">Copies will be created for all selected sets.</p>
             <div class="delete-confirm-actions">
                 <button type="button" class="soft-button" onclick="closeBulkDuplicateConfirm()">Cancel</button>
-                <button type="button" class="green-button" onclick="confirmBulkDuplicate()">Duplicate</button>
+                <button type="button" class="duplicate-button" onclick="confirmBulkDuplicate()">Duplicate</button>
             </div>
         </div>
     </div>

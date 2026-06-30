@@ -10,6 +10,9 @@
     --sun-dark: #D99500;
     --coral: #EF476F;
     --coral-dark: #C92F55;
+    --duplicate: #4ECBC4;
+    --duplicate-dark: #2FA89F;
+    --duplicate-hover: #5ED7D0;
     --foam: #EFFFFA;
     --pale: #F4FDFF;
     --card: rgba(255, 255, 255, 0.92);
@@ -268,6 +271,15 @@ button:active {
 .red-button:hover { background: #FF8585; }
 .red-button:active { box-shadow: var(--shadow-button), 0 2px 0 var(--color-danger-dark); }
 
+.duplicate-button {
+    background: var(--duplicate);
+    color: #fff;
+    box-shadow: var(--shadow-button), 0 5px 0 var(--duplicate-dark);
+}
+
+.duplicate-button:hover:not(:disabled) { background: var(--duplicate-hover); }
+.duplicate-button:active:not(:disabled) { box-shadow: var(--shadow-button), 0 2px 0 var(--duplicate-dark); }
+
 .soft-button,
 .disabled-button {
     background: var(--color-soft);
@@ -484,6 +496,10 @@ button:active {
 .dashboard-selection-bar-actions button {
     margin: 0;
     min-height: 44px;
+}
+
+.dashboard-selection-bar-actions button[hidden] {
+    display: none;
 }
 
 #savedSetsList.dashboard-drag-disabled .set-drag-handle {
@@ -1814,8 +1830,8 @@ h2 {
 }
 
 #savedSetsList .set-icon-duplicate:hover {
-    background: rgba(0, 166, 200, 0.12);
-    color: var(--sea);
+    background: rgba(78, 203, 196, 0.15);
+    color: var(--duplicate-dark);
     transform: scale(1.08);
 }
 
@@ -1828,6 +1844,21 @@ h2 {
     color: var(--sea);
     transform: scale(1.08);
     cursor: pointer;
+}
+
+#savedSetsList .set-icon-restore:hover {
+    background: rgba(95, 208, 133, 0.15);
+    color: var(--color-success);
+}
+
+#savedSetsList .set-card-trash-topline {
+    color: #6B7280;
+    background: #F3F4F6;
+    border-color: rgba(107, 114, 128, 0.2);
+}
+
+#savedSetsList .set-actions-trash button {
+    margin: 0;
 }
 
 #savedSetsList .set-icon-button:active {

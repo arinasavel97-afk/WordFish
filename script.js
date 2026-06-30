@@ -1,5 +1,6 @@
 let cards = [];
 let savedSets = [];
+let trashedSets = [];
 let gameCards = [];
 let currentIndex = 0;
 let score = 0;
@@ -23,6 +24,7 @@ let selectedShareSetIndex = null;
 let pendingDeleteSetIndex = null;
 let deleteConfirmMode = "single";
 let pendingBulkDeleteSetIds = [];
+let pendingPermanentDeleteSetIds = [];
 let pendingBulkDuplicateSetIds = [];
 let currentCardMistakes = 0;
 let totalWrongAttempts = 0;
@@ -153,6 +155,9 @@ async function showDashboard(addToHistory = true) {
 
     try {
         savedSets = await dbLoadSetsWithCards();
+        if (isDashboardTrashFilterActive()) {
+            trashedSets = await dbLoadTrashedSetsWithCards();
+        }
         renderDashboard();
     } catch (error) {
         savedSetsList.innerHTML = `
@@ -186,11 +191,20 @@ function isDashboardFavoritesFilterActive() {
     return dashboardFilterMode === "favorites";
 }
 
+function isDashboardTrashFilterActive() {
+    return dashboardFilterMode === "trash";
+}
+
+function getDashboardSourceSets() {
+    return isDashboardTrashFilterActive() ? trashedSets : savedSets;
+}
+
 function isDashboardDragEnabled() {
     return dashboardSortMode === "custom"
         && !isDashboardSearchActive()
         && !dashboardSelectionMode
-        && !isDashboardFavoritesFilterActive();
+        && !isDashboardFavoritesFilterActive()
+        && !isDashboardTrashFilterActive();
 }
 
 function sortSavedSets(sets) {
@@ -216,7 +230,7 @@ function sortSavedSets(sets) {
 }
 
 function getVisibleSavedSets() {
-    let visibleSets = sortSavedSets(savedSets);
+    let visibleSets = sortSavedSets(getDashboardSourceSets());
 
     if (isDashboardFavoritesFilterActive()) {
         visibleSets = visibleSets.filter((set) => set.is_favorite);
@@ -248,12 +262,27 @@ function onDashboardSortChange(value) {
     renderDashboard();
 }
 
-function onDashboardFilterChange(value) {
+async function onDashboardFilterChange(value) {
     const previousMode = dashboardFilterMode;
+
+    if (value === "trash") {
+        try {
+            trashedSets = await dbLoadTrashedSetsWithCards();
+        } catch (error) {
+            showToast("Could not load trash: " + error.message, "error");
+            return;
+        }
+    }
+
     dashboardFilterMode = value;
     updateDashboardToolbarUI();
+    updateDashboardSelectionUI();
 
     if (previousMode !== value && value === "favorites") {
+        showToast("Switch to All Sets and Custom order to rearrange sets.", "info");
+    }
+
+    if (previousMode !== value && value === "trash") {
         showToast("Switch to All Sets and Custom order to rearrange sets.", "info");
     }
 
@@ -274,7 +303,7 @@ function updateDashboardToolbarUI() {
         filterSelect.value = dashboardFilterMode;
     }
 
-    if (isDashboardFavoritesFilterActive()) {
+    if (isDashboardFavoritesFilterActive() || isDashboardTrashFilterActive()) {
         hintMessages.push("Switch to All Sets and Custom order to rearrange sets.");
     } else if (dashboardSortMode !== "custom") {
         hintMessages.push("Switch to Custom order to rearrange sets.");
@@ -333,17 +362,37 @@ function updateDashboardSelectionUI() {
     }
 
     const bulkDeleteButton = document.getElementById("dashboardBulkDeleteButton");
+    const bulkDuplicateButton = document.getElementById("dashboardBulkDuplicateButton");
+    const bulkRestoreButton = document.getElementById("dashboardBulkRestoreButton");
+    const bulkDeleteForeverButton = document.getElementById("dashboardBulkDeleteForeverButton");
+    const isTrashView = isDashboardTrashFilterActive();
+
+    if (bulkDuplicateButton) {
+        bulkDuplicateButton.hidden = isTrashView;
+        const canDuplicate = dashboardSelectionMode && selectedCount > 0 && !isTrashView;
+        bulkDuplicateButton.disabled = !canDuplicate;
+        bulkDuplicateButton.classList.toggle("disabled-button", !canDuplicate);
+    }
+
     if (bulkDeleteButton) {
-        const canDelete = dashboardSelectionMode && selectedCount > 0;
+        bulkDeleteButton.hidden = isTrashView;
+        const canDelete = dashboardSelectionMode && selectedCount > 0 && !isTrashView;
         bulkDeleteButton.disabled = !canDelete;
         bulkDeleteButton.classList.toggle("disabled-button", !canDelete);
     }
 
-    const bulkDuplicateButton = document.getElementById("dashboardBulkDuplicateButton");
-    if (bulkDuplicateButton) {
-        const canDuplicate = dashboardSelectionMode && selectedCount > 0;
-        bulkDuplicateButton.disabled = !canDuplicate;
-        bulkDuplicateButton.classList.toggle("disabled-button", !canDuplicate);
+    if (bulkRestoreButton) {
+        bulkRestoreButton.hidden = !isTrashView;
+        const canRestore = dashboardSelectionMode && selectedCount > 0 && isTrashView;
+        bulkRestoreButton.disabled = !canRestore;
+        bulkRestoreButton.classList.toggle("disabled-button", !canRestore);
+    }
+
+    if (bulkDeleteForeverButton) {
+        bulkDeleteForeverButton.hidden = !isTrashView;
+        const canDeleteForever = dashboardSelectionMode && selectedCount > 0 && isTrashView;
+        bulkDeleteForeverButton.disabled = !canDeleteForever;
+        bulkDeleteForeverButton.classList.toggle("disabled-button", !canDeleteForever);
     }
 }
 
@@ -361,7 +410,17 @@ function renderDashboard() {
     updateDashboardToolbarUI();
     updateDashboardSelectionUI();
 
-    if (savedSets.length === 0) {
+    if (isDashboardTrashFilterActive() && trashedSets.length === 0) {
+        savedSetsList.innerHTML = `
+            <div class="card empty-library-card dashboard-search-empty">
+                <h2>Trash is empty.</h2>
+                <p>Deleted sets will appear here.</p>
+            </div>
+        `;
+        return;
+    }
+
+    if (!isDashboardTrashFilterActive() && savedSets.length === 0) {
         savedSetsList.innerHTML = `
             <div class="card empty-library-card">
                 <h2>🐚 Your library is empty</h2>
@@ -382,6 +441,11 @@ function renderDashboard() {
             emptyMessage = "Star a set to add it to Favorites.";
         } else if (isDashboardFavoritesFilterActive()) {
             emptyMessage = "Try another search within Favorites.";
+        } else if (isDashboardTrashFilterActive() && !isDashboardSearchActive()) {
+            emptyTitle = "Trash is empty.";
+            emptyMessage = "Deleted sets will appear here.";
+        } else if (isDashboardTrashFilterActive()) {
+            emptyMessage = "Try another search within Trash.";
         }
 
         savedSetsList.innerHTML = `
@@ -399,6 +463,42 @@ function renderDashboard() {
         let wordCount = set.cards ? set.cards.length : 0;
         let imageCount = (set.cards || []).filter(card => card.imageUrl).length;
         let isSelected = dashboardSelectedSetIds.has(setId);
+        let isTrashView = isDashboardTrashFilterActive();
+
+        if (isTrashView) {
+            let cardDisabled = dashboardSelectionMode;
+            let disabledAttr = cardDisabled ? " disabled" : "";
+
+            savedSetsList.innerHTML += `
+            <div class="card set-card set-card-trash${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
+                <label class="set-card-select">
+                    <input type="checkbox" class="set-card-select-input" aria-label="Select ${escapeAttribute(set.name)}" ${isSelected ? "checked" : ""} onchange="onSetSelectionChange('${escapeAttribute(setId)}', this.checked)">
+                </label>
+                <div class="set-card-header">
+                    <div class="set-card-header-left"></div>
+                    <div class="set-card-icon-actions">
+                        <button type="button" class="set-icon-button set-icon-restore" onclick="restoreSet('${escapeAttribute(setId)}')" aria-label="Restore set" title="Restore"${disabledAttr}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"/></svg>
+                        </button>
+                        <button type="button" class="set-icon-button set-icon-delete" onclick="deleteForeverSet('${escapeAttribute(setId)}')" aria-label="Delete forever" title="Delete Forever"${disabledAttr}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="set-card-topline set-card-trash-topline">🗑️ In Trash</div>
+                <h2>📚 ${escapeHTML(set.name)}</h2>
+                <p><span class="small-label">Words:</span> ${wordCount}</p>
+                <p><span class="small-label">Images:</span> ${imageCount}</p>
+
+                <div class="set-actions set-actions-trash">
+                    <button class="green-button" onclick="restoreSet('${escapeAttribute(setId)}')"${disabledAttr}>Restore</button>
+                    <button class="red-button" onclick="deleteForeverSet('${escapeAttribute(setId)}')"${disabledAttr}>Delete Forever</button>
+                </div>
+            </div>
+        `;
+            continue;
+        }
+
         let cardDisabled = dashboardSelectionMode;
         let disabledAttr = cardDisabled ? " disabled" : "";
         let duplicateAttrs = cardDisabled
@@ -464,6 +564,10 @@ function resolveSetIndex(indexOrId) {
 }
 
 async function toggleSetFavorite(indexOrId) {
+    if (isDashboardTrashFilterActive()) {
+        return;
+    }
+
     const index = resolveSetIndex(indexOrId);
     if (index < 0) {
         return;
@@ -480,6 +584,51 @@ async function toggleSetFavorite(indexOrId) {
     }
 }
 
+async function syncSavedSetsAfterRestore() {
+    savedSets = await dbLoadSetsWithCards();
+}
+
+async function restoreSet(setId) {
+    if (dashboardSelectionMode) {
+        return;
+    }
+
+    try {
+        await dbRestoreSet(setId);
+        trashedSets = trashedSets.filter((set) => set.id !== setId);
+        await syncSavedSetsAfterRestore();
+        dashboardSelectedSetIds.delete(setId);
+        renderDashboard();
+        showToast("Set restored.", "success");
+    } catch (error) {
+        showToast("Could not restore set: " + error.message, "error");
+    }
+}
+
+async function restoreSelectedSets() {
+    if (!isDashboardTrashFilterActive() || dashboardSelectedSetIds.size === 0) {
+        return;
+    }
+
+    const setIds = Array.from(dashboardSelectedSetIds);
+
+    try {
+        if (setIds.length === 1) {
+            await dbRestoreSet(setIds[0]);
+        } else {
+            await dbRestoreSets(setIds);
+        }
+
+        const restoredIds = new Set(setIds);
+        trashedSets = trashedSets.filter((set) => !restoredIds.has(set.id));
+        await syncSavedSetsAfterRestore();
+        cancelDashboardSelection();
+        showToast(setIds.length === 1 ? "Set restored." : "Sets restored.", "success");
+    } catch (error) {
+        showToast("Could not restore sets: " + error.message, "error");
+    }
+}
+
 function initSetsSortable() {
     const savedSetsList = document.getElementById("savedSetsList");
 
@@ -488,7 +637,7 @@ function initSetsSortable() {
         setsSortable = null;
     }
 
-    if (!savedSetsList || savedSets.length === 0 || typeof Sortable === "undefined") {
+    if (!savedSetsList || getDashboardSourceSets().length === 0 || typeof Sortable === "undefined") {
         return;
     }
 
@@ -1063,6 +1212,7 @@ function openDeleteConfirm(index) {
     deleteConfirmMode = "single";
     pendingDeleteSetIndex = index;
     pendingBulkDeleteSetIds = [];
+    pendingPermanentDeleteSetIds = [];
 
     const setNameEl = document.getElementById("deleteConfirmSetName");
     document.getElementById("deleteConfirmTitle").textContent = "Delete vocabulary set?";
@@ -1082,6 +1232,7 @@ function openBulkDeleteConfirm() {
     deleteConfirmMode = "bulk";
     pendingDeleteSetIndex = null;
     pendingBulkDeleteSetIds = Array.from(dashboardSelectedSetIds);
+    pendingPermanentDeleteSetIds = [];
 
     document.getElementById("deleteConfirmTitle").textContent = "Delete selected sets?";
     document.getElementById("deleteConfirmBody").textContent = "The selected sets will be moved to Trash.";
@@ -1091,9 +1242,44 @@ function openBulkDeleteConfirm() {
     document.getElementById("deleteConfirmModal").style.display = "flex";
 }
 
+function configureDeleteForeverModal() {
+    document.getElementById("deleteConfirmTitle").textContent = "Delete permanently?";
+    document.getElementById("deleteConfirmBody").textContent = "This action cannot be undone.";
+    document.getElementById("deleteConfirmSetName").style.display = "none";
+    document.getElementById("deleteConfirmWarning").textContent = "The selected sets and all their vocabulary cards will be permanently deleted.";
+    document.getElementById("deleteConfirmActionButton").textContent = "Delete Forever";
+}
+
+function deleteForeverSet(setId) {
+    if (dashboardSelectionMode || !isDashboardTrashFilterActive()) {
+        return;
+    }
+
+    deleteConfirmMode = "forever";
+    pendingDeleteSetIndex = null;
+    pendingBulkDeleteSetIds = [];
+    pendingPermanentDeleteSetIds = [setId];
+    configureDeleteForeverModal();
+    document.getElementById("deleteConfirmModal").style.display = "flex";
+}
+
+function openBulkDeleteForeverConfirm() {
+    if (!isDashboardTrashFilterActive() || dashboardSelectedSetIds.size === 0) {
+        return;
+    }
+
+    deleteConfirmMode = "foreverBulk";
+    pendingDeleteSetIndex = null;
+    pendingBulkDeleteSetIds = [];
+    pendingPermanentDeleteSetIds = Array.from(dashboardSelectedSetIds);
+    configureDeleteForeverModal();
+    document.getElementById("deleteConfirmModal").style.display = "flex";
+}
+
 function closeDeleteConfirm() {
     pendingDeleteSetIndex = null;
     pendingBulkDeleteSetIds = [];
+    pendingPermanentDeleteSetIds = [];
     deleteConfirmMode = "single";
     document.getElementById("deleteConfirmModal").style.display = "none";
 }
@@ -1106,6 +1292,35 @@ function closeDeleteConfirmOnBackdrop(event) {
 
 async function confirmDeleteAction() {
     const mode = deleteConfirmMode;
+
+    if (mode === "forever" || mode === "foreverBulk") {
+        const setIds = pendingPermanentDeleteSetIds.slice();
+        closeDeleteConfirm();
+
+        if (setIds.length === 0) {
+            return;
+        }
+
+        try {
+            await dbPermanentlyDeleteSets(setIds);
+
+            const removedIds = new Set(setIds);
+            trashedSets = trashedSets.filter((set) => !removedIds.has(set.id));
+
+            if (mode === "foreverBulk") {
+                cancelDashboardSelection();
+            } else {
+                renderDashboard();
+            }
+
+            showToast("Deleted permanently.", "success");
+        } catch (error) {
+            showToast("Could not delete permanently: " + error.message, "error");
+        }
+
+        return;
+    }
+
     let setIds = [];
 
     if (mode === "bulk") {
