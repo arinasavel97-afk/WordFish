@@ -9,6 +9,7 @@ let editingSetId = null;
 let currentSetName = "";
 let cardsSortable = null;
 let setsSortable = null;
+let dashboardSearchQuery = "";
 let currentGameMode = "translation";
 let autoSaveTimer = null;
 let autoSaveInProgress = false;
@@ -133,6 +134,7 @@ async function showDashboard(addToHistory = true) {
     isGameRunning = false;
     clearTimeout(autoSaveTimer);
     displayScreen("dashboardScreen", addToHistory);
+    resetDashboardSearch();
 
     let savedSetsList = document.getElementById("savedSetsList");
     savedSetsList.innerHTML = `
@@ -154,6 +156,32 @@ async function showDashboard(addToHistory = true) {
     }
 }
 
+function resetDashboardSearch() {
+    dashboardSearchQuery = "";
+    const searchInput = document.getElementById("dashboardSearchInput");
+    if (searchInput) {
+        searchInput.value = "";
+    }
+}
+
+function isDashboardSearchActive() {
+    return dashboardSearchQuery.trim() !== "";
+}
+
+function getVisibleSavedSets() {
+    const query = dashboardSearchQuery.trim().toLowerCase();
+    if (!query) {
+        return savedSets;
+    }
+
+    return savedSets.filter((set) => set.name.toLowerCase().includes(query));
+}
+
+function onDashboardSearchInput(value) {
+    dashboardSearchQuery = value;
+    renderDashboard();
+}
+
 function renderDashboard() {
     let savedSetsList = document.getElementById("savedSetsList");
 
@@ -163,6 +191,7 @@ function renderDashboard() {
     }
 
     savedSetsList.innerHTML = "";
+    savedSetsList.classList.toggle("dashboard-search-active", isDashboardSearchActive());
 
     if (savedSets.length === 0) {
         savedSetsList.innerHTML = `
@@ -174,10 +203,23 @@ function renderDashboard() {
         return;
     }
 
-    for (let i = 0; i < savedSets.length; i++) {
-        let setId = savedSets[i].id;
-        let wordCount = savedSets[i].cards ? savedSets[i].cards.length : 0;
-        let imageCount = (savedSets[i].cards || []).filter(card => card.imageUrl).length;
+    const visibleSets = getVisibleSavedSets();
+
+    if (visibleSets.length === 0) {
+        savedSetsList.innerHTML = `
+            <div class="card empty-library-card dashboard-search-empty">
+                <h2>No sets found.</h2>
+                <p>Try another search.</p>
+            </div>
+        `;
+        return;
+    }
+
+    for (let i = 0; i < visibleSets.length; i++) {
+        let set = visibleSets[i];
+        let setId = set.id;
+        let wordCount = set.cards ? set.cards.length : 0;
+        let imageCount = (set.cards || []).filter(card => card.imageUrl).length;
 
         savedSetsList.innerHTML += `
             <div class="card set-card" data-set-id="${escapeAttribute(setId)}">
@@ -198,7 +240,7 @@ function renderDashboard() {
                     </div>
                 </div>
                 <div class="set-card-topline">🐠 Ready to play</div>
-                <h2>📚 ${escapeHTML(savedSets[i].name)}</h2>
+                <h2>📚 ${escapeHTML(set.name)}</h2>
                 <p><span class="small-label">Words:</span> ${wordCount}</p>
                 <p><span class="small-label">Images:</span> ${imageCount}</p>
 
@@ -230,6 +272,10 @@ function initSetsSortable() {
     }
 
     if (!savedSetsList || savedSets.length === 0 || typeof Sortable === "undefined") {
+        return;
+    }
+
+    if (isDashboardSearchActive()) {
         return;
     }
 

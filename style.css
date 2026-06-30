@@ -315,6 +315,33 @@ button:active {
     justify-content: center;
 }
 
+.dashboard-search-field {
+    max-width: 980px;
+    margin: var(--space-lg) auto 0;
+    padding: 0 var(--space-sm);
+}
+
+#dashboardSearchInput {
+    display: block;
+    width: min(100%, 420px);
+    margin: 0 auto;
+}
+
+#savedSetsList.dashboard-search-active .set-drag-handle {
+    opacity: 0.35;
+    pointer-events: none;
+    cursor: default;
+}
+
+#savedSetsList .dashboard-search-empty h2 {
+    margin-bottom: var(--space-sm);
+}
+
+#savedSetsList .dashboard-search-empty p {
+    margin: 0;
+    color: var(--sea-deep);
+}
+
 #savedSetsList .card {
     width: 100%;
     max-width: 320px;

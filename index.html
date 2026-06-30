@@ -42,6 +42,10 @@
         <button class="green-button" onclick="showTeacherScreen()">➕ New Set</button>
         <button class="red-button" onclick="logout()">🚪 Log Out</button>
 
+        <div class="dashboard-search-field">
+            <input id="dashboardSearchInput" type="search" placeholder="Search sets..." oninput="onDashboardSearchInput(this.value)" aria-label="Search sets">
+        </div>
+
         <div id="savedSetsList"></div>
     </div>
 
