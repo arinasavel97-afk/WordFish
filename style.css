@@ -1460,6 +1460,16 @@ h2 {
     color: #DC2626;
 }
 
+#savedSetsList .set-icon-duplicate {
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+#savedSetsList .set-icon-duplicate:hover {
+    background: rgba(0, 166, 200, 0.12);
+    color: var(--sea);
+    transform: scale(1.08);
+}
+
 #savedSetsList .set-icon-button:active {
     transform: scale(0.96);
     box-shadow: none;

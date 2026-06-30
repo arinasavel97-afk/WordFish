@@ -201,9 +201,9 @@ async function dbLoadPublicSetById(setId) {
     };
 }
 
-async function dbDuplicateSet(sourceSet) {
+async function dbDuplicateSet(sourceSet, duplicateName) {
     const copiedCards = JSON.parse(JSON.stringify(sourceSet.cards || []));
-    return await dbCreateSetWithCards(sourceSet.name + " Copy", copiedCards);
+    return await dbCreateSetWithCards(duplicateName, copiedCards);
 }
 
 async function dbUploadImage(file) {
