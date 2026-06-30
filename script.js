@@ -1199,7 +1199,7 @@ function startClassroomPresentation(set, addToHistory = true) {
 function showClassroomPresentation(addToHistory = true) {
     displayScreen("classroomPresentationScreen", addToHistory);
     renderClassroomPresentationCard();
-    maybeShowClassroomShortcutsHint("Space Show / Hide translation");
+    maybeShowClassroomShortcutsHint("Space Show / Hide Translation");
 }
 
 function showClassroomPresentationForSelectedSet(addToHistory = true) {
@@ -1407,6 +1407,28 @@ function classroomPresentationPrevious() {
     renderClassroomPresentationCard({ animate: true });
 }
 
+function classroomPresentationJumpToFirst() {
+    if (classroomPresentationCards.length === 0 || classroomPresentationIndex === 0) {
+        return;
+    }
+
+    classroomPresentationIndex = 0;
+    classroomTranslationVisible = false;
+    renderClassroomPresentationCard({ animate: true });
+}
+
+function classroomPresentationJumpToLast() {
+    const lastIndex = classroomPresentationCards.length - 1;
+
+    if (classroomPresentationCards.length === 0 || classroomPresentationIndex === lastIndex) {
+        return;
+    }
+
+    classroomPresentationIndex = lastIndex;
+    classroomTranslationVisible = false;
+    renderClassroomPresentationCard({ animate: true });
+}
+
 function isClassroomPresentationOnLastCard() {
     return classroomPresentationIndex >= classroomPresentationCards.length - 1;
 }
@@ -1475,7 +1497,7 @@ function startClassroomFlashcards(set, addToHistory = true) {
 function showClassroomFlashcards(addToHistory = true) {
     displayScreen("classroomFlashcardsScreen", addToHistory);
     renderClassroomFlashcard();
-    maybeShowClassroomShortcutsHint("Space Flip card");
+    maybeShowClassroomShortcutsHint("Space Flip Card");
 }
 
 function showClassroomFlashcardsForSelectedSet(addToHistory = true) {
@@ -1584,6 +1606,26 @@ function classroomFlashcardsPrevious() {
     renderClassroomFlashcard({ animate: true });
 }
 
+function classroomFlashcardsJumpToFirst() {
+    if (classroomFlashcardsCards.length === 0 || classroomFlashcardsIndex === 0) {
+        return;
+    }
+
+    classroomFlashcardsIndex = 0;
+    renderClassroomFlashcard({ animate: true });
+}
+
+function classroomFlashcardsJumpToLast() {
+    const lastIndex = classroomFlashcardsCards.length - 1;
+
+    if (classroomFlashcardsCards.length === 0 || classroomFlashcardsIndex === lastIndex) {
+        return;
+    }
+
+    classroomFlashcardsIndex = lastIndex;
+    renderClassroomFlashcard({ animate: true });
+}
+
 function isClassroomFlashcardsOnLastCard() {
     return classroomFlashcardsIndex >= classroomFlashcardsCards.length - 1;
 }
@@ -1671,6 +1713,18 @@ function handleClassroomFlashcardsKeydown(event) {
         return;
     }
 
+    if (event.key === "Home") {
+        event.preventDefault();
+        classroomFlashcardsJumpToFirst();
+        return;
+    }
+
+    if (event.key === "End") {
+        event.preventDefault();
+        classroomFlashcardsJumpToLast();
+        return;
+    }
+
     if (event.key === " " || event.code === "Space") {
         event.preventDefault();
         toggleClassroomFlashcard();
@@ -1741,7 +1795,7 @@ function showClassroomTextFlashcards(addToHistory = true) {
     displayScreen("classroomTextFlashcardsScreen", addToHistory);
     updateClassroomTextFlashcardDirectionButtonLabel();
     renderClassroomTextFlashcard();
-    maybeShowClassroomShortcutsHint("Space Flip card");
+    maybeShowClassroomShortcutsHint("Space Flip Card");
 }
 
 function showClassroomTextFlashcardsForSelectedSet(addToHistory = true) {
@@ -1874,6 +1928,26 @@ function classroomTextFlashcardsPrevious() {
     renderClassroomTextFlashcard({ animate: true });
 }
 
+function classroomTextFlashcardsJumpToFirst() {
+    if (classroomTextFlashcardsCards.length === 0 || classroomTextFlashcardsIndex === 0) {
+        return;
+    }
+
+    classroomTextFlashcardsIndex = 0;
+    renderClassroomTextFlashcard({ animate: true });
+}
+
+function classroomTextFlashcardsJumpToLast() {
+    const lastIndex = classroomTextFlashcardsCards.length - 1;
+
+    if (classroomTextFlashcardsCards.length === 0 || classroomTextFlashcardsIndex === lastIndex) {
+        return;
+    }
+
+    classroomTextFlashcardsIndex = lastIndex;
+    renderClassroomTextFlashcard({ animate: true });
+}
+
 function isClassroomTextFlashcardsOnLastCard() {
     return classroomTextFlashcardsIndex >= classroomTextFlashcardsCards.length - 1;
 }
@@ -1958,6 +2032,18 @@ function handleClassroomTextFlashcardsKeydown(event) {
         }
 
         classroomTextFlashcardsAdvance();
+        return;
+    }
+
+    if (event.key === "Home") {
+        event.preventDefault();
+        classroomTextFlashcardsJumpToFirst();
+        return;
+    }
+
+    if (event.key === "End") {
+        event.preventDefault();
+        classroomTextFlashcardsJumpToLast();
         return;
     }
 
@@ -2352,6 +2438,18 @@ function handleClassroomPresentationKeydown(event) {
         }
 
         classroomPresentationAdvance();
+        return;
+    }
+
+    if (event.key === "Home") {
+        event.preventDefault();
+        classroomPresentationJumpToFirst();
+        return;
+    }
+
+    if (event.key === "End") {
+        event.preventDefault();
+        classroomPresentationJumpToLast();
         return;
     }
 
