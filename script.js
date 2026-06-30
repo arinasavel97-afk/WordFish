@@ -373,6 +373,9 @@ function renderDashboard() {
                         <span class="set-icon-button set-icon-duplicate" role="button"${duplicateAttrs}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2m-6 12h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/></svg>
                         </span>
+                        <button type="button" class="set-icon-button set-icon-export" onclick="exportSet('${escapeAttribute(setId)}')" aria-label="Export set to Excel" title="Export"${disabledAttr}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                        </button>
                         <button type="button" class="set-icon-button set-icon-delete" onclick="deleteSet('${escapeAttribute(setId)}')" aria-label="Delete set" title="Delete"${disabledAttr}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
                         </button>
@@ -633,6 +636,115 @@ async function duplicateSet(indexOrId) {
         showToast("Set duplicated successfully.", "success");
     } catch (error) {
         showToast("Could not duplicate set: " + error.message, "error");
+    }
+}
+
+function sanitizeWorksheetName(name) {
+    const sanitized = String(name || "")
+        .trim()
+        .replace(/[\\/*?:[\]]/g, "")
+        .slice(0, 31);
+
+    return sanitized || "Vocabulary Set";
+}
+
+function sanitizeExcelFilename(setName) {
+    const sanitized = setName
+        .trim()
+        .replace(/[<>:"/\\|?*\u0000-\u001f]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    return `${sanitized || "vocabulary-set"}.xlsx`;
+}
+
+function autosizeExcelColumns(worksheet, columnCount) {
+    for (let col = 1; col <= columnCount; col++) {
+        let maxLength = 10;
+
+        worksheet.eachRow((row) => {
+            const value = row.getCell(col).value;
+            const text = value == null ? "" : String(value);
+            maxLength = Math.max(maxLength, text.length);
+        });
+
+        worksheet.getColumn(col).width = Math.min(maxLength + 2, 60);
+    }
+}
+
+function downloadExcelFile(filename, buffer) {
+    const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+async function buildAndDownloadExcelWorkbook(set) {
+    if (typeof ExcelJS === "undefined") {
+        throw new Error("Excel export library is not available.");
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = "Word Fish";
+    workbook.created = new Date();
+
+    const worksheet = workbook.addWorksheet(sanitizeWorksheetName(set.name));
+    worksheet.addRow(["English", "Translation"]);
+
+    const headerRow = worksheet.getRow(1);
+    headerRow.height = 22;
+    headerRow.eachCell((cell) => {
+        cell.font = { bold: true };
+        cell.alignment = { vertical: "middle", horizontal: "left" };
+        cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFDFF4FF" }
+        };
+    });
+
+    worksheet.views = [{
+        state: "frozen",
+        ySplit: 1,
+        topLeftCell: "A2",
+        activeCell: "A2"
+    }];
+
+    for (const card of set.cards || []) {
+        worksheet.addRow([
+            card.english || "",
+            card.thai || card.translation || ""
+        ]);
+    }
+
+    autosizeExcelColumns(worksheet, 2);
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    downloadExcelFile(sanitizeExcelFilename(set.name), buffer);
+}
+
+async function exportSet(indexOrId) {
+    if (dashboardSelectionMode) return;
+
+    const index = resolveSetIndex(indexOrId);
+    if (index < 0) return;
+
+    const set = savedSets[index];
+
+    try {
+        await buildAndDownloadExcelWorkbook(set);
+        showToast("Excel exported successfully.", "success");
+    } catch (error) {
+        showToast("Could not export Excel: " + error.message, "error");
     }
 }
 

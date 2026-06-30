@@ -536,7 +536,8 @@ button:active {
 
 #savedSetsList.dashboard-selection-active .set-icon-edit:hover,
 #savedSetsList.dashboard-selection-active .set-icon-delete:hover,
-#savedSetsList.dashboard-selection-active .set-icon-duplicate:hover {
+#savedSetsList.dashboard-selection-active .set-icon-duplicate:hover,
+#savedSetsList.dashboard-selection-active .set-icon-export:hover {
     background: transparent;
     color: #6B7280;
     transform: none;
@@ -1721,6 +1722,17 @@ h2 {
     background: rgba(0, 166, 200, 0.12);
     color: var(--sea);
     transform: scale(1.08);
+}
+
+#savedSetsList .set-icon-export {
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+#savedSetsList .set-icon-export:hover {
+    background: rgba(0, 166, 200, 0.12);
+    color: var(--sea);
+    transform: scale(1.08);
+    cursor: pointer;
 }
 
 #savedSetsList .set-icon-button:active {
