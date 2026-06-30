@@ -37,6 +37,7 @@ async function dbLoadSetsWithCards() {
     const { data: sets, error: setsError } = await supabaseClient
         .from("sets")
         .select("id, name, created_at, updated_at, position")
+        .is("deleted_at", null)
         .order("position", { ascending: true, nullsFirst: false })
         .order("created_at", { ascending: true });
 
@@ -181,8 +182,23 @@ async function dbReplaceCards(setId, cards) {
 async function dbDeleteSet(setId) {
     const { error } = await supabaseClient
         .from("sets")
-        .delete()
+        .update({ deleted_at: new Date().toISOString() })
         .eq("id", setId);
+
+    if (error) {
+        throw error;
+    }
+}
+
+async function dbSoftDeleteSets(setIds) {
+    if (!setIds || setIds.length === 0) {
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from("sets")
+        .update({ deleted_at: new Date().toISOString() })
+        .in("id", setIds);
 
     if (error) {
         throw error;

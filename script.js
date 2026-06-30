@@ -20,6 +20,8 @@ let isGameRunning = false;
 let selectedPlaySetIndex = null;
 let selectedShareSetIndex = null;
 let pendingDeleteSetIndex = null;
+let deleteConfirmMode = "single";
+let pendingBulkDeleteSetIds = [];
 let currentCardMistakes = 0;
 let totalWrongAttempts = 0;
 let lastGameOrderSignature = "";
@@ -289,6 +291,13 @@ function updateDashboardSelectionUI() {
 
     if (selectField) {
         selectField.hidden = dashboardSelectionMode;
+    }
+
+    const bulkDeleteButton = document.getElementById("dashboardBulkDeleteButton");
+    if (bulkDeleteButton) {
+        const canDelete = dashboardSelectionMode && selectedCount > 0;
+        bulkDeleteButton.disabled = !canDelete;
+        bulkDeleteButton.classList.toggle("disabled-button", !canDelete);
     }
 }
 
@@ -629,14 +638,41 @@ function deleteSet(indexOrId) {
 }
 
 function openDeleteConfirm(index) {
+    deleteConfirmMode = "single";
     pendingDeleteSetIndex = index;
-    const setName = savedSets[index].name;
-    document.getElementById("deleteConfirmSetName").textContent = `"${setName}"`;
+    pendingBulkDeleteSetIds = [];
+
+    const setNameEl = document.getElementById("deleteConfirmSetName");
+    document.getElementById("deleteConfirmTitle").textContent = "Delete vocabulary set?";
+    document.getElementById("deleteConfirmBody").textContent = "Are you sure you want to delete";
+    setNameEl.textContent = `"${savedSets[index].name}"`;
+    setNameEl.style.display = "block";
+    document.getElementById("deleteConfirmWarning").textContent = "This action cannot be undone.";
+    document.getElementById("deleteConfirmActionButton").textContent = "Delete";
+    document.getElementById("deleteConfirmModal").style.display = "flex";
+}
+
+function openBulkDeleteConfirm() {
+    if (!dashboardSelectionMode || dashboardSelectedSetIds.size === 0) {
+        return;
+    }
+
+    deleteConfirmMode = "bulk";
+    pendingDeleteSetIndex = null;
+    pendingBulkDeleteSetIds = Array.from(dashboardSelectedSetIds);
+
+    document.getElementById("deleteConfirmTitle").textContent = "Delete selected sets?";
+    document.getElementById("deleteConfirmBody").textContent = "The selected sets will be moved to Trash.";
+    document.getElementById("deleteConfirmSetName").style.display = "none";
+    document.getElementById("deleteConfirmWarning").textContent = "You can restore them later.";
+    document.getElementById("deleteConfirmActionButton").textContent = "Move to Trash";
     document.getElementById("deleteConfirmModal").style.display = "flex";
 }
 
 function closeDeleteConfirm() {
     pendingDeleteSetIndex = null;
+    pendingBulkDeleteSetIds = [];
+    deleteConfirmMode = "single";
     document.getElementById("deleteConfirmModal").style.display = "none";
 }
 
@@ -646,18 +682,44 @@ function closeDeleteConfirmOnBackdrop(event) {
     }
 }
 
-async function confirmDeleteSet() {
-    if (pendingDeleteSetIndex === null) return;
+async function confirmDeleteAction() {
+    const mode = deleteConfirmMode;
+    let setIds = [];
 
-    const index = pendingDeleteSetIndex;
+    if (mode === "bulk") {
+        setIds = pendingBulkDeleteSetIds.slice();
+    } else if (pendingDeleteSetIndex !== null) {
+        setIds = [savedSets[pendingDeleteSetIndex].id];
+    }
+
+    if (setIds.length === 0) {
+        return;
+    }
+
     closeDeleteConfirm();
 
     try {
-        await dbDeleteSet(savedSets[index].id);
-        showToast("Set deleted 🗑️", "success");
-        await showDashboard();
+        if (setIds.length === 1) {
+            await dbDeleteSet(setIds[0]);
+        } else {
+            await dbSoftDeleteSets(setIds);
+        }
+
+        const removedIds = new Set(setIds);
+        savedSets = savedSets.filter((set) => !removedIds.has(set.id));
+
+        if (mode === "bulk") {
+            cancelDashboardSelection();
+            showToast("Moved to Trash.", "success");
+        } else {
+            renderDashboard();
+            showToast("Set deleted 🗑️", "success");
+        }
     } catch (error) {
-        showToast("Could not delete set: " + error.message, "error");
+        const errorMessage = mode === "bulk"
+            ? "Could not move to trash: " + error.message
+            : "Could not delete set: " + error.message;
+        showToast(errorMessage, "error");
     }
 }
 
