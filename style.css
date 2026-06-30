@@ -2731,6 +2731,174 @@ h2 {
     }
 }
 
+.classroom-text-flashcards-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: none;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    width: 100%;
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    padding: clamp(12px, 1.8vw, 20px) clamp(16px, 2.5vw, 28px);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    text-align: center;
+    background:
+        radial-gradient(circle at 12% 10%, rgba(255, 183, 3, 0.18) 0 90px, transparent 92px),
+        radial-gradient(circle at 88% 18%, rgba(63, 169, 245, 0.14) 0 100px, transparent 102px),
+        linear-gradient(180deg, #E9FBFF 0%, #BAF1FF 48%, #F6FFF9 100%);
+    overflow: hidden;
+    gap: clamp(10px, 1.6vh, 16px);
+}
+
+.classroom-text-flashcards-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    min-width: 0;
+}
+
+.classroom-text-flashcards-header-meta {
+    margin: 0;
+    text-align: left;
+    font-size: clamp(18px, 2.2vw, 24px);
+    font-weight: var(--font-weight-button);
+    color: var(--sea-deep);
+    word-break: break-word;
+}
+
+.classroom-text-flashcards-header-actions {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+}
+
+.classroom-text-flashcards-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.classroom-text-flashcard-direction-button {
+    min-height: 44px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.classroom-text-flashcards-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    overflow: hidden;
+    padding: clamp(8px, 1.2vh, 12px) 0;
+}
+
+.classroom-text-flashcard {
+    perspective: 1200px;
+    width: min(92vw, 760px);
+    height: min(68vh, 560px);
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.classroom-text-flashcard:focus-visible {
+    outline: 3px solid rgba(63, 169, 245, 0.55);
+    outline-offset: 6px;
+    border-radius: var(--radius-xl);
+}
+
+.classroom-text-flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 350ms ease;
+}
+
+.classroom-text-flashcard-flipped .classroom-text-flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.classroom-text-flashcard-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(24px, 4vw, 40px);
+    border-radius: var(--radius-xl);
+    border: 2px solid var(--color-input-border);
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: var(--soft-shadow);
+    backface-visibility: hidden;
+    overflow: hidden;
+}
+
+.classroom-text-flashcard-back {
+    transform: rotateY(180deg);
+}
+
+.classroom-text-flashcard-text {
+    margin: 0;
+    font-size: clamp(32px, 5.5vw, 64px);
+    font-weight: var(--font-weight-button);
+    color: var(--sea-deep);
+    line-height: 1.15;
+    word-break: break-word;
+    text-align: center;
+}
+
+.classroom-text-flashcards-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+@media (max-width: 620px) {
+    .classroom-text-flashcards-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .classroom-text-flashcards-header-meta {
+        text-align: center;
+    }
+
+    .classroom-text-flashcards-header-actions {
+        justify-content: stretch;
+    }
+
+    .classroom-text-flashcards-footer {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .classroom-text-flashcard {
+        width: 100%;
+        height: min(62vh, 480px);
+    }
+
+    .classroom-text-flashcard-direction-button {
+        width: 100%;
+    }
+}
+
 .classroom-random-word-screen {
     position: fixed;
     inset: 0;

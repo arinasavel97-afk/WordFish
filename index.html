@@ -151,6 +151,13 @@
             </article>
 
             <article class="card classroom-activity-card">
+                <h2 class="classroom-activity-name">Text Flashcards</h2>
+                <p class="classroom-activity-description">Practice words without pictures.</p>
+                <p class="classroom-activity-status classroom-activity-status-available">Available</p>
+                <button type="button" class="green-button" onclick="startClassroomTextFlashcardsFromActivityMenu()">Start</button>
+            </article>
+
+            <article class="card classroom-activity-card">
                 <h2 class="classroom-activity-name">Random Word</h2>
                 <p class="classroom-activity-description">Pick random words for quick review.</p>
                 <p class="classroom-activity-status classroom-activity-status-available">Available</p>
@@ -237,6 +244,41 @@
         <footer class="classroom-flashcards-footer">
             <button id="classroomFlashcardsPrevButton" type="button" class="soft-button classroom-nav-prev-button">← Previous</button>
             <button id="classroomFlashcardsNextButton" type="button" class="green-button classroom-nav-next-button">Next →</button>
+        </footer>
+    </div>
+
+    <div id="classroomTextFlashcardsScreen" class="classroom-text-flashcards-screen" style="display: none;">
+        <header class="classroom-text-flashcards-header">
+            <p id="classroomTextFlashcardsHeaderMeta" class="classroom-text-flashcards-header-meta">Set Name • Card 1 of 1</p>
+            <div class="classroom-text-flashcards-header-actions">
+                <button id="classroomTextFlashcardsFullscreenButton" type="button" class="classroom-fullscreen-button" aria-label="Enter fullscreen" title="Fullscreen">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"/></svg>
+                    <span id="classroomTextFlashcardsFullscreenButtonLabel">Fullscreen</span>
+                </button>
+                <button id="classroomTextFlashcardsBackButton" type="button" class="soft-button classroom-back-button">Back</button>
+            </div>
+        </header>
+
+        <div class="classroom-text-flashcards-toolbar">
+            <button id="classroomTextFlashcardDirectionButton" type="button" class="soft-button classroom-text-flashcard-direction-button">Translation → English</button>
+        </div>
+
+        <main class="classroom-text-flashcards-main">
+            <div id="classroomTextFlashcard" class="classroom-text-flashcard" role="button" tabindex="0" aria-label="Flip card">
+                <div id="classroomTextFlashcardInner" class="classroom-text-flashcard-inner">
+                    <div class="classroom-text-flashcard-face classroom-text-flashcard-front">
+                        <p id="classroomTextFlashcardFrontText" class="classroom-text-flashcard-text">Translation</p>
+                    </div>
+                    <div class="classroom-text-flashcard-face classroom-text-flashcard-back">
+                        <p id="classroomTextFlashcardBackText" class="classroom-text-flashcard-text">English</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="classroom-text-flashcards-footer">
+            <button id="classroomTextFlashcardsPrevButton" type="button" class="soft-button classroom-nav-prev-button">← Previous</button>
+            <button id="classroomTextFlashcardsNextButton" type="button" class="green-button classroom-nav-next-button">Next →</button>
         </footer>
     </div>
 

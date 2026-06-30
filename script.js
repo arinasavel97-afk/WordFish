@@ -41,6 +41,11 @@ let classroomFlashcardsCards = [];
 let classroomFlashcardsIndex = 0;
 let classroomFlashcardsSetName = "";
 let classroomFlashcardSide = "front";
+let classroomTextFlashcardsCards = [];
+let classroomTextFlashcardsIndex = 0;
+let classroomTextFlashcardsSetName = "";
+let classroomTextFlashcardSide = "front";
+let classroomTextFlashcardDirection = "translationToEnglish";
 let classroomRandomWordCards = [];
 let classroomRandomWordIndex = -1;
 let classroomRandomWordSetName = "";
@@ -50,6 +55,7 @@ const GAME_CONTEXT_STORAGE_KEY = "wordfish_game_context";
 const CLASSROOM_PRESENTATION_CONTEXT_STORAGE_KEY = "wordfish_classroom_presentation_context";
 const CLASSROOM_ACTIVITY_CONTEXT_STORAGE_KEY = "wordfish_classroom_activity_context";
 const CLASSROOM_FLASHCARDS_CONTEXT_STORAGE_KEY = "wordfish_classroom_flashcards_context";
+const CLASSROOM_TEXT_FLASHCARDS_CONTEXT_STORAGE_KEY = "wordfish_classroom_text_flashcards_context";
 const CLASSROOM_RANDOM_WORD_CONTEXT_STORAGE_KEY = "wordfish_classroom_random_word_context";
 const SETTINGS_KEYS = {
     trashAutoDelete: "wordfish_settings_trash_auto_delete",
@@ -106,6 +112,7 @@ function hideAllScreens() {
     const classroomActivityMenuScreen = document.getElementById("classroomActivityMenuScreen");
     const classroomPresentationScreen = document.getElementById("classroomPresentationScreen");
     const classroomFlashcardsScreen = document.getElementById("classroomFlashcardsScreen");
+    const classroomTextFlashcardsScreen = document.getElementById("classroomTextFlashcardsScreen");
     const classroomRandomWordScreen = document.getElementById("classroomRandomWordScreen");
     if (classroomPickerScreen) {
         classroomPickerScreen.style.display = "none";
@@ -118,6 +125,9 @@ function hideAllScreens() {
     }
     if (classroomFlashcardsScreen) {
         classroomFlashcardsScreen.style.display = "none";
+    }
+    if (classroomTextFlashcardsScreen) {
+        classroomTextFlashcardsScreen.style.display = "none";
     }
     if (classroomRandomWordScreen) {
         classroomRandomWordScreen.style.display = "none";
@@ -253,6 +263,37 @@ function isClassroomFlashcardsRefreshRequested() {
     return window.location.hash.replace(/^#/, "") === "classroomFlashcards";
 }
 
+function saveClassroomTextFlashcardsContext() {
+    if (currentScreenId !== "classroomTextFlashcardsScreen" || !classroomSelectedSetId) {
+        return;
+    }
+
+    localStorage.setItem(CLASSROOM_TEXT_FLASHCARDS_CONTEXT_STORAGE_KEY, JSON.stringify({
+        mode: "classroomTextFlashcards",
+        setId: classroomSelectedSetId,
+        currentCardIndex: classroomTextFlashcardsIndex,
+        cardSide: classroomTextFlashcardSide,
+        direction: classroomTextFlashcardDirection
+    }));
+}
+
+function loadClassroomTextFlashcardsContext() {
+    try {
+        const raw = localStorage.getItem(CLASSROOM_TEXT_FLASHCARDS_CONTEXT_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function clearClassroomTextFlashcardsContext() {
+    localStorage.removeItem(CLASSROOM_TEXT_FLASHCARDS_CONTEXT_STORAGE_KEY);
+}
+
+function isClassroomTextFlashcardsRefreshRequested() {
+    return window.location.hash.replace(/^#/, "") === "classroomTextFlashcards";
+}
+
 function saveClassroomRandomWordContext() {
     if (currentScreenId !== "classroomRandomWordScreen" || !classroomSelectedSetId) {
         return;
@@ -295,6 +336,7 @@ function displayScreen(screenId, addToHistory = true) {
     screen.style.display = (
         screenId === "classroomPresentationScreen"
         || screenId === "classroomFlashcardsScreen"
+        || screenId === "classroomTextFlashcardsScreen"
         || screenId === "classroomRandomWordScreen"
     ) ? "grid" : "block";
     currentScreenId = screenId;
@@ -334,6 +376,8 @@ window.addEventListener("popstate", (event) => {
         showClassroomPresentationForSelectedSet(false);
     } else if (screenId === "classroomFlashcardsScreen") {
         showClassroomFlashcardsForSelectedSet(false);
+    } else if (screenId === "classroomTextFlashcardsScreen") {
+        showClassroomTextFlashcardsForSelectedSet(false);
     } else if (screenId === "classroomRandomWordScreen") {
         showClassroomRandomWordForSelectedSet(false);
     }
@@ -785,6 +829,7 @@ function showClassroomPicker(addToHistory = true) {
     clearClassroomPresentationContext();
     clearClassroomActivityContext();
     clearClassroomFlashcardsContext();
+    clearClassroomTextFlashcardsContext();
     clearClassroomRandomWordContext();
     displayScreen("classroomPickerScreen", addToHistory);
     renderClassroomPicker();
@@ -853,6 +898,7 @@ function showClassroomActivityMenu(set, addToHistory = true) {
     document.getElementById("classroomActivityMenuTitle").textContent = set.name;
     clearClassroomPresentationContext();
     clearClassroomFlashcardsContext();
+    clearClassroomTextFlashcardsContext();
     clearClassroomRandomWordContext();
     displayScreen("classroomActivityMenuScreen", addToHistory);
     saveClassroomActivityContext();
@@ -893,6 +939,20 @@ function startClassroomFlashcardsFromActivityMenu() {
     clearClassroomPresentationContext();
     clearClassroomRandomWordContext();
     startClassroomFlashcards(selectedSet);
+}
+
+function startClassroomTextFlashcardsFromActivityMenu() {
+    const selectedSet = savedSets.find((set) => set.id === classroomSelectedSetId);
+
+    if (!selectedSet) {
+        showToast("Could not find that set.", "error");
+        return;
+    }
+
+    clearClassroomPresentationContext();
+    clearClassroomFlashcardsContext();
+    clearClassroomRandomWordContext();
+    startClassroomTextFlashcards(selectedSet);
 }
 
 function startClassroomRandomWordFromActivityMenu() {
@@ -1275,7 +1335,12 @@ function handleClassroomFlashcardsKeydown(event) {
 
     if (event.key === "ArrowRight") {
         event.preventDefault();
-        classroomFlashcardsNextButtonClick();
+
+        if (isClassroomFlashcardsOnLastCard()) {
+            return;
+        }
+
+        classroomFlashcardsAdvance();
         return;
     }
 
@@ -1326,6 +1391,288 @@ function initClassroomFlashcardsControls() {
     if (document.documentElement.dataset.classroomFlashcardsFullscreenListenerAttached !== "true") {
         document.documentElement.dataset.classroomFlashcardsFullscreenListenerAttached = "true";
         document.addEventListener("fullscreenchange", updateClassroomFlashcardsFullscreenButtonLabel);
+    }
+}
+
+function startClassroomTextFlashcards(set, addToHistory = true) {
+    const textFlashcardsCards = prepareCards(set.cards || [])
+        .filter((card) => card.english.trim() !== "");
+
+    if (textFlashcardsCards.length === 0) {
+        showToast("This set has no words to practice.", "warning");
+        return;
+    }
+
+    classroomTextFlashcardsSetName = set.name;
+    classroomTextFlashcardsCards = textFlashcardsCards;
+    classroomTextFlashcardsIndex = 0;
+    classroomTextFlashcardSide = "front";
+    classroomTextFlashcardDirection = "translationToEnglish";
+    showClassroomTextFlashcards(addToHistory);
+}
+
+function showClassroomTextFlashcards(addToHistory = true) {
+    displayScreen("classroomTextFlashcardsScreen", addToHistory);
+    updateClassroomTextFlashcardDirectionButtonLabel();
+    renderClassroomTextFlashcard();
+}
+
+function showClassroomTextFlashcardsForSelectedSet(addToHistory = true) {
+    const selectedSet = savedSets.find((set) => set.id === classroomSelectedSetId);
+
+    if (!selectedSet || classroomTextFlashcardsCards.length === 0) {
+        showClassroomActivityMenuForSelectedSet(addToHistory);
+        return;
+    }
+
+    classroomTextFlashcardsSetName = selectedSet.name;
+    showClassroomTextFlashcards(addToHistory);
+}
+
+function getClassroomTextFlashcardDirectionLabel() {
+    return classroomTextFlashcardDirection === "translationToEnglish"
+        ? "Translation → English"
+        : "English → Translation";
+}
+
+function updateClassroomTextFlashcardDirectionButtonLabel() {
+    const directionButton = document.getElementById("classroomTextFlashcardDirectionButton");
+
+    if (directionButton) {
+        directionButton.textContent = getClassroomTextFlashcardDirectionLabel();
+    }
+}
+
+function getClassroomTextFlashcardFrontText(card) {
+    const english = card.english;
+    const translation = getClassroomCardTranslation(card) || "—";
+
+    return classroomTextFlashcardDirection === "translationToEnglish" ? translation : english;
+}
+
+function getClassroomTextFlashcardBackText(card) {
+    const english = card.english;
+    const translation = getClassroomCardTranslation(card) || "—";
+
+    return classroomTextFlashcardDirection === "translationToEnglish" ? english : translation;
+}
+
+function updateClassroomTextFlashcardFlipUI() {
+    const flashcard = document.getElementById("classroomTextFlashcard");
+    const isBack = classroomTextFlashcardSide === "back";
+
+    if (flashcard) {
+        flashcard.classList.toggle("classroom-text-flashcard-flipped", isBack);
+        flashcard.setAttribute("aria-pressed", isBack ? "true" : "false");
+    }
+}
+
+function renderClassroomTextFlashcard(options = {}) {
+    const preserveSide = options.preserveSide === true;
+    const card = classroomTextFlashcardsCards[classroomTextFlashcardsIndex];
+    const total = classroomTextFlashcardsCards.length;
+    const current = classroomTextFlashcardsIndex + 1;
+
+    document.getElementById("classroomTextFlashcardsHeaderMeta").textContent =
+        `${classroomTextFlashcardsSetName} • Card ${current} of ${total}`;
+
+    document.getElementById("classroomTextFlashcardFrontText").textContent =
+        getClassroomTextFlashcardFrontText(card);
+    document.getElementById("classroomTextFlashcardBackText").textContent =
+        getClassroomTextFlashcardBackText(card);
+
+    if (!preserveSide) {
+        classroomTextFlashcardSide = "front";
+    }
+
+    updateClassroomTextFlashcardFlipUI();
+    updateClassroomTextFlashcardsNav();
+    saveClassroomTextFlashcardsContext();
+}
+
+function toggleClassroomTextFlashcard() {
+    if (currentScreenId !== "classroomTextFlashcardsScreen") {
+        return;
+    }
+
+    classroomTextFlashcardSide = classroomTextFlashcardSide === "front" ? "back" : "front";
+    updateClassroomTextFlashcardFlipUI();
+    saveClassroomTextFlashcardsContext();
+}
+
+function toggleClassroomTextFlashcardDirection() {
+    if (currentScreenId !== "classroomTextFlashcardsScreen") {
+        return;
+    }
+
+    classroomTextFlashcardDirection = classroomTextFlashcardDirection === "translationToEnglish"
+        ? "englishToTranslation"
+        : "translationToEnglish";
+    classroomTextFlashcardSide = "front";
+    updateClassroomTextFlashcardDirectionButtonLabel();
+    renderClassroomTextFlashcard();
+}
+
+function updateClassroomTextFlashcardsNav() {
+    const prevButton = document.getElementById("classroomTextFlashcardsPrevButton");
+    const nextButton = document.getElementById("classroomTextFlashcardsNextButton");
+    const isFirst = classroomTextFlashcardsIndex === 0;
+    const isLast = classroomTextFlashcardsIndex === classroomTextFlashcardsCards.length - 1;
+
+    prevButton.disabled = isFirst;
+    prevButton.classList.toggle("disabled-button", isFirst);
+    nextButton.textContent = isLast ? "Finish" : "Next →";
+}
+
+function classroomTextFlashcardsPrevious() {
+    if (classroomTextFlashcardsIndex <= 0) {
+        return;
+    }
+
+    classroomTextFlashcardsIndex -= 1;
+    renderClassroomTextFlashcard();
+}
+
+function isClassroomTextFlashcardsOnLastCard() {
+    return classroomTextFlashcardsIndex >= classroomTextFlashcardsCards.length - 1;
+}
+
+function classroomTextFlashcardsAdvance() {
+    if (isClassroomTextFlashcardsOnLastCard()) {
+        return;
+    }
+
+    classroomTextFlashcardsIndex += 1;
+    renderClassroomTextFlashcard();
+}
+
+function classroomTextFlashcardsNextButtonClick() {
+    if (isClassroomTextFlashcardsOnLastCard()) {
+        finishClassroomTextFlashcards();
+        return;
+    }
+
+    classroomTextFlashcardsAdvance();
+}
+
+function finishClassroomTextFlashcards() {
+    exitClassroomFullscreenIfActive();
+    clearClassroomTextFlashcardsContext();
+    showClassroomActivityMenuForSelectedSet();
+}
+
+function returnToClassroomActivityMenuFromTextFlashcards() {
+    exitClassroomFullscreenIfActive();
+    clearClassroomTextFlashcardsContext();
+    showClassroomActivityMenuForSelectedSet();
+}
+
+function toggleClassroomTextFlashcardsFullscreen() {
+    const textFlashcardsScreen = document.getElementById("classroomTextFlashcardsScreen");
+
+    if (!textFlashcardsScreen) {
+        return;
+    }
+
+    if (!document.fullscreenElement) {
+        textFlashcardsScreen.requestFullscreen().catch(() => {
+            showToast("Fullscreen is not available.", "warning");
+        });
+        return;
+    }
+
+    document.exitFullscreen();
+}
+
+function updateClassroomTextFlashcardsFullscreenButtonLabel() {
+    const label = document.getElementById("classroomTextFlashcardsFullscreenButtonLabel");
+    const button = document.getElementById("classroomTextFlashcardsFullscreenButton");
+
+    if (!label || !button) {
+        return;
+    }
+
+    const isFullscreen = document.fullscreenElement === document.getElementById("classroomTextFlashcardsScreen");
+    label.textContent = isFullscreen ? "Exit Fullscreen" : "Fullscreen";
+    button.setAttribute("aria-label", isFullscreen ? "Exit fullscreen" : "Enter fullscreen");
+    button.title = isFullscreen ? "Exit Fullscreen" : "Fullscreen";
+}
+
+function handleClassroomTextFlashcardsKeydown(event) {
+    if (currentScreenId !== "classroomTextFlashcardsScreen") {
+        return;
+    }
+
+    if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        classroomTextFlashcardsPrevious();
+        return;
+    }
+
+    if (event.key === "ArrowRight") {
+        event.preventDefault();
+
+        if (isClassroomTextFlashcardsOnLastCard()) {
+            return;
+        }
+
+        classroomTextFlashcardsAdvance();
+        return;
+    }
+
+    if (event.key === " " || event.code === "Space") {
+        event.preventDefault();
+        toggleClassroomTextFlashcard();
+    }
+}
+
+function initClassroomTextFlashcardsControls() {
+    const prevButton = document.getElementById("classroomTextFlashcardsPrevButton");
+    const nextButton = document.getElementById("classroomTextFlashcardsNextButton");
+    const flashcardButton = document.getElementById("classroomTextFlashcard");
+    const directionButton = document.getElementById("classroomTextFlashcardDirectionButton");
+    const fullscreenButton = document.getElementById("classroomTextFlashcardsFullscreenButton");
+    const backButton = document.getElementById("classroomTextFlashcardsBackButton");
+
+    if (prevButton && prevButton.dataset.handlerAttached !== "true") {
+        prevButton.dataset.handlerAttached = "true";
+        prevButton.addEventListener("click", classroomTextFlashcardsPrevious);
+    }
+
+    if (nextButton && nextButton.dataset.handlerAttached !== "true") {
+        nextButton.dataset.handlerAttached = "true";
+        nextButton.addEventListener("click", classroomTextFlashcardsNextButtonClick);
+    }
+
+    if (flashcardButton && flashcardButton.dataset.handlerAttached !== "true") {
+        flashcardButton.dataset.handlerAttached = "true";
+        flashcardButton.addEventListener("click", toggleClassroomTextFlashcard);
+        flashcardButton.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                toggleClassroomTextFlashcard();
+            }
+        });
+    }
+
+    if (directionButton && directionButton.dataset.handlerAttached !== "true") {
+        directionButton.dataset.handlerAttached = "true";
+        directionButton.addEventListener("click", toggleClassroomTextFlashcardDirection);
+    }
+
+    if (fullscreenButton && fullscreenButton.dataset.handlerAttached !== "true") {
+        fullscreenButton.dataset.handlerAttached = "true";
+        fullscreenButton.addEventListener("click", toggleClassroomTextFlashcardsFullscreen);
+    }
+
+    if (backButton && backButton.dataset.handlerAttached !== "true") {
+        backButton.dataset.handlerAttached = "true";
+        backButton.addEventListener("click", returnToClassroomActivityMenuFromTextFlashcards);
+    }
+
+    if (document.documentElement.dataset.classroomTextFlashcardsFullscreenListenerAttached !== "true") {
+        document.documentElement.dataset.classroomTextFlashcardsFullscreenListenerAttached = "true";
+        document.addEventListener("fullscreenchange", updateClassroomTextFlashcardsFullscreenButtonLabel);
     }
 }
 
@@ -2611,6 +2958,7 @@ async function confirmDeleteAction() {
 document.addEventListener("keydown", (event) => {
     handleClassroomPresentationKeydown(event);
     handleClassroomFlashcardsKeydown(event);
+    handleClassroomTextFlashcardsKeydown(event);
     handleClassroomRandomWordKeydown(event);
 
     if (event.key !== "Escape") return;
@@ -3498,6 +3846,97 @@ async function handleFailedClassroomRandomWordRefresh() {
     history.replaceState({ screen: "authScreen" }, "", "#auth");
 }
 
+async function restoreClassroomTextFlashcardsFromContext(context) {
+    const setId = context.setId;
+
+    if (!setId || context.mode !== "classroomTextFlashcards") {
+        return false;
+    }
+
+    try {
+        const { data } = await supabaseClient.auth.getSession();
+
+        if (!data.session) {
+            return false;
+        }
+
+        savedSets = await dbLoadSetsWithCards();
+        const set = savedSets.find((item) => item.id === setId);
+
+        if (!set) {
+            return false;
+        }
+
+        const textFlashcardsCards = prepareCards(set.cards || [])
+            .filter((card) => card.english.trim() !== "");
+
+        if (textFlashcardsCards.length === 0) {
+            return false;
+        }
+
+        classroomSelectedSetId = set.id;
+        classroomTextFlashcardsSetName = set.name;
+        classroomTextFlashcardsCards = textFlashcardsCards;
+
+        let restoredIndex = Number(context.currentCardIndex);
+        if (!Number.isFinite(restoredIndex)) {
+            restoredIndex = 0;
+        }
+
+        classroomTextFlashcardsIndex = Math.max(0, Math.min(restoredIndex, textFlashcardsCards.length - 1));
+        classroomTextFlashcardSide = context.cardSide === "back" ? "back" : "front";
+        classroomTextFlashcardDirection = context.direction === "englishToTranslation"
+            ? "englishToTranslation"
+            : "translationToEnglish";
+
+        displayScreen("classroomTextFlashcardsScreen", false);
+        updateClassroomTextFlashcardDirectionButtonLabel();
+        renderClassroomTextFlashcard({ preserveSide: true });
+        saveClassroomTextFlashcardsContext();
+        return true;
+    } catch (error) {
+        console.error("Classroom text flashcards restore failed:", error);
+        return false;
+    }
+}
+
+async function tryRestoreClassroomTextFlashcardsOnRefresh() {
+    if (!isClassroomTextFlashcardsRefreshRequested()) {
+        return false;
+    }
+
+    const context = loadClassroomTextFlashcardsContext();
+
+    if (!context) {
+        return false;
+    }
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (!data.session) {
+        return false;
+    }
+
+    return restoreClassroomTextFlashcardsFromContext(context);
+}
+
+async function handleFailedClassroomTextFlashcardsRefresh() {
+    clearClassroomTextFlashcardsContext();
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (data.session) {
+        savedSets = await dbLoadSetsWithCards();
+        showClassroomPicker(false);
+        return;
+    }
+
+    hideAppLoading();
+    displayScreen("authScreen", false);
+    history.replaceState({ screen: "authScreen" }, "", "#auth");
+}
+
 async function restoreClassroomFlashcardsFromContext(context) {
     const setId = context.setId;
 
@@ -3736,6 +4175,17 @@ async function checkAuth() {
         return;
     }
 
+    if (await tryRestoreClassroomTextFlashcardsOnRefresh()) {
+        hideAppLoading();
+        return;
+    }
+
+    if (isClassroomTextFlashcardsRefreshRequested()) {
+        hideAppLoading();
+        await handleFailedClassroomTextFlashcardsRefresh();
+        return;
+    }
+
     if (await tryRestoreClassroomRandomWordOnRefresh()) {
         hideAppLoading();
         return;
@@ -3840,6 +4290,7 @@ function initApp() {
     initClassroomModeButton();
     initClassroomPresentationControls();
     initClassroomFlashcardsControls();
+    initClassroomTextFlashcardsControls();
     initClassroomRandomWordControls();
     checkAuth();
 }
