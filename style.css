@@ -2403,6 +2403,27 @@ h2 {
     color: var(--color-primary);
 }
 
+.classroom-content-transition {
+    opacity: 0;
+    transition: opacity 135ms ease;
+}
+
+.classroom-content-transition.classroom-content-is-visible {
+    opacity: 1;
+}
+
+.classroom-flashcard-inner.classroom-flashcard-no-flip-transition,
+.classroom-text-flashcard-inner.classroom-flashcard-no-flip-transition {
+    transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .classroom-content-transition {
+        transition: none !important;
+        opacity: 1 !important;
+    }
+}
+
 .classroom-presentation-main {
     display: grid;
     grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);

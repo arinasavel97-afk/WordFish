@@ -1147,7 +1147,121 @@ function getClassroomCardTranslation(card) {
     return (card.thai || "").trim();
 }
 
-function renderClassroomPresentationCard(options = {}) {
+const CLASSROOM_CONTENT_TRANSITION_MS = 135;
+let classroomContentTransitionToken = 0;
+let classroomContentTransitionOutTimer = null;
+let classroomContentTransitionInTimer = null;
+
+function prefersReducedClassroomMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function resetClassroomContentTransitionTargets(targets) {
+    targets.forEach((element) => {
+        element.classList.remove("classroom-content-transition", "classroom-content-is-visible");
+    });
+}
+
+function withClassroomContentTransition(targetElements, updateContent, options = {}) {
+    const animate = options.animate === true;
+    const targets = (Array.isArray(targetElements) ? targetElements : [targetElements]).filter(Boolean);
+
+    if (classroomContentTransitionOutTimer) {
+        clearTimeout(classroomContentTransitionOutTimer);
+        classroomContentTransitionOutTimer = null;
+    }
+
+    if (classroomContentTransitionInTimer) {
+        clearTimeout(classroomContentTransitionInTimer);
+        classroomContentTransitionInTimer = null;
+    }
+
+    classroomContentTransitionToken += 1;
+    const token = classroomContentTransitionToken;
+
+    resetClassroomContentTransitionTargets(targets);
+
+    if (!animate || prefersReducedClassroomMotion() || targets.length === 0) {
+        updateContent();
+        return;
+    }
+
+    targets.forEach((element) => {
+        element.classList.add("classroom-content-transition", "classroom-content-is-visible");
+    });
+
+    requestAnimationFrame(() => {
+        if (token !== classroomContentTransitionToken) {
+            return;
+        }
+
+        targets.forEach((element) => {
+            element.classList.remove("classroom-content-is-visible");
+        });
+
+        classroomContentTransitionOutTimer = setTimeout(() => {
+            classroomContentTransitionOutTimer = null;
+
+            if (token !== classroomContentTransitionToken) {
+                return;
+            }
+
+            updateContent();
+
+            targets.forEach((element) => {
+                element.classList.add("classroom-content-is-visible");
+            });
+
+            classroomContentTransitionInTimer = setTimeout(() => {
+                classroomContentTransitionInTimer = null;
+
+                if (token !== classroomContentTransitionToken) {
+                    return;
+                }
+
+                resetClassroomContentTransitionTargets(targets);
+            }, CLASSROOM_CONTENT_TRANSITION_MS);
+        }, CLASSROOM_CONTENT_TRANSITION_MS);
+    });
+}
+
+function getClassroomPresentationTransitionTargets() {
+    return [
+        document.querySelector("#classroomPresentationScreen .classroom-presentation-image-card"),
+        document.querySelector("#classroomPresentationScreen .classroom-presentation-word-group")
+    ].filter(Boolean);
+}
+
+function getClassroomRandomWordTransitionTargets() {
+    return [
+        document.querySelector("#classroomRandomWordMain .classroom-random-word-image-card"),
+        document.querySelector("#classroomRandomWordMain .classroom-random-word-word-group")
+    ].filter(Boolean);
+}
+
+function setClassroomFlashcardSideToFrontWithoutFlip(flashcardInnerId, updateFlipUi) {
+    const inner = document.getElementById(flashcardInnerId);
+
+    if (inner) {
+        inner.classList.add("classroom-flashcard-no-flip-transition");
+    }
+
+    if (flashcardInnerId === "classroomFlashcardInner") {
+        classroomFlashcardSide = "front";
+    } else {
+        classroomTextFlashcardSide = "front";
+    }
+
+    updateFlipUi();
+
+    if (inner) {
+        requestAnimationFrame(() => {
+            inner.classList.remove("classroom-flashcard-no-flip-transition");
+        });
+    }
+}
+
+function applyClassroomPresentationCardContent(options = {}) {
     const preserveTranslation = options.preserveTranslation === true;
     const card = classroomPresentationCards[classroomPresentationIndex];
     const total = classroomPresentationCards.length;
@@ -1183,6 +1297,14 @@ function renderClassroomPresentationCard(options = {}) {
 
     updateClassroomPresentationNav();
     saveClassroomPresentationContext();
+}
+
+function renderClassroomPresentationCard(options = {}) {
+    withClassroomContentTransition(
+        getClassroomPresentationTransitionTargets(),
+        () => applyClassroomPresentationCardContent(options),
+        { animate: options.animate === true }
+    );
 }
 
 function updateClassroomTranslationUI() {
@@ -1221,7 +1343,7 @@ function classroomPresentationPrevious() {
 
     classroomPresentationIndex -= 1;
     classroomTranslationVisible = false;
-    renderClassroomPresentationCard();
+    renderClassroomPresentationCard({ animate: true });
 }
 
 function isClassroomPresentationOnLastCard() {
@@ -1235,7 +1357,7 @@ function classroomPresentationAdvance() {
 
     classroomPresentationIndex += 1;
     classroomTranslationVisible = false;
-    renderClassroomPresentationCard();
+    renderClassroomPresentationCard({ animate: true });
 }
 
 function classroomPresentationNextButtonClick() {
@@ -1334,7 +1456,7 @@ function updateClassroomFlashcardFlipUI() {
     }
 }
 
-function renderClassroomFlashcard(options = {}) {
+function applyClassroomFlashcardContent(options = {}) {
     const preserveSide = options.preserveSide === true;
     const card = classroomFlashcardsCards[classroomFlashcardsIndex];
     const total = classroomFlashcardsCards.length;
@@ -1362,12 +1484,26 @@ function renderClassroomFlashcard(options = {}) {
     );
 
     if (!preserveSide) {
-        classroomFlashcardSide = "front";
+        if (options.animate === true && classroomFlashcardSide === "back") {
+            setClassroomFlashcardSideToFrontWithoutFlip("classroomFlashcardInner", updateClassroomFlashcardFlipUI);
+        } else {
+            classroomFlashcardSide = "front";
+            updateClassroomFlashcardFlipUI();
+        }
+    } else {
+        updateClassroomFlashcardFlipUI();
     }
 
-    updateClassroomFlashcardFlipUI();
     updateClassroomFlashcardsNav();
     saveClassroomFlashcardsContext();
+}
+
+function renderClassroomFlashcard(options = {}) {
+    withClassroomContentTransition(
+        document.getElementById("classroomFlashcardInner"),
+        () => applyClassroomFlashcardContent(options),
+        { animate: options.animate === true }
+    );
 }
 
 function toggleClassroomFlashcard() {
@@ -1397,7 +1533,7 @@ function classroomFlashcardsPrevious() {
     }
 
     classroomFlashcardsIndex -= 1;
-    renderClassroomFlashcard();
+    renderClassroomFlashcard({ animate: true });
 }
 
 function isClassroomFlashcardsOnLastCard() {
@@ -1410,7 +1546,7 @@ function classroomFlashcardsAdvance() {
     }
 
     classroomFlashcardsIndex += 1;
-    renderClassroomFlashcard();
+    renderClassroomFlashcard({ animate: true });
 }
 
 function classroomFlashcardsNextButtonClick() {
@@ -1611,7 +1747,7 @@ function updateClassroomTextFlashcardFlipUI() {
     }
 }
 
-function renderClassroomTextFlashcard(options = {}) {
+function applyClassroomTextFlashcardContent(options = {}) {
     const preserveSide = options.preserveSide === true;
     const card = classroomTextFlashcardsCards[classroomTextFlashcardsIndex];
     const total = classroomTextFlashcardsCards.length;
@@ -1626,12 +1762,26 @@ function renderClassroomTextFlashcard(options = {}) {
         getClassroomTextFlashcardBackText(card);
 
     if (!preserveSide) {
-        classroomTextFlashcardSide = "front";
+        if (options.animate === true && classroomTextFlashcardSide === "back") {
+            setClassroomFlashcardSideToFrontWithoutFlip("classroomTextFlashcardInner", updateClassroomTextFlashcardFlipUI);
+        } else {
+            classroomTextFlashcardSide = "front";
+            updateClassroomTextFlashcardFlipUI();
+        }
+    } else {
+        updateClassroomTextFlashcardFlipUI();
     }
 
-    updateClassroomTextFlashcardFlipUI();
     updateClassroomTextFlashcardsNav();
     saveClassroomTextFlashcardsContext();
+}
+
+function renderClassroomTextFlashcard(options = {}) {
+    withClassroomContentTransition(
+        document.getElementById("classroomTextFlashcardInner"),
+        () => applyClassroomTextFlashcardContent(options),
+        { animate: options.animate === true }
+    );
 }
 
 function toggleClassroomTextFlashcard() {
@@ -1674,7 +1824,7 @@ function classroomTextFlashcardsPrevious() {
     }
 
     classroomTextFlashcardsIndex -= 1;
-    renderClassroomTextFlashcard();
+    renderClassroomTextFlashcard({ animate: true });
 }
 
 function isClassroomTextFlashcardsOnLastCard() {
@@ -1687,7 +1837,7 @@ function classroomTextFlashcardsAdvance() {
     }
 
     classroomTextFlashcardsIndex += 1;
-    renderClassroomTextFlashcard();
+    renderClassroomTextFlashcard({ animate: true });
 }
 
 function classroomTextFlashcardsNextButtonClick() {
@@ -1906,7 +2056,7 @@ function updateClassroomRandomWordRevealUI() {
     revealTranslationButton.classList.toggle("disabled-button", classroomRandomWordTranslationVisible);
 }
 
-function renderClassroomRandomWord() {
+function applyClassroomRandomWordContent() {
     if (classroomRandomWordCards.length === 0) {
         showClassroomRandomWordEmptyState();
         saveClassroomRandomWordContext();
@@ -1925,6 +2075,14 @@ function renderClassroomRandomWord() {
     setClassroomRandomWordImage(card);
     updateClassroomRandomWordRevealUI();
     saveClassroomRandomWordContext();
+}
+
+function renderClassroomRandomWord(options = {}) {
+    withClassroomContentTransition(
+        getClassroomRandomWordTransitionTargets(),
+        () => applyClassroomRandomWordContent(),
+        { animate: options.animate === true }
+    );
 }
 
 function pickRandomClassroomWord() {
@@ -1946,10 +2104,12 @@ function pickRandomClassroomWord() {
         } while (newIndex === currentIndex && currentIndex >= 0);
     }
 
+    const shouldAnimate = classroomRandomWordIndex >= 0;
+
     classroomRandomWordIndex = newIndex;
     classroomRandomWordVisible = false;
     classroomRandomWordTranslationVisible = false;
-    renderClassroomRandomWord();
+    renderClassroomRandomWord({ animate: shouldAnimate });
 }
 
 function revealClassroomRandomWord() {
