@@ -38,6 +38,7 @@ let classroomPresentationIndex = 0;
 let classroomPresentationSetName = "";
 let classroomTranslationVisible = false;
 const GAME_CONTEXT_STORAGE_KEY = "wordfish_game_context";
+const CLASSROOM_PRESENTATION_CONTEXT_STORAGE_KEY = "wordfish_classroom_presentation_context";
 const SETTINGS_KEYS = {
     trashAutoDelete: "wordfish_settings_trash_auto_delete",
     enableAnimations: "wordfish_settings_enable_animations",
@@ -138,6 +139,36 @@ function clearGameContext() {
 
 function isGameRefreshRequested() {
     return window.location.hash.replace(/^#/, "") === "game";
+}
+
+function saveClassroomPresentationContext() {
+    if (currentScreenId !== "classroomPresentationScreen" || !classroomSelectedSetId) {
+        return;
+    }
+
+    localStorage.setItem(CLASSROOM_PRESENTATION_CONTEXT_STORAGE_KEY, JSON.stringify({
+        mode: "classroomPresentation",
+        setId: classroomSelectedSetId,
+        currentCardIndex: classroomPresentationIndex,
+        translationVisible: classroomTranslationVisible
+    }));
+}
+
+function loadClassroomPresentationContext() {
+    try {
+        const raw = localStorage.getItem(CLASSROOM_PRESENTATION_CONTEXT_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function clearClassroomPresentationContext() {
+    localStorage.removeItem(CLASSROOM_PRESENTATION_CONTEXT_STORAGE_KEY);
+}
+
+function isClassroomPresentationRefreshRequested() {
+    return window.location.hash.replace(/^#/, "") === "classroomPresentation";
 }
 
 function displayScreen(screenId, addToHistory = true) {
@@ -628,6 +659,7 @@ function renderDashboard() {
 
 function showClassroomPicker(addToHistory = true) {
     exitClassroomFullscreenIfActive();
+    clearClassroomPresentationContext();
     displayScreen("classroomPickerScreen", addToHistory);
     renderClassroomPicker();
 }
@@ -728,7 +760,8 @@ function getClassroomCardTranslation(card) {
     return (card.thai || "").trim();
 }
 
-function renderClassroomPresentationCard() {
+function renderClassroomPresentationCard(options = {}) {
+    const preserveTranslation = options.preserveTranslation === true;
     const card = classroomPresentationCards[classroomPresentationIndex];
     const total = classroomPresentationCards.length;
     const current = classroomPresentationIndex + 1;
@@ -740,7 +773,10 @@ function renderClassroomPresentationCard() {
     const translationEl = document.getElementById("classroomPresentationTranslation");
     translationEl.textContent = getClassroomCardTranslation(card) || "—";
 
-    classroomTranslationVisible = false;
+    if (!preserveTranslation) {
+        classroomTranslationVisible = false;
+    }
+
     updateClassroomTranslationUI();
 
     const imageEl = document.getElementById("classroomPresentationImage");
@@ -759,6 +795,7 @@ function renderClassroomPresentationCard() {
     }
 
     updateClassroomPresentationNav();
+    saveClassroomPresentationContext();
 }
 
 function updateClassroomTranslationUI() {
@@ -776,6 +813,7 @@ function toggleClassroomTranslation() {
 
     classroomTranslationVisible = !classroomTranslationVisible;
     updateClassroomTranslationUI();
+    saveClassroomPresentationContext();
 }
 
 function updateClassroomPresentationNav() {
@@ -795,6 +833,7 @@ function classroomPresentationPrevious() {
     }
 
     classroomPresentationIndex -= 1;
+    classroomTranslationVisible = false;
     renderClassroomPresentationCard();
 }
 
@@ -808,6 +847,7 @@ function classroomPresentationAdvance() {
     }
 
     classroomPresentationIndex += 1;
+    classroomTranslationVisible = false;
     renderClassroomPresentationCard();
 }
 
@@ -2562,6 +2602,93 @@ async function restoreGameFromRefresh(context) {
     }
 }
 
+async function restoreClassroomPresentationFromContext(context) {
+    const setId = context.setId;
+
+    if (!setId || context.mode !== "classroomPresentation") {
+        return false;
+    }
+
+    try {
+        const { data } = await supabaseClient.auth.getSession();
+
+        if (!data.session) {
+            return false;
+        }
+
+        savedSets = await dbLoadSetsWithCards();
+        const set = savedSets.find((item) => item.id === setId);
+
+        if (!set) {
+            return false;
+        }
+
+        const presentationCards = prepareCards(set.cards || [])
+            .filter((card) => card.english.trim() !== "");
+
+        if (presentationCards.length === 0) {
+            return false;
+        }
+
+        classroomSelectedSetId = set.id;
+        classroomPresentationSetName = set.name;
+        classroomPresentationCards = presentationCards;
+
+        let restoredIndex = Number(context.currentCardIndex);
+        if (!Number.isFinite(restoredIndex)) {
+            restoredIndex = 0;
+        }
+
+        classroomPresentationIndex = Math.max(0, Math.min(restoredIndex, presentationCards.length - 1));
+        classroomTranslationVisible = !!context.translationVisible;
+
+        displayScreen("classroomPresentationScreen", false);
+        renderClassroomPresentationCard({ preserveTranslation: true });
+        saveClassroomPresentationContext();
+        return true;
+    } catch (error) {
+        console.error("Classroom presentation restore failed:", error);
+        return false;
+    }
+}
+
+async function tryRestoreClassroomPresentationOnRefresh() {
+    if (!isClassroomPresentationRefreshRequested()) {
+        return false;
+    }
+
+    const context = loadClassroomPresentationContext();
+
+    if (!context) {
+        return false;
+    }
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (!data.session) {
+        return false;
+    }
+
+    return restoreClassroomPresentationFromContext(context);
+}
+
+async function handleFailedClassroomPresentationRefresh() {
+    clearClassroomPresentationContext();
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (data.session) {
+        savedSets = await dbLoadSetsWithCards();
+        showClassroomPicker(false);
+        return;
+    }
+
+    hideAppLoading();
+    displayScreen("authScreen", false);
+    history.replaceState({ screen: "authScreen" }, "", "#auth");
+}
+
 async function tryRestoreGameOnRefresh() {
     if (!isGameRefreshRequested()) {
         return false;
@@ -2602,6 +2729,17 @@ async function checkAuth() {
     if (isGameRefreshRequested()) {
         clearGameContext();
         history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+
+    if (await tryRestoreClassroomPresentationOnRefresh()) {
+        hideAppLoading();
+        return;
+    }
+
+    if (isClassroomPresentationRefreshRequested()) {
+        hideAppLoading();
+        await handleFailedClassroomPresentationRefresh();
+        return;
     }
 
     const { data } = await supabaseClient.auth.getSession();
