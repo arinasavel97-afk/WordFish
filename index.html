@@ -150,11 +150,11 @@
                 <button type="button" class="green-button" onclick="startClassroomFlashcardsFromActivityMenu()">Start</button>
             </article>
 
-            <article class="card classroom-activity-card classroom-activity-card-disabled">
+            <article class="card classroom-activity-card">
                 <h2 class="classroom-activity-name">Random Word</h2>
                 <p class="classroom-activity-description">Pick random words for quick review.</p>
-                <p class="classroom-activity-status classroom-activity-status-soon">Coming soon</p>
-                <button type="button" class="soft-button disabled-button" disabled>Start</button>
+                <p class="classroom-activity-status classroom-activity-status-available">Available</p>
+                <button type="button" class="green-button" onclick="startClassroomRandomWordFromActivityMenu()">Start</button>
             </article>
         </div>
     </div>
@@ -237,6 +237,56 @@
         <footer class="classroom-flashcards-footer">
             <button id="classroomFlashcardsPrevButton" type="button" class="soft-button classroom-nav-prev-button">← Previous</button>
             <button id="classroomFlashcardsNextButton" type="button" class="green-button classroom-nav-next-button">Next →</button>
+        </footer>
+    </div>
+
+    <div id="classroomRandomWordScreen" class="classroom-random-word-screen" style="display: none;">
+        <header class="classroom-random-word-header">
+            <div class="classroom-random-word-header-text">
+                <p id="classroomRandomWordSetName" class="classroom-random-word-set-name">Set Name</p>
+                <p class="classroom-random-word-activity-label">Random Word</p>
+            </div>
+            <div class="classroom-random-word-header-actions">
+                <button id="classroomRandomWordFullscreenButton" type="button" class="classroom-fullscreen-button" aria-label="Enter fullscreen" title="Fullscreen (F)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"/></svg>
+                    <span id="classroomRandomWordFullscreenButtonLabel">Fullscreen</span>
+                </button>
+                <button id="classroomRandomWordBackButton" type="button" class="soft-button classroom-back-button">Back</button>
+            </div>
+        </header>
+
+        <div id="classroomRandomWordEmpty" class="classroom-random-word-empty" style="display: none;">
+            <div class="card classroom-empty-card">
+                <h2>No words in this set</h2>
+                <p>Add vocabulary words to use Random Word review.</p>
+            </div>
+        </div>
+
+        <main id="classroomRandomWordMain" class="classroom-random-word-main">
+            <section class="classroom-random-word-image-column" aria-label="Vocabulary image">
+                <div class="classroom-random-word-image-card">
+                    <img id="classroomRandomWordImage" class="classroom-random-word-image" alt="">
+                    <div id="classroomRandomWordImagePlaceholder" class="classroom-random-word-image-placeholder" aria-hidden="true">
+                        <div class="classroom-random-word-placeholder-art">🖼️ 🐠</div>
+                        <p>No image for this word</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="classroom-random-word-text-column" aria-label="Vocabulary word">
+                <div class="classroom-random-word-word-group">
+                    <p id="classroomRandomWordEnglish" class="classroom-random-word-english" hidden>Word</p>
+                    <p id="classroomRandomWordTranslation" class="classroom-random-word-translation" hidden>Translation</p>
+                    <div class="classroom-random-word-reveal-actions">
+                        <button id="classroomRandomWordRevealWordButton" type="button" class="soft-button">Reveal Word</button>
+                        <button id="classroomRandomWordRevealTranslationButton" type="button" class="soft-button">Reveal Translation</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer id="classroomRandomWordFooter" class="classroom-random-word-footer">
+            <button id="classroomRandomWordPickButton" type="button" class="green-button classroom-random-word-pick-button">Pick Random Word</button>
         </footer>
     </div>
 

@@ -41,10 +41,16 @@ let classroomFlashcardsCards = [];
 let classroomFlashcardsIndex = 0;
 let classroomFlashcardsSetName = "";
 let classroomFlashcardSide = "front";
+let classroomRandomWordCards = [];
+let classroomRandomWordIndex = -1;
+let classroomRandomWordSetName = "";
+let classroomRandomWordVisible = false;
+let classroomRandomWordTranslationVisible = false;
 const GAME_CONTEXT_STORAGE_KEY = "wordfish_game_context";
 const CLASSROOM_PRESENTATION_CONTEXT_STORAGE_KEY = "wordfish_classroom_presentation_context";
 const CLASSROOM_ACTIVITY_CONTEXT_STORAGE_KEY = "wordfish_classroom_activity_context";
 const CLASSROOM_FLASHCARDS_CONTEXT_STORAGE_KEY = "wordfish_classroom_flashcards_context";
+const CLASSROOM_RANDOM_WORD_CONTEXT_STORAGE_KEY = "wordfish_classroom_random_word_context";
 const SETTINGS_KEYS = {
     trashAutoDelete: "wordfish_settings_trash_auto_delete",
     enableAnimations: "wordfish_settings_enable_animations",
@@ -100,6 +106,7 @@ function hideAllScreens() {
     const classroomActivityMenuScreen = document.getElementById("classroomActivityMenuScreen");
     const classroomPresentationScreen = document.getElementById("classroomPresentationScreen");
     const classroomFlashcardsScreen = document.getElementById("classroomFlashcardsScreen");
+    const classroomRandomWordScreen = document.getElementById("classroomRandomWordScreen");
     if (classroomPickerScreen) {
         classroomPickerScreen.style.display = "none";
     }
@@ -111,6 +118,9 @@ function hideAllScreens() {
     }
     if (classroomFlashcardsScreen) {
         classroomFlashcardsScreen.style.display = "none";
+    }
+    if (classroomRandomWordScreen) {
+        classroomRandomWordScreen.style.display = "none";
     }
     document.getElementById("studentScreen").style.display = "none";
     document.getElementById("teacherScreen").style.display = "none";
@@ -243,6 +253,37 @@ function isClassroomFlashcardsRefreshRequested() {
     return window.location.hash.replace(/^#/, "") === "classroomFlashcards";
 }
 
+function saveClassroomRandomWordContext() {
+    if (currentScreenId !== "classroomRandomWordScreen" || !classroomSelectedSetId) {
+        return;
+    }
+
+    localStorage.setItem(CLASSROOM_RANDOM_WORD_CONTEXT_STORAGE_KEY, JSON.stringify({
+        mode: "classroomRandomWord",
+        setId: classroomSelectedSetId,
+        currentCardIndex: classroomRandomWordIndex,
+        wordVisible: classroomRandomWordVisible,
+        translationVisible: classroomRandomWordTranslationVisible
+    }));
+}
+
+function loadClassroomRandomWordContext() {
+    try {
+        const raw = localStorage.getItem(CLASSROOM_RANDOM_WORD_CONTEXT_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function clearClassroomRandomWordContext() {
+    localStorage.removeItem(CLASSROOM_RANDOM_WORD_CONTEXT_STORAGE_KEY);
+}
+
+function isClassroomRandomWordRefreshRequested() {
+    return window.location.hash.replace(/^#/, "") === "classroomRandomWord";
+}
+
 function displayScreen(screenId, addToHistory = true) {
     hideAllScreens();
     const screen = document.getElementById(screenId);
@@ -251,7 +292,11 @@ function displayScreen(screenId, addToHistory = true) {
         return;
     }
 
-    screen.style.display = (screenId === "classroomPresentationScreen" || screenId === "classroomFlashcardsScreen") ? "grid" : "block";
+    screen.style.display = (
+        screenId === "classroomPresentationScreen"
+        || screenId === "classroomFlashcardsScreen"
+        || screenId === "classroomRandomWordScreen"
+    ) ? "grid" : "block";
     currentScreenId = screenId;
 
     if (addToHistory && !suppressHistoryPush) {
@@ -289,6 +334,8 @@ window.addEventListener("popstate", (event) => {
         showClassroomPresentationForSelectedSet(false);
     } else if (screenId === "classroomFlashcardsScreen") {
         showClassroomFlashcardsForSelectedSet(false);
+    } else if (screenId === "classroomRandomWordScreen") {
+        showClassroomRandomWordForSelectedSet(false);
     }
 
     suppressHistoryPush = false;
@@ -738,6 +785,7 @@ function showClassroomPicker(addToHistory = true) {
     clearClassroomPresentationContext();
     clearClassroomActivityContext();
     clearClassroomFlashcardsContext();
+    clearClassroomRandomWordContext();
     displayScreen("classroomPickerScreen", addToHistory);
     renderClassroomPicker();
 }
@@ -805,6 +853,7 @@ function showClassroomActivityMenu(set, addToHistory = true) {
     document.getElementById("classroomActivityMenuTitle").textContent = set.name;
     clearClassroomPresentationContext();
     clearClassroomFlashcardsContext();
+    clearClassroomRandomWordContext();
     displayScreen("classroomActivityMenuScreen", addToHistory);
     saveClassroomActivityContext();
 }
@@ -829,6 +878,7 @@ function startClassroomPresentationFromActivityMenu() {
     }
 
     clearClassroomFlashcardsContext();
+    clearClassroomRandomWordContext();
     startClassroomPresentation(selectedSet);
 }
 
@@ -841,7 +891,21 @@ function startClassroomFlashcardsFromActivityMenu() {
     }
 
     clearClassroomPresentationContext();
+    clearClassroomRandomWordContext();
     startClassroomFlashcards(selectedSet);
+}
+
+function startClassroomRandomWordFromActivityMenu() {
+    const selectedSet = savedSets.find((set) => set.id === classroomSelectedSetId);
+
+    if (!selectedSet) {
+        showToast("Could not find that set.", "error");
+        return;
+    }
+
+    clearClassroomPresentationContext();
+    clearClassroomFlashcardsContext();
+    startClassroomRandomWord(selectedSet);
 }
 
 function startClassroomPresentation(set, addToHistory = true) {
@@ -1262,6 +1326,292 @@ function initClassroomFlashcardsControls() {
     if (document.documentElement.dataset.classroomFlashcardsFullscreenListenerAttached !== "true") {
         document.documentElement.dataset.classroomFlashcardsFullscreenListenerAttached = "true";
         document.addEventListener("fullscreenchange", updateClassroomFlashcardsFullscreenButtonLabel);
+    }
+}
+
+function startClassroomRandomWord(set, addToHistory = true) {
+    const randomWordCards = prepareCards(set.cards || [])
+        .filter((card) => card.english.trim() !== "");
+
+    classroomRandomWordSetName = set.name;
+    classroomRandomWordCards = randomWordCards;
+    classroomRandomWordIndex = -1;
+    classroomRandomWordVisible = false;
+    classroomRandomWordTranslationVisible = false;
+    showClassroomRandomWord(addToHistory);
+}
+
+function showClassroomRandomWord(addToHistory = true) {
+    document.getElementById("classroomRandomWordSetName").textContent = classroomRandomWordSetName;
+    displayScreen("classroomRandomWordScreen", addToHistory);
+
+    if (classroomRandomWordCards.length === 0) {
+        showClassroomRandomWordEmptyState();
+        saveClassroomRandomWordContext();
+        return;
+    }
+
+    if (classroomRandomWordIndex < 0) {
+        pickRandomClassroomWord();
+        return;
+    }
+
+    renderClassroomRandomWord();
+}
+
+function showClassroomRandomWordForSelectedSet(addToHistory = true) {
+    const selectedSet = savedSets.find((set) => set.id === classroomSelectedSetId);
+
+    if (!selectedSet) {
+        showClassroomActivityMenuForSelectedSet(addToHistory);
+        return;
+    }
+
+    classroomRandomWordSetName = selectedSet.name;
+
+    if (classroomRandomWordCards.length === 0) {
+        classroomRandomWordCards = prepareCards(selectedSet.cards || [])
+            .filter((card) => card.english.trim() !== "");
+    }
+
+    showClassroomRandomWord(addToHistory);
+}
+
+function showClassroomRandomWordEmptyState() {
+    document.getElementById("classroomRandomWordEmpty").style.display = "flex";
+    document.getElementById("classroomRandomWordMain").style.display = "none";
+    document.getElementById("classroomRandomWordFooter").style.display = "none";
+}
+
+function setClassroomRandomWordImage(card) {
+    const imageEl = document.getElementById("classroomRandomWordImage");
+    const placeholderEl = document.getElementById("classroomRandomWordImagePlaceholder");
+
+    if (card.imageUrl) {
+        imageEl.src = card.imageUrl;
+        imageEl.alt = classroomRandomWordVisible ? card.english : "";
+        imageEl.style.display = "block";
+        placeholderEl.style.display = "none";
+    } else {
+        imageEl.removeAttribute("src");
+        imageEl.alt = "";
+        imageEl.style.display = "none";
+        placeholderEl.style.display = "flex";
+    }
+}
+
+function updateClassroomRandomWordRevealUI() {
+    const englishEl = document.getElementById("classroomRandomWordEnglish");
+    const translationEl = document.getElementById("classroomRandomWordTranslation");
+    const revealWordButton = document.getElementById("classroomRandomWordRevealWordButton");
+    const revealTranslationButton = document.getElementById("classroomRandomWordRevealTranslationButton");
+
+    englishEl.hidden = !classroomRandomWordVisible;
+    translationEl.hidden = !classroomRandomWordTranslationVisible;
+
+    revealWordButton.disabled = classroomRandomWordVisible;
+    revealWordButton.classList.toggle("disabled-button", classroomRandomWordVisible);
+    revealTranslationButton.disabled = classroomRandomWordTranslationVisible;
+    revealTranslationButton.classList.toggle("disabled-button", classroomRandomWordTranslationVisible);
+}
+
+function renderClassroomRandomWord() {
+    if (classroomRandomWordCards.length === 0) {
+        showClassroomRandomWordEmptyState();
+        saveClassroomRandomWordContext();
+        return;
+    }
+
+    document.getElementById("classroomRandomWordEmpty").style.display = "none";
+    document.getElementById("classroomRandomWordMain").style.display = "grid";
+    document.getElementById("classroomRandomWordFooter").style.display = "flex";
+
+    const card = classroomRandomWordCards[classroomRandomWordIndex];
+    document.getElementById("classroomRandomWordEnglish").textContent = card.english;
+    document.getElementById("classroomRandomWordTranslation").textContent =
+        getClassroomCardTranslation(card) || "—";
+
+    setClassroomRandomWordImage(card);
+    updateClassroomRandomWordRevealUI();
+    saveClassroomRandomWordContext();
+}
+
+function pickRandomClassroomWord() {
+    if (classroomRandomWordCards.length === 0) {
+        showClassroomRandomWordEmptyState();
+        saveClassroomRandomWordContext();
+        return;
+    }
+
+    let newIndex;
+
+    if (classroomRandomWordCards.length === 1) {
+        newIndex = 0;
+    } else {
+        const currentIndex = classroomRandomWordIndex;
+
+        do {
+            newIndex = Math.floor(Math.random() * classroomRandomWordCards.length);
+        } while (newIndex === currentIndex && currentIndex >= 0);
+    }
+
+    classroomRandomWordIndex = newIndex;
+    classroomRandomWordVisible = false;
+    classroomRandomWordTranslationVisible = false;
+    renderClassroomRandomWord();
+}
+
+function revealClassroomRandomWord() {
+    if (currentScreenId !== "classroomRandomWordScreen" || classroomRandomWordCards.length === 0) {
+        return;
+    }
+
+    if (classroomRandomWordVisible) {
+        return;
+    }
+
+    classroomRandomWordVisible = true;
+    const card = classroomRandomWordCards[classroomRandomWordIndex];
+    const imageEl = document.getElementById("classroomRandomWordImage");
+
+    if (card.imageUrl && imageEl) {
+        imageEl.alt = card.english;
+    }
+
+    updateClassroomRandomWordRevealUI();
+    saveClassroomRandomWordContext();
+}
+
+function revealClassroomRandomWordTranslation() {
+    if (currentScreenId !== "classroomRandomWordScreen" || classroomRandomWordCards.length === 0) {
+        return;
+    }
+
+    if (classroomRandomWordTranslationVisible) {
+        return;
+    }
+
+    classroomRandomWordTranslationVisible = true;
+    updateClassroomRandomWordRevealUI();
+    saveClassroomRandomWordContext();
+}
+
+function handleClassroomRandomWordSpaceReveal() {
+    if (!classroomRandomWordVisible) {
+        revealClassroomRandomWord();
+        return;
+    }
+
+    if (!classroomRandomWordTranslationVisible) {
+        revealClassroomRandomWordTranslation();
+    }
+}
+
+function finishClassroomRandomWordSession() {
+    exitClassroomFullscreenIfActive();
+    clearClassroomRandomWordContext();
+    showClassroomActivityMenuForSelectedSet();
+}
+
+function returnToClassroomActivityMenuFromRandomWord() {
+    finishClassroomRandomWordSession();
+}
+
+function toggleClassroomRandomWordFullscreen() {
+    const randomWordScreen = document.getElementById("classroomRandomWordScreen");
+
+    if (!randomWordScreen) {
+        return;
+    }
+
+    if (!document.fullscreenElement) {
+        randomWordScreen.requestFullscreen().catch(() => {
+            showToast("Fullscreen is not available.", "warning");
+        });
+        return;
+    }
+
+    document.exitFullscreen();
+}
+
+function updateClassroomRandomWordFullscreenButtonLabel() {
+    const label = document.getElementById("classroomRandomWordFullscreenButtonLabel");
+    const button = document.getElementById("classroomRandomWordFullscreenButton");
+
+    if (!label || !button) {
+        return;
+    }
+
+    const isFullscreen = document.fullscreenElement === document.getElementById("classroomRandomWordScreen");
+    label.textContent = isFullscreen ? "Exit Fullscreen" : "Fullscreen";
+    button.setAttribute("aria-label", isFullscreen ? "Exit fullscreen" : "Enter fullscreen");
+    button.title = isFullscreen ? "Exit Fullscreen (F)" : "Fullscreen (F)";
+}
+
+function handleClassroomRandomWordKeydown(event) {
+    if (currentScreenId !== "classroomRandomWordScreen") {
+        return;
+    }
+
+    const tag = event.target.tagName;
+
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") {
+        return;
+    }
+
+    if (event.key === " " || event.code === "Space") {
+        event.preventDefault();
+        handleClassroomRandomWordSpaceReveal();
+        return;
+    }
+
+    if (event.key === "r" || event.key === "R") {
+        event.preventDefault();
+        pickRandomClassroomWord();
+        return;
+    }
+
+    if (event.key === "f" || event.key === "F") {
+        event.preventDefault();
+        toggleClassroomRandomWordFullscreen();
+    }
+}
+
+function initClassroomRandomWordControls() {
+    const revealWordButton = document.getElementById("classroomRandomWordRevealWordButton");
+    const revealTranslationButton = document.getElementById("classroomRandomWordRevealTranslationButton");
+    const pickButton = document.getElementById("classroomRandomWordPickButton");
+    const fullscreenButton = document.getElementById("classroomRandomWordFullscreenButton");
+    const backButton = document.getElementById("classroomRandomWordBackButton");
+
+    if (revealWordButton && revealWordButton.dataset.handlerAttached !== "true") {
+        revealWordButton.dataset.handlerAttached = "true";
+        revealWordButton.addEventListener("click", revealClassroomRandomWord);
+    }
+
+    if (revealTranslationButton && revealTranslationButton.dataset.handlerAttached !== "true") {
+        revealTranslationButton.dataset.handlerAttached = "true";
+        revealTranslationButton.addEventListener("click", revealClassroomRandomWordTranslation);
+    }
+
+    if (pickButton && pickButton.dataset.handlerAttached !== "true") {
+        pickButton.dataset.handlerAttached = "true";
+        pickButton.addEventListener("click", pickRandomClassroomWord);
+    }
+
+    if (fullscreenButton && fullscreenButton.dataset.handlerAttached !== "true") {
+        fullscreenButton.dataset.handlerAttached = "true";
+        fullscreenButton.addEventListener("click", toggleClassroomRandomWordFullscreen);
+    }
+
+    if (backButton && backButton.dataset.handlerAttached !== "true") {
+        backButton.dataset.handlerAttached = "true";
+        backButton.addEventListener("click", returnToClassroomActivityMenuFromRandomWord);
+    }
+
+    if (document.documentElement.dataset.classroomRandomWordFullscreenListenerAttached !== "true") {
+        document.documentElement.dataset.classroomRandomWordFullscreenListenerAttached = "true";
+        document.addEventListener("fullscreenchange", updateClassroomRandomWordFullscreenButtonLabel);
     }
 }
 
@@ -2261,6 +2611,7 @@ async function confirmDeleteAction() {
 document.addEventListener("keydown", (event) => {
     handleClassroomPresentationKeydown(event);
     handleClassroomFlashcardsKeydown(event);
+    handleClassroomRandomWordKeydown(event);
 
     if (event.key !== "Escape") return;
 
@@ -3054,6 +3405,99 @@ async function handleFailedClassroomActivityMenuRefresh() {
     history.replaceState({ screen: "authScreen" }, "", "#auth");
 }
 
+async function restoreClassroomRandomWordFromContext(context) {
+    const setId = context.setId;
+
+    if (!setId || context.mode !== "classroomRandomWord") {
+        return false;
+    }
+
+    try {
+        const { data } = await supabaseClient.auth.getSession();
+
+        if (!data.session) {
+            return false;
+        }
+
+        savedSets = await dbLoadSetsWithCards();
+        const set = savedSets.find((item) => item.id === setId);
+
+        if (!set) {
+            return false;
+        }
+
+        const randomWordCards = prepareCards(set.cards || [])
+            .filter((card) => card.english.trim() !== "");
+
+        classroomSelectedSetId = set.id;
+        classroomRandomWordSetName = set.name;
+        classroomRandomWordCards = randomWordCards;
+
+        if (randomWordCards.length === 0) {
+            displayScreen("classroomRandomWordScreen", false);
+            document.getElementById("classroomRandomWordSetName").textContent = set.name;
+            showClassroomRandomWordEmptyState();
+            saveClassroomRandomWordContext();
+            return true;
+        }
+
+        let restoredIndex = Number(context.currentCardIndex);
+        if (!Number.isFinite(restoredIndex) || restoredIndex < 0) {
+            restoredIndex = 0;
+        }
+
+        classroomRandomWordIndex = Math.max(0, Math.min(restoredIndex, randomWordCards.length - 1));
+        classroomRandomWordVisible = !!context.wordVisible;
+        classroomRandomWordTranslationVisible = !!context.translationVisible;
+
+        displayScreen("classroomRandomWordScreen", false);
+        document.getElementById("classroomRandomWordSetName").textContent = set.name;
+        renderClassroomRandomWord();
+        saveClassroomRandomWordContext();
+        return true;
+    } catch (error) {
+        console.error("Classroom random word restore failed:", error);
+        return false;
+    }
+}
+
+async function tryRestoreClassroomRandomWordOnRefresh() {
+    if (!isClassroomRandomWordRefreshRequested()) {
+        return false;
+    }
+
+    const context = loadClassroomRandomWordContext();
+
+    if (!context) {
+        return false;
+    }
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (!data.session) {
+        return false;
+    }
+
+    return restoreClassroomRandomWordFromContext(context);
+}
+
+async function handleFailedClassroomRandomWordRefresh() {
+    clearClassroomRandomWordContext();
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (data.session) {
+        savedSets = await dbLoadSetsWithCards();
+        showClassroomPicker(false);
+        return;
+    }
+
+    hideAppLoading();
+    displayScreen("authScreen", false);
+    history.replaceState({ screen: "authScreen" }, "", "#auth");
+}
+
 async function restoreClassroomFlashcardsFromContext(context) {
     const setId = context.setId;
 
@@ -3292,6 +3736,17 @@ async function checkAuth() {
         return;
     }
 
+    if (await tryRestoreClassroomRandomWordOnRefresh()) {
+        hideAppLoading();
+        return;
+    }
+
+    if (isClassroomRandomWordRefreshRequested()) {
+        hideAppLoading();
+        await handleFailedClassroomRandomWordRefresh();
+        return;
+    }
+
     if (await tryRestoreClassroomActivityMenuOnRefresh()) {
         hideAppLoading();
         return;
@@ -3385,6 +3840,7 @@ function initApp() {
     initClassroomModeButton();
     initClassroomPresentationControls();
     initClassroomFlashcardsControls();
+    initClassroomRandomWordControls();
     checkAuth();
 }
 
