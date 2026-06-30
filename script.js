@@ -33,6 +33,16 @@ let currentScreenId = "";
 let suppressHistoryPush = false;
 let gameLaunchSource = "editor";
 const GAME_CONTEXT_STORAGE_KEY = "wordfish_game_context";
+const SETTINGS_KEYS = {
+    trashAutoDelete: "wordfish_settings_trash_auto_delete",
+    enableAnimations: "wordfish_settings_enable_animations",
+    celebrationPerfect: "wordfish_settings_celebration_perfect"
+};
+const SETTINGS_DEFAULTS = {
+    trashAutoDelete: "never",
+    enableAnimations: true,
+    celebrationPerfect: true
+};
 
 /*
  * Student Share Links — detect ?play=<setId> or /play/<setId>
@@ -710,6 +720,77 @@ async function handleSetsReordered(oldIndex, newIndex) {
         showToast("Could not save order: " + error.message, "error");
         await showDashboard(false);
     }
+}
+
+function readBoolSetting(key, defaultValue) {
+    const raw = localStorage.getItem(key);
+
+    if (raw === null) {
+        return defaultValue;
+    }
+
+    return raw === "true";
+}
+
+function getTrashAutoDeleteSetting() {
+    return localStorage.getItem(SETTINGS_KEYS.trashAutoDelete) || SETTINGS_DEFAULTS.trashAutoDelete;
+}
+
+function isTeacherAnimationsEnabled() {
+    return readBoolSetting(SETTINGS_KEYS.enableAnimations, SETTINGS_DEFAULTS.enableAnimations);
+}
+
+function isTeacherCelebrationPerfectEnabled() {
+    return readBoolSetting(SETTINGS_KEYS.celebrationPerfect, SETTINGS_DEFAULTS.celebrationPerfect);
+}
+
+function syncSettingsModalControls() {
+    const trashValue = getTrashAutoDeleteSetting();
+    const trashRadio = document.querySelector(`input[name="settingsTrashAutoDelete"][value="${trashValue}"]`);
+
+    if (trashRadio) {
+        trashRadio.checked = true;
+    }
+
+    document.getElementById("settingsEnableAnimations").checked = isTeacherAnimationsEnabled();
+    document.getElementById("settingsCelebrationPerfect").checked = isTeacherCelebrationPerfectEnabled();
+}
+
+async function openSettingsModal() {
+    const modal = document.getElementById("settingsModal");
+    const emailEl = document.getElementById("settingsAccountEmail");
+
+    try {
+        const { data } = await supabaseClient.auth.getSession();
+        emailEl.textContent = data.session?.user?.email || "—";
+    } catch (error) {
+        emailEl.textContent = "—";
+    }
+
+    syncSettingsModalControls();
+    modal.style.display = "flex";
+}
+
+function closeSettingsModal() {
+    document.getElementById("settingsModal").style.display = "none";
+}
+
+function closeSettingsModalOnBackdrop(event) {
+    if (event.target === event.currentTarget) {
+        closeSettingsModal();
+    }
+}
+
+function onSettingsTrashAutoDeleteChange(value) {
+    localStorage.setItem(SETTINGS_KEYS.trashAutoDelete, value);
+}
+
+function onSettingsEnableAnimationsChange(enabled) {
+    localStorage.setItem(SETTINGS_KEYS.enableAnimations, enabled ? "true" : "false");
+}
+
+function onSettingsCelebrationPerfectChange(enabled) {
+    localStorage.setItem(SETTINGS_KEYS.celebrationPerfect, enabled ? "true" : "false");
 }
 
 
@@ -1400,6 +1481,12 @@ async function confirmDeleteAction() {
 
 document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
+
+    const settingsModal = document.getElementById("settingsModal");
+    if (settingsModal && settingsModal.style.display === "flex") {
+        closeSettingsModal();
+        return;
+    }
 
     const duplicateModal = document.getElementById("duplicateConfirmModal");
     if (duplicateModal && duplicateModal.style.display === "flex") {
