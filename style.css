@@ -2319,6 +2319,383 @@ h2 {
     margin: 0;
 }
 
+/* Classroom Polish 6.5B — unified button feedback */
+#classroomPickerScreen,
+#classroomActivityMenuScreen,
+#classroomPresentationScreen,
+#classroomFlashcardsScreen,
+#classroomTextFlashcardsScreen,
+#classroomRandomWordScreen {
+    --classroom-button-transition: transform 190ms ease, box-shadow 190ms ease, background-color 190ms ease, border-color 190ms ease;
+}
+
+#classroomPickerScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ),
+#classroomActivityMenuScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ),
+#classroomPresentationScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ),
+#classroomFlashcardsScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ),
+#classroomTextFlashcardsScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ),
+#classroomRandomWordScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ) {
+    transition: var(--classroom-button-transition);
+    transform: scale(1);
+    transform-origin: center center;
+}
+
+#classroomPickerScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ):is(:disabled, .disabled-button),
+#classroomActivityMenuScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ):is(:disabled, .disabled-button),
+#classroomPresentationScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ):is(:disabled, .disabled-button),
+#classroomFlashcardsScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ):is(:disabled, .disabled-button),
+#classroomTextFlashcardsScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ):is(:disabled, .disabled-button),
+#classroomRandomWordScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ):is(:disabled, .disabled-button) {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#classroomPickerScreen .green-button:hover:not(:disabled):not(.disabled-button),
+#classroomActivityMenuScreen .green-button:hover:not(:disabled):not(.disabled-button),
+#classroomPresentationScreen .green-button:hover:not(:disabled):not(.disabled-button),
+#classroomFlashcardsScreen .green-button:hover:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .green-button:hover:not(:disabled):not(.disabled-button),
+#classroomRandomWordScreen .green-button:hover:not(:disabled):not(.disabled-button) {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-button), 0 7px 0 var(--color-success-dark), 0 12px 24px rgba(7, 59, 76, 0.16);
+}
+
+#classroomPickerScreen .green-button:active:not(:disabled):not(.disabled-button),
+#classroomActivityMenuScreen .green-button:active:not(:disabled):not(.disabled-button),
+#classroomPresentationScreen .green-button:active:not(:disabled):not(.disabled-button),
+#classroomFlashcardsScreen .green-button:active:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .green-button:active:not(:disabled):not(.disabled-button),
+#classroomRandomWordScreen .green-button:active:not(:disabled):not(.disabled-button) {
+    transform: scale(0.98);
+    box-shadow: var(--shadow-button), 0 2px 0 var(--color-success-dark);
+}
+
+#classroomPickerScreen .soft-button:hover:not(:disabled):not(.disabled-button),
+#classroomActivityMenuScreen .soft-button:hover:not(:disabled):not(.disabled-button),
+#classroomPresentationScreen .soft-button:hover:not(:disabled):not(.disabled-button),
+#classroomFlashcardsScreen .soft-button:hover:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .soft-button:hover:not(:disabled):not(.disabled-button),
+#classroomRandomWordScreen .soft-button:hover:not(:disabled):not(.disabled-button) {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-button), 0 7px 0 var(--color-soft-dark), 0 12px 24px rgba(7, 59, 76, 0.14);
+}
+
+#classroomPickerScreen .soft-button:active:not(:disabled):not(.disabled-button),
+#classroomActivityMenuScreen .soft-button:active:not(:disabled):not(.disabled-button),
+#classroomPresentationScreen .soft-button:active:not(:disabled):not(.disabled-button),
+#classroomFlashcardsScreen .soft-button:active:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .soft-button:active:not(:disabled):not(.disabled-button),
+#classroomRandomWordScreen .soft-button:active:not(:disabled):not(.disabled-button) {
+    transform: scale(0.98);
+    box-shadow: var(--shadow-button), 0 2px 0 var(--color-soft-dark);
+}
+
+#classroomPresentationScreen .classroom-fullscreen-button:hover:not(:disabled):not(.disabled-button),
+#classroomFlashcardsScreen .classroom-fullscreen-button:hover:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .classroom-fullscreen-button:hover:not(:disabled):not(.disabled-button),
+#classroomRandomWordScreen .classroom-fullscreen-button:hover:not(:disabled):not(.disabled-button) {
+    transform: scale(1.02);
+    background: #EFFFFA;
+    border-color: rgba(63, 169, 245, 0.45);
+    color: var(--color-primary);
+    box-shadow: 0 6px 0 rgba(34, 51, 68, 0.14), 0 12px 24px rgba(7, 59, 76, 0.14);
+}
+
+#classroomPresentationScreen .classroom-fullscreen-button:active:not(:disabled):not(.disabled-button),
+#classroomFlashcardsScreen .classroom-fullscreen-button:active:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .classroom-fullscreen-button:active:not(:disabled):not(.disabled-button),
+#classroomRandomWordScreen .classroom-fullscreen-button:active:not(:disabled):not(.disabled-button) {
+    transform: scale(0.98);
+    box-shadow: 0 2px 0 rgba(34, 51, 68, 0.12);
+}
+
+#classroomPickerScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ):focus-visible,
+#classroomActivityMenuScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ):focus-visible,
+#classroomPresentationScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ):focus-visible,
+#classroomFlashcardsScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ):focus-visible,
+#classroomTextFlashcardsScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ):focus-visible,
+#classroomRandomWordScreen :is(
+        .green-button,
+        .soft-button,
+        .classroom-fullscreen-button,
+        .classroom-nav-button,
+        .classroom-back-button,
+        .classroom-toggle-translation-button,
+        .classroom-nav-prev-button,
+        .classroom-nav-next-button,
+        .classroom-text-flashcard-direction-button,
+        .classroom-random-word-pick-button
+    ):focus-visible {
+    outline: 3px solid rgba(63, 169, 245, 0.55);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #classroomPickerScreen :is(
+            .green-button,
+            .soft-button,
+            .classroom-fullscreen-button,
+            .classroom-nav-button,
+            .classroom-back-button,
+            .classroom-toggle-translation-button,
+            .classroom-nav-prev-button,
+            .classroom-nav-next-button,
+            .classroom-text-flashcard-direction-button,
+            .classroom-random-word-pick-button
+        ),
+    #classroomActivityMenuScreen :is(
+            .green-button,
+            .soft-button,
+            .classroom-fullscreen-button,
+            .classroom-nav-button,
+            .classroom-back-button,
+            .classroom-toggle-translation-button,
+            .classroom-nav-prev-button,
+            .classroom-nav-next-button,
+            .classroom-text-flashcard-direction-button,
+            .classroom-random-word-pick-button
+        ),
+    #classroomPresentationScreen :is(
+            .green-button,
+            .soft-button,
+            .classroom-fullscreen-button,
+            .classroom-nav-button,
+            .classroom-back-button,
+            .classroom-toggle-translation-button,
+            .classroom-nav-prev-button,
+            .classroom-nav-next-button,
+            .classroom-text-flashcard-direction-button,
+            .classroom-random-word-pick-button
+        ),
+    #classroomFlashcardsScreen :is(
+            .green-button,
+            .soft-button,
+            .classroom-fullscreen-button,
+            .classroom-nav-button,
+            .classroom-back-button,
+            .classroom-toggle-translation-button,
+            .classroom-nav-prev-button,
+            .classroom-nav-next-button,
+            .classroom-text-flashcard-direction-button,
+            .classroom-random-word-pick-button
+        ),
+    #classroomTextFlashcardsScreen :is(
+            .green-button,
+            .soft-button,
+            .classroom-fullscreen-button,
+            .classroom-nav-button,
+            .classroom-back-button,
+            .classroom-toggle-translation-button,
+            .classroom-nav-prev-button,
+            .classroom-nav-next-button,
+            .classroom-text-flashcard-direction-button,
+            .classroom-random-word-pick-button
+        ),
+    #classroomRandomWordScreen :is(
+            .green-button,
+            .soft-button,
+            .classroom-fullscreen-button,
+            .classroom-nav-button,
+            .classroom-back-button,
+            .classroom-toggle-translation-button,
+            .classroom-nav-prev-button,
+            .classroom-nav-next-button,
+            .classroom-text-flashcard-direction-button,
+            .classroom-random-word-pick-button
+        ) {
+        transition: background-color 190ms ease, box-shadow 190ms ease, border-color 190ms ease;
+        transform: none !important;
+    }
+}
+
 .classroom-presentation-screen {
     position: fixed;
     inset: 0;
@@ -2395,12 +2772,6 @@ h2 {
     width: 18px;
     height: 18px;
     flex-shrink: 0;
-}
-
-.classroom-fullscreen-button:hover {
-    background: #EFFFFA;
-    border-color: rgba(63, 169, 245, 0.45);
-    color: var(--color-primary);
 }
 
 .classroom-content-transition {
@@ -2553,12 +2924,6 @@ h2 {
     min-width: 0;
     min-height: 48px;
     margin: 0;
-}
-
-.classroom-nav-prev-button.disabled-button,
-.classroom-nav-prev-button:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
 }
 
 .classroom-nav-next-button.classroom-finish-pulse {
