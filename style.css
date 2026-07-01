@@ -91,6 +91,35 @@
     --wf-gradient-card: linear-gradient(180deg, var(--wf-card-white) 0%, var(--wf-card-tint) 100%);
     --wf-gradient-hint-panel: linear-gradient(180deg, var(--wf-card-white) 0%, var(--wf-foam) 100%);
 
+    /* --- Ocean backgrounds (Phase 8B) --- */
+    --wf-color-bubble-light: rgba(255, 255, 255, 0.55);
+    --wf-color-bubble-soft: rgba(255, 255, 255, 0.32);
+    --wf-color-ocean-shimmer: rgba(255, 255, 255, 0.34);
+    --wf-color-ocean-sun-haze: rgba(255, 209, 102, 0.16);
+    --wf-color-sand-glow: rgba(246, 255, 249, 0.45);
+    --wf-color-ocean-tint-aqua: rgba(0, 166, 200, 0.07);
+    --wf-color-ocean-tint-sun: rgba(255, 183, 3, 0.10);
+    --wf-ocean-bg-bubbles:
+        radial-gradient(circle, var(--wf-color-bubble-light) 2px, transparent 3px),
+        radial-gradient(circle, var(--wf-color-bubble-soft) 3px, transparent 4px);
+    --wf-ocean-bg-bubble-size: 82px 82px, 140px 140px;
+    --wf-ocean-bg-bubble-position: 0 0, 42px 24px;
+    --wf-ocean-bg-bubbles-opacity: 0.42;
+    --wf-ocean-bg-sand-height: 38%;
+    --wf-gradient-ocean-immersive:
+        radial-gradient(circle at 20% 18%, var(--wf-color-ocean-shimmer), transparent 16%),
+        radial-gradient(circle at 82% 30%, var(--wf-color-ocean-sun-haze), transparent 18%),
+        linear-gradient(180deg, var(--wf-sand-mid) 0%, var(--wf-ocean-blue) 52%, var(--wf-ocean-deep) 100%);
+    --wf-gradient-ocean-results:
+        radial-gradient(circle at 50% 20%, var(--wf-color-ocean-shimmer), transparent 20%),
+        linear-gradient(180deg, var(--wf-aqua-soft-dark) 0%, var(--wf-ocean-blue) 100%);
+    --wf-gradient-ocean-panel-wash:
+        radial-gradient(circle at 10% 12%, var(--wf-color-ocean-tint-aqua), transparent 22%),
+        radial-gradient(circle at 90% 88%, var(--wf-color-ocean-tint-sun), transparent 24%);
+    --wf-gradient-modal-backdrop:
+        radial-gradient(circle at 50% 100%, var(--wf-color-mint-glow), transparent 55%),
+        var(--wf-overlay-ink-38);
+
     /* --- Shadows --- */
     --wf-shadow-ink-12: 0 8px 20px rgba(7, 59, 76, 0.12);
     --wf-shadow-ink-14: 0 2px 8px rgba(7, 59, 76, 0.12);
@@ -233,6 +262,8 @@ body {
     text-align: center;
     padding: clamp(12px, 3vw, 28px);
     overflow-x: hidden;
+    position: relative;
+    isolation: isolate;
     background: var(--wf-gradient-page-sky);
 }
 
@@ -242,40 +273,116 @@ textarea {
     font-family: var(--font-family);
 }
 
-body::before {
+/*
+ * WordFish Ocean Screen Background — Phase 8B
+ * Reusable foundation: gradient + static bubble field + soft sand glow.
+ * Modifiers set --wf-ocean-bg-gradient; decoration layers use shared pseudo-elements.
+ */
+.wf-ocean-screen-bg {
+    --wf-ocean-bg-gradient: var(--wf-gradient-page-sky);
+    position: relative;
+    isolation: isolate;
+    background: var(--wf-ocean-bg-gradient);
+    overflow: hidden;
+}
+
+.wf-ocean-screen-bg--classroom {
+    --wf-ocean-bg-gradient: var(--wf-gradient-classroom-screen);
+}
+
+.wf-ocean-screen-bg--immersive {
+    --wf-ocean-bg-gradient: var(--wf-gradient-ocean-immersive);
+}
+
+.wf-ocean-screen-bg--results {
+    --wf-ocean-bg-gradient: var(--wf-gradient-ocean-results);
+}
+
+:is(
+    body,
+    .wf-ocean-screen-bg,
+    .classroom-presentation-screen,
+    .classroom-flashcards-screen,
+    .classroom-text-flashcards-screen,
+    .classroom-vocabulary-board-screen,
+    #gameScreen,
+    #resultsScreen
+)::before {
     content: "";
-    position: fixed;
+    position: absolute;
     inset: 0;
-    background-image:
-        radial-gradient(circle, rgba(255,255,255,0.65) 2px, transparent 3px),
-        radial-gradient(circle, rgba(255,255,255,0.38) 3px, transparent 4px);
-    background-size: 82px 82px, 140px 140px;
-    animation: floatBackgroundBubbles 20s linear infinite;
     pointer-events: none;
-    opacity: 0.62;
     z-index: 0;
+    background-image: var(--wf-ocean-bg-bubbles);
+    background-size: var(--wf-ocean-bg-bubble-size);
+    background-position: var(--wf-ocean-bg-bubble-position);
+    opacity: var(--wf-ocean-bg-bubbles-opacity);
+}
+
+body::before {
+    position: fixed;
+}
+
+:is(
+    body,
+    .wf-ocean-screen-bg,
+    .classroom-presentation-screen,
+    .classroom-flashcards-screen,
+    .classroom-text-flashcards-screen,
+    .classroom-vocabulary-board-screen,
+    #gameScreen,
+    #resultsScreen
+)::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: var(--wf-ocean-bg-sand-height);
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(180deg, transparent 0%, var(--wf-color-sand-glow) 100%);
+    opacity: 0.72;
 }
 
 body::after {
-    content: "🐟";
     position: fixed;
-    left: -70px;
-    bottom: 12vh;
-    font-size: clamp(38px, 5vw, 68px);
-    opacity: 0.16;
-    animation: tinyFish 24s linear infinite;
-    pointer-events: none;
-    z-index: 0;
 }
 
-@keyframes floatBackgroundBubbles {
-    from { background-position: 0 100vh, 42px 100vh; }
-    to { background-position: 0 -100vh, 42px -100vh; }
+:is(
+    .wf-ocean-screen-bg,
+    .classroom-presentation-screen,
+    .classroom-flashcards-screen,
+    .classroom-text-flashcards-screen,
+    .classroom-vocabulary-board-screen,
+    #gameScreen,
+    #resultsScreen
+) > * {
+    position: relative;
+    z-index: 1;
 }
 
-@keyframes tinyFish {
-    from { transform: translateX(0) scaleX(1); }
-    to { transform: translateX(calc(100vw + 140px)) scaleX(1); }
+@media (prefers-reduced-motion: reduce) {
+    :is(
+        body,
+        .wf-ocean-screen-bg,
+        .classroom-presentation-screen,
+        .classroom-flashcards-screen,
+        .classroom-text-flashcards-screen,
+        .classroom-vocabulary-board-screen,
+        #gameScreen,
+        #resultsScreen
+    )::before,
+    :is(
+        body,
+        .wf-ocean-screen-bg,
+        .classroom-presentation-screen,
+        .classroom-flashcards-screen,
+        .classroom-text-flashcards-screen,
+        .classroom-vocabulary-board-screen,
+        #gameScreen,
+        #resultsScreen
+    )::after {
+        animation: none;
+    }
 }
 
 h1 {
@@ -316,14 +423,13 @@ p {
     to { opacity: 1; transform: translateY(0); }
 }
 
-.screen::before {
+.screen:not(#resultsScreen)::before {
     content: "";
     position: absolute;
     inset: 0;
-    background:
-        radial-gradient(circle at 10% 12%, rgba(0, 166, 200, 0.07), transparent 22%),
-        radial-gradient(circle at 90% 88%, rgba(255, 183, 3, 0.10), transparent 24%);
+    background: var(--wf-gradient-ocean-panel-wash);
     pointer-events: none;
+    z-index: 0;
 }
 
 .screen > *,
@@ -1396,37 +1502,11 @@ button:active {
 #gameScreen {
     width: min(1120px, 100%);
     min-height: min(720px, calc(100vh - 32px));
-    background:
-        radial-gradient(circle at 20% 18%, rgba(255,255,255,0.34), transparent 16%),
-        radial-gradient(circle at 82% 30%, rgba(255, 209, 102, 0.16), transparent 18%),
-        linear-gradient(180deg, #79E8FF 0%, #1CA7C9 52%, #087EA0 100%);
+    background: var(--wf-gradient-ocean-immersive);
     border-radius: 38px;
     padding: clamp(22px, 4vw, 42px);
-    color: white;
-}
-
-#gameScreen::before {
-    content: "🫧 🫧 🫧";
-    position: absolute;
-    left: 24px;
-    top: 20px;
-    font-size: 32px;
-    opacity: 0.75;
-    animation: gentleFloat 4s ease-in-out infinite;
-}
-
-#gameScreen::after {
-    content: "🪸";
-    position: absolute;
-    right: 24px;
-    bottom: 14px;
-    font-size: 64px;
-    opacity: 0.85;
-}
-
-@keyframes gentleFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    color: var(--wf-color-text-on-primary);
+    overflow: hidden;
 }
 
 .game-exit-button {
@@ -1517,11 +1597,22 @@ button:active {
 }
 
 #resultsScreen {
-    background:
-        radial-gradient(circle at 50% 20%, rgba(255,255,255,0.35), transparent 20%),
-        linear-gradient(180deg, #7FE7FF 0%, #1CA7C9 100%);
-    color: white;
+    background: var(--wf-gradient-ocean-results);
+    color: var(--wf-color-text-on-primary);
     max-width: min(560px, 100%);
+    overflow: hidden;
+}
+
+#resultsScreen::before {
+    background-image: var(--wf-ocean-bg-bubbles);
+    background-size: var(--wf-ocean-bg-bubble-size);
+    background-position: var(--wf-ocean-bg-bubble-position);
+    opacity: var(--wf-ocean-bg-bubbles-opacity);
+}
+
+#resultsScreen > * {
+    position: relative;
+    z-index: 1;
 }
 
 #resultsScreen #resultTitle {
@@ -1702,11 +1793,6 @@ button:active {
         margin-left: 0;
         margin-right: 0;
     }
-
-    #gameScreen::before,
-    #gameScreen::after {
-        display: none;
-    }
 }
 
 @media (min-width: 1400px) {
@@ -1736,15 +1822,6 @@ button:active {
 }
 
 /* WordFish UX 2.1 fixes */
-body::after {
-    content: "🐠";
-}
-
-@keyframes tinyFish {
-    from { transform: translateX(0) scaleX(-1); }
-    to { transform: translateX(calc(100vw + 140px)) scaleX(-1); }
-}
-
 h1 {
     font-size: var(--wf-font-size-h1-compact);
     line-height: var(--wf-line-height-heading);
@@ -1804,7 +1881,7 @@ h2 {
     position: fixed;
     inset: 0;
     z-index: 10000;
-    background: var(--wf-overlay-ink-38);
+    background: var(--wf-gradient-modal-backdrop);
     backdrop-filter: blur(6px);
     align-items: center;
     justify-content: center;
