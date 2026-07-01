@@ -44,6 +44,7 @@ let classroomFlashcardSide = "front";
 let classroomFlashcardsShuffleEnabled = false;
 let classroomFlashcardsShuffledOrder = [];
 let classroomFlashcardsLoopEnabled = false;
+let classroomFlashcardsJumpIndex = [];
 let classroomTextFlashcardsCards = [];
 let classroomTextFlashcardsIndex = 0;
 let classroomTextFlashcardsSetName = "";
@@ -52,6 +53,7 @@ let classroomTextFlashcardDirection = "translationToEnglish";
 let classroomTextFlashcardsShuffleEnabled = false;
 let classroomTextFlashcardsShuffledOrder = [];
 let classroomTextFlashcardsLoopEnabled = false;
+let classroomTextFlashcardsJumpIndex = [];
 let classroomVocabularyBoardSetName = "";
 let classroomVocabularyBoardMode = "pictureEnglish";
 let classroomVocabularyBoardCards = [];
@@ -1596,6 +1598,332 @@ function getClassroomTextFlashcardsCurrentCard() {
     return classroomTextFlashcardsCards[getClassroomTextFlashcardsCurrentOriginalIndex()];
 }
 
+function buildClassroomFlashcardJumpIndex(cards) {
+    return cards.map((card, originalIndex) => {
+        const english = card.english || "";
+        const translation = getClassroomCardTranslation(card) || "";
+
+        return {
+            originalIndex,
+            english,
+            translation,
+            imageUrl: card.imageUrl || "",
+            searchText: `${english} ${translation}`.toLowerCase()
+        };
+    });
+}
+
+function rebuildClassroomFlashcardsJumpIndex() {
+    classroomFlashcardsJumpIndex = buildClassroomFlashcardJumpIndex(classroomFlashcardsCards);
+}
+
+function rebuildClassroomTextFlashcardsJumpIndex() {
+    classroomTextFlashcardsJumpIndex = buildClassroomFlashcardJumpIndex(classroomTextFlashcardsCards);
+}
+
+function getClassroomFlashcardJumpMatches(jumpIndex, query) {
+    const normalized = query.trim().toLowerCase();
+
+    if (!normalized) {
+        return jumpIndex;
+    }
+
+    const matches = [];
+
+    for (let index = 0; index < jumpIndex.length; index += 1) {
+        if (jumpIndex[index].searchText.includes(normalized)) {
+            matches.push(jumpIndex[index]);
+        }
+    }
+
+    return matches;
+}
+
+const classroomFlashcardJumpPickerState = {
+    classroomFlashcardsJump: { activeOptionIndex: -1 },
+    classroomTextFlashcardsJump: { activeOptionIndex: -1 }
+};
+
+function renderClassroomFlashcardJumpListHtml(matches, isImageMode, activeOptionIndex) {
+    if (matches.length === 0) {
+        return `<p class="classroom-flashcard-jump-empty">No matching words</p>`;
+    }
+
+    return matches.map((entry, optionIndex) => {
+        const isActive = optionIndex === activeOptionIndex;
+        const activeClass = isActive ? " classroom-flashcard-jump-option-active" : "";
+
+        if (isImageMode) {
+            const thumbMarkup = entry.imageUrl
+                ? `<img class="classroom-flashcard-jump-thumb" src="${escapeAttribute(entry.imageUrl)}" alt="">`
+                : `<span class="classroom-flashcard-jump-thumb-placeholder" aria-hidden="true"><svg class="classroom-flashcard-jump-thumb-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" /></svg></span>`;
+
+            return `<button type="button" class="classroom-flashcard-jump-option${activeClass}" role="option" aria-selected="${isActive ? "true" : "false"}" data-original-index="${entry.originalIndex}">${thumbMarkup}<span class="classroom-flashcard-jump-option-text">${escapeHTML(entry.english)}</span></button>`;
+        }
+
+        return `<button type="button" class="classroom-flashcard-jump-option classroom-flashcard-jump-option-text-only${activeClass}" role="option" aria-selected="${isActive ? "true" : "false"}" data-original-index="${entry.originalIndex}"><span class="classroom-flashcard-jump-option-english">${escapeHTML(entry.english)}</span><span class="classroom-flashcard-jump-option-translation">${escapeHTML(entry.translation || "—")}</span></button>`;
+    }).join("");
+}
+
+function updateClassroomFlashcardJumpDropdown(config) {
+    const input = document.getElementById(config.inputId);
+    const list = document.getElementById(config.listId);
+    const state = classroomFlashcardJumpPickerState[config.stateKey];
+    const jumpIndex = config.getJumpIndex();
+    const matches = getClassroomFlashcardJumpMatches(jumpIndex, input ? input.value : "");
+
+    if (state.activeOptionIndex >= matches.length) {
+        state.activeOptionIndex = matches.length > 0 ? 0 : -1;
+    }
+
+    list.innerHTML = renderClassroomFlashcardJumpListHtml(matches, config.isImageMode, state.activeOptionIndex);
+
+    const activeOption = list.querySelector(".classroom-flashcard-jump-option-active");
+
+    if (activeOption) {
+        activeOption.scrollIntoView({ block: "nearest" });
+    }
+}
+
+function openClassroomFlashcardJumpDropdown(config) {
+    const input = document.getElementById(config.inputId);
+    const list = document.getElementById(config.listId);
+
+    if (!input || !list) {
+        return;
+    }
+
+    input.setAttribute("aria-expanded", "true");
+    list.hidden = false;
+    updateClassroomFlashcardJumpDropdown(config);
+}
+
+function closeClassroomFlashcardJumpDropdown(config) {
+    const input = document.getElementById(config.inputId);
+    const list = document.getElementById(config.listId);
+    const state = classroomFlashcardJumpPickerState[config.stateKey];
+
+    if (!input || !list) {
+        return;
+    }
+
+    input.setAttribute("aria-expanded", "false");
+    list.hidden = true;
+    input.value = "";
+    state.activeOptionIndex = -1;
+    list.innerHTML = "";
+}
+
+function closeClassroomFlashcardsJumpDropdown() {
+    closeClassroomFlashcardJumpDropdown({
+        inputId: "classroomFlashcardsJumpInput",
+        listId: "classroomFlashcardsJumpList",
+        stateKey: "classroomFlashcardsJump"
+    });
+}
+
+function closeClassroomTextFlashcardsJumpDropdown() {
+    closeClassroomFlashcardJumpDropdown({
+        inputId: "classroomTextFlashcardsJumpInput",
+        listId: "classroomTextFlashcardsJumpList",
+        stateKey: "classroomTextFlashcardsJump"
+    });
+}
+
+function jumpClassroomFlashcardsToOriginalIndex(originalIndex) {
+    if (currentScreenId !== "classroomFlashcardsScreen" || classroomFlashcardsCards.length === 0) {
+        return;
+    }
+
+    const parsedIndex = Number(originalIndex);
+
+    if (!Number.isInteger(parsedIndex) || parsedIndex < 0 || parsedIndex >= classroomFlashcardsCards.length) {
+        return;
+    }
+
+    const activeOrder = getClassroomFlashcardsActiveOrder();
+    const position = activeOrder.indexOf(parsedIndex);
+
+    if (position < 0) {
+        return;
+    }
+
+    classroomFlashcardsIndex = position;
+    classroomFlashcardSide = "front";
+    closeClassroomFlashcardsJumpDropdown();
+    renderClassroomFlashcard({ animate: true });
+}
+
+function jumpClassroomTextFlashcardsToOriginalIndex(originalIndex) {
+    if (currentScreenId !== "classroomTextFlashcardsScreen" || classroomTextFlashcardsCards.length === 0) {
+        return;
+    }
+
+    const parsedIndex = Number(originalIndex);
+
+    if (!Number.isInteger(parsedIndex) || parsedIndex < 0 || parsedIndex >= classroomTextFlashcardsCards.length) {
+        return;
+    }
+
+    const activeOrder = getClassroomTextFlashcardsActiveOrder();
+    const position = activeOrder.indexOf(parsedIndex);
+
+    if (position < 0) {
+        return;
+    }
+
+    classroomTextFlashcardsIndex = position;
+    classroomTextFlashcardSide = "front";
+    closeClassroomTextFlashcardsJumpDropdown();
+    renderClassroomTextFlashcard({ animate: true });
+}
+
+function handleClassroomFlashcardJumpInputKeydown(event, config) {
+    event.stopPropagation();
+
+    const list = document.getElementById(config.listId);
+    const state = classroomFlashcardJumpPickerState[config.stateKey];
+    const jumpIndex = config.getJumpIndex();
+    const input = document.getElementById(config.inputId);
+    const matches = getClassroomFlashcardJumpMatches(jumpIndex, input ? input.value : "");
+
+    if (event.key === "Escape") {
+        event.preventDefault();
+        closeClassroomFlashcardJumpDropdown(config);
+        input.blur();
+        return;
+    }
+
+    if (event.key === "ArrowDown") {
+        event.preventDefault();
+
+        if (list.hidden) {
+            openClassroomFlashcardJumpDropdown(config);
+            return;
+        }
+
+        if (matches.length === 0) {
+            return;
+        }
+
+        state.activeOptionIndex = state.activeOptionIndex >= matches.length - 1
+            ? 0
+            : state.activeOptionIndex + 1;
+        updateClassroomFlashcardJumpDropdown(config);
+        return;
+    }
+
+    if (event.key === "ArrowUp") {
+        event.preventDefault();
+
+        if (list.hidden) {
+            openClassroomFlashcardJumpDropdown(config);
+            return;
+        }
+
+        if (matches.length === 0) {
+            return;
+        }
+
+        state.activeOptionIndex = state.activeOptionIndex <= 0
+            ? matches.length - 1
+            : state.activeOptionIndex - 1;
+        updateClassroomFlashcardJumpDropdown(config);
+        return;
+    }
+
+    if (event.key === "Enter") {
+        if (list.hidden) {
+            openClassroomFlashcardJumpDropdown(config);
+            return;
+        }
+
+        if (state.activeOptionIndex < 0 || state.activeOptionIndex >= matches.length) {
+            return;
+        }
+
+        event.preventDefault();
+        config.onJump(matches[state.activeOptionIndex].originalIndex);
+    }
+}
+
+function initClassroomFlashcardJumpPicker(config) {
+    const input = document.getElementById(config.inputId);
+    const list = document.getElementById(config.listId);
+
+    if (!input || !list || input.dataset.handlerAttached === "true") {
+        return;
+    }
+
+    input.dataset.handlerAttached = "true";
+
+    input.addEventListener("focus", () => {
+        openClassroomFlashcardJumpDropdown(config);
+    });
+
+    input.addEventListener("click", () => {
+        openClassroomFlashcardJumpDropdown(config);
+    });
+
+    input.addEventListener("input", () => {
+        classroomFlashcardJumpPickerState[config.stateKey].activeOptionIndex = -1;
+        openClassroomFlashcardJumpDropdown(config);
+    });
+
+    input.addEventListener("keydown", (event) => {
+        handleClassroomFlashcardJumpInputKeydown(event, config);
+    });
+
+    list.addEventListener("click", (event) => {
+        const option = event.target.closest("[data-original-index]");
+
+        if (!option) {
+            return;
+        }
+
+        config.onJump(option.dataset.originalIndex);
+    });
+}
+
+function setupClassroomFlashcardJumpOutsideClose() {
+    if (document.documentElement.dataset.classroomFlashcardJumpOutsideCloseAttached === "true") {
+        return;
+    }
+
+    document.documentElement.dataset.classroomFlashcardJumpOutsideCloseAttached = "true";
+    document.addEventListener("click", (event) => {
+        if (!event.target.closest("#classroomFlashcardsJump")) {
+            closeClassroomFlashcardsJumpDropdown();
+        }
+
+        if (!event.target.closest("#classroomTextFlashcardsJump")) {
+            closeClassroomTextFlashcardsJumpDropdown();
+        }
+    });
+}
+
+function initClassroomFlashcardsJumpControls() {
+    initClassroomFlashcardJumpPicker({
+        inputId: "classroomFlashcardsJumpInput",
+        listId: "classroomFlashcardsJumpList",
+        stateKey: "classroomFlashcardsJump",
+        isImageMode: true,
+        getJumpIndex: () => classroomFlashcardsJumpIndex,
+        onJump: jumpClassroomFlashcardsToOriginalIndex
+    });
+}
+
+function initClassroomTextFlashcardsJumpControls() {
+    initClassroomFlashcardJumpPicker({
+        inputId: "classroomTextFlashcardsJumpInput",
+        listId: "classroomTextFlashcardsJumpList",
+        stateKey: "classroomTextFlashcardsJump",
+        isImageMode: false,
+        getJumpIndex: () => classroomTextFlashcardsJumpIndex,
+        onJump: jumpClassroomTextFlashcardsToOriginalIndex
+    });
+}
+
 function updateClassroomFlashcardsShuffleButton() {
     const shuffleButton = document.getElementById("classroomFlashcardsShuffleButton");
 
@@ -1715,6 +2043,7 @@ function startClassroomFlashcards(set, addToHistory = true) {
     classroomFlashcardsShuffleEnabled = false;
     classroomFlashcardsShuffledOrder = [];
     classroomFlashcardsLoopEnabled = false;
+    rebuildClassroomFlashcardsJumpIndex();
     showClassroomFlashcards(addToHistory);
 }
 
@@ -1900,12 +2229,14 @@ function classroomFlashcardsNextButtonClick() {
 
 function finishClassroomFlashcards() {
     exitClassroomFullscreenIfActive();
+    closeClassroomFlashcardsJumpDropdown();
     clearClassroomFlashcardsContext();
     showClassroomActivityMenuForSelectedSet();
 }
 
 function returnToClassroomActivityMenuFromFlashcards() {
     exitClassroomFullscreenIfActive();
+    closeClassroomFlashcardsJumpDropdown();
     clearClassroomFlashcardsContext();
     showClassroomActivityMenuForSelectedSet();
 }
@@ -1943,6 +2274,12 @@ function updateClassroomFlashcardsFullscreenButtonLabel() {
 
 function handleClassroomFlashcardsKeydown(event) {
     if (currentScreenId !== "classroomFlashcardsScreen") {
+        return;
+    }
+
+    const tag = event.target.tagName;
+
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") {
         return;
     }
 
@@ -2053,6 +2390,7 @@ function startClassroomTextFlashcards(set, addToHistory = true) {
     classroomTextFlashcardsShuffleEnabled = false;
     classroomTextFlashcardsShuffledOrder = [];
     classroomTextFlashcardsLoopEnabled = false;
+    rebuildClassroomTextFlashcardsJumpIndex();
     showClassroomTextFlashcards(addToHistory);
 }
 
@@ -2263,12 +2601,14 @@ function classroomTextFlashcardsNextButtonClick() {
 
 function finishClassroomTextFlashcards() {
     exitClassroomFullscreenIfActive();
+    closeClassroomTextFlashcardsJumpDropdown();
     clearClassroomTextFlashcardsContext();
     showClassroomActivityMenuForSelectedSet();
 }
 
 function returnToClassroomActivityMenuFromTextFlashcards() {
     exitClassroomFullscreenIfActive();
+    closeClassroomTextFlashcardsJumpDropdown();
     clearClassroomTextFlashcardsContext();
     showClassroomActivityMenuForSelectedSet();
 }
@@ -2306,6 +2646,12 @@ function updateClassroomTextFlashcardsFullscreenButtonLabel() {
 
 function handleClassroomTextFlashcardsKeydown(event) {
     if (currentScreenId !== "classroomTextFlashcardsScreen") {
+        return;
+    }
+
+    const tag = event.target.tagName;
+
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") {
         return;
     }
 
@@ -4689,6 +5035,7 @@ async function restoreClassroomTextFlashcardsFromContext(context) {
         classroomTextFlashcardsSetName = set.name;
         classroomTextFlashcardsCards = textFlashcardsCards;
         restoreClassroomTextFlashcardsShuffleState(context, textFlashcardsCards.length);
+        rebuildClassroomTextFlashcardsJumpIndex();
 
         let restoredIndex = Number(context.currentCardIndex);
         if (!Number.isFinite(restoredIndex)) {
@@ -4785,6 +5132,7 @@ async function restoreClassroomFlashcardsFromContext(context) {
         classroomFlashcardsSetName = set.name;
         classroomFlashcardsCards = flashcardsCards;
         restoreClassroomFlashcardsShuffleState(context, flashcardsCards.length);
+        rebuildClassroomFlashcardsJumpIndex();
 
         let restoredIndex = Number(context.currentCardIndex);
         if (!Number.isFinite(restoredIndex)) {
@@ -5110,6 +5458,9 @@ async function logout() {
 function initApp() {
     initClassroomModeButton();
     initClassroomPresentationControls();
+    setupClassroomFlashcardJumpOutsideClose();
+    initClassroomFlashcardsJumpControls();
+    initClassroomTextFlashcardsJumpControls();
     initClassroomFlashcardsControls();
     initClassroomTextFlashcardsControls();
     initClassroomVocabularyBoardControls();

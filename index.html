@@ -226,6 +226,23 @@
         <header class="classroom-flashcards-header">
             <p id="classroomFlashcardsHeaderMeta" class="classroom-flashcards-header-meta">Set Name • Card 1 of 1</p>
             <div class="classroom-flashcards-header-actions">
+                <div id="classroomFlashcardsJump" class="classroom-flashcard-jump">
+                    <div class="classroom-flashcard-jump-control">
+                        <input
+                            id="classroomFlashcardsJumpInput"
+                            type="search"
+                            class="classroom-flashcard-jump-input"
+                            placeholder="Jump to..."
+                            autocomplete="off"
+                            role="combobox"
+                            aria-autocomplete="list"
+                            aria-expanded="false"
+                            aria-controls="classroomFlashcardsJumpList"
+                            aria-label="Jump to word"
+                        >
+                        <div id="classroomFlashcardsJumpList" class="classroom-flashcard-jump-list" role="listbox" hidden></div>
+                    </div>
+                </div>
                 <button id="classroomFlashcardsShuffleButton" type="button" class="classroom-flashcard-mode-toggle classroom-shuffle-button" aria-pressed="false">🔀 Shuffle</button>
                 <button id="classroomFlashcardsLoopButton" type="button" class="classroom-flashcard-mode-toggle classroom-loop-button" aria-pressed="false">🔁 Loop</button>
                 <button id="classroomFlashcardsFullscreenButton" type="button" class="classroom-fullscreen-button" aria-label="Enter fullscreen" title="Fullscreen">
@@ -277,6 +294,23 @@
         <header class="classroom-text-flashcards-header">
             <p id="classroomTextFlashcardsHeaderMeta" class="classroom-text-flashcards-header-meta">Set Name • Card 1 of 1</p>
             <div class="classroom-text-flashcards-header-actions">
+                <div id="classroomTextFlashcardsJump" class="classroom-flashcard-jump">
+                    <div class="classroom-flashcard-jump-control">
+                        <input
+                            id="classroomTextFlashcardsJumpInput"
+                            type="search"
+                            class="classroom-flashcard-jump-input"
+                            placeholder="Jump to..."
+                            autocomplete="off"
+                            role="combobox"
+                            aria-autocomplete="list"
+                            aria-expanded="false"
+                            aria-controls="classroomTextFlashcardsJumpList"
+                            aria-label="Jump to word"
+                        >
+                        <div id="classroomTextFlashcardsJumpList" class="classroom-flashcard-jump-list" role="listbox" hidden></div>
+                    </div>
+                </div>
                 <button id="classroomTextFlashcardsShuffleButton" type="button" class="classroom-flashcard-mode-toggle classroom-shuffle-button" aria-pressed="false">🔀 Shuffle</button>
                 <button id="classroomTextFlashcardsLoopButton" type="button" class="classroom-flashcard-mode-toggle classroom-loop-button" aria-pressed="false">🔁 Loop</button>
                 <button id="classroomTextFlashcardsFullscreenButton" type="button" class="classroom-fullscreen-button" aria-label="Enter fullscreen" title="Fullscreen">
