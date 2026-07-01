@@ -51,12 +51,15 @@ let classroomRandomWordIndex = -1;
 let classroomRandomWordSetName = "";
 let classroomRandomWordVisible = false;
 let classroomRandomWordTranslationVisible = false;
+let classroomVocabularyBoardSetName = "";
+let classroomVocabularyBoardMode = "pictureEnglish";
 const GAME_CONTEXT_STORAGE_KEY = "wordfish_game_context";
 const CLASSROOM_PRESENTATION_CONTEXT_STORAGE_KEY = "wordfish_classroom_presentation_context";
 const CLASSROOM_ACTIVITY_CONTEXT_STORAGE_KEY = "wordfish_classroom_activity_context";
 const CLASSROOM_FLASHCARDS_CONTEXT_STORAGE_KEY = "wordfish_classroom_flashcards_context";
 const CLASSROOM_TEXT_FLASHCARDS_CONTEXT_STORAGE_KEY = "wordfish_classroom_text_flashcards_context";
 const CLASSROOM_RANDOM_WORD_CONTEXT_STORAGE_KEY = "wordfish_classroom_random_word_context";
+const CLASSROOM_VOCABULARY_BOARD_CONTEXT_STORAGE_KEY = "wordfish_classroom_vocabulary_board_context";
 const CLASSROOM_SHORTCUTS_HINT_STORAGE_KEY = "wordfish_hide_classroom_shortcuts_hint";
 const SETTINGS_KEYS = {
     trashAutoDelete: "wordfish_settings_trash_auto_delete",
@@ -116,6 +119,7 @@ function hideAllScreens() {
     const classroomTextFlashcardsScreen = document.getElementById("classroomTextFlashcardsScreen");
     const classroomRandomWordScreen = document.getElementById("classroomRandomWordScreen");
     const classroomNoCardsScreen = document.getElementById("classroomNoCardsScreen");
+    const classroomVocabularyBoardScreen = document.getElementById("classroomVocabularyBoardScreen");
     if (classroomPickerScreen) {
         classroomPickerScreen.style.display = "none";
     }
@@ -136,6 +140,9 @@ function hideAllScreens() {
     }
     if (classroomNoCardsScreen) {
         classroomNoCardsScreen.style.display = "none";
+    }
+    if (classroomVocabularyBoardScreen) {
+        classroomVocabularyBoardScreen.style.display = "none";
     }
     document.getElementById("studentScreen").style.display = "none";
     document.getElementById("teacherScreen").style.display = "none";
@@ -330,6 +337,35 @@ function isClassroomRandomWordRefreshRequested() {
     return window.location.hash.replace(/^#/, "") === "classroomRandomWord";
 }
 
+function saveClassroomVocabularyBoardContext() {
+    if (currentScreenId !== "classroomVocabularyBoardScreen" || !classroomSelectedSetId) {
+        return;
+    }
+
+    localStorage.setItem(CLASSROOM_VOCABULARY_BOARD_CONTEXT_STORAGE_KEY, JSON.stringify({
+        mode: "classroomVocabularyBoard",
+        setId: classroomSelectedSetId,
+        boardMode: classroomVocabularyBoardMode
+    }));
+}
+
+function loadClassroomVocabularyBoardContext() {
+    try {
+        const raw = localStorage.getItem(CLASSROOM_VOCABULARY_BOARD_CONTEXT_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function clearClassroomVocabularyBoardContext() {
+    localStorage.removeItem(CLASSROOM_VOCABULARY_BOARD_CONTEXT_STORAGE_KEY);
+}
+
+function isClassroomVocabularyBoardRefreshRequested() {
+    return window.location.hash.replace(/^#/, "") === "classroomVocabularyBoard";
+}
+
 function displayScreen(screenId, addToHistory = true) {
     const classroomShortcutsHintScreens = [
         "classroomPresentationScreen",
@@ -353,6 +389,7 @@ function displayScreen(screenId, addToHistory = true) {
         || screenId === "classroomFlashcardsScreen"
         || screenId === "classroomTextFlashcardsScreen"
         || screenId === "classroomRandomWordScreen"
+        || screenId === "classroomVocabularyBoardScreen"
     ) ? "grid" : "block";
     currentScreenId = screenId;
 
@@ -397,6 +434,8 @@ window.addEventListener("popstate", (event) => {
         showClassroomRandomWordForSelectedSet(false);
     } else if (screenId === "classroomNoCardsScreen") {
         showClassroomNoCardsState(false);
+    } else if (screenId === "classroomVocabularyBoardScreen") {
+        showClassroomVocabularyBoardForSelectedSet(false);
     }
 
     suppressHistoryPush = false;
@@ -978,6 +1017,7 @@ function showClassroomPicker(addToHistory = true) {
     clearClassroomFlashcardsContext();
     clearClassroomTextFlashcardsContext();
     clearClassroomRandomWordContext();
+    clearClassroomVocabularyBoardContext();
     displayScreen("classroomPickerScreen", addToHistory);
     renderClassroomPicker();
 }
@@ -1053,6 +1093,7 @@ function showClassroomActivityMenu(set, addToHistory = true) {
     clearClassroomFlashcardsContext();
     clearClassroomTextFlashcardsContext();
     clearClassroomRandomWordContext();
+    clearClassroomVocabularyBoardContext();
     displayScreen("classroomActivityMenuScreen", addToHistory);
     saveClassroomActivityContext();
 }
@@ -1138,6 +1179,7 @@ function startClassroomPresentationFromActivityMenu() {
 
     clearClassroomFlashcardsContext();
     clearClassroomRandomWordContext();
+    clearClassroomVocabularyBoardContext();
     startClassroomPresentation(selectedSet);
 }
 
@@ -1151,6 +1193,7 @@ function startClassroomFlashcardsFromActivityMenu() {
 
     clearClassroomPresentationContext();
     clearClassroomRandomWordContext();
+    clearClassroomVocabularyBoardContext();
     startClassroomFlashcards(selectedSet);
 }
 
@@ -1165,6 +1208,7 @@ function startClassroomTextFlashcardsFromActivityMenu() {
     clearClassroomPresentationContext();
     clearClassroomFlashcardsContext();
     clearClassroomRandomWordContext();
+    clearClassroomVocabularyBoardContext();
     startClassroomTextFlashcards(selectedSet);
 }
 
@@ -1178,7 +1222,23 @@ function startClassroomRandomWordFromActivityMenu() {
 
     clearClassroomPresentationContext();
     clearClassroomFlashcardsContext();
+    clearClassroomVocabularyBoardContext();
     startClassroomRandomWord(selectedSet);
+}
+
+function startClassroomVocabularyBoardFromActivityMenu() {
+    const selectedSet = savedSets.find((set) => set.id === classroomSelectedSetId);
+
+    if (!selectedSet) {
+        showToast("Could not find that set.", "error");
+        return;
+    }
+
+    clearClassroomPresentationContext();
+    clearClassroomFlashcardsContext();
+    clearClassroomTextFlashcardsContext();
+    clearClassroomRandomWordContext();
+    startClassroomVocabularyBoard(selectedSet);
 }
 
 function startClassroomPresentation(set, addToHistory = true) {
@@ -2381,6 +2441,141 @@ function initClassroomRandomWordControls() {
     }
 }
 
+function getClassroomVocabularyBoardModeLabel(boardMode) {
+    return boardMode === "englishThai" ? "English → Thai mode" : "Picture → English mode";
+}
+
+function startClassroomVocabularyBoard(set, addToHistory = true) {
+    const vocabularyBoardCards = getClassroomActivityCards(set);
+
+    if (vocabularyBoardCards.length === 0) {
+        showClassroomNoCardsState(addToHistory);
+        return;
+    }
+
+    classroomVocabularyBoardSetName = set.name;
+    classroomVocabularyBoardMode = "pictureEnglish";
+    showClassroomVocabularyBoard(addToHistory);
+}
+
+function showClassroomVocabularyBoard(addToHistory = true) {
+    displayScreen("classroomVocabularyBoardScreen", addToHistory);
+    renderClassroomVocabularyBoard();
+}
+
+function showClassroomVocabularyBoardForSelectedSet(addToHistory = true) {
+    const selectedSet = savedSets.find((set) => set.id === classroomSelectedSetId);
+
+    if (!selectedSet || getClassroomActivityCards(selectedSet).length === 0) {
+        showClassroomActivityMenuForSelectedSet(addToHistory);
+        return;
+    }
+
+    classroomVocabularyBoardSetName = selectedSet.name;
+    showClassroomVocabularyBoard(addToHistory);
+}
+
+function updateClassroomVocabularyBoardModeTabs() {
+    const pictureEnglishTab = document.getElementById("classroomVocabularyBoardModePictureEnglish");
+    const englishThaiTab = document.getElementById("classroomVocabularyBoardModeEnglishThai");
+
+    if (pictureEnglishTab) {
+        const isActive = classroomVocabularyBoardMode === "pictureEnglish";
+        pictureEnglishTab.classList.toggle("classroom-vocabulary-board-mode-tab-active", isActive);
+        pictureEnglishTab.setAttribute("aria-selected", isActive ? "true" : "false");
+    }
+
+    if (englishThaiTab) {
+        const isActive = classroomVocabularyBoardMode === "englishThai";
+        englishThaiTab.classList.toggle("classroom-vocabulary-board-mode-tab-active", isActive);
+        englishThaiTab.setAttribute("aria-selected", isActive ? "true" : "false");
+    }
+}
+
+function renderClassroomVocabularyBoard() {
+    document.getElementById("classroomVocabularyBoardSetName").textContent = classroomVocabularyBoardSetName;
+
+    const modeLabel = document.getElementById("classroomVocabularyBoardModeLabel");
+    if (modeLabel) {
+        modeLabel.textContent = getClassroomVocabularyBoardModeLabel(classroomVocabularyBoardMode);
+    }
+
+    updateClassroomVocabularyBoardModeTabs();
+    saveClassroomVocabularyBoardContext();
+}
+
+function returnToClassroomActivityMenuFromVocabularyBoard() {
+    exitClassroomFullscreenIfActive();
+    clearClassroomVocabularyBoardContext();
+    showClassroomActivityMenuForSelectedSet();
+}
+
+function toggleClassroomVocabularyBoardFullscreen() {
+    const vocabularyBoardScreen = document.getElementById("classroomVocabularyBoardScreen");
+
+    if (!vocabularyBoardScreen) {
+        return;
+    }
+
+    if (!document.fullscreenElement) {
+        vocabularyBoardScreen.requestFullscreen().catch(() => {
+            showToast("Fullscreen is not available.", "warning");
+        });
+        return;
+    }
+
+    document.exitFullscreen();
+}
+
+function updateClassroomVocabularyBoardFullscreenButtonLabel() {
+    const label = document.getElementById("classroomVocabularyBoardFullscreenButtonLabel");
+    const button = document.getElementById("classroomVocabularyBoardFullscreenButton");
+
+    if (!label || !button) {
+        return;
+    }
+
+    const isFullscreen = document.fullscreenElement === document.getElementById("classroomVocabularyBoardScreen");
+    label.textContent = isFullscreen ? "Exit Fullscreen" : "Fullscreen";
+    button.setAttribute("aria-label", isFullscreen ? "Exit fullscreen" : "Enter fullscreen");
+    button.title = isFullscreen ? "Exit Fullscreen" : "Fullscreen";
+}
+
+function handleClassroomVocabularyBoardKeydown(event) {
+    if (currentScreenId !== "classroomVocabularyBoardScreen") {
+        return;
+    }
+
+    if (event.key === "Escape") {
+        const vocabularyBoardScreen = document.getElementById("classroomVocabularyBoardScreen");
+
+        if (document.fullscreenElement === vocabularyBoardScreen) {
+            event.preventDefault();
+            document.exitFullscreen();
+        }
+    }
+}
+
+function initClassroomVocabularyBoardControls() {
+    const fullscreenButton = document.getElementById("classroomVocabularyBoardFullscreenButton");
+    const backButton = document.getElementById("classroomVocabularyBoardBackButton");
+
+    if (fullscreenButton && fullscreenButton.dataset.handlerAttached !== "true") {
+        fullscreenButton.dataset.handlerAttached = "true";
+        fullscreenButton.addEventListener("click", toggleClassroomVocabularyBoardFullscreen);
+    }
+
+    if (backButton && backButton.dataset.handlerAttached !== "true") {
+        backButton.dataset.handlerAttached = "true";
+        backButton.addEventListener("click", returnToClassroomActivityMenuFromVocabularyBoard);
+    }
+
+    if (document.documentElement.dataset.classroomVocabularyBoardFullscreenListenerAttached !== "true") {
+        document.documentElement.dataset.classroomVocabularyBoardFullscreenListenerAttached = "true";
+        document.addEventListener("fullscreenchange", updateClassroomVocabularyBoardFullscreenButtonLabel);
+    }
+}
+
 function exitClassroomFullscreenIfActive() {
     if (document.fullscreenElement) {
         document.exitFullscreen();
@@ -3391,6 +3586,7 @@ document.addEventListener("keydown", (event) => {
     handleClassroomFlashcardsKeydown(event);
     handleClassroomTextFlashcardsKeydown(event);
     handleClassroomRandomWordKeydown(event);
+    handleClassroomVocabularyBoardKeydown(event);
 
     if (event.key !== "Escape") return;
 
@@ -4274,6 +4470,85 @@ async function handleFailedClassroomRandomWordRefresh() {
     history.replaceState({ screen: "authScreen" }, "", "#auth");
 }
 
+async function restoreClassroomVocabularyBoardFromContext(context) {
+    const setId = context.setId;
+
+    if (!setId || context.mode !== "classroomVocabularyBoard") {
+        return false;
+    }
+
+    try {
+        const { data } = await supabaseClient.auth.getSession();
+
+        if (!data.session) {
+            return false;
+        }
+
+        savedSets = await dbLoadSetsWithCards();
+        const set = savedSets.find((item) => item.id === setId);
+
+        if (!set) {
+            return false;
+        }
+
+        const vocabularyBoardCards = getClassroomActivityCards(set);
+
+        classroomSelectedSetId = set.id;
+
+        if (vocabularyBoardCards.length === 0) {
+            displayScreen("classroomNoCardsScreen", false);
+            return true;
+        }
+
+        classroomVocabularyBoardSetName = set.name;
+        classroomVocabularyBoardMode = context.boardMode === "englishThai" ? "englishThai" : "pictureEnglish";
+
+        displayScreen("classroomVocabularyBoardScreen", false);
+        renderClassroomVocabularyBoard();
+        return true;
+    } catch (error) {
+        console.error("Classroom vocabulary board restore failed:", error);
+        return false;
+    }
+}
+
+async function tryRestoreClassroomVocabularyBoardOnRefresh() {
+    if (!isClassroomVocabularyBoardRefreshRequested()) {
+        return false;
+    }
+
+    const context = loadClassroomVocabularyBoardContext();
+
+    if (!context) {
+        return false;
+    }
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (!data.session) {
+        return false;
+    }
+
+    return restoreClassroomVocabularyBoardFromContext(context);
+}
+
+async function handleFailedClassroomVocabularyBoardRefresh() {
+    clearClassroomVocabularyBoardContext();
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (data.session) {
+        savedSets = await dbLoadSetsWithCards();
+        showClassroomPicker(false);
+        return;
+    }
+
+    hideAppLoading();
+    displayScreen("authScreen", false);
+    history.replaceState({ screen: "authScreen" }, "", "#auth");
+}
+
 async function restoreClassroomTextFlashcardsFromContext(context) {
     const setId = context.setId;
 
@@ -4628,6 +4903,17 @@ async function checkAuth() {
         return;
     }
 
+    if (await tryRestoreClassroomVocabularyBoardOnRefresh()) {
+        hideAppLoading();
+        return;
+    }
+
+    if (isClassroomVocabularyBoardRefreshRequested()) {
+        hideAppLoading();
+        await handleFailedClassroomVocabularyBoardRefresh();
+        return;
+    }
+
     if (await tryRestoreClassroomActivityMenuOnRefresh()) {
         hideAppLoading();
         return;
@@ -4723,6 +5009,7 @@ function initApp() {
     initClassroomFlashcardsControls();
     initClassroomTextFlashcardsControls();
     initClassroomRandomWordControls();
+    initClassroomVocabularyBoardControls();
     initClassroomShortcutsHint();
     checkAuth();
 }

@@ -170,6 +170,13 @@
                 <p class="classroom-activity-status classroom-activity-status-available">Available</p>
                 <button type="button" class="green-button" onclick="startClassroomRandomWordFromActivityMenu()">Start</button>
             </article>
+
+            <article class="card classroom-activity-card">
+                <h2 class="classroom-activity-name">📋 Vocabulary Board</h2>
+                <p class="classroom-activity-description">Display the entire vocabulary set on one screen.</p>
+                <p class="classroom-activity-status classroom-activity-status-available">Available</p>
+                <button type="button" class="green-button" onclick="startClassroomVocabularyBoardFromActivityMenu()">Start</button>
+            </article>
         </div>
     </div>
 
@@ -349,6 +356,51 @@
         <footer id="classroomRandomWordFooter" class="classroom-random-word-footer">
             <button id="classroomRandomWordPickButton" type="button" class="green-button classroom-random-word-pick-button">Pick Random Word</button>
         </footer>
+    </div>
+
+    <div id="classroomVocabularyBoardScreen" class="classroom-vocabulary-board-screen" style="display: none;">
+        <header class="classroom-vocabulary-board-header">
+            <div class="classroom-vocabulary-board-header-text">
+                <p id="classroomVocabularyBoardSetName" class="classroom-vocabulary-board-set-name">Set Name</p>
+                <p class="classroom-vocabulary-board-activity-label">Vocabulary Board</p>
+            </div>
+            <div class="classroom-vocabulary-board-header-actions">
+                <button id="classroomVocabularyBoardFullscreenButton" type="button" class="classroom-fullscreen-button" aria-label="Enter fullscreen" title="Fullscreen">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"/></svg>
+                    <span id="classroomVocabularyBoardFullscreenButtonLabel">Fullscreen</span>
+                </button>
+                <button id="classroomVocabularyBoardBackButton" type="button" class="soft-button classroom-back-button">Back</button>
+            </div>
+        </header>
+
+        <div class="classroom-vocabulary-board-mode-control" role="tablist" aria-label="Board mode">
+            <button
+                id="classroomVocabularyBoardModePictureEnglish"
+                type="button"
+                role="tab"
+                class="classroom-vocabulary-board-mode-tab classroom-vocabulary-board-mode-tab-active"
+                aria-selected="true"
+                aria-controls="classroomVocabularyBoardMain"
+            >🖼 Picture → English</button>
+            <button
+                id="classroomVocabularyBoardModeEnglishThai"
+                type="button"
+                role="tab"
+                class="classroom-vocabulary-board-mode-tab classroom-vocabulary-board-mode-tab-disabled"
+                aria-selected="false"
+                aria-controls="classroomVocabularyBoardMain"
+                disabled
+                title="Coming in Phase 6.6C"
+            >🔤 English → Thai</button>
+        </div>
+
+        <main id="classroomVocabularyBoardMain" class="classroom-vocabulary-board-main" role="tabpanel">
+            <div class="classroom-vocabulary-board-placeholder card">
+                <h2 class="classroom-vocabulary-board-placeholder-title">Vocabulary Board</h2>
+                <p id="classroomVocabularyBoardModeLabel" class="classroom-vocabulary-board-placeholder-mode">Picture → English mode</p>
+                <p class="classroom-vocabulary-board-placeholder-note">(Grid implementation coming in Phase 6.6B.)</p>
+            </div>
+        </main>
     </div>
 
     <div id="studentScreen" class="screen" style="display: none;">
