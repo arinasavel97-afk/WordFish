@@ -63,7 +63,9 @@ const CLASSROOM_TEXT_FLASHCARDS_CONTEXT_STORAGE_KEY = "wordfish_classroom_text_f
 const CLASSROOM_RANDOM_WORD_CONTEXT_STORAGE_KEY = "wordfish_classroom_random_word_context";
 const CLASSROOM_VOCABULARY_BOARD_CONTEXT_STORAGE_KEY = "wordfish_classroom_vocabulary_board_context";
 const CLASSROOM_VOCABULARY_BOARD_CARD_SIZE_STORAGE_KEY = "wordfishVocabularyBoardCardSize";
+const CLASSROOM_VOCABULARY_BOARD_MODE_STORAGE_KEY = "wordfishVocabularyBoardMode";
 const CLASSROOM_VOCABULARY_BOARD_CARD_SIZES = ["small", "medium", "large"];
+const CLASSROOM_VOCABULARY_BOARD_MODES = ["pictureEnglish", "englishThai"];
 const CLASSROOM_SHORTCUTS_HINT_STORAGE_KEY = "wordfish_hide_classroom_shortcuts_hint";
 const SETTINGS_KEYS = {
     trashAutoDelete: "wordfish_settings_trash_auto_delete",
@@ -351,6 +353,7 @@ function saveClassroomVocabularyBoardContext() {
         setId: classroomSelectedSetId,
         boardMode: classroomVocabularyBoardMode
     }));
+    saveClassroomVocabularyBoardMode(classroomVocabularyBoardMode);
 }
 
 function loadClassroomVocabularyBoardContext() {
@@ -2465,7 +2468,21 @@ function saveClassroomVocabularyBoardCardSize(size) {
     localStorage.setItem(CLASSROOM_VOCABULARY_BOARD_CARD_SIZE_STORAGE_KEY, size);
 }
 
-function buildClassroomVocabularyBoardCardHtml(card) {
+function loadClassroomVocabularyBoardMode() {
+    const stored = localStorage.getItem(CLASSROOM_VOCABULARY_BOARD_MODE_STORAGE_KEY);
+
+    if (CLASSROOM_VOCABULARY_BOARD_MODES.includes(stored)) {
+        return stored;
+    }
+
+    return "pictureEnglish";
+}
+
+function saveClassroomVocabularyBoardMode(mode) {
+    localStorage.setItem(CLASSROOM_VOCABULARY_BOARD_MODE_STORAGE_KEY, mode);
+}
+
+function buildClassroomVocabularyBoardPictureEnglishCardHtml(card) {
     return `
         <article class="classroom-vocabulary-board-card">
             <div class="classroom-vocabulary-board-card-media">
@@ -2480,8 +2497,49 @@ function buildClassroomVocabularyBoardCardHtml(card) {
     `;
 }
 
-function buildClassroomVocabularyBoardGridHtml(cards) {
-    return cards.map((card) => buildClassroomVocabularyBoardCardHtml(card)).join("");
+function buildClassroomVocabularyBoardEnglishThaiCardHtml(card) {
+    const translation = getClassroomCardTranslation(card) || "—";
+
+    return `
+        <article class="classroom-vocabulary-board-card">
+            <div class="classroom-vocabulary-board-card-media classroom-vocabulary-board-card-text">
+                <p class="classroom-vocabulary-board-card-english">${escapeHTML(card.english)}</p>
+                <p class="classroom-vocabulary-board-card-translation">${escapeHTML(translation)}</p>
+            </div>
+        </article>
+    `;
+}
+
+function buildClassroomVocabularyBoardPictureEnglishGridHtml(cards) {
+    return cards.map((card) => buildClassroomVocabularyBoardPictureEnglishCardHtml(card)).join("");
+}
+
+function buildClassroomVocabularyBoardEnglishThaiGridHtml(cards) {
+    return cards.map((card) => buildClassroomVocabularyBoardEnglishThaiCardHtml(card)).join("");
+}
+
+function getClassroomVocabularyBoardGridSignature() {
+    return `${classroomSelectedSetId}:${classroomVocabularyBoardCards.length}:${classroomVocabularyBoardMode}`;
+}
+
+function applyClassroomVocabularyBoardGridContent() {
+    const grid = document.getElementById("classroomVocabularyBoardGrid");
+
+    if (!grid) {
+        return;
+    }
+
+    updateClassroomVocabularyBoardGridSizeClass();
+
+    grid.innerHTML = classroomVocabularyBoardMode === "englishThai"
+        ? buildClassroomVocabularyBoardEnglishThaiGridHtml(classroomVocabularyBoardCards)
+        : buildClassroomVocabularyBoardPictureEnglishGridHtml(classroomVocabularyBoardCards);
+
+    grid.dataset.gridSignature = getClassroomVocabularyBoardGridSignature();
+
+    if (classroomVocabularyBoardMode === "pictureEnglish") {
+        applyClassroomVocabularyBoardCardImages();
+    }
 }
 
 function applyClassroomVocabularyBoardCardImages() {
@@ -2516,37 +2574,12 @@ function updateClassroomVocabularyBoardCardSizeSelector() {
     });
 }
 
-function setClassroomVocabularyBoardCardSize(size) {
-    if (!CLASSROOM_VOCABULARY_BOARD_CARD_SIZES.includes(size)) {
-        return;
-    }
-
-    classroomVocabularyBoardCardSize = size;
-    saveClassroomVocabularyBoardCardSize(size);
-    updateClassroomVocabularyBoardCardSizeSelector();
-
+function updateClassroomVocabularyBoardGridSizeClass() {
     const grid = document.getElementById("classroomVocabularyBoardGrid");
 
-    if (grid) {
-        grid.classList.remove(
-            "classroom-vocabulary-board-grid-size-small",
-            "classroom-vocabulary-board-grid-size-medium",
-            "classroom-vocabulary-board-grid-size-large"
-        );
-        grid.classList.add(`classroom-vocabulary-board-grid-size-${size}`);
-    }
-
-    saveClassroomVocabularyBoardContext();
-}
-
-function renderClassroomVocabularyBoardGrid() {
-    const grid = document.getElementById("classroomVocabularyBoardGrid");
-
-    if (!grid || classroomVocabularyBoardMode !== "pictureEnglish") {
+    if (!grid) {
         return;
     }
-
-    const gridSignature = `${classroomSelectedSetId}:${classroomVocabularyBoardCards.length}`;
 
     grid.classList.remove(
         "classroom-vocabulary-board-grid-size-small",
@@ -2554,12 +2587,63 @@ function renderClassroomVocabularyBoardGrid() {
         "classroom-vocabulary-board-grid-size-large"
     );
     grid.classList.add(`classroom-vocabulary-board-grid-size-${classroomVocabularyBoardCardSize}`);
+}
 
-    if (grid.dataset.gridSignature !== gridSignature) {
-        grid.innerHTML = buildClassroomVocabularyBoardGridHtml(classroomVocabularyBoardCards);
-        grid.dataset.gridSignature = gridSignature;
-        applyClassroomVocabularyBoardCardImages();
+function setClassroomVocabularyBoardCardSize(size) {
+    if (!CLASSROOM_VOCABULARY_BOARD_CARD_SIZES.includes(size)) {
+        return;
     }
+
+    if (classroomVocabularyBoardCardSize === size) {
+        return;
+    }
+
+    classroomVocabularyBoardCardSize = size;
+    saveClassroomVocabularyBoardCardSize(size);
+    updateClassroomVocabularyBoardCardSizeSelector();
+    updateClassroomVocabularyBoardGridSizeClass();
+    saveClassroomVocabularyBoardContext();
+}
+
+function setClassroomVocabularyBoardMode(mode) {
+    if (!CLASSROOM_VOCABULARY_BOARD_MODES.includes(mode)) {
+        return;
+    }
+
+    if (classroomVocabularyBoardMode === mode) {
+        return;
+    }
+
+    classroomVocabularyBoardMode = mode;
+    saveClassroomVocabularyBoardMode(mode);
+    updateClassroomVocabularyBoardModeTabs();
+    renderClassroomVocabularyBoardGrid({ animate: true });
+    saveClassroomVocabularyBoardContext();
+}
+
+function renderClassroomVocabularyBoardGrid(options = {}) {
+    const grid = document.getElementById("classroomVocabularyBoardGrid");
+
+    if (!grid) {
+        return;
+    }
+
+    const signature = getClassroomVocabularyBoardGridSignature();
+    const needsRebuild = grid.dataset.gridSignature !== signature;
+
+    if (!needsRebuild) {
+        updateClassroomVocabularyBoardGridSizeClass();
+        return;
+    }
+
+    const updateGrid = () => applyClassroomVocabularyBoardGridContent();
+
+    if (options.animate === true) {
+        withClassroomContentTransition(grid, updateGrid, { animate: true });
+        return;
+    }
+
+    updateGrid();
 }
 
 function startClassroomVocabularyBoard(set, addToHistory = true) {
@@ -2572,7 +2656,7 @@ function startClassroomVocabularyBoard(set, addToHistory = true) {
 
     classroomVocabularyBoardSetName = set.name;
     classroomVocabularyBoardCards = vocabularyBoardCards;
-    classroomVocabularyBoardMode = "pictureEnglish";
+    classroomVocabularyBoardMode = loadClassroomVocabularyBoardMode();
     classroomVocabularyBoardCardSize = loadClassroomVocabularyBoardCardSize();
     showClassroomVocabularyBoard(addToHistory);
 }
@@ -2593,6 +2677,11 @@ function showClassroomVocabularyBoardForSelectedSet(addToHistory = true) {
     classroomVocabularyBoardSetName = selectedSet.name;
     classroomVocabularyBoardCards = getClassroomActivityCards(selectedSet);
     classroomVocabularyBoardCardSize = loadClassroomVocabularyBoardCardSize();
+
+    if (!CLASSROOM_VOCABULARY_BOARD_MODES.includes(classroomVocabularyBoardMode)) {
+        classroomVocabularyBoardMode = loadClassroomVocabularyBoardMode();
+    }
+
     showClassroomVocabularyBoard(addToHistory);
 }
 
@@ -2704,6 +2793,21 @@ function initClassroomVocabularyBoardControls() {
             }
 
             setClassroomVocabularyBoardCardSize(button.dataset.vocabularyBoardSize);
+        });
+    }
+
+    const modeControl = document.querySelector(".classroom-vocabulary-board-mode-control");
+
+    if (modeControl && modeControl.dataset.modeHandlerAttached !== "true") {
+        modeControl.dataset.modeHandlerAttached = "true";
+        modeControl.addEventListener("click", (event) => {
+            const tab = event.target.closest("[data-vocabulary-board-mode]");
+
+            if (!tab) {
+                return;
+            }
+
+            setClassroomVocabularyBoardMode(tab.dataset.vocabularyBoardMode);
         });
     }
 }
@@ -4634,6 +4738,7 @@ async function restoreClassroomVocabularyBoardFromContext(context) {
 
         classroomVocabularyBoardSetName = set.name;
         classroomVocabularyBoardMode = context.boardMode === "englishThai" ? "englishThai" : "pictureEnglish";
+        saveClassroomVocabularyBoardMode(classroomVocabularyBoardMode);
         classroomVocabularyBoardCards = vocabularyBoardCards;
         classroomVocabularyBoardCardSize = loadClassroomVocabularyBoardCardSize();
 

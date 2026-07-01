@@ -381,16 +381,16 @@
                 class="classroom-vocabulary-board-mode-tab classroom-vocabulary-board-mode-tab-active"
                 aria-selected="true"
                 aria-controls="classroomVocabularyBoardMain"
+                data-vocabulary-board-mode="pictureEnglish"
             >🖼 Picture → English</button>
             <button
                 id="classroomVocabularyBoardModeEnglishThai"
                 type="button"
                 role="tab"
-                class="classroom-vocabulary-board-mode-tab classroom-vocabulary-board-mode-tab-disabled"
+                class="classroom-vocabulary-board-mode-tab"
                 aria-selected="false"
                 aria-controls="classroomVocabularyBoardMain"
-                disabled
-                title="Coming in Phase 6.6C"
+                data-vocabulary-board-mode="englishThai"
             >🔤 English → Thai</button>
         </div>
 
@@ -404,7 +404,7 @@
         </div>
 
         <main id="classroomVocabularyBoardMain" class="classroom-vocabulary-board-main" role="tabpanel">
-            <div id="classroomVocabularyBoardGrid" class="classroom-vocabulary-board-grid classroom-vocabulary-board-grid-size-medium" aria-label="Vocabulary board cards"></div>
+            <div id="classroomVocabularyBoardGrid" class="classroom-vocabulary-board-grid classroom-vocabulary-board-grid-size-medium classroom-content-transition classroom-content-is-visible" aria-label="Vocabulary board cards"></div>
         </main>
     </div>
 
