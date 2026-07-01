@@ -3068,10 +3068,10 @@ h2 {
 
 .classroom-flashcards-header-actions {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: flex-end;
-    gap: var(--space-sm);
+    gap: clamp(6px, 1vw, 10px);
     flex-shrink: 0;
 }
 
@@ -3198,16 +3198,11 @@ h2 {
     }
 
     .classroom-flashcards-header-actions {
-        justify-content: stretch;
+        justify-content: center;
     }
 
     .classroom-flashcards-footer {
         flex-direction: column;
-        width: 100%;
-    }
-
-    .classroom-flashcards-footer .classroom-shuffle-button,
-    .classroom-flashcards-footer .classroom-loop-button {
         width: 100%;
     }
 
@@ -3260,10 +3255,10 @@ h2 {
 
 .classroom-text-flashcards-header-actions {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: flex-end;
-    gap: var(--space-sm);
+    gap: clamp(6px, 1vw, 10px);
     flex-shrink: 0;
 }
 
@@ -3367,16 +3362,11 @@ h2 {
     }
 
     .classroom-text-flashcards-header-actions {
-        justify-content: stretch;
+        justify-content: center;
     }
 
     .classroom-text-flashcards-footer {
         flex-direction: column;
-        width: 100%;
-    }
-
-    .classroom-text-flashcards-footer .classroom-shuffle-button,
-    .classroom-text-flashcards-footer .classroom-loop-button {
         width: 100%;
     }
 
@@ -3390,37 +3380,63 @@ h2 {
     }
 }
 
-.classroom-shuffle-button.classroom-shuffle-button-active,
-.classroom-loop-button.classroom-loop-button-active {
-    background: var(--color-accent);
-    box-shadow: var(--shadow-button), 0 5px 0 var(--color-accent-dark);
+#classroomFlashcardsScreen .classroom-flashcard-mode-toggle,
+#classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle {
+    min-height: 34px;
+    padding: 6px 12px;
+    margin: 0;
+    border: 1px solid rgba(7, 59, 76, 0.14);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.72);
+    color: rgba(7, 59, 76, 0.68);
+    font-size: clamp(12px, 1.35vw, 14px);
+    font-weight: var(--font-weight-button);
+    line-height: 1.2;
+    white-space: nowrap;
+    box-shadow: none;
+    cursor: pointer;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+#classroomFlashcardsScreen .classroom-flashcard-mode-toggle:hover:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle:hover:not(:disabled):not(.disabled-button) {
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(7, 59, 76, 0.22);
     color: var(--color-text);
+    transform: none;
+    box-shadow: none;
 }
 
-.classroom-shuffle-button.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button),
-.classroom-loop-button.classroom-loop-button-active:hover:not(:disabled):not(.disabled-button) {
-    background: #FFC933;
+#classroomFlashcardsScreen .classroom-flashcard-mode-toggle:active:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle:active:not(:disabled):not(.disabled-button) {
+    transform: none;
+    box-shadow: none;
 }
 
-.classroom-shuffle-button.classroom-shuffle-button-active:active:not(:disabled):not(.disabled-button),
-.classroom-loop-button.classroom-loop-button-active:active:not(:disabled):not(.disabled-button) {
-    box-shadow: var(--shadow-button), 0 2px 0 var(--color-accent-dark);
+#classroomFlashcardsScreen .classroom-flashcard-mode-toggle:focus-visible,
+#classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle:focus-visible {
+    outline: 2px solid rgba(63, 169, 245, 0.55);
+    outline-offset: 2px;
 }
 
-#classroomFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button),
-#classroomTextFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button),
-#classroomFlashcardsScreen .classroom-loop-button.classroom-loop-button-active:hover:not(:disabled):not(.disabled-button),
-#classroomTextFlashcardsScreen .classroom-loop-button.classroom-loop-button-active:hover:not(:disabled):not(.disabled-button) {
-    transform: scale(1.02);
-    box-shadow: var(--shadow-button), 0 7px 0 var(--color-accent-dark), 0 12px 24px rgba(7, 59, 76, 0.14);
+#classroomFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-shuffle-button-active,
+#classroomFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-loop-button-active,
+#classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-shuffle-button-active,
+#classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-loop-button-active {
+    background: rgba(255, 183, 3, 0.16);
+    border-color: rgba(255, 183, 3, 0.55);
+    color: var(--sea-deep);
+    box-shadow: none;
 }
 
-#classroomFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:active:not(:disabled):not(.disabled-button),
-#classroomTextFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:active:not(:disabled):not(.disabled-button),
-#classroomFlashcardsScreen .classroom-loop-button.classroom-loop-button-active:active:not(:disabled):not(.disabled-button),
-#classroomTextFlashcardsScreen .classroom-loop-button.classroom-loop-button-active:active:not(:disabled):not(.disabled-button) {
-    transform: scale(0.98);
-    box-shadow: var(--shadow-button), 0 2px 0 var(--color-accent-dark);
+#classroomFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button),
+#classroomFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-loop-button-active:hover:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-loop-button-active:hover:not(:disabled):not(.disabled-button) {
+    background: rgba(255, 183, 3, 0.24);
+    border-color: rgba(255, 183, 3, 0.65);
+    transform: none;
+    box-shadow: none;
 }
 
 .classroom-vocabulary-board-screen {

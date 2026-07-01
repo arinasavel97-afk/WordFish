@@ -1667,21 +1667,18 @@ function toggleClassroomFlashcardsShuffle() {
         return;
     }
 
-    const currentOriginalIndex = getClassroomFlashcardsCurrentOriginalIndex();
-
     if (classroomFlashcardsShuffleEnabled) {
         classroomFlashcardsShuffleEnabled = false;
         classroomFlashcardsShuffledOrder = [];
-        classroomFlashcardsIndex = currentOriginalIndex;
     } else {
         classroomFlashcardsShuffleEnabled = true;
         classroomFlashcardsShuffledOrder = createClassroomShuffledOrder(classroomFlashcardsCards.length);
-        const newPosition = classroomFlashcardsShuffledOrder.indexOf(currentOriginalIndex);
-        classroomFlashcardsIndex = newPosition >= 0 ? newPosition : 0;
     }
 
+    classroomFlashcardsIndex = 0;
+    classroomFlashcardSide = "front";
     updateClassroomFlashcardsShuffleButton();
-    renderClassroomFlashcard({ preserveSide: true });
+    renderClassroomFlashcard();
 }
 
 function toggleClassroomTextFlashcardsShuffle() {
@@ -1689,21 +1686,18 @@ function toggleClassroomTextFlashcardsShuffle() {
         return;
     }
 
-    const currentOriginalIndex = getClassroomTextFlashcardsCurrentOriginalIndex();
-
     if (classroomTextFlashcardsShuffleEnabled) {
         classroomTextFlashcardsShuffleEnabled = false;
         classroomTextFlashcardsShuffledOrder = [];
-        classroomTextFlashcardsIndex = currentOriginalIndex;
     } else {
         classroomTextFlashcardsShuffleEnabled = true;
         classroomTextFlashcardsShuffledOrder = createClassroomShuffledOrder(classroomTextFlashcardsCards.length);
-        const newPosition = classroomTextFlashcardsShuffledOrder.indexOf(currentOriginalIndex);
-        classroomTextFlashcardsIndex = newPosition >= 0 ? newPosition : 0;
     }
 
+    classroomTextFlashcardsIndex = 0;
+    classroomTextFlashcardSide = "front";
     updateClassroomTextFlashcardsShuffleButton();
-    renderClassroomTextFlashcard({ preserveSide: true });
+    renderClassroomTextFlashcard();
 }
 
 function startClassroomFlashcards(set, addToHistory = true) {
