@@ -1,54 +1,220 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
-:root {
-    --ink: #073B4C;
-    --sea-deep: #0B6E8A;
-    --sea: #00A6C8;
-    --sea-dark: #007D96;
-    --mint: #06D6A0;
-    --mint-dark: #05A87D;
-    --sun: #FFB703;
-    --sun-dark: #D99500;
-    --coral: #EF476F;
-    --coral-dark: #C92F55;
-    --duplicate: #4ECBC4;
-    --duplicate-dark: #2FA89F;
-    --duplicate-hover: #5ED7D0;
-    --foam: #EFFFFA;
-    --pale: #F4FDFF;
-    --card: rgba(255, 255, 255, 0.92);
-    --line: rgba(142, 220, 230, 0.8);
-    --shadow: 0 16px 40px rgba(7, 59, 76, 0.16);
-    --soft-shadow: 0 8px 20px rgba(7, 59, 76, 0.12);
-    --radius-xl: 36px;
-    --radius-lg: 26px;
-    --radius-md: 18px;
 
-    /* Design System — Phase 1A tokens */
-    --color-primary: #3FA9F5;
-    --color-primary-hover: #2F8FE0;
-    --color-primary-dark: #2580C8;
-    --color-accent: #FFB703;
-    --color-accent-dark: #E5A503;
-    --color-success: #6DDC91;
-    --color-success-dark: #4FC878;
-    --color-danger: #FF6B6B;
-    --color-danger-dark: #E85555;
-    --color-text: #223344;
-    --color-input-bg: #FFFFFF;
-    --color-input-border: rgba(63, 169, 245, 0.28);
-    --color-soft: #D6EEFB;
-    --color-soft-dark: #B8DFF5;
-    --radius-button: 18px;
-    --radius-input: 16px;
-    --space-xs: 4px;
-    --space-sm: 8px;
-    --space-md: 16px;
-    --space-lg: 24px;
-    --shadow-button: 0 5px 0 rgba(34, 51, 68, 0.15);
-    --shadow-focus: 0 0 0 4px rgba(63, 169, 245, 0.22);
-    --font-family: "Fredoka", Arial, sans-serif;
-    --font-weight-ui: 500;
-    --font-weight-button: 700;
+/*
+ * WordFish Design Tokens — Phase 8A foundation
+ * Audit scope: Dashboard, Student Mode, Classroom Mode, Games, Settings, Results
+ * Redesign passes should consume --wf-* tokens; legacy aliases remain for compatibility.
+ */
+:root {
+    /* WordFish Design Tokens */
+    /* --- Colors: Ocean palette --- */
+    --wf-ocean-ink: #073B4C;
+    --wf-ocean-deep: #0B6E8A;
+    --wf-ocean-blue: #00A6C8;
+    --wf-ocean-blue-dark: #007D96;
+    --wf-aqua: #3FA9F5;
+    --wf-aqua-hover: #2F8FE0;
+    --wf-aqua-dark: #2580C8;
+    --wf-aqua-soft: #D6EEFB;
+    --wf-aqua-soft-dark: #B8DFF5;
+    --wf-aqua-soft-hover: #E4F4FD;
+    --wf-sand-top: #E9FBFF;
+    --wf-sand-mid: #BAF1FF;
+    --wf-sand-bottom: #F6FFF9;
+    --wf-foam: #EFFFFA;
+    --wf-pale-sky: #F4FDFF;
+    --wf-card-white: #FFFFFF;
+    --wf-card-tint: #F3FCFF;
+    --wf-coral: #EF476F;
+    --wf-coral-dark: #C92F55;
+    --wf-coral-hover: #FF8585;
+    --wf-mint: #06D6A0;
+    --wf-mint-dark: #05A87D;
+    --wf-mint-success: #6DDC91;
+    --wf-mint-success-dark: #4FC878;
+    --wf-mint-success-hover: #5FD085;
+    --wf-sun: #FFB703;
+    --wf-sun-dark: #D99500;
+    --wf-sun-accent-dark: #E5A503;
+    --wf-sun-hover: #FFC933;
+    --wf-teal: #4ECBC4;
+    --wf-teal-dark: #2FA89F;
+    --wf-teal-hover: #5ED7D0;
+
+    /* --- Colors: Semantic UI --- */
+    --wf-color-text: #223344;
+    --wf-color-text-on-primary: #FFFFFF;
+    --wf-color-danger: #FF6B6B;
+    --wf-color-danger-dark: #E85555;
+    --wf-color-danger-hover: #FF8585;
+    --wf-color-input-bg: #FFFFFF;
+    --wf-color-glass: rgba(255, 255, 255, 0.92);
+    --wf-color-glass-soft: rgba(255, 255, 255, 0.72);
+    --wf-color-glass-strong: rgba(255, 255, 255, 0.92);
+    --wf-color-border-line: rgba(142, 220, 230, 0.8);
+    --wf-color-border-input: rgba(63, 169, 245, 0.28);
+    --wf-color-ink-muted: rgba(7, 59, 76, 0.68);
+    --wf-color-ink-subtle: rgba(7, 59, 76, 0.45);
+    --wf-color-ink-border: rgba(7, 59, 76, 0.14);
+    --wf-color-ink-border-strong: rgba(7, 59, 76, 0.22);
+    --wf-color-ink-border-soft: rgba(7, 59, 76, 0.12);
+    --wf-color-ink-border-dashed: rgba(7, 59, 76, 0.18);
+    --wf-color-accent-tint: rgba(255, 183, 3, 0.16);
+    --wf-color-accent-tint-hover: rgba(255, 183, 3, 0.24);
+    --wf-color-accent-border: rgba(255, 183, 3, 0.55);
+    --wf-color-accent-border-hover: rgba(255, 183, 3, 0.65);
+    --wf-color-aqua-highlight: rgba(63, 169, 245, 0.12);
+    --wf-color-aqua-focus-ring: rgba(63, 169, 245, 0.22);
+    --wf-color-aqua-outline: rgba(63, 169, 245, 0.55);
+    --wf-color-sun-glow: rgba(255, 183, 3, 0.22);
+    --wf-color-sun-glow-classroom: rgba(255, 183, 3, 0.18);
+    --wf-color-aqua-glow-classroom: rgba(63, 169, 245, 0.14);
+    --wf-color-coral-glow: rgba(239, 71, 111, 0.12);
+    --wf-color-mint-glow: rgba(6, 214, 160, 0.12);
+    --wf-overlay-ink-38: rgba(7, 59, 76, 0.38);
+    --wf-shadow-ink-text: rgba(7, 59, 76, 0.12);
+    --wf-shadow-button-depth: rgba(34, 51, 68, 0.15);
+    --wf-shadow-button-depth-soft: rgba(34, 51, 68, 0.14);
+    --wf-shadow-button-depth-light: rgba(34, 51, 68, 0.12);
+
+    /* --- Surfaces & gradients --- */
+    --wf-gradient-page-sky:
+        radial-gradient(circle at 12% 10%, var(--wf-color-sun-glow) 0 90px, transparent 92px),
+        radial-gradient(circle at 92% 16%, var(--wf-color-coral-glow) 0 90px, transparent 92px),
+        radial-gradient(circle at 50% 100%, var(--wf-color-mint-glow) 0 220px, transparent 230px),
+        linear-gradient(180deg, var(--wf-sand-top) 0%, var(--wf-sand-mid) 48%, var(--wf-sand-bottom) 100%);
+    --wf-gradient-classroom-sky: linear-gradient(180deg, var(--wf-sand-top) 0%, var(--wf-sand-mid) 48%, var(--wf-sand-bottom) 100%);
+    --wf-gradient-classroom-screen:
+        radial-gradient(circle at 12% 10%, var(--wf-color-sun-glow-classroom) 0 90px, transparent 92px),
+        radial-gradient(circle at 88% 18%, var(--wf-color-aqua-glow-classroom) 0 100px, transparent 102px),
+        var(--wf-gradient-classroom-sky);
+    --wf-gradient-card: linear-gradient(180deg, var(--wf-card-white) 0%, var(--wf-card-tint) 100%);
+    --wf-gradient-hint-panel: linear-gradient(180deg, var(--wf-card-white) 0%, var(--wf-foam) 100%);
+
+    /* --- Shadows --- */
+    --wf-shadow-ink-12: 0 8px 20px rgba(7, 59, 76, 0.12);
+    --wf-shadow-ink-14: 0 2px 8px rgba(7, 59, 76, 0.12);
+    --wf-shadow-ink-16: 0 16px 40px rgba(7, 59, 76, 0.16);
+    --wf-shadow-ink-17: 0 16px 28px rgba(7, 59, 76, 0.17);
+    --wf-shadow-ink-18: 0 5px 0 rgba(7, 59, 76, 0.18);
+    --wf-shadow-ink-24: 0 12px 28px rgba(7, 59, 76, 0.24);
+    --wf-shadow-ink-26: 0 12px 26px rgba(7, 59, 76, 0.28);
+    --wf-shadow-ink-28: 0 6px 16px rgba(7, 59, 76, 0.14);
+    --wf-shadow-modal: 0 18px 44px rgba(7, 59, 76, 0.24);
+    --wf-shadow-toast: 0 12px 28px rgba(7, 59, 76, 0.24);
+    --wf-shadow-card-hover: 0 16px 28px rgba(7, 59, 76, 0.17);
+    --wf-shadow-focus: 0 0 0 4px var(--wf-color-aqua-focus-ring);
+    --wf-shadow-button: 0 5px 0 var(--wf-shadow-button-depth);
+    --wf-shadow-elevated-aqua: 0 6px 0 var(--wf-shadow-button-depth-soft), 0 12px 24px rgba(7, 59, 76, 0.14);
+    --wf-shadow-elevated-success: 0 7px 0 var(--wf-mint-success-dark), 0 12px 24px rgba(7, 59, 76, 0.16);
+    --wf-shadow-elevated-soft: 0 7px 0 var(--wf-aqua-soft-dark), 0 12px 24px rgba(7, 59, 76, 0.14);
+
+    /* --- Border radius --- */
+    --wf-radius-xs: 8px;
+    --wf-radius-sm: 12px;
+    --wf-radius-md: 18px;
+    --wf-radius-lg: 26px;
+    --wf-radius-xl: 36px;
+    --wf-radius-button: 18px;
+    --wf-radius-input: 16px;
+    --wf-radius-pill: 999px;
+    --wf-radius-toast: 22px;
+    --wf-radius-modal: 30px;
+
+    /* --- Spacing --- */
+    --wf-space-xs: 4px;
+    --wf-space-sm: 8px;
+    --wf-space-md: 16px;
+    --wf-space-lg: 24px;
+    --wf-space-xl: 32px;
+
+    /* --- Typography --- */
+    --wf-font-family: "Fredoka", Arial, sans-serif;
+    --wf-font-weight-ui: 500;
+    --wf-font-weight-button: 700;
+    --wf-font-size-body: clamp(16px, 2vw, 19px);
+    --wf-font-size-h1: clamp(34px, 6vw, 68px);
+    --wf-font-size-h1-compact: clamp(32px, 4.3vw, 54px);
+    --wf-font-size-h2: clamp(22px, 3vw, 34px);
+    --wf-font-size-h2-compact: clamp(21px, 2.4vw, 30px);
+    --wf-font-size-button: clamp(16px, 2vw, 19px);
+    --wf-font-size-game-title: clamp(30px, 4.2vw, 52px);
+    --wf-font-size-prompt: clamp(30px, 4.5vw, 48px);
+    --wf-line-height-tight: 1;
+    --wf-line-height-heading: 1.08;
+    --wf-line-height-body: 1.45;
+    --wf-letter-spacing-display: -1px;
+
+    /* --- Motion --- */
+    --wf-transition-fast: 0.15s ease;
+    --wf-transition-ui: 0.22s ease;
+    --wf-transition-classroom-button: transform 190ms ease, box-shadow 190ms ease, background-color 190ms ease, border-color 190ms ease;
+
+    /* --- Button & card semantics --- */
+    --wf-button-bg: var(--wf-aqua);
+    --wf-button-bg-hover: var(--wf-aqua-hover);
+    --wf-button-bg-active-dark: var(--wf-aqua-dark);
+    --wf-button-text: var(--wf-color-text-on-primary);
+    --wf-button-shadow: var(--wf-shadow-button);
+    --wf-button-radius: var(--wf-radius-button);
+    --wf-button-font-size: var(--wf-font-size-button);
+    --wf-card-surface: var(--wf-gradient-card);
+    --wf-card-shadow: var(--wf-shadow-ink-12);
+    --wf-card-shadow-hover: var(--wf-shadow-card-hover);
+    --wf-card-radius: var(--wf-radius-lg);
+    --wf-card-border: var(--wf-color-border-line);
+    --wf-screen-surface: var(--wf-color-glass);
+    --wf-screen-shadow: var(--wf-shadow-ink-16);
+    --wf-screen-radius: var(--wf-radius-xl);
+
+    /* --- Legacy aliases (Phase 1A / pre-8A compatibility) --- */
+    --ink: var(--wf-ocean-ink);
+    --sea-deep: var(--wf-ocean-deep);
+    --sea: var(--wf-ocean-blue);
+    --sea-dark: var(--wf-ocean-blue-dark);
+    --mint: var(--wf-mint);
+    --mint-dark: var(--wf-mint-dark);
+    --sun: var(--wf-sun);
+    --sun-dark: var(--wf-sun-dark);
+    --coral: var(--wf-coral);
+    --coral-dark: var(--wf-coral-dark);
+    --duplicate: var(--wf-teal);
+    --duplicate-dark: var(--wf-teal-dark);
+    --duplicate-hover: var(--wf-teal-hover);
+    --foam: var(--wf-foam);
+    --pale: var(--wf-pale-sky);
+    --card: var(--wf-color-glass);
+    --line: var(--wf-color-border-line);
+    --shadow: var(--wf-shadow-ink-16);
+    --soft-shadow: var(--wf-shadow-ink-12);
+    --radius-xl: var(--wf-radius-xl);
+    --radius-lg: var(--wf-radius-lg);
+    --radius-md: var(--wf-radius-md);
+    --color-primary: var(--wf-aqua);
+    --color-primary-hover: var(--wf-aqua-hover);
+    --color-primary-dark: var(--wf-aqua-dark);
+    --color-accent: var(--wf-sun);
+    --color-accent-dark: var(--wf-sun-accent-dark);
+    --color-success: var(--wf-mint-success);
+    --color-success-dark: var(--wf-mint-success-dark);
+    --color-danger: var(--wf-color-danger);
+    --color-danger-dark: var(--wf-color-danger-dark);
+    --color-text: var(--wf-color-text);
+    --color-input-bg: var(--wf-color-input-bg);
+    --color-input-border: var(--wf-color-border-input);
+    --color-soft: var(--wf-aqua-soft);
+    --color-soft-dark: var(--wf-aqua-soft-dark);
+    --radius-button: var(--wf-radius-button);
+    --radius-input: var(--wf-radius-input);
+    --space-xs: var(--wf-space-xs);
+    --space-sm: var(--wf-space-sm);
+    --space-md: var(--wf-space-md);
+    --space-lg: var(--wf-space-lg);
+    --shadow-button: var(--wf-shadow-button);
+    --shadow-focus: var(--wf-shadow-focus);
+    --font-family: var(--wf-font-family);
+    --font-weight-ui: var(--wf-font-weight-ui);
+    --font-weight-button: var(--wf-font-weight-button);
 }
 
 * {
@@ -67,11 +233,7 @@ body {
     text-align: center;
     padding: clamp(12px, 3vw, 28px);
     overflow-x: hidden;
-    background:
-        radial-gradient(circle at 12% 10%, rgba(255, 183, 3, 0.22) 0 90px, transparent 92px),
-        radial-gradient(circle at 92% 16%, rgba(239, 71, 111, 0.12) 0 90px, transparent 92px),
-        radial-gradient(circle at 50% 100%, rgba(6, 214, 160, 0.12) 0 220px, transparent 230px),
-        linear-gradient(180deg, #E9FBFF 0%, #BAF1FF 48%, #F6FFF9 100%);
+    background: var(--wf-gradient-page-sky);
 }
 
 button,
@@ -117,20 +279,20 @@ body::after {
 }
 
 h1 {
-    font-size: clamp(34px, 6vw, 68px);
-    line-height: 1;
+    font-size: var(--wf-font-size-h1);
+    line-height: var(--wf-line-height-tight);
     margin: 8px 0 10px;
-    letter-spacing: -1px;
+    letter-spacing: var(--wf-letter-spacing-display);
 }
 
 h2 {
     color: var(--sea-deep);
     margin: 8px 0;
-    font-size: clamp(22px, 3vw, 34px);
+    font-size: var(--wf-font-size-h2);
 }
 
 p {
-    font-size: clamp(16px, 2vw, 19px);
+    font-size: var(--wf-font-size-body);
 }
 
 .screen,
@@ -227,7 +389,7 @@ button {
     border: none;
     border-radius: var(--radius-button);
     background: var(--color-primary);
-    color: #fff;
+    color: var(--wf-color-text-on-primary);
     cursor: pointer;
     margin: var(--space-sm);
     box-shadow: var(--shadow-button), 0 5px 0 var(--color-primary-dark);
@@ -251,7 +413,7 @@ button:active {
     box-shadow: var(--shadow-button), 0 5px 0 var(--color-success-dark);
 }
 
-.green-button:hover { background: #5FD085; }
+.green-button:hover { background: var(--wf-mint-success-hover); }
 .green-button:active { box-shadow: var(--shadow-button), 0 2px 0 var(--color-success-dark); }
 
 .yellow-button {
@@ -260,7 +422,7 @@ button:active {
     color: var(--color-text);
 }
 
-.yellow-button:hover { background: #FFC933; }
+.yellow-button:hover { background: var(--wf-sun-hover); }
 .yellow-button:active { box-shadow: var(--shadow-button), 0 2px 0 var(--color-accent-dark); }
 
 .red-button {
@@ -268,12 +430,12 @@ button:active {
     box-shadow: var(--shadow-button), 0 5px 0 var(--color-danger-dark);
 }
 
-.red-button:hover { background: #FF8585; }
+.red-button:hover { background: var(--wf-color-danger-hover); }
 .red-button:active { box-shadow: var(--shadow-button), 0 2px 0 var(--color-danger-dark); }
 
 .duplicate-button {
     background: var(--duplicate);
-    color: #fff;
+    color: var(--wf-color-text-on-primary);
     box-shadow: var(--shadow-button), 0 5px 0 var(--duplicate-dark);
 }
 
@@ -287,7 +449,7 @@ button:active {
     box-shadow: var(--shadow-button), 0 5px 0 var(--color-soft-dark);
 }
 
-.soft-button:hover { background: #E4F4FD; }
+.soft-button:hover { background: var(--wf-aqua-soft-hover); }
 .soft-button:active,
 .disabled-button:active { box-shadow: var(--shadow-button), 0 2px 0 var(--color-soft-dark); }
 
@@ -302,7 +464,7 @@ button:active {
 }
 
 .card {
-    background: linear-gradient(180deg, #ffffff 0%, #F3FCFF 100%);
+    background: var(--wf-gradient-card);
     padding: clamp(18px, 3vw, 26px);
     margin: 18px auto;
     border-radius: var(--radius-lg);
@@ -314,7 +476,7 @@ button:active {
 
 .card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 16px 28px rgba(7,59,76,0.17);
+    box-shadow: var(--wf-shadow-card-hover);
 }
 
 #savedSetsList {
@@ -384,7 +546,7 @@ button:active {
 
 .dashboard-settings-button:hover {
     color: var(--color-primary);
-    background: #EFFFFA;
+    background: var(--wf-foam);
     border-color: rgba(63, 169, 245, 0.45);
     transform: rotate(8deg) scale(1.05);
 }
@@ -870,7 +1032,7 @@ button:active {
 
 .empty-library-card,
 .loading-card {
-    background: linear-gradient(180deg, #ffffff 0%, #EFFFFA 100%);
+    background: var(--wf-gradient-hint-panel);
 }
 
 .editor-toolbar {
@@ -908,7 +1070,7 @@ button:active {
 }
 
 .save-status.saved {
-    background: #EFFFFA;
+    background: var(--wf-foam);
     color: #07805F;
     border-color: #8DEBCB;
 }
@@ -1090,7 +1252,7 @@ button:active {
 }
 
 .auth-card {
-    background: white;
+    background: var(--wf-card-white);
     max-width: 500px;
     margin: 26px auto;
     padding: clamp(22px, 4vw, 32px);
@@ -1121,12 +1283,12 @@ button:active {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    background: white;
+    background: var(--wf-card-white);
     color: var(--ink);
     border: 3px solid var(--line);
     border-radius: 22px;
     padding: 14px 18px;
-    box-shadow: 0 12px 28px rgba(7,59,76,0.24);
+    box-shadow: var(--wf-shadow-toast);
     font-weight: 900;
     z-index: 9999;
     max-width: min(420px, calc(100vw - 32px));
@@ -1154,7 +1316,7 @@ button:active {
     padding: 16px 18px 14px;
     border: 2px solid var(--color-input-border);
     border-radius: var(--radius-lg);
-    background: linear-gradient(180deg, #ffffff 0%, #EFFFFA 100%);
+    background: var(--wf-gradient-hint-panel);
     box-shadow: var(--soft-shadow);
     text-align: left;
     opacity: 0;
@@ -1189,7 +1351,7 @@ button:active {
 }
 
 .classroom-shortcuts-hint-close:hover {
-    background: #EFFFFA;
+    background: var(--wf-foam);
     color: var(--color-primary);
 }
 
@@ -1278,7 +1440,7 @@ button:active {
     border-radius: 50%;
     background: rgba(255,255,255,0.94);
     color: var(--ink);
-    box-shadow: 0 5px 0 rgba(7,59,76,0.18);
+    box-shadow: var(--wf-shadow-ink-18);
     z-index: 4;
 }
 
@@ -1308,12 +1470,12 @@ button:active {
     margin: 20px auto;
     display: none;
     border: 8px solid white;
-    box-shadow: 0 12px 26px rgba(7,59,76,0.28);
+    box-shadow: var(--wf-shadow-ink-26);
     object-fit: cover;
 }
 
 #answerInput {
-    background: white;
+    background: var(--wf-card-white);
     text-align: center;
     font-size: clamp(20px, 3vw, 28px);
 }
@@ -1366,11 +1528,11 @@ button:active {
     font-size: clamp(32px, 7vw, 48px);
     margin: var(--space-sm) auto var(--space-md);
     line-height: 1.15;
-    text-shadow: 0 2px 0 rgba(7, 59, 76, 0.12);
+    text-shadow: 0 2px 0 var(--wf-shadow-ink-text);
 }
 
 #finalScore {
-    background: white;
+    background: var(--wf-card-white);
     color: var(--ink);
     border-radius: 32px;
     padding: clamp(24px, 4vw, 36px);
@@ -1584,12 +1746,12 @@ body::after {
 }
 
 h1 {
-    font-size: clamp(32px, 4.3vw, 54px);
-    line-height: 1.08;
+    font-size: var(--wf-font-size-h1-compact);
+    line-height: var(--wf-line-height-heading);
 }
 
 h2 {
-    font-size: clamp(21px, 2.4vw, 30px);
+    font-size: var(--wf-font-size-h2-compact);
 }
 
 .screen,
@@ -1605,7 +1767,7 @@ h2 {
 }
 
 #gameTitle {
-    font-size: clamp(30px, 4.2vw, 52px);
+    font-size: var(--wf-font-size-game-title);
     max-width: 780px;
     margin-left: auto;
     margin-right: auto;
@@ -1628,7 +1790,7 @@ h2 {
 }
 
 #currentPrompt {
-    font-size: clamp(30px, 4.5vw, 48px);
+    font-size: var(--wf-font-size-prompt);
     padding: clamp(18px, 3vw, 28px) clamp(26px, 4.5vw, 54px);
     margin: clamp(16px, 3vw, 28px);
 }
@@ -1642,7 +1804,7 @@ h2 {
     position: fixed;
     inset: 0;
     z-index: 10000;
-    background: rgba(7, 59, 76, 0.38);
+    background: var(--wf-overlay-ink-38);
     backdrop-filter: blur(6px);
     align-items: center;
     justify-content: center;
@@ -1651,11 +1813,11 @@ h2 {
 
 .modal-card {
     width: min(520px, 100%);
-    background: linear-gradient(180deg, #ffffff 0%, #F3FCFF 100%);
+    background: var(--wf-gradient-card);
     border: 3px solid var(--line);
     border-radius: 30px;
     padding: 26px;
-    box-shadow: 0 18px 44px rgba(7,59,76,0.24);
+    box-shadow: var(--wf-shadow-modal);
     position: relative;
 }
 
@@ -1672,7 +1834,7 @@ h2 {
     min-height: 44px;
     padding: 0;
     margin: 0;
-    background: #EFFFFA;
+    background: var(--wf-foam);
     color: var(--ink);
     box-shadow: 0 4px 0 #9BD9E2;
 }
@@ -2129,7 +2291,7 @@ h2 {
     padding: 10px 12px;
     border-radius: var(--radius-md);
     border: 2px solid rgba(142, 220, 230, 0.45);
-    background: rgba(255, 255, 255, 0.72);
+    background: var(--wf-color-glass-soft);
     cursor: pointer;
     font-weight: var(--font-weight-ui);
     color: var(--color-text);
@@ -2214,7 +2376,7 @@ h2 {
 }
 
 .classroom-set-card {
-    background: linear-gradient(180deg, #ffffff 0%, #EFFFFA 100%);
+    background: var(--wf-gradient-hint-panel);
     border: 2px solid var(--color-input-border);
     border-radius: var(--radius-lg);
     box-shadow: var(--soft-shadow);
@@ -2341,7 +2503,7 @@ h2 {
 }
 
 .classroom-activity-card {
-    background: linear-gradient(180deg, #ffffff 0%, #EFFFFA 100%);
+    background: var(--wf-gradient-hint-panel);
     border: 2px solid var(--color-input-border);
     border-radius: var(--radius-lg);
     box-shadow: var(--soft-shadow);
@@ -2396,7 +2558,7 @@ h2 {
 #classroomFlashcardsScreen,
 #classroomTextFlashcardsScreen,
 #classroomVocabularyBoardScreen {
-    --classroom-button-transition: transform 190ms ease, box-shadow 190ms ease, background-color 190ms ease, border-color 190ms ease;
+    --classroom-button-transition: var(--wf-transition-classroom-button);
 }
 
 #classroomPickerScreen :is(
@@ -2550,7 +2712,7 @@ h2 {
 #classroomFlashcardsScreen .green-button:hover:not(:disabled):not(.disabled-button),
 #classroomTextFlashcardsScreen .green-button:hover:not(:disabled):not(.disabled-button) {
     transform: scale(1.02);
-    box-shadow: var(--shadow-button), 0 7px 0 var(--color-success-dark), 0 12px 24px rgba(7, 59, 76, 0.16);
+    box-shadow: var(--shadow-button), var(--wf-shadow-elevated-success);
 }
 
 #classroomPickerScreen .green-button:active:not(:disabled):not(.disabled-button),
@@ -2569,7 +2731,7 @@ h2 {
 #classroomFlashcardsScreen .soft-button:hover:not(:disabled):not(.disabled-button),
 #classroomTextFlashcardsScreen .soft-button:hover:not(:disabled):not(.disabled-button) {
     transform: scale(1.02);
-    box-shadow: var(--shadow-button), 0 7px 0 var(--color-soft-dark), 0 12px 24px rgba(7, 59, 76, 0.14);
+    box-shadow: var(--shadow-button), var(--wf-shadow-elevated-soft);
 }
 
 #classroomNoCardsScreen .soft-button:active:not(:disabled):not(.disabled-button),
@@ -2586,10 +2748,10 @@ h2 {
 #classroomFlashcardsScreen .classroom-fullscreen-button:hover:not(:disabled):not(.disabled-button),
 #classroomTextFlashcardsScreen .classroom-fullscreen-button:hover:not(:disabled):not(.disabled-button) {
     transform: scale(1.02);
-    background: #EFFFFA;
+    background: var(--wf-foam);
     border-color: rgba(63, 169, 245, 0.45);
     color: var(--color-primary);
-    box-shadow: 0 6px 0 rgba(34, 51, 68, 0.14), 0 12px 24px rgba(7, 59, 76, 0.14);
+    box-shadow: var(--wf-shadow-elevated-aqua);
 }
 
 #classroomPresentationScreen .classroom-fullscreen-button:active:not(:disabled):not(.disabled-button),
@@ -2664,7 +2826,7 @@ h2 {
         .classroom-shuffle-button,
         .classroom-loop-button
     ):focus-visible {
-    outline: 3px solid rgba(63, 169, 245, 0.55);
+    outline: 3px solid var(--wf-color-aqua-outline);
     outline-offset: 3px;
 }
 
@@ -2755,10 +2917,7 @@ h2 {
     border-radius: 0;
     box-shadow: none;
     text-align: center;
-    background:
-        radial-gradient(circle at 12% 10%, rgba(255, 183, 3, 0.18) 0 90px, transparent 92px),
-        radial-gradient(circle at 88% 18%, rgba(63, 169, 245, 0.14) 0 100px, transparent 102px),
-        linear-gradient(180deg, #E9FBFF 0%, #BAF1FF 48%, #F6FFF9 100%);
+    background: var(--wf-gradient-classroom-screen);
     overflow: hidden;
     gap: clamp(10px, 1.6vh, 16px);
 }
@@ -2866,7 +3025,7 @@ h2 {
     padding: clamp(12px, 1.8vw, 18px);
     border-radius: var(--radius-xl);
     border: 2px solid var(--color-input-border);
-    background: rgba(255, 255, 255, 0.92);
+    background: var(--wf-color-glass-strong);
     box-shadow: var(--soft-shadow);
     overflow: hidden;
 }
@@ -3041,10 +3200,7 @@ h2 {
     border-radius: 0;
     box-shadow: none;
     text-align: center;
-    background:
-        radial-gradient(circle at 12% 10%, rgba(255, 183, 3, 0.18) 0 90px, transparent 92px),
-        radial-gradient(circle at 88% 18%, rgba(63, 169, 245, 0.14) 0 100px, transparent 102px),
-        linear-gradient(180deg, #E9FBFF 0%, #BAF1FF 48%, #F6FFF9 100%);
+    background: var(--wf-gradient-classroom-screen);
     overflow: hidden;
     gap: clamp(10px, 1.6vh, 16px);
 }
@@ -3098,7 +3254,7 @@ h2 {
 }
 
 .classroom-flashcard:focus-visible {
-    outline: 3px solid rgba(63, 169, 245, 0.55);
+    outline: 3px solid var(--wf-color-aqua-outline);
     outline-offset: 6px;
     border-radius: var(--radius-xl);
 }
@@ -3233,10 +3389,7 @@ h2 {
     border-radius: 0;
     box-shadow: none;
     text-align: center;
-    background:
-        radial-gradient(circle at 12% 10%, rgba(255, 183, 3, 0.18) 0 90px, transparent 92px),
-        radial-gradient(circle at 88% 18%, rgba(63, 169, 245, 0.14) 0 100px, transparent 102px),
-        linear-gradient(180deg, #E9FBFF 0%, #BAF1FF 48%, #F6FFF9 100%);
+    background: var(--wf-gradient-classroom-screen);
     overflow: hidden;
     gap: clamp(10px, 1.6vh, 16px);
 }
@@ -3302,7 +3455,7 @@ h2 {
 }
 
 .classroom-text-flashcard:focus-visible {
-    outline: 3px solid rgba(63, 169, 245, 0.55);
+    outline: 3px solid var(--wf-color-aqua-outline);
     outline-offset: 6px;
     border-radius: var(--radius-xl);
 }
@@ -3395,10 +3548,10 @@ h2 {
     min-height: 34px;
     padding: 6px 12px;
     margin: 0;
-    border: 1px solid rgba(7, 59, 76, 0.14);
-    border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.72);
-    color: rgba(7, 59, 76, 0.68);
+    border: 1px solid var(--wf-color-ink-border);
+    border-radius: var(--wf-radius-md);
+    background: var(--wf-color-glass-soft);
+    color: var(--wf-color-ink-muted);
     font-size: clamp(12px, 1.35vw, 14px);
     font-weight: var(--font-weight-button);
     line-height: 1.2;
@@ -3410,9 +3563,9 @@ h2 {
 
 #classroomFlashcardsScreen .classroom-flashcard-mode-toggle:hover:not(:disabled):not(.disabled-button),
 #classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle:hover:not(:disabled):not(.disabled-button) {
-    background: rgba(255, 255, 255, 0.92);
-    border-color: rgba(7, 59, 76, 0.22);
-    color: var(--color-text);
+    background: var(--wf-color-glass-strong);
+    border-color: var(--wf-color-ink-border-strong);
+    color: var(--wf-color-text);
     transform: none;
     box-shadow: none;
 }
@@ -3425,7 +3578,7 @@ h2 {
 
 #classroomFlashcardsScreen .classroom-flashcard-mode-toggle:focus-visible,
 #classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle:focus-visible {
-    outline: 2px solid rgba(63, 169, 245, 0.55);
+    outline: 2px solid var(--wf-color-aqua-outline);
     outline-offset: 2px;
 }
 
@@ -3433,8 +3586,8 @@ h2 {
 #classroomFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-loop-button-active,
 #classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-shuffle-button-active,
 #classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-loop-button-active {
-    background: rgba(255, 183, 3, 0.16);
-    border-color: rgba(255, 183, 3, 0.55);
+    background: var(--wf-color-accent-tint);
+    border-color: var(--wf-color-accent-border);
     color: var(--sea-deep);
     box-shadow: none;
 }
@@ -3443,8 +3596,8 @@ h2 {
 #classroomFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-loop-button-active:hover:not(:disabled):not(.disabled-button),
 #classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button),
 #classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-loop-button-active:hover:not(:disabled):not(.disabled-button) {
-    background: rgba(255, 183, 3, 0.24);
-    border-color: rgba(255, 183, 3, 0.65);
+    background: var(--wf-color-accent-tint-hover);
+    border-color: var(--wf-color-accent-border-hover);
     transform: none;
     box-shadow: none;
 }
@@ -3508,7 +3661,7 @@ h2 {
 .classroom-flashcard-jump-empty {
     margin: 0;
     padding: 10px 12px;
-    color: rgba(7, 59, 76, 0.68);
+    color: var(--wf-color-ink-muted);
     font-size: 14px;
     text-align: left;
 }
@@ -3537,7 +3690,7 @@ h2 {
 }
 
 .classroom-flashcard-jump-option:focus-visible {
-    outline: 2px solid rgba(63, 169, 245, 0.55);
+    outline: 2px solid var(--wf-color-aqua-outline);
     outline-offset: 1px;
 }
 
@@ -3547,7 +3700,7 @@ h2 {
     height: 40px;
     border-radius: 8px;
     object-fit: cover;
-    border: 1px solid rgba(7, 59, 76, 0.12);
+    border: 1px solid var(--wf-color-ink-border-soft);
     background: #fff;
 }
 
@@ -3559,9 +3712,9 @@ h2 {
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    border: 1px dashed rgba(7, 59, 76, 0.18);
+    border: 1px dashed var(--wf-color-ink-border-dashed);
     background: rgba(255, 255, 255, 0.85);
-    color: rgba(7, 59, 76, 0.45);
+    color: var(--wf-color-ink-subtle);
 }
 
 .classroom-flashcard-jump-thumb-icon {
@@ -3592,7 +3745,7 @@ h2 {
 
 .classroom-flashcard-jump-option-translation {
     font-size: clamp(11px, 1.25vw, 13px);
-    color: rgba(7, 59, 76, 0.68);
+    color: var(--wf-color-ink-muted);
     line-height: 1.25;
     word-break: break-word;
 }
@@ -3613,10 +3766,7 @@ h2 {
     border-radius: 0;
     box-shadow: none;
     text-align: center;
-    background:
-        radial-gradient(circle at 12% 10%, rgba(255, 183, 3, 0.18) 0 90px, transparent 92px),
-        radial-gradient(circle at 88% 18%, rgba(63, 169, 245, 0.14) 0 100px, transparent 102px),
-        linear-gradient(180deg, #E9FBFF 0%, #BAF1FF 48%, #F6FFF9 100%);
+    background: var(--wf-gradient-classroom-screen);
     overflow: hidden;
     gap: clamp(4px, 0.55vh, 7px);
 }
@@ -3696,10 +3846,10 @@ h2 {
 }
 
 .classroom-vocabulary-board-mode-tab-active {
-    background: linear-gradient(180deg, #ffffff 0%, #EFFFFA 100%);
+    background: var(--wf-gradient-hint-panel);
     color: var(--sea-deep);
     font-weight: var(--font-weight-button);
-    box-shadow: 0 2px 8px rgba(7, 59, 76, 0.12);
+    box-shadow: var(--wf-shadow-ink-14);
     cursor: default;
 }
 
@@ -3754,11 +3904,11 @@ h2 {
 }
 
 .classroom-vocabulary-board-size-button-active {
-    background: linear-gradient(180deg, #ffffff 0%, #EFFFFA 100%);
+    background: var(--wf-gradient-hint-panel);
     color: var(--sea-deep);
     font-weight: var(--font-weight-button);
     border-color: rgba(63, 169, 245, 0.45);
-    box-shadow: 0 2px 8px rgba(7, 59, 76, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+    box-shadow: var(--wf-shadow-ink-14), inset 0 0 0 1px rgba(255, 255, 255, 0.65);
 }
 
 .classroom-vocabulary-board-size-button:hover:not(.classroom-vocabulary-board-size-button-active) {
@@ -3965,7 +4115,7 @@ h2 {
     border-radius: var(--vocab-board-card-radius);
     overflow: hidden;
     border: var(--vocab-board-card-border-width) solid var(--color-input-border);
-    background: rgba(255, 255, 255, 0.92);
+    background: var(--wf-color-glass-strong);
     box-shadow: var(--soft-shadow);
     transition: var(--vocab-board-size-transition);
 }
@@ -4019,7 +4169,7 @@ h2 {
     text-align: center;
     word-break: break-word;
     overflow-wrap: anywhere;
-    box-shadow: 0 2px 8px rgba(7, 59, 76, 0.12);
+    box-shadow: var(--wf-shadow-ink-14);
     transition: var(--vocab-board-size-transition);
 }
 
@@ -4030,7 +4180,7 @@ h2 {
     justify-content: center;
     gap: var(--vocab-board-text-gap);
     padding: var(--vocab-board-text-padding);
-    background: rgba(255, 255, 255, 0.92);
+    background: var(--wf-color-glass-strong);
     transition: var(--vocab-board-size-transition);
 }
 
@@ -4140,10 +4290,10 @@ h2 {
 
 #classroomVocabularyBoardScreen .classroom-fullscreen-button:hover:not(:disabled):not(.disabled-button) {
     transform: scale(1.02);
-    background: #EFFFFA;
+    background: var(--wf-foam);
     border-color: rgba(63, 169, 245, 0.45);
     color: var(--color-primary);
-    box-shadow: 0 6px 0 rgba(34, 51, 68, 0.14), 0 12px 24px rgba(7, 59, 76, 0.14);
+    box-shadow: var(--wf-shadow-elevated-aqua);
 }
 
 #classroomVocabularyBoardScreen .classroom-fullscreen-button:active:not(:disabled):not(.disabled-button) {
@@ -4153,7 +4303,7 @@ h2 {
 
 #classroomVocabularyBoardScreen .soft-button:hover:not(:disabled):not(.disabled-button) {
     transform: scale(1.02);
-    box-shadow: var(--shadow-button), 0 7px 0 var(--color-soft-dark), 0 12px 24px rgba(7, 59, 76, 0.14);
+    box-shadow: var(--shadow-button), var(--wf-shadow-elevated-soft);
 }
 
 #classroomVocabularyBoardScreen .soft-button:active:not(:disabled):not(.disabled-button) {
@@ -4273,7 +4423,7 @@ h2 {
 
 .student-choice-back:hover {
     transform: scale(1.02);
-    box-shadow: 0 6px 16px rgba(7, 59, 76, 0.14);
+    box-shadow: var(--wf-shadow-ink-28);
 }
 
 .student-choice-back:active {
