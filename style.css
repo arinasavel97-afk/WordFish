@@ -2395,7 +2395,6 @@ h2 {
 #classroomPresentationScreen,
 #classroomFlashcardsScreen,
 #classroomTextFlashcardsScreen,
-#classroomRandomWordScreen,
 #classroomVocabularyBoardScreen {
     --classroom-button-transition: transform 190ms ease, box-shadow 190ms ease, background-color 190ms ease, border-color 190ms ease;
 }
@@ -2410,7 +2409,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ),
 #classroomActivityMenuScreen :is(
         .green-button,
@@ -2422,7 +2421,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ),
 #classroomNoCardsScreen :is(
         .green-button,
@@ -2439,7 +2438,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ),
 #classroomFlashcardsScreen :is(
         .green-button,
@@ -2451,7 +2450,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ),
 #classroomTextFlashcardsScreen :is(
         .green-button,
@@ -2463,19 +2462,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
-    ),
-#classroomRandomWordScreen :is(
-        .green-button,
-        .soft-button,
-        .classroom-fullscreen-button,
-        .classroom-nav-button,
-        .classroom-back-button,
-        .classroom-toggle-translation-button,
-        .classroom-nav-prev-button,
-        .classroom-nav-next-button,
-        .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ) {
     transition: var(--classroom-button-transition);
     transform: scale(1);
@@ -2492,7 +2479,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ):is(:disabled, .disabled-button),
 #classroomActivityMenuScreen :is(
         .green-button,
@@ -2504,7 +2491,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ):is(:disabled, .disabled-button),
 #classroomPresentationScreen :is(
         .green-button,
@@ -2516,7 +2503,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ):is(:disabled, .disabled-button),
 #classroomFlashcardsScreen :is(
         .green-button,
@@ -2528,7 +2515,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ):is(:disabled, .disabled-button),
 #classroomTextFlashcardsScreen :is(
         .green-button,
@@ -2540,19 +2527,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
-    ):is(:disabled, .disabled-button),
-#classroomRandomWordScreen :is(
-        .green-button,
-        .soft-button,
-        .classroom-fullscreen-button,
-        .classroom-nav-button,
-        .classroom-back-button,
-        .classroom-toggle-translation-button,
-        .classroom-nav-prev-button,
-        .classroom-nav-next-button,
-        .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ):is(:disabled, .disabled-button) {
     opacity: 0.55;
     cursor: not-allowed;
@@ -2563,8 +2538,7 @@ h2 {
 #classroomActivityMenuScreen .green-button:hover:not(:disabled):not(.disabled-button),
 #classroomPresentationScreen .green-button:hover:not(:disabled):not(.disabled-button),
 #classroomFlashcardsScreen .green-button:hover:not(:disabled):not(.disabled-button),
-#classroomTextFlashcardsScreen .green-button:hover:not(:disabled):not(.disabled-button),
-#classroomRandomWordScreen .green-button:hover:not(:disabled):not(.disabled-button) {
+#classroomTextFlashcardsScreen .green-button:hover:not(:disabled):not(.disabled-button) {
     transform: scale(1.02);
     box-shadow: var(--shadow-button), 0 7px 0 var(--color-success-dark), 0 12px 24px rgba(7, 59, 76, 0.16);
 }
@@ -2573,8 +2547,7 @@ h2 {
 #classroomActivityMenuScreen .green-button:active:not(:disabled):not(.disabled-button),
 #classroomPresentationScreen .green-button:active:not(:disabled):not(.disabled-button),
 #classroomFlashcardsScreen .green-button:active:not(:disabled):not(.disabled-button),
-#classroomTextFlashcardsScreen .green-button:active:not(:disabled):not(.disabled-button),
-#classroomRandomWordScreen .green-button:active:not(:disabled):not(.disabled-button) {
+#classroomTextFlashcardsScreen .green-button:active:not(:disabled):not(.disabled-button) {
     transform: scale(0.98);
     box-shadow: var(--shadow-button), 0 2px 0 var(--color-success-dark);
 }
@@ -2584,8 +2557,7 @@ h2 {
 #classroomActivityMenuScreen .soft-button:hover:not(:disabled):not(.disabled-button),
 #classroomPresentationScreen .soft-button:hover:not(:disabled):not(.disabled-button),
 #classroomFlashcardsScreen .soft-button:hover:not(:disabled):not(.disabled-button),
-#classroomTextFlashcardsScreen .soft-button:hover:not(:disabled):not(.disabled-button),
-#classroomRandomWordScreen .soft-button:hover:not(:disabled):not(.disabled-button) {
+#classroomTextFlashcardsScreen .soft-button:hover:not(:disabled):not(.disabled-button) {
     transform: scale(1.02);
     box-shadow: var(--shadow-button), 0 7px 0 var(--color-soft-dark), 0 12px 24px rgba(7, 59, 76, 0.14);
 }
@@ -2595,16 +2567,14 @@ h2 {
 #classroomActivityMenuScreen .soft-button:active:not(:disabled):not(.disabled-button),
 #classroomPresentationScreen .soft-button:active:not(:disabled):not(.disabled-button),
 #classroomFlashcardsScreen .soft-button:active:not(:disabled):not(.disabled-button),
-#classroomTextFlashcardsScreen .soft-button:active:not(:disabled):not(.disabled-button),
-#classroomRandomWordScreen .soft-button:active:not(:disabled):not(.disabled-button) {
+#classroomTextFlashcardsScreen .soft-button:active:not(:disabled):not(.disabled-button) {
     transform: scale(0.98);
     box-shadow: var(--shadow-button), 0 2px 0 var(--color-soft-dark);
 }
 
 #classroomPresentationScreen .classroom-fullscreen-button:hover:not(:disabled):not(.disabled-button),
 #classroomFlashcardsScreen .classroom-fullscreen-button:hover:not(:disabled):not(.disabled-button),
-#classroomTextFlashcardsScreen .classroom-fullscreen-button:hover:not(:disabled):not(.disabled-button),
-#classroomRandomWordScreen .classroom-fullscreen-button:hover:not(:disabled):not(.disabled-button) {
+#classroomTextFlashcardsScreen .classroom-fullscreen-button:hover:not(:disabled):not(.disabled-button) {
     transform: scale(1.02);
     background: #EFFFFA;
     border-color: rgba(63, 169, 245, 0.45);
@@ -2614,8 +2584,7 @@ h2 {
 
 #classroomPresentationScreen .classroom-fullscreen-button:active:not(:disabled):not(.disabled-button),
 #classroomFlashcardsScreen .classroom-fullscreen-button:active:not(:disabled):not(.disabled-button),
-#classroomTextFlashcardsScreen .classroom-fullscreen-button:active:not(:disabled):not(.disabled-button),
-#classroomRandomWordScreen .classroom-fullscreen-button:active:not(:disabled):not(.disabled-button) {
+#classroomTextFlashcardsScreen .classroom-fullscreen-button:active:not(:disabled):not(.disabled-button) {
     transform: scale(0.98);
     box-shadow: 0 2px 0 rgba(34, 51, 68, 0.12);
 }
@@ -2630,7 +2599,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ):focus-visible,
 #classroomActivityMenuScreen :is(
         .green-button,
@@ -2642,7 +2611,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ):focus-visible,
 #classroomPresentationScreen :is(
         .green-button,
@@ -2654,7 +2623,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ):focus-visible,
 #classroomFlashcardsScreen :is(
         .green-button,
@@ -2666,7 +2635,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ):focus-visible,
 #classroomTextFlashcardsScreen :is(
         .green-button,
@@ -2678,19 +2647,7 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
-    ):focus-visible,
-#classroomRandomWordScreen :is(
-        .green-button,
-        .soft-button,
-        .classroom-fullscreen-button,
-        .classroom-nav-button,
-        .classroom-back-button,
-        .classroom-toggle-translation-button,
-        .classroom-nav-prev-button,
-        .classroom-nav-next-button,
-        .classroom-text-flashcard-direction-button,
-        .classroom-random-word-pick-button
+        .classroom-shuffle-button
     ):focus-visible {
     outline: 3px solid rgba(63, 169, 245, 0.55);
     outline-offset: 3px;
@@ -2707,7 +2664,7 @@ h2 {
             .classroom-nav-prev-button,
             .classroom-nav-next-button,
             .classroom-text-flashcard-direction-button,
-            .classroom-random-word-pick-button
+            .classroom-shuffle-button
         ),
     #classroomActivityMenuScreen :is(
             .green-button,
@@ -2719,7 +2676,7 @@ h2 {
             .classroom-nav-prev-button,
             .classroom-nav-next-button,
             .classroom-text-flashcard-direction-button,
-            .classroom-random-word-pick-button
+            .classroom-shuffle-button
         ),
     #classroomPresentationScreen :is(
             .green-button,
@@ -2731,7 +2688,7 @@ h2 {
             .classroom-nav-prev-button,
             .classroom-nav-next-button,
             .classroom-text-flashcard-direction-button,
-            .classroom-random-word-pick-button
+            .classroom-shuffle-button
         ),
     #classroomFlashcardsScreen :is(
             .green-button,
@@ -2743,7 +2700,7 @@ h2 {
             .classroom-nav-prev-button,
             .classroom-nav-next-button,
             .classroom-text-flashcard-direction-button,
-            .classroom-random-word-pick-button
+            .classroom-shuffle-button
         ),
     #classroomTextFlashcardsScreen :is(
             .green-button,
@@ -2755,19 +2712,7 @@ h2 {
             .classroom-nav-prev-button,
             .classroom-nav-next-button,
             .classroom-text-flashcard-direction-button,
-            .classroom-random-word-pick-button
-        ),
-    #classroomRandomWordScreen :is(
-            .green-button,
-            .soft-button,
-            .classroom-fullscreen-button,
-            .classroom-nav-button,
-            .classroom-back-button,
-            .classroom-toggle-translation-button,
-            .classroom-nav-prev-button,
-            .classroom-nav-next-button,
-            .classroom-text-flashcard-direction-button,
-            .classroom-random-word-pick-button
+            .classroom-shuffle-button
         ) {
         transition: background-color 190ms ease, box-shadow 190ms ease, border-color 190ms ease;
         transform: none !important;
@@ -3241,6 +3186,10 @@ h2 {
         width: 100%;
     }
 
+    .classroom-flashcards-footer .classroom-shuffle-button {
+        width: 100%;
+    }
+
     .classroom-flashcard {
         width: 100%;
         height: min(62vh, 480px);
@@ -3405,6 +3354,10 @@ h2 {
         width: 100%;
     }
 
+    .classroom-text-flashcards-footer .classroom-shuffle-button {
+        width: 100%;
+    }
+
     .classroom-text-flashcard {
         width: 100%;
         height: min(62vh, 480px);
@@ -3415,231 +3368,30 @@ h2 {
     }
 }
 
-.classroom-random-word-screen {
-    position: fixed;
-    inset: 0;
-    z-index: 9000;
-    display: none;
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    width: 100%;
-    max-width: none;
-    height: 100vh;
-    height: 100dvh;
-    margin: 0;
-    padding: clamp(12px, 1.8vw, 20px) clamp(16px, 2.5vw, 28px);
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    text-align: center;
-    background:
-        radial-gradient(circle at 12% 10%, rgba(255, 183, 3, 0.18) 0 90px, transparent 92px),
-        radial-gradient(circle at 88% 18%, rgba(63, 169, 245, 0.14) 0 100px, transparent 102px),
-        linear-gradient(180deg, #E9FBFF 0%, #BAF1FF 48%, #F6FFF9 100%);
-    overflow: hidden;
-    gap: clamp(10px, 1.6vh, 16px);
-}
-
-.classroom-random-word-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-md);
-    min-width: 0;
-}
-
-.classroom-random-word-header-text {
-    min-width: 0;
-    text-align: left;
-}
-
-.classroom-random-word-set-name {
-    margin: 0;
-    font-size: clamp(18px, 2.2vw, 24px);
-    font-weight: var(--font-weight-button);
-    color: var(--sea-deep);
-    word-break: break-word;
-}
-
-.classroom-random-word-activity-label {
-    margin: 4px 0 0;
-    font-size: clamp(15px, 1.8vw, 18px);
+.classroom-shuffle-button.classroom-shuffle-button-active {
+    background: var(--color-accent);
+    box-shadow: var(--shadow-button), 0 5px 0 var(--color-accent-dark);
     color: var(--color-text);
 }
 
-.classroom-random-word-header-actions {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: flex-end;
-    gap: var(--space-sm);
-    flex-shrink: 0;
+.classroom-shuffle-button.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button) {
+    background: #FFC933;
 }
 
-.classroom-random-word-main {
-    display: grid;
-    grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
-    gap: clamp(16px, 2vw, 28px);
-    min-height: 0;
-    overflow: hidden;
-    align-items: center;
+.classroom-shuffle-button.classroom-shuffle-button-active:active:not(:disabled):not(.disabled-button) {
+    box-shadow: var(--shadow-button), 0 2px 0 var(--color-accent-dark);
 }
 
-.classroom-random-word-image-column {
-    min-height: 0;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+#classroomFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button) {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-button), 0 7px 0 var(--color-accent-dark), 0 12px 24px rgba(7, 59, 76, 0.14);
 }
 
-.classroom-random-word-image-card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    max-height: 60vh;
-    padding: clamp(12px, 1.8vw, 18px);
-    border-radius: var(--radius-xl);
-    border: 2px solid var(--color-input-border);
-    background: rgba(255, 255, 255, 0.92);
-    box-shadow: var(--soft-shadow);
-    overflow: hidden;
-}
-
-.classroom-random-word-image {
-    display: none;
-    max-width: 100%;
-    max-height: 60vh;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-}
-
-.classroom-random-word-image-card .classroom-image-placeholder {
-    max-height: 60vh;
-}
-
-.classroom-random-word-text-column {
-    min-height: 0;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.classroom-random-word-word-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(12px, 2vh, 20px);
-    width: 100%;
-    max-width: 520px;
-}
-
-.classroom-random-word-english {
-    margin: 0;
-    font-size: clamp(28px, 4.5vw, 52px);
-    font-weight: var(--font-weight-button);
-    color: var(--sea-deep);
-    line-height: 1.15;
-    word-break: break-word;
-}
-
-.classroom-random-word-translation {
-    margin: 0;
-    font-size: clamp(22px, 3.2vw, 36px);
-    color: var(--color-text);
-    line-height: 1.25;
-    word-break: break-word;
-}
-
-.classroom-random-word-english[hidden],
-.classroom-random-word-translation[hidden] {
-    display: none;
-}
-
-.classroom-random-word-reveal-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-sm);
-    width: 100%;
-}
-
-.classroom-random-word-reveal-actions .soft-button {
-    min-width: 148px;
-    min-height: 48px;
-    margin: 0;
-}
-
-.classroom-random-word-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.classroom-random-word-pick-button {
-    min-width: min(100%, 280px);
-    min-height: 52px;
-    margin: 0;
-}
-
-@media (max-width: 900px) {
-    .classroom-random-word-main {
-        grid-template-columns: 1fr;
-        overflow-y: auto;
-        align-content: start;
-        align-items: start;
-    }
-
-    .classroom-random-word-image-column,
-    .classroom-random-word-text-column {
-        height: auto;
-    }
-
-    .classroom-random-word-image-card {
-        max-height: min(42vh, 320px);
-    }
-
-    .classroom-random-word-image {
-        max-height: min(42vh, 320px);
-    }
-
-    .classroom-random-word-image-card .classroom-image-placeholder {
-        max-height: min(42vh, 320px);
-    }
-
-    .classroom-random-word-text-column {
-        justify-content: flex-start;
-    }
-}
-
-@media (max-width: 620px) {
-    .classroom-random-word-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .classroom-random-word-header-text {
-        text-align: center;
-    }
-
-    .classroom-random-word-header-actions {
-        justify-content: stretch;
-    }
-
-    .classroom-random-word-reveal-actions {
-        flex-direction: column;
-    }
-
-    .classroom-random-word-reveal-actions .soft-button,
-    .classroom-random-word-pick-button {
-        width: 100%;
-    }
+#classroomFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:active:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:active:not(:disabled):not(.disabled-button) {
+    transform: scale(0.98);
+    box-shadow: var(--shadow-button), 0 2px 0 var(--color-accent-dark);
 }
 
 .classroom-vocabulary-board-screen {
