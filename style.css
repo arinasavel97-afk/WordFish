@@ -2409,7 +2409,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ),
 #classroomActivityMenuScreen :is(
         .green-button,
@@ -2421,7 +2422,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ),
 #classroomNoCardsScreen :is(
         .green-button,
@@ -2438,7 +2440,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ),
 #classroomFlashcardsScreen :is(
         .green-button,
@@ -2450,7 +2453,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ),
 #classroomTextFlashcardsScreen :is(
         .green-button,
@@ -2462,7 +2466,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ) {
     transition: var(--classroom-button-transition);
     transform: scale(1);
@@ -2479,7 +2484,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ):is(:disabled, .disabled-button),
 #classroomActivityMenuScreen :is(
         .green-button,
@@ -2491,7 +2497,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ):is(:disabled, .disabled-button),
 #classroomPresentationScreen :is(
         .green-button,
@@ -2503,7 +2510,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ):is(:disabled, .disabled-button),
 #classroomFlashcardsScreen :is(
         .green-button,
@@ -2515,7 +2523,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ):is(:disabled, .disabled-button),
 #classroomTextFlashcardsScreen :is(
         .green-button,
@@ -2527,7 +2536,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ):is(:disabled, .disabled-button) {
     opacity: 0.55;
     cursor: not-allowed;
@@ -2599,7 +2609,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ):focus-visible,
 #classroomActivityMenuScreen :is(
         .green-button,
@@ -2611,7 +2622,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ):focus-visible,
 #classroomPresentationScreen :is(
         .green-button,
@@ -2623,7 +2635,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ):focus-visible,
 #classroomFlashcardsScreen :is(
         .green-button,
@@ -2635,7 +2648,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ):focus-visible,
 #classroomTextFlashcardsScreen :is(
         .green-button,
@@ -2647,7 +2661,8 @@ h2 {
         .classroom-nav-prev-button,
         .classroom-nav-next-button,
         .classroom-text-flashcard-direction-button,
-        .classroom-shuffle-button
+        .classroom-shuffle-button,
+        .classroom-loop-button
     ):focus-visible {
     outline: 3px solid rgba(63, 169, 245, 0.55);
     outline-offset: 3px;
@@ -2664,7 +2679,8 @@ h2 {
             .classroom-nav-prev-button,
             .classroom-nav-next-button,
             .classroom-text-flashcard-direction-button,
-            .classroom-shuffle-button
+            .classroom-shuffle-button,
+        .classroom-loop-button
         ),
     #classroomActivityMenuScreen :is(
             .green-button,
@@ -2676,7 +2692,8 @@ h2 {
             .classroom-nav-prev-button,
             .classroom-nav-next-button,
             .classroom-text-flashcard-direction-button,
-            .classroom-shuffle-button
+            .classroom-shuffle-button,
+        .classroom-loop-button
         ),
     #classroomPresentationScreen :is(
             .green-button,
@@ -2688,7 +2705,8 @@ h2 {
             .classroom-nav-prev-button,
             .classroom-nav-next-button,
             .classroom-text-flashcard-direction-button,
-            .classroom-shuffle-button
+            .classroom-shuffle-button,
+        .classroom-loop-button
         ),
     #classroomFlashcardsScreen :is(
             .green-button,
@@ -2700,7 +2718,8 @@ h2 {
             .classroom-nav-prev-button,
             .classroom-nav-next-button,
             .classroom-text-flashcard-direction-button,
-            .classroom-shuffle-button
+            .classroom-shuffle-button,
+        .classroom-loop-button
         ),
     #classroomTextFlashcardsScreen :is(
             .green-button,
@@ -2712,7 +2731,8 @@ h2 {
             .classroom-nav-prev-button,
             .classroom-nav-next-button,
             .classroom-text-flashcard-direction-button,
-            .classroom-shuffle-button
+            .classroom-shuffle-button,
+        .classroom-loop-button
         ) {
         transition: background-color 190ms ease, box-shadow 190ms ease, border-color 190ms ease;
         transform: none !important;
@@ -3186,7 +3206,8 @@ h2 {
         width: 100%;
     }
 
-    .classroom-flashcards-footer .classroom-shuffle-button {
+    .classroom-flashcards-footer .classroom-shuffle-button,
+    .classroom-flashcards-footer .classroom-loop-button {
         width: 100%;
     }
 
@@ -3354,7 +3375,8 @@ h2 {
         width: 100%;
     }
 
-    .classroom-text-flashcards-footer .classroom-shuffle-button {
+    .classroom-text-flashcards-footer .classroom-shuffle-button,
+    .classroom-text-flashcards-footer .classroom-loop-button {
         width: 100%;
     }
 
@@ -3368,28 +3390,35 @@ h2 {
     }
 }
 
-.classroom-shuffle-button.classroom-shuffle-button-active {
+.classroom-shuffle-button.classroom-shuffle-button-active,
+.classroom-loop-button.classroom-loop-button-active {
     background: var(--color-accent);
     box-shadow: var(--shadow-button), 0 5px 0 var(--color-accent-dark);
     color: var(--color-text);
 }
 
-.classroom-shuffle-button.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button) {
+.classroom-shuffle-button.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button),
+.classroom-loop-button.classroom-loop-button-active:hover:not(:disabled):not(.disabled-button) {
     background: #FFC933;
 }
 
-.classroom-shuffle-button.classroom-shuffle-button-active:active:not(:disabled):not(.disabled-button) {
+.classroom-shuffle-button.classroom-shuffle-button-active:active:not(:disabled):not(.disabled-button),
+.classroom-loop-button.classroom-loop-button-active:active:not(:disabled):not(.disabled-button) {
     box-shadow: var(--shadow-button), 0 2px 0 var(--color-accent-dark);
 }
 
 #classroomFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button),
-#classroomTextFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button) {
+#classroomTextFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button),
+#classroomFlashcardsScreen .classroom-loop-button.classroom-loop-button-active:hover:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .classroom-loop-button.classroom-loop-button-active:hover:not(:disabled):not(.disabled-button) {
     transform: scale(1.02);
     box-shadow: var(--shadow-button), 0 7px 0 var(--color-accent-dark), 0 12px 24px rgba(7, 59, 76, 0.14);
 }
 
 #classroomFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:active:not(:disabled):not(.disabled-button),
-#classroomTextFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:active:not(:disabled):not(.disabled-button) {
+#classroomTextFlashcardsScreen .classroom-shuffle-button.classroom-shuffle-button-active:active:not(:disabled):not(.disabled-button),
+#classroomFlashcardsScreen .classroom-loop-button.classroom-loop-button-active:active:not(:disabled):not(.disabled-button),
+#classroomTextFlashcardsScreen .classroom-loop-button.classroom-loop-button-active:active:not(:disabled):not(.disabled-button) {
     transform: scale(0.98);
     box-shadow: var(--shadow-button), 0 2px 0 var(--color-accent-dark);
 }

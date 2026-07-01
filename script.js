@@ -43,6 +43,7 @@ let classroomFlashcardsSetName = "";
 let classroomFlashcardSide = "front";
 let classroomFlashcardsShuffleEnabled = false;
 let classroomFlashcardsShuffledOrder = [];
+let classroomFlashcardsLoopEnabled = false;
 let classroomTextFlashcardsCards = [];
 let classroomTextFlashcardsIndex = 0;
 let classroomTextFlashcardsSetName = "";
@@ -50,6 +51,7 @@ let classroomTextFlashcardSide = "front";
 let classroomTextFlashcardDirection = "translationToEnglish";
 let classroomTextFlashcardsShuffleEnabled = false;
 let classroomTextFlashcardsShuffledOrder = [];
+let classroomTextFlashcardsLoopEnabled = false;
 let classroomVocabularyBoardSetName = "";
 let classroomVocabularyBoardMode = "pictureEnglish";
 let classroomVocabularyBoardCards = [];
@@ -256,7 +258,8 @@ function saveClassroomFlashcardsContext() {
         currentCardIndex: classroomFlashcardsIndex,
         cardSide: classroomFlashcardSide,
         shuffleEnabled: classroomFlashcardsShuffleEnabled,
-        shuffledOrder: classroomFlashcardsShuffledOrder
+        shuffledOrder: classroomFlashcardsShuffledOrder,
+        loopEnabled: classroomFlashcardsLoopEnabled
     }));
 }
 
@@ -289,7 +292,8 @@ function saveClassroomTextFlashcardsContext() {
         cardSide: classroomTextFlashcardSide,
         direction: classroomTextFlashcardDirection,
         shuffleEnabled: classroomTextFlashcardsShuffleEnabled,
-        shuffledOrder: classroomTextFlashcardsShuffledOrder
+        shuffledOrder: classroomTextFlashcardsShuffledOrder,
+        loopEnabled: classroomTextFlashcardsLoopEnabled
     }));
 }
 
@@ -1614,6 +1618,50 @@ function updateClassroomTextFlashcardsShuffleButton() {
     shuffleButton.classList.toggle("classroom-shuffle-button-active", classroomTextFlashcardsShuffleEnabled);
 }
 
+function updateClassroomFlashcardsLoopButton() {
+    const loopButton = document.getElementById("classroomFlashcardsLoopButton");
+
+    if (!loopButton) {
+        return;
+    }
+
+    loopButton.setAttribute("aria-pressed", classroomFlashcardsLoopEnabled ? "true" : "false");
+    loopButton.classList.toggle("classroom-loop-button-active", classroomFlashcardsLoopEnabled);
+}
+
+function updateClassroomTextFlashcardsLoopButton() {
+    const loopButton = document.getElementById("classroomTextFlashcardsLoopButton");
+
+    if (!loopButton) {
+        return;
+    }
+
+    loopButton.setAttribute("aria-pressed", classroomTextFlashcardsLoopEnabled ? "true" : "false");
+    loopButton.classList.toggle("classroom-loop-button-active", classroomTextFlashcardsLoopEnabled);
+}
+
+function toggleClassroomFlashcardsLoop() {
+    if (currentScreenId !== "classroomFlashcardsScreen" || classroomFlashcardsCards.length === 0) {
+        return;
+    }
+
+    classroomFlashcardsLoopEnabled = !classroomFlashcardsLoopEnabled;
+    updateClassroomFlashcardsLoopButton();
+    updateClassroomFlashcardsNav();
+    saveClassroomFlashcardsContext();
+}
+
+function toggleClassroomTextFlashcardsLoop() {
+    if (currentScreenId !== "classroomTextFlashcardsScreen" || classroomTextFlashcardsCards.length === 0) {
+        return;
+    }
+
+    classroomTextFlashcardsLoopEnabled = !classroomTextFlashcardsLoopEnabled;
+    updateClassroomTextFlashcardsLoopButton();
+    updateClassroomTextFlashcardsNav();
+    saveClassroomTextFlashcardsContext();
+}
+
 function toggleClassroomFlashcardsShuffle() {
     if (currentScreenId !== "classroomFlashcardsScreen" || classroomFlashcardsCards.length === 0) {
         return;
@@ -1672,12 +1720,14 @@ function startClassroomFlashcards(set, addToHistory = true) {
     classroomFlashcardSide = "front";
     classroomFlashcardsShuffleEnabled = false;
     classroomFlashcardsShuffledOrder = [];
+    classroomFlashcardsLoopEnabled = false;
     showClassroomFlashcards(addToHistory);
 }
 
 function showClassroomFlashcards(addToHistory = true) {
     displayScreen("classroomFlashcardsScreen", addToHistory);
     updateClassroomFlashcardsShuffleButton();
+    updateClassroomFlashcardsLoopButton();
     renderClassroomFlashcard();
     maybeShowClassroomShortcutsHint("Space Flip Card");
 }
@@ -1748,6 +1798,7 @@ function applyClassroomFlashcardContent(options = {}) {
 
     updateClassroomFlashcardsNav();
     updateClassroomFlashcardsShuffleButton();
+    updateClassroomFlashcardsLoopButton();
     saveClassroomFlashcardsContext();
 }
 
@@ -1773,15 +1824,24 @@ function updateClassroomFlashcardsNav() {
     const prevButton = document.getElementById("classroomFlashcardsPrevButton");
     const nextButton = document.getElementById("classroomFlashcardsNextButton");
     const isFirst = classroomFlashcardsIndex === 0;
-    const isLast = classroomFlashcardsIndex === classroomFlashcardsCards.length - 1;
+    const isLast = classroomFlashcardsIndex >= classroomFlashcardsCards.length - 1;
+    const loopEnabled = classroomFlashcardsLoopEnabled && classroomFlashcardsCards.length > 0;
 
-    prevButton.disabled = isFirst;
-    prevButton.classList.toggle("disabled-button", isFirst);
-    nextButton.textContent = isLast ? "Finish" : "Next →";
+    prevButton.disabled = loopEnabled ? false : isFirst;
+    prevButton.classList.toggle("disabled-button", loopEnabled ? false : isFirst);
+    nextButton.textContent = isLast && !classroomFlashcardsLoopEnabled ? "Finish" : "Next →";
 }
 
 function classroomFlashcardsPrevious() {
+    if (classroomFlashcardsCards.length === 0) {
+        return;
+    }
+
     if (classroomFlashcardsIndex <= 0) {
+        if (classroomFlashcardsLoopEnabled) {
+            classroomFlashcardsIndex = classroomFlashcardsCards.length - 1;
+            renderClassroomFlashcard({ animate: true });
+        }
         return;
     }
 
@@ -1814,7 +1874,15 @@ function isClassroomFlashcardsOnLastCard() {
 }
 
 function classroomFlashcardsAdvance() {
+    if (classroomFlashcardsCards.length === 0) {
+        return;
+    }
+
     if (isClassroomFlashcardsOnLastCard()) {
+        if (classroomFlashcardsLoopEnabled) {
+            classroomFlashcardsIndex = 0;
+            renderClassroomFlashcard({ animate: true });
+        }
         return;
     }
 
@@ -1824,6 +1892,11 @@ function classroomFlashcardsAdvance() {
 
 function classroomFlashcardsNextButtonClick() {
     if (isClassroomFlashcardsOnLastCard()) {
+        if (classroomFlashcardsLoopEnabled) {
+            classroomFlashcardsAdvance();
+            return;
+        }
+
         finishClassroomFlashcards();
         return;
     }
@@ -1888,7 +1961,7 @@ function handleClassroomFlashcardsKeydown(event) {
     if (event.key === "ArrowRight") {
         event.preventDefault();
 
-        if (isClassroomFlashcardsOnLastCard()) {
+        if (isClassroomFlashcardsOnLastCard() && !classroomFlashcardsLoopEnabled) {
             return;
         }
 
@@ -1918,6 +1991,7 @@ function initClassroomFlashcardsControls() {
     const prevButton = document.getElementById("classroomFlashcardsPrevButton");
     const nextButton = document.getElementById("classroomFlashcardsNextButton");
     const shuffleButton = document.getElementById("classroomFlashcardsShuffleButton");
+    const loopButton = document.getElementById("classroomFlashcardsLoopButton");
     const flashcardButton = document.getElementById("classroomFlashcard");
     const fullscreenButton = document.getElementById("classroomFlashcardsFullscreenButton");
     const backButton = document.getElementById("classroomFlashcardsBackButton");
@@ -1958,6 +2032,11 @@ function initClassroomFlashcardsControls() {
         shuffleButton.addEventListener("click", toggleClassroomFlashcardsShuffle);
     }
 
+    if (loopButton && loopButton.dataset.handlerAttached !== "true") {
+        loopButton.dataset.handlerAttached = "true";
+        loopButton.addEventListener("click", toggleClassroomFlashcardsLoop);
+    }
+
     if (document.documentElement.dataset.classroomFlashcardsFullscreenListenerAttached !== "true") {
         document.documentElement.dataset.classroomFlashcardsFullscreenListenerAttached = "true";
         document.addEventListener("fullscreenchange", updateClassroomFlashcardsFullscreenButtonLabel);
@@ -1979,6 +2058,7 @@ function startClassroomTextFlashcards(set, addToHistory = true) {
     classroomTextFlashcardDirection = "translationToEnglish";
     classroomTextFlashcardsShuffleEnabled = false;
     classroomTextFlashcardsShuffledOrder = [];
+    classroomTextFlashcardsLoopEnabled = false;
     showClassroomTextFlashcards(addToHistory);
 }
 
@@ -1986,6 +2066,7 @@ function showClassroomTextFlashcards(addToHistory = true) {
     displayScreen("classroomTextFlashcardsScreen", addToHistory);
     updateClassroomTextFlashcardDirectionButtonLabel();
     updateClassroomTextFlashcardsShuffleButton();
+    updateClassroomTextFlashcardsLoopButton();
     renderClassroomTextFlashcard();
     maybeShowClassroomShortcutsHint("Space Flip Card");
 }
@@ -2067,6 +2148,7 @@ function applyClassroomTextFlashcardContent(options = {}) {
 
     updateClassroomTextFlashcardsNav();
     updateClassroomTextFlashcardsShuffleButton();
+    updateClassroomTextFlashcardsLoopButton();
     saveClassroomTextFlashcardsContext();
 }
 
@@ -2105,15 +2187,24 @@ function updateClassroomTextFlashcardsNav() {
     const prevButton = document.getElementById("classroomTextFlashcardsPrevButton");
     const nextButton = document.getElementById("classroomTextFlashcardsNextButton");
     const isFirst = classroomTextFlashcardsIndex === 0;
-    const isLast = classroomTextFlashcardsIndex === classroomTextFlashcardsCards.length - 1;
+    const isLast = classroomTextFlashcardsIndex >= classroomTextFlashcardsCards.length - 1;
+    const loopEnabled = classroomTextFlashcardsLoopEnabled && classroomTextFlashcardsCards.length > 0;
 
-    prevButton.disabled = isFirst;
-    prevButton.classList.toggle("disabled-button", isFirst);
-    nextButton.textContent = isLast ? "Finish" : "Next →";
+    prevButton.disabled = loopEnabled ? false : isFirst;
+    prevButton.classList.toggle("disabled-button", loopEnabled ? false : isFirst);
+    nextButton.textContent = isLast && !classroomTextFlashcardsLoopEnabled ? "Finish" : "Next →";
 }
 
 function classroomTextFlashcardsPrevious() {
+    if (classroomTextFlashcardsCards.length === 0) {
+        return;
+    }
+
     if (classroomTextFlashcardsIndex <= 0) {
+        if (classroomTextFlashcardsLoopEnabled) {
+            classroomTextFlashcardsIndex = classroomTextFlashcardsCards.length - 1;
+            renderClassroomTextFlashcard({ animate: true });
+        }
         return;
     }
 
@@ -2146,7 +2237,15 @@ function isClassroomTextFlashcardsOnLastCard() {
 }
 
 function classroomTextFlashcardsAdvance() {
+    if (classroomTextFlashcardsCards.length === 0) {
+        return;
+    }
+
     if (isClassroomTextFlashcardsOnLastCard()) {
+        if (classroomTextFlashcardsLoopEnabled) {
+            classroomTextFlashcardsIndex = 0;
+            renderClassroomTextFlashcard({ animate: true });
+        }
         return;
     }
 
@@ -2156,6 +2255,11 @@ function classroomTextFlashcardsAdvance() {
 
 function classroomTextFlashcardsNextButtonClick() {
     if (isClassroomTextFlashcardsOnLastCard()) {
+        if (classroomTextFlashcardsLoopEnabled) {
+            classroomTextFlashcardsAdvance();
+            return;
+        }
+
         finishClassroomTextFlashcards();
         return;
     }
@@ -2220,7 +2324,7 @@ function handleClassroomTextFlashcardsKeydown(event) {
     if (event.key === "ArrowRight") {
         event.preventDefault();
 
-        if (isClassroomTextFlashcardsOnLastCard()) {
+        if (isClassroomTextFlashcardsOnLastCard() && !classroomTextFlashcardsLoopEnabled) {
             return;
         }
 
@@ -2250,6 +2354,7 @@ function initClassroomTextFlashcardsControls() {
     const prevButton = document.getElementById("classroomTextFlashcardsPrevButton");
     const nextButton = document.getElementById("classroomTextFlashcardsNextButton");
     const shuffleButton = document.getElementById("classroomTextFlashcardsShuffleButton");
+    const loopButton = document.getElementById("classroomTextFlashcardsLoopButton");
     const flashcardButton = document.getElementById("classroomTextFlashcard");
     const directionButton = document.getElementById("classroomTextFlashcardDirectionButton");
     const fullscreenButton = document.getElementById("classroomTextFlashcardsFullscreenButton");
@@ -2294,6 +2399,11 @@ function initClassroomTextFlashcardsControls() {
     if (shuffleButton && shuffleButton.dataset.handlerAttached !== "true") {
         shuffleButton.dataset.handlerAttached = "true";
         shuffleButton.addEventListener("click", toggleClassroomTextFlashcardsShuffle);
+    }
+
+    if (loopButton && loopButton.dataset.handlerAttached !== "true") {
+        loopButton.dataset.handlerAttached = "true";
+        loopButton.addEventListener("click", toggleClassroomTextFlashcardsLoop);
     }
 
     if (document.documentElement.dataset.classroomTextFlashcardsFullscreenListenerAttached !== "true") {
@@ -4596,10 +4706,12 @@ async function restoreClassroomTextFlashcardsFromContext(context) {
         classroomTextFlashcardDirection = context.direction === "englishToTranslation"
             ? "englishToTranslation"
             : "translationToEnglish";
+        classroomTextFlashcardsLoopEnabled = !!context.loopEnabled;
 
         displayScreen("classroomTextFlashcardsScreen", false);
         updateClassroomTextFlashcardDirectionButtonLabel();
         updateClassroomTextFlashcardsShuffleButton();
+        updateClassroomTextFlashcardsLoopButton();
         renderClassroomTextFlashcard({ preserveSide: true });
         saveClassroomTextFlashcardsContext();
         return true;
@@ -4687,9 +4799,11 @@ async function restoreClassroomFlashcardsFromContext(context) {
 
         classroomFlashcardsIndex = Math.max(0, Math.min(restoredIndex, flashcardsCards.length - 1));
         classroomFlashcardSide = context.cardSide === "back" ? "back" : "front";
+        classroomFlashcardsLoopEnabled = !!context.loopEnabled;
 
         displayScreen("classroomFlashcardsScreen", false);
         updateClassroomFlashcardsShuffleButton();
+        updateClassroomFlashcardsLoopButton();
         renderClassroomFlashcard({ preserveSide: true });
         saveClassroomFlashcardsContext();
         return true;
