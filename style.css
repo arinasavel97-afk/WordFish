@@ -3647,13 +3647,13 @@ h2 {
     inset: 0;
     z-index: 9000;
     display: none;
-    grid-template-rows: auto auto auto minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
     width: 100%;
     max-width: none;
     height: 100vh;
     height: 100dvh;
     margin: 0;
-    padding: clamp(12px, 1.8vw, 20px) clamp(16px, 2.5vw, 28px);
+    padding: clamp(8px, 1.1vh, 12px) clamp(12px, 1.8vw, 22px);
     border: none;
     border-radius: 0;
     box-shadow: none;
@@ -3663,14 +3663,14 @@ h2 {
         radial-gradient(circle at 88% 18%, rgba(63, 169, 245, 0.14) 0 100px, transparent 102px),
         linear-gradient(180deg, #E9FBFF 0%, #BAF1FF 48%, #F6FFF9 100%);
     overflow: hidden;
-    gap: clamp(10px, 1.6vh, 16px);
+    gap: clamp(4px, 0.55vh, 7px);
 }
 
 .classroom-vocabulary-board-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-md);
+    gap: var(--space-sm);
     min-width: 0;
 }
 
@@ -3681,16 +3681,18 @@ h2 {
 
 .classroom-vocabulary-board-set-name {
     margin: 0;
-    font-size: clamp(18px, 2.2vw, 24px);
+    font-size: clamp(17px, 2vw, 22px);
     font-weight: var(--font-weight-button);
     color: var(--sea-deep);
     word-break: break-word;
+    line-height: 1.15;
 }
 
 .classroom-vocabulary-board-activity-label {
-    margin: 4px 0 0;
-    font-size: clamp(15px, 1.8vw, 18px);
+    margin: 2px 0 0;
+    font-size: clamp(13px, 1.6vw, 16px);
     color: var(--color-text);
+    line-height: 1.2;
 }
 
 .classroom-vocabulary-board-header-actions {
@@ -3702,13 +3704,21 @@ h2 {
     flex-shrink: 0;
 }
 
+.classroom-vocabulary-board-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: clamp(4px, 0.45vh, 6px);
+    min-width: 0;
+}
+
 .classroom-vocabulary-board-mode-control {
     display: flex;
     justify-content: center;
     gap: 0;
     width: min(100%, 560px);
     margin: 0 auto;
-    padding: 4px;
+    padding: 3px;
     border-radius: var(--radius-lg);
     border: 2px solid var(--color-input-border);
     background: rgba(255, 255, 255, 0.75);
@@ -3718,15 +3728,15 @@ h2 {
 .classroom-vocabulary-board-mode-tab {
     flex: 1 1 0;
     min-width: 0;
-    min-height: 48px;
-    padding: 10px 14px;
+    min-height: 40px;
+    padding: 7px 12px;
     border: none;
     border-radius: calc(var(--radius-lg) - 4px);
     background: transparent;
     color: var(--color-text);
-    font-size: clamp(13px, 1.8vw, 16px);
+    font-size: clamp(13px, 1.6vw, 15px);
     font-weight: var(--font-weight-ui);
-    line-height: 1.25;
+    line-height: 1.2;
     cursor: pointer;
 }
 
@@ -3752,11 +3762,11 @@ h2 {
 .classroom-vocabulary-board-size-control {
     display: inline-flex;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
-    gap: var(--space-sm);
-    width: min(100%, 420px);
-    padding: 6px;
+    gap: 6px;
+    width: min(100%, 400px);
+    padding: 3px;
     border-radius: var(--radius-lg);
     border: 2px solid var(--color-input-border);
     background: rgba(255, 255, 255, 0.75);
@@ -3765,8 +3775,8 @@ h2 {
 
 .classroom-vocabulary-board-size-label {
     flex: 0 0 auto;
-    padding: 0 6px;
-    font-size: 14px;
+    padding: 0 4px 0 6px;
+    font-size: 12px;
     font-weight: var(--font-weight-button);
     color: var(--sea-deep);
     text-transform: uppercase;
@@ -3775,24 +3785,25 @@ h2 {
 
 .classroom-vocabulary-board-size-button {
     flex: 1 1 0;
-    min-width: 72px;
-    min-height: 40px;
-    padding: 8px 12px;
-    border: none;
+    min-width: 64px;
+    min-height: 34px;
+    padding: 6px 10px;
+    border: 2px solid transparent;
     border-radius: calc(var(--radius-lg) - 4px);
     background: transparent;
     color: var(--color-text);
-    font-size: clamp(13px, 1.8vw, 15px);
+    font-size: clamp(12px, 1.5vw, 14px);
     font-weight: var(--font-weight-ui);
     cursor: pointer;
-    transition: transform 190ms ease, box-shadow 190ms ease, background-color 190ms ease;
+    transition: transform 190ms ease, box-shadow 190ms ease, background-color 190ms ease, border-color 190ms ease;
 }
 
 .classroom-vocabulary-board-size-button-active {
     background: linear-gradient(180deg, #ffffff 0%, #EFFFFA 100%);
     color: var(--sea-deep);
     font-weight: var(--font-weight-button);
-    box-shadow: 0 2px 8px rgba(7, 59, 76, 0.12);
+    border-color: rgba(63, 169, 245, 0.45);
+    box-shadow: 0 2px 8px rgba(7, 59, 76, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.65);
 }
 
 .classroom-vocabulary-board-size-button:hover:not(.classroom-vocabulary-board-size-button-active) {
@@ -3801,11 +3812,37 @@ h2 {
 
 .classroom-vocabulary-board-main {
     min-height: 0;
+    height: 100%;
     display: block;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: clamp(4px, 0.8vh, 8px) 2px clamp(8px, 1.2vh, 12px);
+    padding: 0 1px 2px;
     -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 960px) {
+    .classroom-vocabulary-board-controls {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(8px, 1vw, 12px);
+    }
+
+    .classroom-vocabulary-board-mode-control {
+        flex: 1 1 auto;
+        width: auto;
+        max-width: min(560px, 58%);
+        margin: 0;
+    }
+
+    .classroom-vocabulary-board-toolbar {
+        flex: 0 0 auto;
+    }
+
+    .classroom-vocabulary-board-size-control {
+        width: auto;
+        min-width: min(100%, 340px);
+    }
 }
 
 .classroom-vocabulary-board-grid {
@@ -3889,6 +3926,30 @@ h2 {
 @media (min-width: 2100px) {
     .classroom-vocabulary-board-grid-size-large {
         grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1800px) {
+    .classroom-vocabulary-board-grid-size-small {
+        grid-template-columns: repeat(9, minmax(0, 1fr));
+    }
+
+    .classroom-vocabulary-board-grid-size-medium {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 2400px) {
+    .classroom-vocabulary-board-grid-size-small {
+        grid-template-columns: repeat(10, minmax(0, 1fr));
+    }
+
+    .classroom-vocabulary-board-grid-size-medium {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+
+    .classroom-vocabulary-board-grid-size-large {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
     }
 }
 
@@ -4058,6 +4119,70 @@ h2 {
     }
 }
 
+#classroomVocabularyBoardScreen:fullscreen {
+    padding: clamp(6px, 0.85vh, 10px) clamp(10px, 1.4vw, 18px);
+    gap: clamp(3px, 0.45vh, 6px);
+}
+
+#classroomVocabularyBoardScreen:fullscreen .classroom-vocabulary-board-set-name {
+    font-size: clamp(16px, 1.8vw, 20px);
+}
+
+#classroomVocabularyBoardScreen:fullscreen .classroom-vocabulary-board-activity-label {
+    margin-top: 1px;
+    font-size: clamp(12px, 1.4vw, 15px);
+}
+
+#classroomVocabularyBoardScreen:fullscreen .classroom-vocabulary-board-mode-tab {
+    min-height: 36px;
+    padding: 6px 10px;
+}
+
+#classroomVocabularyBoardScreen:fullscreen .classroom-vocabulary-board-size-button {
+    min-height: 32px;
+    padding: 5px 9px;
+}
+
+#classroomVocabularyBoardScreen:fullscreen .classroom-vocabulary-board-main {
+    padding-bottom: 4px;
+}
+
+#classroomVocabularyBoardScreen:fullscreen .classroom-vocabulary-board-grid-size-large {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#classroomVocabularyBoardScreen:fullscreen .classroom-vocabulary-board-grid-size-medium {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+#classroomVocabularyBoardScreen:fullscreen .classroom-vocabulary-board-grid-size-small {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+@media (min-width: 1400px) {
+    #classroomVocabularyBoardScreen:fullscreen .classroom-vocabulary-board-grid-size-large {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    #classroomVocabularyBoardScreen:fullscreen .classroom-vocabulary-board-grid-size-medium {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    #classroomVocabularyBoardScreen:fullscreen .classroom-vocabulary-board-grid-size-small {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1900px) {
+    #classroomVocabularyBoardScreen:fullscreen .classroom-vocabulary-board-grid-size-large {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    #classroomVocabularyBoardScreen:fullscreen .classroom-vocabulary-board-grid-size-small {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+}
+
 #classroomVocabularyBoardScreen .classroom-fullscreen-button:hover:not(:disabled):not(.disabled-button) {
     transform: scale(1.02);
     background: #EFFFFA;
@@ -4098,6 +4223,7 @@ h2 {
     .classroom-vocabulary-board-mode-control {
         flex-direction: column;
         width: 100%;
+        max-width: none;
     }
 
     .classroom-vocabulary-board-mode-tab {
@@ -4106,6 +4232,7 @@ h2 {
 
     .classroom-vocabulary-board-size-control {
         width: 100%;
+        flex-wrap: wrap;
     }
 
     .classroom-vocabulary-board-size-button {
