@@ -394,12 +394,17 @@
             >🔤 English → Thai</button>
         </div>
 
-        <main id="classroomVocabularyBoardMain" class="classroom-vocabulary-board-main" role="tabpanel">
-            <div class="classroom-vocabulary-board-placeholder card">
-                <h2 class="classroom-vocabulary-board-placeholder-title">Vocabulary Board</h2>
-                <p id="classroomVocabularyBoardModeLabel" class="classroom-vocabulary-board-placeholder-mode">Picture → English mode</p>
-                <p class="classroom-vocabulary-board-placeholder-note">(Grid implementation coming in Phase 6.6B.)</p>
+        <div class="classroom-vocabulary-board-toolbar">
+            <div class="classroom-vocabulary-board-size-control" role="group" aria-label="Card size">
+                <span class="classroom-vocabulary-board-size-label">Card size</span>
+                <button type="button" class="classroom-vocabulary-board-size-button" data-vocabulary-board-size="small">Small</button>
+                <button type="button" class="classroom-vocabulary-board-size-button" data-vocabulary-board-size="medium">Medium</button>
+                <button type="button" class="classroom-vocabulary-board-size-button" data-vocabulary-board-size="large">Large</button>
             </div>
+        </div>
+
+        <main id="classroomVocabularyBoardMain" class="classroom-vocabulary-board-main" role="tabpanel">
+            <div id="classroomVocabularyBoardGrid" class="classroom-vocabulary-board-grid classroom-vocabulary-board-grid-size-medium" aria-label="Vocabulary board cards"></div>
         </main>
     </div>
 
