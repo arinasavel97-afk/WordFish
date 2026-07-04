@@ -39,35 +39,39 @@ No exaggerated animations.
 
 # Component Groups
 
-WordFish contains exactly four button components.
+WordFish contains exactly six button components.
 
-1. CTA Button
-2. Toolbar Button
-3. Icon Button
-4. Close Button
+1. CTA
+2. Accent CTA
+3. Toolbar
+4. Toggle
+5. Icon
+6. Close
 
 No additional button types should be created.
 
 ---
 
-# CTA Button
+# CTA
 
 Purpose:
 
 Primary actions.
 
-Examples:
+CTA contains four variants:
 
-- Play
-- New Set
-- Copy Link
-- Share
-- Delete
-- Cancel
+- Primary
+- Secondary
+- Danger
+- Neutral
 
 All CTA buttons use exactly the same geometry.
 
 Only colors change.
+
+CTA buttons are NOT Toolbar buttons.
+
+CTA buttons are NOT Toggle buttons.
 
 ---
 
@@ -149,11 +153,13 @@ Main positive action.
 
 Examples
 
-Play
-
-New Set
-
-Copy Link
+- Play
+- New Set
+- Classroom Mode
+- Copy Link
+- Choose Activity
+- Start
+- Next
 
 Gradient
 
@@ -175,7 +181,7 @@ Alternative action.
 
 Examples
 
-Share
+- Share
 
 Gradient
 
@@ -197,9 +203,8 @@ Destructive actions.
 
 Examples
 
-Delete
-
-Delete Forever
+- Delete
+- Delete Forever
 
 Gradient
 
@@ -221,17 +226,58 @@ Secondary utility actions.
 
 Examples
 
-Cancel
-
-Import
-
-Back (outside Classroom)
+- Cancel
+- Import Excel
+- Select
+- Share dialog Close
+- Back to Dashboard
+- Back to Set Picker
+- Previous
 
 Light gray / aqua palette.
 
 ---
 
-# Toolbar Button
+# Accent CTA
+
+Purpose:
+
+Mode selection.
+
+Examples:
+
+- Play with Translation
+- Play with Pictures
+
+Accent CTA uses a warm yellow gradient.
+
+This is NOT a Primary CTA.
+
+This component should later support future game mode buttons.
+
+Accent CTA uses the same geometry as CTA buttons.
+
+Only the color palette differs.
+
+---
+
+## Accent Gradient
+
+Top
+
+Warm yellow (design token)
+
+Bottom
+
+Deeper yellow (design token)
+
+Legacy class today:
+
+`.yellow-button`
+
+---
+
+# Toolbar
 
 Purpose
 
@@ -239,13 +285,8 @@ Header controls inside classroom screens.
 
 Examples
 
-Back
-
-Fullscreen
-
-Shuffle
-
-Loop
+- Back
+- Fullscreen
 
 Toolbar buttons are NOT CTA buttons.
 
@@ -265,6 +306,56 @@ Height
 Border radius
 
 12 px
+
+---
+
+# Toggle
+
+Purpose:
+
+Enable / disable application modes.
+
+Toggle buttons are not CTA buttons.
+
+Toggle buttons are not Toolbar navigation buttons.
+
+Contains two variants.
+
+---
+
+## Icon Toggle
+
+Purpose
+
+Compact header toggles with icon and optional label.
+
+Examples
+
+- Shuffle
+- Loop
+
+Icon Toggle uses Toolbar geometry.
+
+Icon Toggle supports an active state with Primary green gradient when enabled.
+
+---
+
+## Text Toggle
+
+Purpose
+
+Labeled mode toggles in content or footer areas.
+
+Examples
+
+- Show Translation
+- Hide Translation
+
+Text Toggle uses larger layout context than Icon Toggle.
+
+Text Toggle may change label when state changes.
+
+Text Toggle supports an active or pressed-on state when the mode is enabled.
 
 ---
 
@@ -370,6 +461,12 @@ Neutral
 
 Defined by design tokens.
 
+Accent
+
+Warm yellow gradient (mode selection).
+
+Defined by design tokens.
+
 ---
 
 # Motion
@@ -425,10 +522,26 @@ CTA
 .wf-button--neutral
 ```
 
+Accent CTA
+
+```
+.wf-button
+.wf-button--accent
+```
+
 Toolbar
 
 ```
 .wf-toolbar-button
+```
+
+Toggle
+
+```
+.wf-toggle-button
+.wf-toggle-button--icon
+.wf-toggle-button--text
+.wf-toggle-button--active
 ```
 
 Icon

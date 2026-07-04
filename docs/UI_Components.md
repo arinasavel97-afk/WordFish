@@ -71,7 +71,9 @@ docs/Button_System.md
 Includes
 
 - CTA
+- Accent CTA
 - Toolbar
+- Toggle
 - Icon
 - Close
 
@@ -420,7 +422,7 @@ Mascot
 
 Buttons
 
-🟨 In Progress
+🟨 In Progress — CTA, Toolbar, Toggle (Icon), Icon, and Close prototypes complete; Accent CTA and remaining CTA/Toggle Text buttons pending
 
 Cards
 
