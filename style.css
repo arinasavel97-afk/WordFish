@@ -2148,23 +2148,67 @@ h2 {
     }
 }
 
-/* Dashboard Share button — soft purple */
+/* Dashboard Share button — matches Play prototype geometry */
 #savedSetsList .set-actions .share-button,
 #savedSetsList .set-actions button[onclick^="openShareDialog"] {
-    background: #A78BFA;
+    position: relative;
+    overflow: hidden;
+
+    background: linear-gradient(180deg, #B36DE7 0%, #7D3BD9 100%);
+    border: 1px solid rgba(90, 43, 168, 0.28);
+    border-radius: 14px;
+
+    min-height: 48px;
+    font-size: 17px;
+    font-weight: 700;
+
+    box-shadow:
+        0 3px 6px rgba(0, 0, 0, 0.12),
+        0 7px 12px rgba(125, 59, 217, 0.22);
+
     color: #ffffff;
-    box-shadow: var(--shadow-button), 0 5px 0 #7C3AED;
+}
+
+#savedSetsList .set-actions .share-button::before,
+#savedSetsList .set-actions button[onclick^="openShareDialog"]::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 28%;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.28),
+        rgba(255, 255, 255, 0)
+    );
+    pointer-events: none;
+}
+
+#savedSetsList .set-actions .share-button::after,
+#savedSetsList .set-actions button[onclick^="openShareDialog"]::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 22%;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0),
+        rgba(45, 15, 80, 0.18)
+    );
+    pointer-events: none;
 }
 
 #savedSetsList .set-actions .share-button:hover,
 #savedSetsList .set-actions button[onclick^="openShareDialog"]:hover {
-    background: #8B5CF6;
+    background: linear-gradient(180deg, #BB7AED 0%, #8544DE 100%);
+    transform: translateY(-1px);
 }
 
 #savedSetsList .set-actions .share-button:active,
 #savedSetsList .set-actions button[onclick^="openShareDialog"]:active {
-    background: #7C3AED;
-    box-shadow: var(--shadow-button), 0 2px 0 #7C3AED;
+    transform: translateY(2px);
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.10),
+        0 4px 8px rgba(125, 59, 217, 0.18);
 }
 
 /* Dashboard Card Action Layout v2 — icon actions */
