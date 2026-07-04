@@ -4891,7 +4891,10 @@ h2 {
 #shareModal button[onclick="copyShareLinkPlaceholder()"],
 #dashboardClassroomButton,
 #classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"],
-#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"] {
+#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"],
+#classroomPresentationScreen #classroomNextButton,
+#classroomFlashcardsScreen #classroomFlashcardsNextButton,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton {
   position: relative;
   overflow: hidden;
 
@@ -4915,7 +4918,10 @@ h2 {
 #shareModal button[onclick="copyShareLinkPlaceholder()"]::before,
 #dashboardClassroomButton::before,
 #classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]::before,
-#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]::before {
+#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]::before,
+#classroomPresentationScreen #classroomNextButton::before,
+#classroomFlashcardsScreen #classroomFlashcardsNextButton::before,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
@@ -4933,7 +4939,10 @@ h2 {
 #shareModal button[onclick="copyShareLinkPlaceholder()"]::after,
 #dashboardClassroomButton::after,
 #classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]::after,
-#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]::after {
+#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]::after,
+#classroomPresentationScreen #classroomNextButton::after,
+#classroomFlashcardsScreen #classroomFlashcardsNextButton::after,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton::after {
   content: "";
   position: absolute;
   inset: auto 0 0 0;
@@ -4951,7 +4960,10 @@ h2 {
 #shareModal button[onclick="copyShareLinkPlaceholder()"]:hover,
 #dashboardClassroomButton:hover,
 #classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:hover,
-#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:hover {
+#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:hover,
+#classroomPresentationScreen #classroomNextButton:hover,
+#classroomFlashcardsScreen #classroomFlashcardsNextButton:hover,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton:hover {
   background: linear-gradient(180deg, #7BE661 0%, #18B84E 100%);
   transform: translateY(-1px);
 }
@@ -4961,7 +4973,10 @@ h2 {
 #shareModal button[onclick="copyShareLinkPlaceholder()"]:active,
 #dashboardClassroomButton:active,
 #classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:active,
-#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:active {
+#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:active,
+#classroomPresentationScreen #classroomNextButton:active,
+#classroomFlashcardsScreen #classroomFlashcardsNextButton:active,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton:active {
   transform: translateY(2px);
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
