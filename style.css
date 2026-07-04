@@ -4890,7 +4890,8 @@ h2 {
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"],
 #shareModal button[onclick="copyShareLinkPlaceholder()"],
 #dashboardClassroomButton,
-#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"] {
+#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"],
+#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"] {
   position: relative;
   overflow: hidden;
 
@@ -4913,7 +4914,8 @@ h2 {
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::before,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]::before,
 #dashboardClassroomButton::before,
-#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]::before {
+#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]::before,
+#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
@@ -4930,7 +4932,8 @@ h2 {
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::after,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]::after,
 #dashboardClassroomButton::after,
-#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]::after {
+#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]::after,
+#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]::after {
   content: "";
   position: absolute;
   inset: auto 0 0 0;
@@ -4947,7 +4950,8 @@ h2 {
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:hover,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]:hover,
 #dashboardClassroomButton:hover,
-#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:hover {
+#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:hover,
+#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:hover {
   background: linear-gradient(180deg, #7BE661 0%, #18B84E 100%);
   transform: translateY(-1px);
 }
@@ -4956,7 +4960,8 @@ h2 {
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:active,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]:active,
 #dashboardClassroomButton:active,
-#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:active {
+#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:active,
+#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:active {
   transform: translateY(2px);
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
