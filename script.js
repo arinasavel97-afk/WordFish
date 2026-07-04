@@ -977,7 +977,7 @@ function renderDashboard() {
                 <p><span class="small-label">Images:</span> ${imageCount}</p>
 
                 <div class="set-actions">
-                    <button class="green-button" onclick="openPlayChoice('${escapeAttribute(setId)}')"${disabledAttr}>▶️ Play</button>
+                    <button class="green-button" onclick="openPlayChoice('${escapeAttribute(setId)}')"${disabledAttr}>Play</button>
                     <button class="share-button" onclick="openShareDialog('${escapeAttribute(setId)}')"${disabledAttr}>Share</button>
                 </div>
             </div>
