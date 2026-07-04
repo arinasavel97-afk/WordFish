@@ -960,13 +960,13 @@ button:active {
 }
 
 #savedSetsList .set-favorite-button {
-    width: 32px;
-    height: 32px;
-    min-height: 32px;
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
     padding: 0;
     margin: 0;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     background: transparent;
     color: #9CA3AF;
     box-shadow: none;
@@ -983,29 +983,33 @@ button:active {
     height: 18px;
 }
 
-#savedSetsList .set-favorite-button:hover {
-    transform: scale(1.08);
-    cursor: pointer;
+#savedSetsList .set-favorite-button:hover:not(:disabled) {
+    background: rgba(0, 166, 200, 0.08);
+    transform: none;
+}
+
+#savedSetsList .set-favorite-button:active:not(:disabled) {
+    transform: scale(0.96);
 }
 
 #savedSetsList .set-favorite-button.is-favorite {
     color: #F5B301;
 }
 
-#savedSetsList .set-favorite-button.is-favorite:hover {
-    background: rgba(245, 179, 1, 0.12);
+#savedSetsList .set-favorite-button.is-favorite:hover:not(:disabled) {
+    background: rgba(245, 179, 1, 0.14);
 }
 
 #savedSetsList .set-drag-handle {
     position: static;
-    width: 32px;
-    height: 32px;
-    min-height: 32px;
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
     padding: 0;
     margin: 0;
     border: none;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    background: transparent;
     color: #9CA3AF;
     box-shadow: none;
     display: inline-flex;
@@ -1021,14 +1025,14 @@ button:active {
     height: 18px;
 }
 
-#savedSetsList .set-drag-handle:hover {
-    background: rgba(0, 166, 200, 0.12);
+#savedSetsList .set-drag-handle:hover:not(:disabled) {
+    background: rgba(0, 166, 200, 0.08);
     color: var(--sea);
 }
 
-#savedSetsList .set-drag-handle:active {
+#savedSetsList .set-drag-handle:active:not(:disabled) {
     cursor: grabbing;
-    transform: scale(0.98);
+    transform: scale(0.96);
 }
 
 #savedSetsList .set-card-dragging {
@@ -2227,7 +2231,7 @@ h2 {
     padding: 0;
     margin: 0;
     border: none;
-    border-radius: var(--radius-button);
+    border-radius: 12px;
     background: transparent;
     color: #6B7280;
     box-shadow: none;
@@ -2235,7 +2239,7 @@ h2 {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
 #savedSetsList .set-icon-button svg {
@@ -2247,12 +2251,12 @@ h2 {
     transform: none;
 }
 
-#savedSetsList .set-icon-edit:hover {
-    background: #F3F4F6;
+#savedSetsList .set-icon-edit:hover:not(:disabled) {
+    background: rgba(0, 166, 200, 0.08);
     color: #374151;
 }
 
-#savedSetsList .set-icon-delete:hover {
+#savedSetsList .set-icon-delete:hover:not(:disabled) {
     background: #FEE2E2;
     color: #DC2626;
 }
@@ -2271,16 +2275,16 @@ h2 {
     transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
-#savedSetsList .set-icon-export:hover {
-    background: rgba(0, 166, 200, 0.12);
+#savedSetsList .set-icon-export:hover:not(:disabled) {
+    background: rgba(0, 166, 200, 0.08);
     color: var(--sea);
-    transform: scale(1.08);
+    transform: none;
     cursor: pointer;
 }
 
-#savedSetsList .set-icon-restore:hover {
+#savedSetsList .set-icon-restore:hover:not(:disabled) {
     background: rgba(95, 208, 133, 0.15);
-    color: var(--color-success);
+    color: #16AE4A;
 }
 
 #savedSetsList .set-card-trash-topline {
@@ -2293,9 +2297,16 @@ h2 {
     margin: 0;
 }
 
-#savedSetsList .set-icon-button:active {
+#savedSetsList .set-icon-button:active:not(:disabled) {
     transform: scale(0.96);
     box-shadow: none;
+}
+
+#savedSetsList .set-favorite-button:focus-visible,
+#savedSetsList .set-drag-handle:focus-visible,
+#savedSetsList .set-icon-button:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
 }
 
 /* Delete confirmation modal */
