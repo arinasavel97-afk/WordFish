@@ -5349,3 +5349,76 @@ h2 {
   outline: 2px solid var(--wf-color-aqua-outline);
   outline-offset: 2px;
 }
+
+/* Classroom Fullscreen button — official Toolbar Button style */
+#classroomPresentationScreen #classroomFullscreenButton,
+#classroomFlashcardsScreen #classroomFlashcardsFullscreenButton,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsFullscreenButton,
+#classroomVocabularyBoardScreen #classroomVocabularyBoardFullscreenButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0;
+  margin: 0;
+
+  background: #ffffff;
+  border: 1px solid rgba(120, 190, 215, 0.35);
+  border-radius: 12px;
+
+  color: #073B4C;
+
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+#classroomPresentationScreen #classroomFullscreenButton > span,
+#classroomFlashcardsScreen #classroomFlashcardsFullscreenButton > span,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsFullscreenButton > span,
+#classroomVocabularyBoardScreen #classroomVocabularyBoardFullscreenButton > span {
+  display: none;
+}
+
+#classroomPresentationScreen #classroomFullscreenButton svg,
+#classroomFlashcardsScreen #classroomFlashcardsFullscreenButton svg,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsFullscreenButton svg,
+#classroomVocabularyBoardScreen #classroomVocabularyBoardFullscreenButton svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+#classroomPresentationScreen #classroomFullscreenButton:hover:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsFullscreenButton:hover:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsFullscreenButton:hover:not(:disabled),
+#classroomVocabularyBoardScreen #classroomVocabularyBoardFullscreenButton:hover:not(:disabled) {
+  background: #f8fcff;
+  border-color: rgba(120, 190, 215, 0.55);
+  transform: translateY(-1px);
+}
+
+#classroomPresentationScreen #classroomFullscreenButton:active:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsFullscreenButton:active:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsFullscreenButton:active:not(:disabled),
+#classroomVocabularyBoardScreen #classroomVocabularyBoardFullscreenButton:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+#classroomPresentationScreen #classroomFullscreenButton:focus-visible,
+#classroomFlashcardsScreen #classroomFlashcardsFullscreenButton:focus-visible,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsFullscreenButton:focus-visible,
+#classroomVocabularyBoardScreen #classroomVocabularyBoardFullscreenButton:focus-visible {
+  outline: 2px solid var(--wf-color-aqua-outline);
+  outline-offset: 2px;
+}
