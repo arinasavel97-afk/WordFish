@@ -1910,14 +1910,42 @@ h2 {
     position: absolute;
     top: 12px;
     right: 12px;
-    width: 44px;
-    height: 44px;
-    min-height: 44px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
     padding: 0;
     margin: 0;
-    background: var(--wf-foam);
-    color: var(--ink);
-    box-shadow: 0 4px 0 #9BD9E2;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #073B4C;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.modal-close:hover {
+    background: rgba(0, 166, 200, 0.08);
+    transform: none;
+    box-shadow: none;
+}
+
+.modal-close:active {
+    transform: scale(0.96);
+    box-shadow: none;
+}
+
+.modal-close:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
 }
 
 @media (max-width: 620px) {
