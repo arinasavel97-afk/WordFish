@@ -5217,6 +5217,64 @@ h2 {
     0 4px 8px rgba(22, 174, 74, 0.18);
 }
 
+/* Share modal text Close button — matches Neutral CTA prototype */
+#shareModal button[onclick="closeShareDialog()"]:not(.modal-close) {
+  position: relative;
+  overflow: hidden;
+
+  background: linear-gradient(180deg, #FFFFFF 0%, #EAF7FF 100%);
+  border: 1px solid rgba(120, 190, 215, 0.45);
+  border-radius: 14px;
+
+  min-height: 48px;
+  font-size: 17px;
+  font-weight: 700;
+
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.12),
+    0 7px 12px rgba(120, 190, 215, 0.18);
+
+  color: #073B4C;
+}
+
+#shareModal button[onclick="closeShareDialog()"]:not(.modal-close)::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 28%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22),
+    rgba(255, 255, 255, 0)
+  );
+  pointer-events: none;
+}
+
+#shareModal button[onclick="closeShareDialog()"]:not(.modal-close)::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 22%;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0),
+    rgba(7, 59, 76, 0.08)
+  );
+  pointer-events: none;
+}
+
+#shareModal button[onclick="closeShareDialog()"]:not(.modal-close):hover {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F0FAFF 100%);
+  transform: translateY(-1px);
+}
+
+#shareModal button[onclick="closeShareDialog()"]:not(.modal-close):active {
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.10),
+    0 4px 8px rgba(120, 190, 215, 0.14);
+}
+
 /* Dashboard Classroom Mode button — matches Primary CTA prototype */
 #dashboardClassroomButton {
   position: relative;
