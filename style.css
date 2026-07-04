@@ -5293,3 +5293,59 @@ h2 {
     0 2px 4px rgba(0, 0, 0, 0.10),
     0 4px 8px rgba(120, 190, 215, 0.14);
 }
+
+/* Classroom Back button — official Toolbar Button style */
+#classroomPresentationScreen #classroomBackToPickerButton,
+#classroomFlashcardsScreen #classroomFlashcardsBackButton,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsBackButton,
+#classroomVocabularyBoardScreen #classroomVocabularyBoardBackButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 40px;
+  min-height: 40px;
+  padding: 0 12px;
+  margin: 0;
+
+  background: #ffffff;
+  border: 1px solid rgba(120, 190, 215, 0.35);
+  border-radius: 12px;
+
+  color: #073B4C;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+#classroomPresentationScreen #classroomBackToPickerButton:hover:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsBackButton:hover:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsBackButton:hover:not(:disabled),
+#classroomVocabularyBoardScreen #classroomVocabularyBoardBackButton:hover:not(:disabled) {
+  background: #f8fcff;
+  transform: translateY(-1px);
+}
+
+#classroomPresentationScreen #classroomBackToPickerButton:active:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsBackButton:active:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsBackButton:active:not(:disabled),
+#classroomVocabularyBoardScreen #classroomVocabularyBoardBackButton:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+#classroomPresentationScreen #classroomBackToPickerButton:focus-visible,
+#classroomFlashcardsScreen #classroomFlashcardsBackButton:focus-visible,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsBackButton:focus-visible,
+#classroomVocabularyBoardScreen #classroomVocabularyBoardBackButton:focus-visible {
+  outline: 2px solid var(--wf-color-aqua-outline);
+  outline-offset: 2px;
+}
