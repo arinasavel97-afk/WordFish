@@ -5422,3 +5422,88 @@ h2 {
   outline: 2px solid var(--wf-color-aqua-outline);
   outline-offset: 2px;
 }
+
+/* Classroom Shuffle / Loop — official Toolbar Toggle style */
+#classroomFlashcardsScreen #classroomFlashcardsShuffleButton,
+#classroomFlashcardsScreen #classroomFlashcardsLoopButton,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 40px;
+  min-height: 40px;
+  padding: 0 12px;
+  margin: 0;
+
+  background: #ffffff;
+  border: 1px solid rgba(120, 190, 215, 0.35);
+  border-radius: 12px;
+
+  color: #073B4C;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 180ms ease-out,
+    box-shadow 180ms ease-out,
+    background 180ms ease-out,
+    border-color 180ms ease-out,
+    color 180ms ease-out;
+}
+
+#classroomFlashcardsScreen #classroomFlashcardsShuffleButton:hover:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsLoopButton:hover:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton:hover:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton:hover:not(:disabled) {
+  background: #f8fcff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.10);
+}
+
+#classroomFlashcardsScreen #classroomFlashcardsShuffleButton:active:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsLoopButton:active:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton:active:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+#classroomFlashcardsScreen #classroomFlashcardsShuffleButton:focus-visible,
+#classroomFlashcardsScreen #classroomFlashcardsLoopButton:focus-visible,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton:focus-visible,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton:focus-visible {
+  outline: 2px solid var(--wf-color-aqua-outline);
+  outline-offset: 2px;
+}
+
+#classroomFlashcardsScreen #classroomFlashcardsShuffleButton.classroom-shuffle-button-active,
+#classroomFlashcardsScreen #classroomFlashcardsLoopButton.classroom-loop-button-active,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.classroom-shuffle-button-active,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.classroom-loop-button-active {
+  background: linear-gradient(180deg, #75DC58 0%, #16AE4A 100%);
+  border-color: rgba(10, 120, 45, 0.28);
+  color: #ffffff;
+}
+
+#classroomFlashcardsScreen #classroomFlashcardsShuffleButton.classroom-shuffle-button-active:hover:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsLoopButton.classroom-loop-button-active:hover:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.classroom-shuffle-button-active:hover:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.classroom-loop-button-active:hover:not(:disabled) {
+  background: linear-gradient(180deg, #7BE661 0%, #18B84E 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(22, 174, 74, 0.18);
+}
+
+#classroomFlashcardsScreen #classroomFlashcardsShuffleButton.classroom-shuffle-button-active:active:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsLoopButton.classroom-loop-button-active:active:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.classroom-shuffle-button-active:active:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.classroom-loop-button-active:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(22, 174, 74, 0.12);
+}
