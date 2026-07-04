@@ -4885,8 +4885,12 @@ h2 {
     }
 }
 
-/* Dashboard Play button experiment */
-#savedSetsList .set-actions button[onclick^="openPlayChoice"] {
+/* CTA Primary prototype — shared selectors */
+#savedSetsList .set-actions button[onclick^="openPlayChoice"],
+#dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"],
+#shareModal button[onclick="copyShareLinkPlaceholder()"],
+#dashboardClassroomButton,
+#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"] {
   position: relative;
   overflow: hidden;
 
@@ -4905,8 +4909,11 @@ h2 {
   color: #ffffff;
 }
 
-/* top light strip */
-#savedSetsList .set-actions button[onclick^="openPlayChoice"]::before {
+#savedSetsList .set-actions button[onclick^="openPlayChoice"]::before,
+#dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::before,
+#shareModal button[onclick="copyShareLinkPlaceholder()"]::before,
+#dashboardClassroomButton::before,
+#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
@@ -4919,8 +4926,11 @@ h2 {
   pointer-events: none;
 }
 
-/* bottom dark shade */
-#savedSetsList .set-actions button[onclick^="openPlayChoice"]::after {
+#savedSetsList .set-actions button[onclick^="openPlayChoice"]::after,
+#dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::after,
+#shareModal button[onclick="copyShareLinkPlaceholder()"]::after,
+#dashboardClassroomButton::after,
+#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]::after {
   content: "";
   position: absolute;
   inset: auto 0 0 0;
@@ -4933,70 +4943,20 @@ h2 {
   pointer-events: none;
 }
 
-#savedSetsList .set-actions button[onclick^="openPlayChoice"]:hover {
+#savedSetsList .set-actions button[onclick^="openPlayChoice"]:hover,
+#dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:hover,
+#shareModal button[onclick="copyShareLinkPlaceholder()"]:hover,
+#dashboardClassroomButton:hover,
+#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:hover {
   background: linear-gradient(180deg, #7BE661 0%, #18B84E 100%);
   transform: translateY(-1px);
 }
 
-#savedSetsList .set-actions button[onclick^="openPlayChoice"]:active {
-  transform: translateY(2px);
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.10),
-    0 4px 8px rgba(22, 174, 74, 0.18);
-}
-
-/* Dashboard New Set button — matches Play prototype */
-#dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"] {
-  position: relative;
-  overflow: hidden;
-
-  background: linear-gradient(180deg, #75DC58 0%, #16AE4A 100%);
-  border: 1px solid rgba(10, 120, 45, 0.28);
-  border-radius: 14px;
-
-  min-height: 48px;
-  font-size: 17px;
-  font-weight: 700;
-
-  box-shadow:
-    0 3px 6px rgba(0, 0, 0, 0.12),
-    0 7px 12px rgba(22, 174, 74, 0.22);
-
-  color: #ffffff;
-}
-
-#dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 28%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.28),
-    rgba(255, 255, 255, 0)
-  );
-  pointer-events: none;
-}
-
-#dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 22%;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0),
-    rgba(0, 70, 30, 0.18)
-  );
-  pointer-events: none;
-}
-
-#dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:hover {
-  background: linear-gradient(180deg, #7BE661 0%, #18B84E 100%);
-  transform: translateY(-1px);
-}
-
-#dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:active {
+#savedSetsList .set-actions button[onclick^="openPlayChoice"]:active,
+#dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:active,
+#shareModal button[onclick="copyShareLinkPlaceholder()"]:active,
+#dashboardClassroomButton:active,
+#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:active {
   transform: translateY(2px);
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
@@ -5182,122 +5142,6 @@ h2 {
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
     0 4px 8px rgba(120, 190, 215, 0.14);
-}
-
-/* Share modal Copy Link button — matches Primary CTA prototype */
-#shareModal button[onclick="copyShareLinkPlaceholder()"] {
-  position: relative;
-  overflow: hidden;
-
-  background: linear-gradient(180deg, #75DC58 0%, #16AE4A 100%);
-  border: 1px solid rgba(10, 120, 45, 0.28);
-  border-radius: 14px;
-
-  min-height: 48px;
-  font-size: 17px;
-  font-weight: 700;
-
-  box-shadow:
-    0 3px 6px rgba(0, 0, 0, 0.12),
-    0 7px 12px rgba(22, 174, 74, 0.22);
-
-  color: #ffffff;
-}
-
-#shareModal button[onclick="copyShareLinkPlaceholder()"]::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 28%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.28),
-    rgba(255, 255, 255, 0)
-  );
-  pointer-events: none;
-}
-
-#shareModal button[onclick="copyShareLinkPlaceholder()"]::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 22%;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0),
-    rgba(0, 70, 30, 0.18)
-  );
-  pointer-events: none;
-}
-
-#shareModal button[onclick="copyShareLinkPlaceholder()"]:hover {
-  background: linear-gradient(180deg, #7BE661 0%, #18B84E 100%);
-  transform: translateY(-1px);
-}
-
-#shareModal button[onclick="copyShareLinkPlaceholder()"]:active {
-  transform: translateY(2px);
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.10),
-    0 4px 8px rgba(22, 174, 74, 0.18);
-}
-
-/* Dashboard Classroom Mode button — matches Primary CTA prototype */
-#dashboardClassroomButton {
-  position: relative;
-  overflow: hidden;
-
-  background: linear-gradient(180deg, #75DC58 0%, #16AE4A 100%);
-  border: 1px solid rgba(10, 120, 45, 0.28);
-  border-radius: 14px;
-
-  min-height: 48px;
-  font-size: 17px;
-  font-weight: 700;
-
-  box-shadow:
-    0 3px 6px rgba(0, 0, 0, 0.12),
-    0 7px 12px rgba(22, 174, 74, 0.22);
-
-  color: #ffffff;
-}
-
-#dashboardClassroomButton::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 28%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.28),
-    rgba(255, 255, 255, 0)
-  );
-  pointer-events: none;
-}
-
-#dashboardClassroomButton::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 22%;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0),
-    rgba(0, 70, 30, 0.18)
-  );
-  pointer-events: none;
-}
-
-#dashboardClassroomButton:hover {
-  background: linear-gradient(180deg, #7BE661 0%, #18B84E 100%);
-  transform: translateY(-1px);
-}
-
-#dashboardClassroomButton:active {
-  transform: translateY(2px);
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.10),
-    0 4px 8px rgba(22, 174, 74, 0.18);
 }
 
 /* Classroom Back button — official Toolbar Button style */
