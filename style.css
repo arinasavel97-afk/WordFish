@@ -5079,7 +5079,10 @@ h2 {
 #dashboardScreen .dashboard-primary-actions button[onclick="openExcelImportPicker()"],
 #dashboardSelectButton,
 #classroomPickerScreen button[onclick="returnToDashboardFromClassroom()"],
-#classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"] {
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"],
+#classroomPresentationScreen #classroomPrevButton,
+#classroomFlashcardsScreen #classroomFlashcardsPrevButton,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton {
   position: relative;
   overflow: hidden;
 
@@ -5105,7 +5108,10 @@ h2 {
 #dashboardScreen .dashboard-primary-actions button[onclick="openExcelImportPicker()"]::before,
 #dashboardSelectButton::before,
 #classroomPickerScreen button[onclick="returnToDashboardFromClassroom()"]::before,
-#classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]::before {
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]::before,
+#classroomPresentationScreen #classroomPrevButton::before,
+#classroomFlashcardsScreen #classroomFlashcardsPrevButton::before,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
@@ -5125,7 +5131,10 @@ h2 {
 #dashboardScreen .dashboard-primary-actions button[onclick="openExcelImportPicker()"]::after,
 #dashboardSelectButton::after,
 #classroomPickerScreen button[onclick="returnToDashboardFromClassroom()"]::after,
-#classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]::after {
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]::after,
+#classroomPresentationScreen #classroomPrevButton::after,
+#classroomFlashcardsScreen #classroomFlashcardsPrevButton::after,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton::after {
   content: "";
   position: absolute;
   inset: auto 0 0 0;
@@ -5145,7 +5154,10 @@ h2 {
 #dashboardScreen .dashboard-primary-actions button[onclick="openExcelImportPicker()"]:hover,
 #dashboardSelectButton:hover,
 #classroomPickerScreen button[onclick="returnToDashboardFromClassroom()"]:hover,
-#classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]:hover {
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]:hover,
+#classroomPresentationScreen #classroomPrevButton:hover,
+#classroomFlashcardsScreen #classroomFlashcardsPrevButton:hover,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton:hover {
   background: linear-gradient(180deg, #FFFFFF 0%, #F0FAFF 100%);
   transform: translateY(-1px);
 }
@@ -5157,7 +5169,10 @@ h2 {
 #dashboardScreen .dashboard-primary-actions button[onclick="openExcelImportPicker()"]:active,
 #dashboardSelectButton:active,
 #classroomPickerScreen button[onclick="returnToDashboardFromClassroom()"]:active,
-#classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]:active {
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]:active,
+#classroomPresentationScreen #classroomPrevButton:active,
+#classroomFlashcardsScreen #classroomFlashcardsPrevButton:active,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton:active {
   transform: translateY(2px);
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
