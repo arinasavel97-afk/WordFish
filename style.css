@@ -4983,6 +4983,70 @@ h2 {
     0 4px 8px rgba(22, 174, 74, 0.18);
 }
 
+/* CTA Accent prototype — shared selectors */
+.accent-cta {
+  position: relative;
+  overflow: hidden;
+
+  background: linear-gradient(180deg, #FFD45B 0%, #F2A51F 100%);
+  border: 1px solid rgba(160, 100, 10, 0.35);
+  border-radius: 14px;
+
+  min-height: 48px;
+  font-size: 17px;
+  font-weight: 700;
+
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.12),
+    0 7px 12px rgba(242, 165, 31, 0.22);
+
+  color: #073B4C;
+
+  transition:
+    transform 180ms ease-out,
+    box-shadow 180ms ease-out,
+    background 180ms ease-out,
+    border-color 180ms ease-out;
+}
+
+.accent-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 28%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.20),
+    rgba(255, 255, 255, 0)
+  );
+  pointer-events: none;
+}
+
+.accent-cta::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 22%;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0),
+    rgba(140, 80, 0, 0.14)
+  );
+  pointer-events: none;
+}
+
+.accent-cta:hover {
+  background: linear-gradient(180deg, #FFE06A 0%, #F5AD28 100%);
+  transform: translateY(-1px);
+}
+
+.accent-cta:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.10),
+    0 4px 8px rgba(242, 165, 31, 0.18);
+}
+
 /* Main Delete button — matches CTA prototype (text buttons only) */
 #dashboardBulkDeleteButton,
 #dashboardBulkDeleteForeverButton,
