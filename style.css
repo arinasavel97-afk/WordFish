@@ -4963,3 +4963,91 @@ h2 {
     0 2px 4px rgba(0, 0, 0, 0.10),
     0 4px 8px rgba(22, 174, 74, 0.18);
 }
+
+/* Main Delete button — matches CTA prototype (text buttons only) */
+#dashboardBulkDeleteButton,
+#dashboardBulkDeleteForeverButton,
+#deleteConfirmActionButton,
+#savedSetsList .set-actions-trash button.red-button,
+#savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"],
+#cardsList .word-card-header button.red-button,
+#cardsList .word-card-header button[onclick^="deleteWord"] {
+  position: relative;
+  overflow: hidden;
+
+  background: linear-gradient(180deg, #FA574D 0%, #EC2B2D 100%);
+  border: 1px solid rgba(140, 15, 20, 0.28);
+  border-radius: 14px;
+
+  min-height: 48px;
+  font-size: 17px;
+  font-weight: 700;
+
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.12),
+    0 7px 12px rgba(236, 43, 45, 0.22);
+
+  color: #ffffff;
+}
+
+#dashboardBulkDeleteButton::before,
+#dashboardBulkDeleteForeverButton::before,
+#deleteConfirmActionButton::before,
+#savedSetsList .set-actions-trash button.red-button::before,
+#savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"]::before,
+#cardsList .word-card-header button.red-button::before,
+#cardsList .word-card-header button[onclick^="deleteWord"]::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 28%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.28),
+    rgba(255, 255, 255, 0)
+  );
+  pointer-events: none;
+}
+
+#dashboardBulkDeleteButton::after,
+#dashboardBulkDeleteForeverButton::after,
+#deleteConfirmActionButton::after,
+#savedSetsList .set-actions-trash button.red-button::after,
+#savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"]::after,
+#cardsList .word-card-header button.red-button::after,
+#cardsList .word-card-header button[onclick^="deleteWord"]::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 22%;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0),
+    rgba(80, 10, 15, 0.18)
+  );
+  pointer-events: none;
+}
+
+#dashboardBulkDeleteButton:not(:disabled):hover,
+#dashboardBulkDeleteForeverButton:not(:disabled):hover,
+#deleteConfirmActionButton:not(:disabled):hover,
+#savedSetsList .set-actions-trash button.red-button:not(:disabled):hover,
+#savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"]:not(:disabled):hover,
+#cardsList .word-card-header button.red-button:not(:disabled):hover,
+#cardsList .word-card-header button[onclick^="deleteWord"]:not(:disabled):hover {
+  background: linear-gradient(180deg, #FC6860 0%, #EF2E30 100%);
+  transform: translateY(-1px);
+}
+
+#dashboardBulkDeleteButton:not(:disabled):active,
+#dashboardBulkDeleteForeverButton:not(:disabled):active,
+#deleteConfirmActionButton:not(:disabled):active,
+#savedSetsList .set-actions-trash button.red-button:not(:disabled):active,
+#savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"]:not(:disabled):active,
+#cardsList .word-card-header button.red-button:not(:disabled):active,
+#cardsList .word-card-header button[onclick^="deleteWord"]:not(:disabled):active {
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.10),
+    0 4px 8px rgba(236, 43, 45, 0.18);
+}
