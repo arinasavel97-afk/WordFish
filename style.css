@@ -4983,6 +4983,22 @@ h2 {
     0 4px 8px rgba(22, 174, 74, 0.18);
 }
 
+/* Classroom Primary CTA — override legacy green-button hover shadow */
+#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:hover:not(:disabled):not(.disabled-button),
+#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:hover:not(:disabled):not(.disabled-button) {
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.12),
+    0 7px 12px rgba(22, 174, 74, 0.22);
+}
+
+#classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:active:not(:disabled):not(.disabled-button),
+#classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:active:not(:disabled):not(.disabled-button) {
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.10),
+    0 4px 8px rgba(22, 174, 74, 0.18);
+}
+
 /* CTA Accent prototype — shared selectors */
 .accent-cta {
   position: relative;
@@ -5054,7 +5070,8 @@ h2 {
 #savedSetsList .set-actions-trash button.red-button,
 #savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"],
 #cardsList .word-card-header button.red-button,
-#cardsList .word-card-header button[onclick^="deleteWord"] {
+#cardsList .word-card-header button[onclick^="deleteWord"],
+#settingsModal .settings-logout-button {
   position: relative;
   overflow: hidden;
 
@@ -5079,7 +5096,8 @@ h2 {
 #savedSetsList .set-actions-trash button.red-button::before,
 #savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"]::before,
 #cardsList .word-card-header button.red-button::before,
-#cardsList .word-card-header button[onclick^="deleteWord"]::before {
+#cardsList .word-card-header button[onclick^="deleteWord"]::before,
+#settingsModal .settings-logout-button::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
@@ -5098,7 +5116,8 @@ h2 {
 #savedSetsList .set-actions-trash button.red-button::after,
 #savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"]::after,
 #cardsList .word-card-header button.red-button::after,
-#cardsList .word-card-header button[onclick^="deleteWord"]::after {
+#cardsList .word-card-header button[onclick^="deleteWord"]::after,
+#settingsModal .settings-logout-button::after {
   content: "";
   position: absolute;
   inset: auto 0 0 0;
@@ -5117,7 +5136,8 @@ h2 {
 #savedSetsList .set-actions-trash button.red-button:not(:disabled):hover,
 #savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"]:not(:disabled):hover,
 #cardsList .word-card-header button.red-button:not(:disabled):hover,
-#cardsList .word-card-header button[onclick^="deleteWord"]:not(:disabled):hover {
+#cardsList .word-card-header button[onclick^="deleteWord"]:not(:disabled):hover,
+#settingsModal .settings-logout-button:not(:disabled):hover {
   background: linear-gradient(180deg, #FC6860 0%, #EF2E30 100%);
   transform: translateY(-1px);
 }
@@ -5128,7 +5148,8 @@ h2 {
 #savedSetsList .set-actions-trash button.red-button:not(:disabled):active,
 #savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"]:not(:disabled):active,
 #cardsList .word-card-header button.red-button:not(:disabled):active,
-#cardsList .word-card-header button[onclick^="deleteWord"]:not(:disabled):active {
+#cardsList .word-card-header button[onclick^="deleteWord"]:not(:disabled):active,
+#settingsModal .settings-logout-button:not(:disabled):active {
   transform: translateY(2px);
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
@@ -5146,7 +5167,8 @@ h2 {
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"],
 #classroomPresentationScreen #classroomPrevButton,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton,
-#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton,
+#settingsModal .settings-close-button {
   position: relative;
   overflow: hidden;
 
@@ -5175,7 +5197,8 @@ h2 {
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]::before,
 #classroomPresentationScreen #classroomPrevButton::before,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton::before,
-#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton::before {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton::before,
+#settingsModal .settings-close-button::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
@@ -5198,7 +5221,8 @@ h2 {
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]::after,
 #classroomPresentationScreen #classroomPrevButton::after,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton::after,
-#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton::after {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton::after,
+#settingsModal .settings-close-button::after {
   content: "";
   position: absolute;
   inset: auto 0 0 0;
@@ -5221,7 +5245,8 @@ h2 {
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]:hover,
 #classroomPresentationScreen #classroomPrevButton:hover,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton:hover,
-#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton:hover {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton:hover,
+#settingsModal .settings-close-button:hover {
   background: linear-gradient(180deg, #FFFFFF 0%, #F0FAFF 100%);
   transform: translateY(-1px);
 }
@@ -5236,7 +5261,8 @@ h2 {
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]:active,
 #classroomPresentationScreen #classroomPrevButton:active,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton:active,
-#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton:active {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton:active,
+#settingsModal .settings-close-button:active {
   transform: translateY(2px);
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
