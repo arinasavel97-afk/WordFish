@@ -587,7 +587,7 @@ button:active {
 
 #savedSetsList {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
     gap: 6px;
     align-items: stretch;
     margin: 12px 0 0;
@@ -1426,9 +1426,9 @@ button:active {
 #savedSetsList .set-card-body {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 5px;
     flex: 1 1 auto;
-    padding: 6px 10px 8px;
+    padding: 6px 11px 8px;
     min-height: 0;
 }
 
@@ -2406,7 +2406,7 @@ button:active {
 
 @media (max-width: 1100px) {
     #savedSetsList {
-        grid-template-columns: repeat(auto-fill, minmax(252px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
     }
 }
 

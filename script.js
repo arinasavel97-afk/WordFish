@@ -864,15 +864,12 @@ function formatSetLastEditedLine(updatedAt, createdAt) {
         return "";
     }
 
+    const englishMonthsShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const timeLabel = `${String(editedDate.getHours()).padStart(2, "0")}:${String(editedDate.getMinutes()).padStart(2, "0")}`;
+
     const now = new Date();
     const yesterday = new Date(now);
     yesterday.setDate(yesterday.getDate() - 1);
-
-    const timeLabel = editedDate.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-    });
 
     let dayLabel;
     if (editedDate.toDateString() === now.toDateString()) {
@@ -880,10 +877,7 @@ function formatSetLastEditedLine(updatedAt, createdAt) {
     } else if (editedDate.toDateString() === yesterday.toDateString()) {
         dayLabel = "Yesterday";
     } else {
-        dayLabel = editedDate.toLocaleDateString([], {
-            month: "short",
-            day: "numeric",
-        });
+        dayLabel = `${englishMonthsShort[editedDate.getMonth()]} ${editedDate.getDate()}`;
     }
 
     return `Last edited: ${dayLabel}, ${timeLabel}`;
