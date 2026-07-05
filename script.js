@@ -581,7 +581,7 @@ async function showDashboard(addToHistory = true) {
     let savedSetsList = document.getElementById("savedSetsList");
     savedSetsList.innerHTML = `
         <div class="card loading-card">
-            <h2>🫧 Fishing for your sets...</h2>
+            <h2>Fishing for your sets...</h2>
         </div>
     `;
 
@@ -594,7 +594,7 @@ async function showDashboard(addToHistory = true) {
     } catch (error) {
         savedSetsList.innerHTML = `
             <div class="card">
-                <h2>⚠️ Could not load sets</h2>
+                <h2>Could not load sets</h2>
                 <p>${escapeHTML(error.message)}</p>
             </div>
         `;
@@ -946,7 +946,7 @@ function renderDashboard() {
     if (!isDashboardTrashFilterActive() && savedSets.length === 0) {
         savedSetsList.innerHTML = `
             <div class="card empty-library-card">
-                <h2>🐚 Your library is empty</h2>
+                <h2>Your library is empty</h2>
                 <p>Make your first vocabulary set and start collecting pearls.</p>
             </div>
         `;

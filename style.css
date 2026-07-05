@@ -6215,36 +6215,6 @@ body:has(#dashboardScreen[style*="display:block"])::before {
     overflow: hidden;
 }
 
-.dashboard-scenery-chest {
-    position: absolute;
-    left: 28px;
-    bottom: 10px;
-    font-size: 2rem;
-    opacity: 0.22;
-    filter: saturate(0.85);
-    transform: rotate(-6deg);
-}
-
-.dashboard-scenery-coral {
-    position: absolute;
-    font-size: 1.75rem;
-    opacity: 0.16;
-    filter: saturate(0.75);
-}
-
-.dashboard-scenery-coral--1 {
-    right: 18%;
-    bottom: 18px;
-    transform: scaleX(-1);
-}
-
-.dashboard-scenery-coral--2 {
-    right: 8%;
-    bottom: 8px;
-    font-size: 1.35rem;
-    opacity: 0.12;
-}
-
 .dashboard-scenery-plant {
     position: absolute;
     bottom: 0;
