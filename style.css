@@ -5078,7 +5078,10 @@ h2 {
 
 /* CTA Accent prototype — shared selectors */
 .wf-cta-accent,
-.accent-cta {
+.accent-cta,
+#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('translation')"],
+#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('picture')"],
+#gameScreen button.yellow-button[onclick="showAnswer()"] {
   position: relative;
   overflow: hidden;
 
@@ -5104,7 +5107,10 @@ h2 {
 }
 
 .wf-cta-accent::before,
-.accent-cta::before {
+.accent-cta::before,
+#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('translation')"]::before,
+#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('picture')"]::before,
+#gameScreen button.yellow-button[onclick="showAnswer()"]::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
@@ -5118,7 +5124,10 @@ h2 {
 }
 
 .wf-cta-accent::after,
-.accent-cta::after {
+.accent-cta::after,
+#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('translation')"]::after,
+#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('picture')"]::after,
+#gameScreen button.yellow-button[onclick="showAnswer()"]::after {
   content: "";
   position: absolute;
   inset: auto 0 0 0;
@@ -5132,13 +5141,19 @@ h2 {
 }
 
 .wf-cta-accent:hover,
-.accent-cta:hover {
+.accent-cta:hover,
+#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('translation')"]:hover,
+#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('picture')"]:hover,
+#gameScreen button.yellow-button[onclick="showAnswer()"]:hover {
   background: linear-gradient(180deg, #FFE06A 0%, #F5AD28 100%);
   transform: translateY(-1px);
 }
 
 .wf-cta-accent:active,
-.accent-cta:active {
+.accent-cta:active,
+#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('translation')"]:active,
+#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('picture')"]:active,
+#gameScreen button.yellow-button[onclick="showAnswer()"]:active {
   transform: translateY(1px);
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
