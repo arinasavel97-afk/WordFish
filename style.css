@@ -1616,14 +1616,14 @@ button:active {
     bottom: calc(100% + 4px);
     right: 0;
     z-index: 6;
-    width: 240px;
-    min-width: 220px;
-    max-width: 260px;
+    width: 210px;
+    min-width: 200px;
+    max-width: 220px;
     padding: 4px;
     background: var(--wf-card-white);
     border: 1px solid var(--wf-color-ink-border-soft);
-    border-radius: var(--wf-radius-sm);
-    box-shadow: var(--wf-shadow-ink-16);
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(7, 59, 76, 0.1), 0 1px 3px rgba(7, 59, 76, 0.06);
 }
 
 /* Open overflow menu: escape card clipping and stack above dashboard toolbar */
@@ -1647,24 +1647,24 @@ button:active {
 
 #savedSetsList .set-overflow-menu-divider {
     height: 1px;
-    margin: 4px 8px;
+    margin: 3px 10px;
     background: var(--wf-color-ink-border-soft);
 }
 
 #savedSetsList .set-overflow-menu-item {
     display: grid;
-    grid-template-columns: 18px minmax(0, 1fr);
+    grid-template-columns: 20px minmax(0, 1fr);
     align-items: center;
     column-gap: 10px;
     width: 100%;
-    min-height: 32px;
-    height: 32px;
+    min-height: 40px;
+    height: 40px;
     margin: 0;
-    padding: 0 10px;
+    padding: 8px 14px;
     border: none;
     border-radius: 6px;
     background: transparent;
-    color: var(--wf-ocean-ink);
+    color: rgba(7, 59, 76, 0.88);
     font-family: inherit;
     font-size: 0.875rem;
     font-weight: 500;
@@ -1682,16 +1682,16 @@ button:active {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
-    color: rgba(11, 110, 138, 0.72);
+    color: rgba(11, 110, 138, 0.62);
 }
 
 #savedSetsList .set-overflow-menu-item__icon svg {
     display: block;
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
 }
 
 #savedSetsList .set-overflow-menu-item__label {
@@ -1702,14 +1702,14 @@ button:active {
 }
 
 #savedSetsList .set-overflow-menu-item:hover:not(:disabled) {
-    background: rgba(214, 238, 251, 0.45);
+    background: rgba(214, 238, 251, 0.38);
     color: var(--wf-ocean-ink);
     transform: none;
     box-shadow: none;
 }
 
 #savedSetsList .set-overflow-menu-item:active:not(:disabled) {
-    background: rgba(214, 238, 251, 0.58);
+    background: rgba(214, 238, 251, 0.48);
     transform: none;
     box-shadow: none;
 }
@@ -1723,14 +1723,14 @@ button:active {
 }
 
 #savedSetsList .set-overflow-menu-item--danger:hover:not(:disabled) {
-    background: rgba(239, 71, 111, 0.1);
+    background: rgba(239, 71, 111, 0.08);
     color: var(--wf-coral-dark);
     transform: none;
     box-shadow: none;
 }
 
 #savedSetsList .set-overflow-menu-item--danger:active:not(:disabled) {
-    background: rgba(239, 71, 111, 0.14);
+    background: rgba(239, 71, 111, 0.12);
     transform: none;
     box-shadow: none;
 }
