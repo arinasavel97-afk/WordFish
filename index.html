@@ -143,11 +143,6 @@
                         <div class="dashboard-search-field">
                             <input id="dashboardSearchInput" type="search" placeholder="Search…" oninput="onDashboardSearchInput(this.value)" aria-label="Search sets">
                         </div>
-                        <div class="dashboard-view-selector" role="group" aria-label="Library view">
-                            <button type="button" class="dashboard-view-option dashboard-view-option--active" data-value="all" aria-pressed="true" onclick="onDashboardFilterChange('all')">All Sets</button>
-                            <button type="button" class="dashboard-view-option" data-value="favorites" aria-pressed="false" onclick="onDashboardFilterChange('favorites')">Favorites</button>
-                            <button type="button" class="dashboard-view-option" data-value="trash" aria-pressed="false" onclick="onDashboardFilterChange('trash')">Trash</button>
-                        </div>
                         <div class="dashboard-sort-field">
                             <label for="dashboardSortSelect" class="dashboard-sort-label">Sort</label>
                             <select id="dashboardSortSelect" onchange="onDashboardSortChange(this.value)">
