@@ -1161,7 +1161,7 @@ button:active {
     padding: 0 22px 0 0;
     font-family: var(--font-family);
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: var(--font-weight-ui);
     line-height: 1.2;
     border: none;
     border-radius: 0;
@@ -1178,6 +1178,16 @@ button:active {
     cursor: pointer;
     transition: color 0.15s ease;
     -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#dashboardScreen #dashboardSortSelect option {
+    font-family: var(--font-family);
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-ui);
+    color: var(--wf-ocean-ink);
+    background: #ffffff;
 }
 
 #dashboardScreen #dashboardSortSelect:focus {
@@ -5456,7 +5466,6 @@ h2 {
 #dashboardScreen .dashboard-header-import-button,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"],
 #shareModal button[onclick="copyShareLinkPlaceholder()"],
-#dashboardClassroomButton,
 #classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"],
 #classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"],
 #classroomPresentationScreen #classroomNextButton,
@@ -5493,7 +5502,6 @@ h2 {
 #dashboardScreen .dashboard-header-import-button::before,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::before,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]::before,
-#dashboardClassroomButton::before,
 #classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]::before,
 #classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]::before,
 #classroomPresentationScreen #classroomNextButton::before,
@@ -5524,7 +5532,6 @@ h2 {
 #dashboardScreen .dashboard-header-import-button::after,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::after,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]::after,
-#dashboardClassroomButton::after,
 #classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]::after,
 #classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]::after,
 #classroomPresentationScreen #classroomNextButton::after,
@@ -5555,7 +5562,6 @@ h2 {
 #dashboardScreen .dashboard-header-import-button:hover,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:hover,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]:hover,
-#dashboardClassroomButton:hover,
 #classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:hover,
 #classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:hover,
 #classroomPresentationScreen #classroomNextButton:hover,
@@ -5578,7 +5584,6 @@ h2 {
 #dashboardScreen .dashboard-header-import-button:active,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:active,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]:active,
-#dashboardClassroomButton:active,
 #classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:active,
 #classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:active,
 #classroomPresentationScreen #classroomNextButton:active,
@@ -5595,6 +5600,36 @@ h2 {
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
     0 4px 8px rgba(22, 174, 74, 0.18);
+}
+
+/* Dashboard Classroom Mode — blue primary CTA (Button System shape) */
+#dashboardScreen #dashboardClassroomButton.wf-cta-primary {
+  background: linear-gradient(180deg, #6BC4F8 0%, var(--wf-aqua) 52%, var(--wf-ocean-blue) 100%);
+  border: 1px solid rgba(37, 128, 200, 0.28);
+  color: #ffffff;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.12),
+    0 7px 12px rgba(63, 169, 245, 0.22);
+}
+
+#dashboardScreen #dashboardClassroomButton.wf-cta-primary::after {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0),
+    rgba(0, 80, 120, 0.18)
+  );
+}
+
+#dashboardScreen #dashboardClassroomButton.wf-cta-primary:hover {
+  background: linear-gradient(180deg, #7BCEFA 0%, var(--wf-aqua-hover) 52%, var(--wf-ocean-blue) 100%);
+  transform: translateY(-1px);
+}
+
+#dashboardScreen #dashboardClassroomButton.wf-cta-primary:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.10),
+    0 4px 8px rgba(63, 169, 245, 0.18);
 }
 
 /* Classroom Primary CTA — override legacy green-button hover shadow */
