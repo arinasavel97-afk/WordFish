@@ -587,7 +587,7 @@ button:active {
 
 #savedSetsList {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--space-md);
     align-items: stretch;
     margin: var(--space-lg) auto 0;
@@ -1110,13 +1110,6 @@ button:active {
     display: none;
 }
 
-#savedSetsList.dashboard-drag-disabled .set-drag-handle,
-#savedSetsList.dashboard-drag-disabled .wf-icon-button.set-drag-handle {
-    opacity: 0.35;
-    pointer-events: none;
-    cursor: default;
-}
-
 #savedSetsList .dashboard-search-empty h2 {
     margin-bottom: var(--space-sm);
 }
@@ -1128,47 +1121,84 @@ button:active {
 
 #savedSetsList .card {
     width: 100%;
-    max-width: 320px;
+    max-width: none;
     margin: 0;
-    justify-self: center;
+    justify-self: stretch;
 }
 
-#savedSetsList .set-card {
+/* Dashboard v2 — Set Card */
+#savedSetsList .set-card-v2 {
     position: relative;
     text-align: left;
     min-height: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
-    padding: var(--space-md);
-    background: linear-gradient(180deg, #ffffff 0%, #f7fcff 100%);
-    border-radius: var(--radius-lg);
-    border: 2px solid var(--color-input-border);
-    box-shadow: var(--soft-shadow);
+    padding: 0;
+    overflow: visible;
+    background: var(--wf-card-white);
+    border-radius: var(--wf-radius-lg);
+    border: 1px solid var(--wf-color-ink-border-soft);
+    box-shadow: var(--wf-shadow-ink-12);
     transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
-#savedSetsList .set-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 24px rgba(34, 51, 68, 0.12);
-    border-color: rgba(63, 169, 245, 0.42);
+#savedSetsList .set-card-v2:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--wf-shadow-card-hover);
+    border-color: rgba(63, 169, 245, 0.28);
 }
 
-#savedSetsList.dashboard-selection-active .set-card:hover {
+#savedSetsList.dashboard-selection-active .set-card-v2:hover {
     transform: none;
 }
 
-#savedSetsList .set-card.set-card-selected {
-    border-color: rgba(63, 169, 245, 0.78);
-    background: linear-gradient(180deg, #f0faff 0%, #e8f7ff 100%);
-    box-shadow: 0 0 0 3px rgba(63, 169, 245, 0.14), var(--soft-shadow);
+#savedSetsList .set-card-v2.set-card-selected {
+    border-color: rgba(63, 169, 245, 0.55);
+    background: linear-gradient(180deg, #ffffff 0%, #f4fbff 100%);
+    box-shadow: 0 0 0 3px rgba(63, 169, 245, 0.12), var(--wf-shadow-ink-12);
+}
+
+#savedSetsList .set-card-color-strip {
+    flex: 0 0 auto;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--wf-radius-lg) var(--wf-radius-lg) 0 0;
+}
+
+#savedSetsList .set-card-accent--blue .set-card-color-strip {
+    background: linear-gradient(90deg, #3FA9F5 0%, #00A6C8 100%);
+}
+
+#savedSetsList .set-card-accent--green .set-card-color-strip {
+    background: linear-gradient(90deg, #06D6A0 0%, #16AE4A 100%);
+}
+
+#savedSetsList .set-card-accent--purple .set-card-color-strip {
+    background: linear-gradient(90deg, #B36DE7 0%, #7D3BD9 100%);
+}
+
+#savedSetsList .set-card-accent--orange .set-card-color-strip {
+    background: linear-gradient(90deg, #FFB703 0%, #F59E0B 100%);
+}
+
+#savedSetsList .set-card-accent--pink .set-card-color-strip {
+    background: linear-gradient(90deg, #F472B6 0%, #EF476F 100%);
+}
+
+#savedSetsList .set-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    flex: 1 1 auto;
+    padding: 14px 16px 16px;
+    min-height: 0;
 }
 
 .set-card-select {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 2;
+    top: 14px;
+    left: 12px;
+    z-index: 3;
     display: none;
     align-items: center;
     justify-content: center;
@@ -1192,63 +1222,45 @@ button:active {
     accent-color: var(--sea, #00A6C8);
 }
 
-#savedSetsList.dashboard-selection-active .set-card-header {
+#savedSetsList.dashboard-selection-active .set-card-controls {
     padding-left: 22px;
 }
 
-#savedSetsList.dashboard-selection-active .set-icon-button,
-#savedSetsList.dashboard-selection-active .wf-icon-button.set-icon-button,
+#savedSetsList.dashboard-selection-active .set-favorite-button,
+#savedSetsList.dashboard-selection-active .set-overflow-trigger,
 #savedSetsList.dashboard-selection-active .set-actions button {
     pointer-events: none;
     opacity: 0.45;
     cursor: not-allowed;
 }
 
-#savedSetsList.dashboard-selection-active .set-icon-button:hover,
-#savedSetsList.dashboard-selection-active .wf-icon-button.set-icon-button:hover,
+#savedSetsList.dashboard-selection-active .set-favorite-button:hover,
+#savedSetsList.dashboard-selection-active .set-overflow-trigger:hover,
 #savedSetsList.dashboard-selection-active .set-actions button:hover {
     transform: none;
     background: transparent;
-    color: inherit;
 }
 
-#savedSetsList.dashboard-selection-active .set-icon-edit:hover,
-#savedSetsList.dashboard-selection-active .set-icon-delete:hover,
-#savedSetsList.dashboard-selection-active .set-icon-duplicate:hover,
-#savedSetsList.dashboard-selection-active .set-icon-export:hover {
-    background: transparent;
-    color: #6B7280;
-    transform: none;
-}
-
-#savedSetsList .set-card::after {
-    content: none;
-}
-
-#savedSetsList .set-card-header {
-    display: flex;
+#savedSetsList .set-card-controls {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-xs);
-}
-
-#savedSetsList .set-card-header-left {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
+    gap: var(--space-xs);
+    min-height: 40px;
+    position: relative;
+    z-index: 2;
 }
 
 #savedSetsList .set-favorite-button,
 #savedSetsList .wf-icon-button.set-favorite-button {
+    justify-self: start;
     width: 40px;
     height: 40px;
     min-height: 40px;
     padding: 0;
     margin: 0;
     border: none;
-    border-radius: 12px;
+    border-radius: var(--wf-radius-sm);
     background: transparent;
     color: #9CA3AF;
     box-shadow: none;
@@ -1269,12 +1281,6 @@ button:active {
 #savedSetsList .set-favorite-button:hover:not(:disabled),
 #savedSetsList .wf-icon-button.set-favorite-button:hover:not(:disabled) {
     background: rgba(0, 166, 200, 0.08);
-    transform: none;
-}
-
-#savedSetsList .set-favorite-button:active:not(:disabled),
-#savedSetsList .wf-icon-button.set-favorite-button:active:not(:disabled) {
-    transform: scale(0.96);
 }
 
 #savedSetsList .set-favorite-button.is-favorite,
@@ -1289,14 +1295,14 @@ button:active {
 
 #savedSetsList .set-drag-handle,
 #savedSetsList .wf-icon-button.set-drag-handle {
-    position: static;
+    justify-self: center;
     width: 40px;
     height: 40px;
     min-height: 40px;
     padding: 0;
     margin: 0;
     border: none;
-    border-radius: 12px;
+    border-radius: var(--wf-radius-sm);
     background: transparent;
     color: #9CA3AF;
     box-shadow: none;
@@ -1323,7 +1329,124 @@ button:active {
 #savedSetsList .set-drag-handle:active:not(:disabled),
 #savedSetsList .wf-icon-button.set-drag-handle:active:not(:disabled) {
     cursor: grabbing;
-    transform: scale(0.96);
+}
+
+#savedSetsList.dashboard-drag-disabled .set-drag-handle,
+#savedSetsList.dashboard-drag-disabled .wf-icon-button.set-drag-handle {
+    display: none;
+}
+
+#savedSetsList .set-card-overflow {
+    position: relative;
+    justify-self: end;
+}
+
+#savedSetsList .set-overflow-trigger,
+#savedSetsList .wf-icon-button.set-overflow-trigger {
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: var(--wf-radius-sm);
+    background: transparent;
+    color: #6B7280;
+    box-shadow: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+#savedSetsList .set-overflow-trigger svg {
+    width: 20px;
+    height: 20px;
+}
+
+#savedSetsList .set-overflow-trigger:hover:not(:disabled) {
+    background: rgba(0, 166, 200, 0.08);
+    color: var(--wf-ocean-ink);
+}
+
+#savedSetsList .set-overflow-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    z-index: 6;
+    min-width: 168px;
+    padding: 6px;
+    background: var(--wf-card-white);
+    border: 1px solid var(--wf-color-ink-border-soft);
+    border-radius: var(--wf-radius-sm);
+    box-shadow: var(--wf-shadow-ink-16);
+}
+
+#savedSetsList .set-overflow-menu[hidden] {
+    display: none;
+}
+
+#savedSetsList .set-overflow-menu-item {
+    display: block;
+    width: 100%;
+    min-height: 40px;
+    padding: 10px 12px;
+    border: none;
+    border-radius: calc(var(--wf-radius-sm) - 2px);
+    background: transparent;
+    color: var(--wf-ocean-ink);
+    font-family: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+#savedSetsList .set-overflow-menu-item:hover:not(:disabled) {
+    background: var(--wf-aqua-soft-hover);
+}
+
+#savedSetsList .set-overflow-menu-item--danger {
+    color: var(--wf-coral-dark);
+}
+
+#savedSetsList .set-overflow-menu-item--danger:hover:not(:disabled) {
+    background: rgba(239, 71, 111, 0.1);
+    color: var(--wf-coral);
+}
+
+#savedSetsList .set-card-title {
+    margin: 0;
+    color: var(--wf-ocean-ink);
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    font-weight: 700;
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+#savedSetsList .set-card-metadata {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--wf-color-ink-muted);
+}
+
+#savedSetsList .set-card-footer {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: var(--space-sm);
+}
+
+#savedSetsList .set-card-footer button {
+    flex: 1 1 calc(50% - 4px);
+    min-height: 44px;
+    margin: 0;
+    padding: 10px 12px;
+    font-size: 15px;
 }
 
 #savedSetsList .set-card-dragging {
@@ -1338,58 +1461,12 @@ button:active {
     opacity: 0.45;
 }
 
-#savedSetsList .set-card-topline {
-    display: inline-block;
-    width: fit-content;
+#savedSetsList .set-card-trash {
+    opacity: 0.96;
+}
+
+#savedSetsList .set-actions-trash button {
     margin: 0;
-    padding: 4px 10px;
-    border-radius: var(--radius-pill, 999px);
-    font-size: 12px;
-    font-weight: var(--font-weight-button);
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-    color: var(--sea-deep);
-    background: var(--color-soft);
-    border: 1px solid rgba(63, 169, 245, 0.18);
-}
-
-#savedSetsList .set-card h2 {
-    color: var(--color-text);
-    margin: 0;
-    padding-right: 0;
-    font-size: clamp(18px, 2.2vw, 22px);
-    line-height: 1.2;
-    word-break: break-word;
-}
-
-#savedSetsList .set-card p {
-    margin: 0;
-    font-size: 14px;
-    line-height: 1.35;
-    color: var(--color-text);
-}
-
-#savedSetsList .set-card .small-label {
-    color: var(--sea-deep);
-    font-weight: var(--font-weight-button);
-    margin-right: 2px;
-}
-
-#savedSetsList .set-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: auto;
-    padding-top: var(--space-sm);
-    border-top: 1px solid rgba(63, 169, 245, 0.14);
-}
-
-#savedSetsList .set-actions button {
-    flex: 1 1 calc(50% - 6px);
-    min-height: 44px;
-    margin: 0;
-    padding: 10px 12px;
-    font-size: 14px;
 }
 
 #savedSetsList .empty-library-card,
@@ -1983,6 +2060,12 @@ button:active {
     margin: 14px;
 }
 
+@media (max-width: 1100px) {
+    #savedSetsList {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
 @media (max-width: 860px) {
     #savedSetsList {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2553,103 +2636,14 @@ h2 {
         0 4px 8px rgba(125, 59, 217, 0.18);
 }
 
-/* Dashboard Card Action Layout v2 — icon actions */
-#savedSetsList .set-card-icon-actions {
-    position: static;
-    display: flex;
-    gap: 4px;
-    flex-shrink: 0;
-    margin-left: auto;
-}
-
-#savedSetsList .set-icon-button,
-#savedSetsList .wf-icon-button.set-icon-button {
-    width: 40px;
-    height: 40px;
-    min-height: 40px;
-    padding: 0;
-    margin: 0;
-    border: none;
-    border-radius: 12px;
-    background: transparent;
-    color: #6B7280;
-    box-shadow: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
-}
-
-#savedSetsList .set-icon-button svg,
-#savedSetsList .wf-icon-button.set-icon-button svg {
-    width: 18px;
-    height: 18px;
-}
-
-#savedSetsList .set-icon-button:hover,
-#savedSetsList .wf-icon-button.set-icon-button:hover {
-    transform: none;
-}
-
-#savedSetsList .set-icon-edit:hover:not(:disabled) {
-    background: rgba(0, 166, 200, 0.08);
-    color: #374151;
-}
-
-#savedSetsList .set-icon-delete:hover:not(:disabled) {
-    background: #FEE2E2;
-    color: #DC2626;
-}
-
-#savedSetsList .set-icon-duplicate {
-    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
-}
-
-#savedSetsList .set-icon-duplicate:hover {
-    background: rgba(78, 203, 196, 0.15);
-    color: var(--duplicate-dark);
-    transform: scale(1.08);
-}
-
-#savedSetsList .set-icon-export {
-    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
-}
-
-#savedSetsList .set-icon-export:hover:not(:disabled) {
-    background: rgba(0, 166, 200, 0.08);
-    color: var(--sea);
-    transform: none;
-    cursor: pointer;
-}
-
-#savedSetsList .set-icon-restore:hover:not(:disabled) {
-    background: rgba(95, 208, 133, 0.15);
-    color: #16AE4A;
-}
-
-#savedSetsList .set-card-trash-topline {
-    color: #6B7280;
-    background: #F3F4F6;
-    border-color: rgba(107, 114, 128, 0.2);
-}
-
-#savedSetsList .set-actions-trash button {
-    margin: 0;
-}
-
-#savedSetsList .set-icon-button:active:not(:disabled),
-#savedSetsList .wf-icon-button.set-icon-button:active:not(:disabled) {
-    transform: scale(0.96);
-    box-shadow: none;
-}
-
+/* Dashboard v2 — Set Card focus states */
 #savedSetsList .set-favorite-button:focus-visible,
 #savedSetsList .wf-icon-button.set-favorite-button:focus-visible,
 #savedSetsList .set-drag-handle:focus-visible,
 #savedSetsList .wf-icon-button.set-drag-handle:focus-visible,
-#savedSetsList .set-icon-button:focus-visible,
-#savedSetsList .wf-icon-button.set-icon-button:focus-visible {
+#savedSetsList .set-overflow-trigger:focus-visible,
+#savedSetsList .wf-icon-button.set-overflow-trigger:focus-visible,
+#savedSetsList .set-overflow-menu-item:focus-visible {
     outline: 2px solid var(--wf-color-aqua-outline);
     outline-offset: 2px;
 }

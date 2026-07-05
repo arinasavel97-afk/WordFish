@@ -830,6 +830,94 @@ function updateDashboardSelectionUI() {
     }
 }
 
+const SET_CARD_ACCENT_COLORS = ["blue", "green", "purple", "orange", "pink"];
+
+function getSetCardAccentClass(setId) {
+    let hash = 0;
+    const id = String(setId);
+
+    for (let i = 0; i < id.length; i++) {
+        hash = ((hash << 5) - hash + id.charCodeAt(i)) | 0;
+    }
+
+    return `set-card-accent--${SET_CARD_ACCENT_COLORS[Math.abs(hash) % SET_CARD_ACCENT_COLORS.length]}`;
+}
+
+function buildSetCardMetadataLine(wordCount, imageCount) {
+    const wordsLabel = wordCount === 1 ? "word" : "words";
+    const imagesLabel = imageCount === 1 ? "image" : "images";
+    return `${wordCount} ${wordsLabel} • ${imageCount} ${imagesLabel}`;
+}
+
+function buildSetCardOverflowMenuHtml(setId, disabledAttr) {
+    const duplicateDisabled = disabledAttr.includes("disabled");
+    const duplicateItem = duplicateDisabled
+        ? `<button type="button" class="set-overflow-menu-item" role="menuitem" disabled aria-disabled="true">Duplicate</button>`
+        : `<button type="button" class="set-overflow-menu-item" role="menuitem" onclick="closeAllSetCardOverflowMenus(); duplicateSet('${escapeAttribute(setId)}')" onkeydown="handleDuplicateSetKeydown(event, '${escapeAttribute(setId)}')">Duplicate</button>`;
+
+    return `
+                <div class="set-card-overflow">
+                    <button type="button" class="set-overflow-trigger wf-icon-button" onclick="toggleSetCardOverflowMenu(event)" aria-label="Set actions" aria-haspopup="menu" aria-expanded="false"${disabledAttr}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+                    </button>
+                    <div class="set-overflow-menu" role="menu" hidden>
+                        <button type="button" class="set-overflow-menu-item" role="menuitem" onclick="closeAllSetCardOverflowMenus(); editSet('${escapeAttribute(setId)}')"${disabledAttr}>Edit</button>
+                        ${duplicateItem}
+                        <button type="button" class="set-overflow-menu-item" role="menuitem" onclick="closeAllSetCardOverflowMenus(); exportSet('${escapeAttribute(setId)}')"${disabledAttr}>Export</button>
+                        <button type="button" class="set-overflow-menu-item set-overflow-menu-item--danger" role="menuitem" onclick="closeAllSetCardOverflowMenus(); deleteSet('${escapeAttribute(setId)}')"${disabledAttr}>Delete</button>
+                    </div>
+                </div>`;
+}
+
+function closeAllSetCardOverflowMenus() {
+    document.querySelectorAll("#savedSetsList .set-overflow-menu").forEach((menu) => {
+        menu.hidden = true;
+    });
+    document.querySelectorAll("#savedSetsList .set-overflow-trigger").forEach((trigger) => {
+        trigger.setAttribute("aria-expanded", "false");
+    });
+}
+
+function toggleSetCardOverflowMenu(event) {
+    event.stopPropagation();
+
+    if (dashboardSelectionMode) {
+        return;
+    }
+
+    const overflow = event.currentTarget.closest(".set-card-overflow");
+    const menu = overflow.querySelector(".set-overflow-menu");
+    const trigger = overflow.querySelector(".set-overflow-trigger");
+    const willOpen = menu.hidden;
+
+    closeAllSetCardOverflowMenus();
+
+    if (willOpen) {
+        menu.hidden = false;
+        trigger.setAttribute("aria-expanded", "true");
+    }
+}
+
+function initSetCardOverflowMenus() {
+    if (window.setCardOverflowMenusInitialized) {
+        return;
+    }
+
+    window.setCardOverflowMenusInitialized = true;
+
+    document.addEventListener("click", (event) => {
+        if (!event.target.closest(".set-card-overflow")) {
+            closeAllSetCardOverflowMenus();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeAllSetCardOverflowMenus();
+        }
+    });
+}
+
 function renderDashboard() {
     let savedSetsList = document.getElementById("savedSetsList");
 
@@ -839,6 +927,7 @@ function renderDashboard() {
     }
 
     savedSetsList.innerHTML = "";
+    closeAllSetCardOverflowMenus();
     savedSetsList.classList.toggle("dashboard-drag-disabled", !isDashboardDragEnabled());
     savedSetsList.classList.toggle("dashboard-selection-active", dashboardSelectionMode);
     updateDashboardToolbarUI();
@@ -902,31 +991,21 @@ function renderDashboard() {
         if (isTrashView) {
             let cardDisabled = dashboardSelectionMode;
             let disabledAttr = cardDisabled ? " disabled" : "";
+            let metadataLine = buildSetCardMetadataLine(wordCount, imageCount);
 
             savedSetsList.innerHTML += `
-            <div class="card set-card set-card-trash${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
-                <label class="set-card-select">
-                    <input type="checkbox" class="set-card-select-input" aria-label="Select ${escapeAttribute(set.name)}" ${isSelected ? "checked" : ""} onchange="onSetSelectionChange('${escapeAttribute(setId)}', this.checked)">
-                </label>
-                <div class="set-card-header">
-                    <div class="set-card-header-left"></div>
-                    <div class="set-card-icon-actions">
-                        <button type="button" class="set-icon-button set-icon-restore wf-icon-button" onclick="restoreSet('${escapeAttribute(setId)}')" aria-label="Restore set" title="Restore"${disabledAttr}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"/></svg>
-                        </button>
-                        <button type="button" class="set-icon-button set-icon-delete wf-icon-button" onclick="deleteForeverSet('${escapeAttribute(setId)}')" aria-label="Delete forever" title="Delete Forever"${disabledAttr}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
-                        </button>
+            <div class="card set-card set-card-v2 set-card-trash ${getSetCardAccentClass(setId)}${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
+                <div class="set-card-color-strip" aria-hidden="true"></div>
+                <div class="set-card-body">
+                    <label class="set-card-select">
+                        <input type="checkbox" class="set-card-select-input" aria-label="Select ${escapeAttribute(set.name)}" ${isSelected ? "checked" : ""} onchange="onSetSelectionChange('${escapeAttribute(setId)}', this.checked)">
+                    </label>
+                    <h2 class="set-card-title">${escapeHTML(set.name)}</h2>
+                    <p class="set-card-metadata">${metadataLine}</p>
+                    <div class="set-actions set-card-footer set-actions-trash">
+                        <button class="green-button wf-cta-primary" onclick="restoreSet('${escapeAttribute(setId)}')"${disabledAttr}>Restore</button>
+                        <button class="red-button wf-cta-danger" onclick="deleteForeverSet('${escapeAttribute(setId)}')"${disabledAttr}>Delete Forever</button>
                     </div>
-                </div>
-                <div class="set-card-topline set-card-trash-topline">🗑️ In Trash</div>
-                <h2>📚 ${escapeHTML(set.name)}</h2>
-                <p><span class="small-label">Words:</span> ${wordCount}</p>
-                <p><span class="small-label">Images:</span> ${imageCount}</p>
-
-                <div class="set-actions set-actions-trash">
-                    <button class="green-button wf-cta-primary" onclick="restoreSet('${escapeAttribute(setId)}')"${disabledAttr}>Restore</button>
-                    <button class="red-button wf-cta-danger" onclick="deleteForeverSet('${escapeAttribute(setId)}')"${disabledAttr}>Delete Forever</button>
                 </div>
             </div>
         `;
@@ -935,52 +1014,35 @@ function renderDashboard() {
 
         let cardDisabled = dashboardSelectionMode;
         let disabledAttr = cardDisabled ? " disabled" : "";
-        let duplicateAttrs = cardDisabled
-            ? ' tabindex="-1" aria-label="Duplicate set" aria-disabled="true"'
-            : ' tabindex="0" aria-label="Duplicate set" title="Duplicate" onclick="duplicateSet(\'' + escapeAttribute(setId) + '\')" onkeydown="handleDuplicateSetKeydown(event, \'' + escapeAttribute(setId) + '\')"';
         let isFavorite = !!set.is_favorite;
         let favoriteLabel = isFavorite ? "Remove from favorites" : "Add to favorites";
         let favoriteStarSvg = isFavorite
             ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd"/></svg>'
-            : '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.662-2.51a.563.563 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.563.563 0 0 0 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"/></svg>';
+            : '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"/></svg>';
+        let metadataLine = buildSetCardMetadataLine(wordCount, imageCount);
 
         savedSetsList.innerHTML += `
-            <div class="card set-card${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
-                <label class="set-card-select">
-                    <input type="checkbox" class="set-card-select-input" aria-label="Select ${escapeAttribute(set.name)}" ${isSelected ? "checked" : ""} onchange="onSetSelectionChange('${escapeAttribute(setId)}', this.checked)">
-                </label>
-                <div class="set-card-header">
-                    <div class="set-card-header-left">
+            <div class="card set-card set-card-v2 ${getSetCardAccentClass(setId)}${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
+                <div class="set-card-color-strip" aria-hidden="true"></div>
+                <div class="set-card-body">
+                    <label class="set-card-select">
+                        <input type="checkbox" class="set-card-select-input" aria-label="Select ${escapeAttribute(set.name)}" ${isSelected ? "checked" : ""} onchange="onSetSelectionChange('${escapeAttribute(setId)}', this.checked)">
+                    </label>
+                    <div class="set-card-controls">
                         <button type="button" class="set-favorite-button wf-icon-button${isFavorite ? " is-favorite" : ""}" onclick="toggleSetFavorite('${escapeAttribute(setId)}')" aria-label="${escapeAttribute(favoriteLabel)}" aria-pressed="${isFavorite ? "true" : "false"}" title="${escapeAttribute(favoriteLabel)}">
                             ${favoriteStarSvg}
                         </button>
                         <button type="button" class="set-drag-handle wf-icon-button" aria-label="Drag to reorder set" title="Drag to reorder"${disabledAttr}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75h.008v.008H9V6.75Zm0 5.25h.008v.008H9V12Zm0 5.25h.008v.008H9v-.008ZM15 6.75h.008v.008H15V6.75Zm0 5.25h.008v.008H15V12Zm0 5.25h.008v.008H15v-.008Z"/></svg>
                         </button>
+                        ${buildSetCardOverflowMenuHtml(setId, disabledAttr)}
                     </div>
-                    <div class="set-card-icon-actions">
-                        <button type="button" class="set-icon-button set-icon-edit wf-icon-button" onclick="editSet('${escapeAttribute(setId)}')" aria-label="Edit set" title="Edit"${disabledAttr}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
-                        </button>
-                        <span class="set-icon-button set-icon-duplicate wf-icon-button" role="button"${duplicateAttrs}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2m-6 12h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/></svg>
-                        </span>
-                        <button type="button" class="set-icon-button set-icon-export wf-icon-button" onclick="exportSet('${escapeAttribute(setId)}')" aria-label="Export set to Excel" title="Export"${disabledAttr}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-                        </button>
-                        <button type="button" class="set-icon-button set-icon-delete wf-icon-button" onclick="deleteSet('${escapeAttribute(setId)}')" aria-label="Delete set" title="Delete"${disabledAttr}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
-                        </button>
+                    <h2 class="set-card-title">${escapeHTML(set.name)}</h2>
+                    <p class="set-card-metadata">${metadataLine}</p>
+                    <div class="set-actions set-card-footer">
+                        <button class="green-button wf-cta-primary" onclick="openPlayChoice('${escapeAttribute(setId)}')"${disabledAttr}>Play</button>
+                        <button class="share-button wf-cta-secondary" onclick="openShareDialog('${escapeAttribute(setId)}')"${disabledAttr}>Share</button>
                     </div>
-                </div>
-                <div class="set-card-topline">🐠 Ready to play</div>
-                <h2>📚 ${escapeHTML(set.name)}</h2>
-                <p><span class="small-label">Words:</span> ${wordCount}</p>
-                <p><span class="small-label">Images:</span> ${imageCount}</p>
-
-                <div class="set-actions">
-                    <button class="green-button wf-cta-primary" onclick="openPlayChoice('${escapeAttribute(setId)}')"${disabledAttr}>Play</button>
-                    <button class="share-button wf-cta-secondary" onclick="openShareDialog('${escapeAttribute(setId)}')"${disabledAttr}>Share</button>
                 </div>
             </div>
         `;
@@ -5474,6 +5536,7 @@ function initApp() {
     initClassroomTextFlashcardsControls();
     initClassroomVocabularyBoardControls();
     initClassroomShortcutsHint();
+    initSetCardOverflowMenus();
     checkAuth();
 }
 
