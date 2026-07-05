@@ -1624,6 +1624,21 @@ button:active {
     box-shadow: var(--wf-shadow-ink-16);
 }
 
+/* Open overflow menu: escape card clipping and stack above dashboard toolbar */
+#dashboardScreen .dashboard-card-grid:has(.set-overflow-menu:not([hidden])) {
+    position: relative;
+    z-index: 10;
+}
+
+#savedSetsList .set-card-v2:has(.set-overflow-menu:not([hidden])) {
+    overflow: visible;
+    z-index: 11;
+}
+
+#savedSetsList .set-card-v2:has(.set-overflow-menu:not([hidden])) .set-overflow-menu {
+    z-index: 12;
+}
+
 #savedSetsList .set-overflow-menu[hidden] {
     display: none;
 }
