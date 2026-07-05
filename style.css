@@ -599,11 +599,11 @@ button:active {
 .dashboard-library-toolbar {
     max-width: none;
     width: 100%;
-    margin: 12px 0 0;
-    padding: 10px 14px;
+    margin: 10px 0 0;
+    padding: 8px 12px;
     background: var(--wf-card-white);
     border-radius: var(--wf-radius-lg);
-    box-shadow: 0 4px 16px rgba(7, 59, 76, 0.07);
+    box-shadow: 0 3px 12px rgba(7, 59, 76, 0.06);
     border: 1px solid rgba(214, 238, 251, 0.9);
 }
 
@@ -615,7 +615,7 @@ button:active {
     flex-wrap: wrap;
     align-items: center;
     justify-content: flex-start;
-    gap: 10px;
+    gap: 8px;
 }
 
 .dashboard-primary-actions {
@@ -835,7 +835,7 @@ button:active {
     flex-wrap: nowrap;
     align-items: center;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 8px;
     flex-shrink: 0;
     margin-left: auto;
 }
@@ -843,6 +843,59 @@ button:active {
 #dashboardScreen .dashboard-v2-header-actions .dashboard-classroom-button,
 #dashboardScreen .dashboard-v2-header-actions .green-button {
     margin: 0;
+}
+
+#dashboardScreen .dashboard-header-import-wrap {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    margin: 0;
+}
+
+#dashboardScreen .dashboard-header-import-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    min-width: 48px;
+    height: 48px;
+    min-height: 48px;
+    padding: 0;
+    margin: 0;
+}
+
+#dashboardScreen .dashboard-header-import-button svg {
+    position: relative;
+    z-index: 1;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+#dashboardScreen .dashboard-header-import-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: var(--wf-ocean-ink);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s ease, visibility 0.18s ease;
+    z-index: 6;
+}
+
+#dashboardScreen .dashboard-header-import-wrap:hover .dashboard-header-import-tooltip,
+#dashboardScreen .dashboard-header-import-wrap:focus-within .dashboard-header-import-tooltip {
+    opacity: 1;
+    visibility: visible;
 }
 
 @media (max-width: 900px) {
@@ -914,21 +967,6 @@ button:active {
     transform: rotate(8deg) scale(0.98);
 }
 
-.dashboard-import-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 48px;
-    margin: 10px;
-}
-
-.dashboard-import-button svg {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-}
-
 .dashboard-classroom-button {
     display: inline-flex;
     align-items: center;
@@ -945,40 +983,59 @@ button:active {
 }
 
 .dashboard-search-field {
-    flex: 1 1 280px;
-    min-width: 160px;
+    flex: 1 1 320px;
+    min-width: 140px;
     max-width: none;
     margin: 0;
     padding: 0;
 }
 
-#dashboardSearchInput {
+#dashboardScreen #dashboardSearchInput {
     display: block;
     width: 100%;
     margin: 0;
-    min-height: 40px;
-    padding: 10px 14px;
+    min-height: 38px;
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid rgba(186, 228, 245, 0.8);
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(7, 59, 76, 0.04);
+    color: var(--wf-ocean-ink);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#dashboardScreen #dashboardSearchInput::placeholder {
+    color: rgba(7, 59, 76, 0.42);
+    font-weight: 500;
+}
+
+#dashboardScreen #dashboardSearchInput:focus {
+    border-color: rgba(63, 169, 245, 0.55);
+    box-shadow: 0 0 0 3px rgba(63, 169, 245, 0.12);
+    outline: none;
 }
 
 .dashboard-view-selector {
     display: inline-flex;
     flex-wrap: nowrap;
     align-items: center;
-    gap: 2px;
-    padding: 0;
-    background: transparent;
-    border-radius: 10px;
-    border: none;
-    flex: 0 1 auto;
+    gap: 1px;
+    padding: 2px;
+    background: rgba(214, 238, 251, 0.32);
+    border-radius: 9px;
+    border: 1px solid rgba(214, 238, 251, 0.55);
+    flex: 0 0 auto;
 }
 
 .dashboard-view-option {
-    min-height: 36px;
-    padding: 6px 12px;
+    min-height: 34px;
+    padding: 5px 11px;
     border: none;
-    border-radius: 8px;
+    border-radius: 7px;
     background: transparent;
-    color: rgba(7, 59, 76, 0.78);
+    color: rgba(7, 59, 76, 0.72);
     font-family: inherit;
     font-size: 0.8125rem;
     font-weight: 600;
@@ -989,7 +1046,7 @@ button:active {
 }
 
 .dashboard-view-option:hover {
-    background: rgba(214, 238, 251, 0.55);
+    background: rgba(255, 255, 255, 0.55);
 }
 
 .dashboard-view-option:focus-visible {
@@ -999,28 +1056,19 @@ button:active {
 
 .dashboard-view-option--active,
 .dashboard-view-option[aria-pressed="true"] {
-    background: rgba(214, 238, 251, 0.85);
+    background: #ffffff;
     color: var(--wf-ocean-ink);
-    box-shadow: none;
+    box-shadow: 0 1px 2px rgba(7, 59, 76, 0.06);
 }
 
 .dashboard-sort-field {
-    flex: 0 1 150px;
-    min-width: 130px;
-    text-align: left;
-}
-
-.dashboard-toolbar-import {
     flex: 0 0 auto;
-}
-
-#dashboardScreen #dashboardSearchInput {
-    margin: 0;
-}
-
-#dashboardScreen .dashboard-toolbar-import .dashboard-import-button {
-    min-height: 40px;
-    margin: 0;
+    min-width: 124px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
 }
 
 .dashboard-filter-field {
@@ -1092,12 +1140,34 @@ button:active {
 
 .dashboard-select-field {
     flex: 0 0 auto;
+    display: flex;
+    align-items: center;
 }
 
 .dashboard-select-button {
-    min-height: 40px;
+    min-height: 38px;
     margin: 0;
     min-width: 96px;
+}
+
+#dashboardScreen .dashboard-sort-label {
+    margin-bottom: 2px;
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+#dashboardScreen #dashboardSortSelect {
+    min-height: 38px;
+    padding: 6px 10px;
+    border: 1px solid rgba(186, 228, 245, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(7, 59, 76, 0.04);
+    background: #ffffff;
+}
+
+#dashboardScreen #dashboardSortSelect:focus {
+    border-color: rgba(63, 169, 245, 0.55);
+    box-shadow: 0 0 0 3px rgba(63, 169, 245, 0.12);
 }
 
 .dashboard-selection-bar {
@@ -5237,6 +5307,7 @@ h2 {
 .wf-cta-primary,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"],
 #dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"],
+#dashboardScreen .dashboard-header-import-button,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"],
 #shareModal button[onclick="copyShareLinkPlaceholder()"],
 #dashboardClassroomButton,
@@ -5273,6 +5344,7 @@ h2 {
 .wf-cta-primary::before,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"]::before,
 #dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"]::before,
+#dashboardScreen .dashboard-header-import-button::before,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::before,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]::before,
 #dashboardClassroomButton::before,
@@ -5303,6 +5375,7 @@ h2 {
 .wf-cta-primary::after,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"]::after,
 #dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"]::after,
+#dashboardScreen .dashboard-header-import-button::after,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::after,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]::after,
 #dashboardClassroomButton::after,
@@ -5333,6 +5406,7 @@ h2 {
 .wf-cta-primary:hover,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"]:hover,
 #dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"]:hover,
+#dashboardScreen .dashboard-header-import-button:hover,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:hover,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]:hover,
 #dashboardClassroomButton:hover,
@@ -5355,6 +5429,7 @@ h2 {
 .wf-cta-primary:active,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"]:active,
 #dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"]:active,
+#dashboardScreen .dashboard-header-import-button:active,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:active,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]:active,
 #dashboardClassroomButton:active,
@@ -5584,8 +5659,6 @@ h2 {
 #deleteConfirmModal button[onclick="closeDeleteConfirm()"],
 #duplicateConfirmModal button[onclick="closeBulkDuplicateConfirm()"],
 #shareModal button[onclick="closeShareDialog()"]:not(.modal-close),
-#dashboardScreen .dashboard-library-toolbar button[onclick="openExcelImportPicker()"],
-#dashboardScreen .dashboard-primary-actions button[onclick="openExcelImportPicker()"],
 #dashboardSelectButton,
 #classroomPickerScreen button.soft-button.classroom-nav-button[onclick="returnToDashboardFromClassroom()"],
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"],
@@ -5622,8 +5695,6 @@ h2 {
 #deleteConfirmModal button[onclick="closeDeleteConfirm()"]::before,
 #duplicateConfirmModal button[onclick="closeBulkDuplicateConfirm()"]::before,
 #shareModal button[onclick="closeShareDialog()"]:not(.modal-close)::before,
-#dashboardScreen .dashboard-library-toolbar button[onclick="openExcelImportPicker()"]::before,
-#dashboardScreen .dashboard-primary-actions button[onclick="openExcelImportPicker()"]::before,
 #dashboardSelectButton::before,
 #classroomPickerScreen button.soft-button.classroom-nav-button[onclick="returnToDashboardFromClassroom()"]::before,
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]::before,
@@ -5654,8 +5725,6 @@ h2 {
 #deleteConfirmModal button[onclick="closeDeleteConfirm()"]::after,
 #duplicateConfirmModal button[onclick="closeBulkDuplicateConfirm()"]::after,
 #shareModal button[onclick="closeShareDialog()"]:not(.modal-close)::after,
-#dashboardScreen .dashboard-library-toolbar button[onclick="openExcelImportPicker()"]::after,
-#dashboardScreen .dashboard-primary-actions button[onclick="openExcelImportPicker()"]::after,
 #dashboardSelectButton::after,
 #classroomPickerScreen button.soft-button.classroom-nav-button[onclick="returnToDashboardFromClassroom()"]::after,
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]::after,
@@ -5686,8 +5755,6 @@ h2 {
 #deleteConfirmModal button[onclick="closeDeleteConfirm()"]:hover,
 #duplicateConfirmModal button[onclick="closeBulkDuplicateConfirm()"]:hover,
 #shareModal button[onclick="closeShareDialog()"]:not(.modal-close):hover,
-#dashboardScreen .dashboard-library-toolbar button[onclick="openExcelImportPicker()"]:hover,
-#dashboardScreen .dashboard-primary-actions button[onclick="openExcelImportPicker()"]:hover,
 #dashboardSelectButton:hover,
 #classroomPickerScreen button.soft-button.classroom-nav-button[onclick="returnToDashboardFromClassroom()"]:hover,
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]:hover,
@@ -5710,8 +5777,6 @@ h2 {
 #deleteConfirmModal button[onclick="closeDeleteConfirm()"]:active,
 #duplicateConfirmModal button[onclick="closeBulkDuplicateConfirm()"]:active,
 #shareModal button[onclick="closeShareDialog()"]:not(.modal-close):active,
-#dashboardScreen .dashboard-library-toolbar button[onclick="openExcelImportPicker()"]:active,
-#dashboardScreen .dashboard-primary-actions button[onclick="openExcelImportPicker()"]:active,
 #dashboardSelectButton:active,
 #classroomPickerScreen button.soft-button.classroom-nav-button[onclick="returnToDashboardFromClassroom()"]:active,
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button[onclick="showClassroomPicker()"]:active,

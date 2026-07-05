@@ -127,6 +127,12 @@
                             Classroom Mode
                         </button>
                         <button type="button" class="green-button wf-cta-primary" onclick="showTeacherScreen()">➕ New Set</button>
+                        <span class="dashboard-header-import-wrap">
+                            <button type="button" class="green-button wf-cta-primary dashboard-header-import-button" onclick="openExcelImportPicker()" aria-label="Import Excel">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
+                            </button>
+                            <span class="dashboard-header-import-tooltip" role="tooltip">Import Excel</span>
+                        </span>
                     </div>
                 </header>
 
@@ -135,7 +141,7 @@
                 <div class="dashboard-library-toolbar">
                     <div class="dashboard-toolbar">
                         <div class="dashboard-search-field">
-                            <input id="dashboardSearchInput" type="search" placeholder="Search sets..." oninput="onDashboardSearchInput(this.value)" aria-label="Search sets">
+                            <input id="dashboardSearchInput" type="search" placeholder="Search…" oninput="onDashboardSearchInput(this.value)" aria-label="Search sets">
                         </div>
                         <div class="dashboard-view-selector" role="group" aria-label="Library view">
                             <button type="button" class="dashboard-view-option dashboard-view-option--active" data-value="all" aria-pressed="true" onclick="onDashboardFilterChange('all')">All Sets</button>
@@ -151,12 +157,6 @@
                                 <option value="az">A–Z</option>
                                 <option value="za">Z–A</option>
                             </select>
-                        </div>
-                        <div class="dashboard-toolbar-import">
-                            <button type="button" class="soft-button wf-cta-neutral dashboard-import-button" onclick="openExcelImportPicker()">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
-                                Import Excel
-                            </button>
                         </div>
                         <div class="dashboard-select-field">
                             <button id="dashboardSelectButton" type="button" class="soft-button wf-cta-neutral dashboard-select-button" onclick="onDashboardSelectButtonClick()">Select</button>
