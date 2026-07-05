@@ -723,7 +723,7 @@ async function onDashboardFilterChange(value) {
 
 function updateDashboardToolbarUI() {
     const sortSelect = document.getElementById("dashboardSortSelect");
-    const sidebarNavItems = document.querySelectorAll(".dashboard-sidebar-nav-item[data-dashboard-filter]");
+    const sidebarNavItems = document.querySelectorAll(".wf-sidebar-item[data-dashboard-filter]");
     const sortHint = document.getElementById("dashboardSortHint");
     const hintMessages = [];
 
@@ -733,7 +733,7 @@ function updateDashboardToolbarUI() {
 
     sidebarNavItems.forEach((item) => {
         const isActive = item.dataset.dashboardFilter === dashboardFilterMode;
-        item.classList.toggle("dashboard-sidebar-nav-item--active", isActive);
+        item.classList.toggle("wf-sidebar-item--active", isActive);
         if (isActive) {
             item.setAttribute("aria-current", "page");
         } else {
