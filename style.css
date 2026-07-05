@@ -627,7 +627,8 @@ button:active {
     gap: var(--space-sm);
 }
 
-.dashboard-settings-button {
+.dashboard-settings-button,
+.wf-icon-button.dashboard-settings-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -644,20 +645,23 @@ button:active {
     transition: color 0.18s ease, transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
 }
 
-.dashboard-settings-button svg {
+.dashboard-settings-button svg,
+.wf-icon-button.dashboard-settings-button svg {
     width: 22px;
     height: 22px;
     flex-shrink: 0;
 }
 
-.dashboard-settings-button:hover {
+.dashboard-settings-button:hover,
+.wf-icon-button.dashboard-settings-button:hover {
     color: var(--color-primary);
     background: var(--wf-foam);
     border-color: rgba(63, 169, 245, 0.45);
     transform: rotate(8deg) scale(1.05);
 }
 
-.dashboard-settings-button:active {
+.dashboard-settings-button:active,
+.wf-icon-button.dashboard-settings-button:active {
     transform: rotate(8deg) scale(0.98);
 }
 
@@ -832,7 +836,8 @@ button:active {
     display: none;
 }
 
-#savedSetsList.dashboard-drag-disabled .set-drag-handle {
+#savedSetsList.dashboard-drag-disabled .set-drag-handle,
+#savedSetsList.dashboard-drag-disabled .wf-icon-button.set-drag-handle {
     opacity: 0.35;
     pointer-events: none;
     cursor: default;
@@ -918,6 +923,7 @@ button:active {
 }
 
 #savedSetsList.dashboard-selection-active .set-icon-button,
+#savedSetsList.dashboard-selection-active .wf-icon-button.set-icon-button,
 #savedSetsList.dashboard-selection-active .set-actions button {
     pointer-events: none;
     opacity: 0.45;
@@ -925,6 +931,7 @@ button:active {
 }
 
 #savedSetsList.dashboard-selection-active .set-icon-button:hover,
+#savedSetsList.dashboard-selection-active .wf-icon-button.set-icon-button:hover,
 #savedSetsList.dashboard-selection-active .set-actions button:hover {
     transform: none;
     background: transparent;
@@ -959,7 +966,8 @@ button:active {
     flex-shrink: 0;
 }
 
-#savedSetsList .set-favorite-button {
+#savedSetsList .set-favorite-button,
+#savedSetsList .wf-icon-button.set-favorite-button {
     width: 40px;
     height: 40px;
     min-height: 40px;
@@ -978,29 +986,35 @@ button:active {
     transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
-#savedSetsList .set-favorite-button svg {
+#savedSetsList .set-favorite-button svg,
+#savedSetsList .wf-icon-button.set-favorite-button svg {
     width: 18px;
     height: 18px;
 }
 
-#savedSetsList .set-favorite-button:hover:not(:disabled) {
+#savedSetsList .set-favorite-button:hover:not(:disabled),
+#savedSetsList .wf-icon-button.set-favorite-button:hover:not(:disabled) {
     background: rgba(0, 166, 200, 0.08);
     transform: none;
 }
 
-#savedSetsList .set-favorite-button:active:not(:disabled) {
+#savedSetsList .set-favorite-button:active:not(:disabled),
+#savedSetsList .wf-icon-button.set-favorite-button:active:not(:disabled) {
     transform: scale(0.96);
 }
 
-#savedSetsList .set-favorite-button.is-favorite {
+#savedSetsList .set-favorite-button.is-favorite,
+#savedSetsList .wf-icon-button.set-favorite-button.is-favorite {
     color: #F5B301;
 }
 
-#savedSetsList .set-favorite-button.is-favorite:hover:not(:disabled) {
+#savedSetsList .set-favorite-button.is-favorite:hover:not(:disabled),
+#savedSetsList .wf-icon-button.set-favorite-button.is-favorite:hover:not(:disabled) {
     background: rgba(245, 179, 1, 0.14);
 }
 
-#savedSetsList .set-drag-handle {
+#savedSetsList .set-drag-handle,
+#savedSetsList .wf-icon-button.set-drag-handle {
     position: static;
     width: 40px;
     height: 40px;
@@ -1020,17 +1034,20 @@ button:active {
     transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
-#savedSetsList .set-drag-handle svg {
+#savedSetsList .set-drag-handle svg,
+#savedSetsList .wf-icon-button.set-drag-handle svg {
     width: 18px;
     height: 18px;
 }
 
-#savedSetsList .set-drag-handle:hover:not(:disabled) {
+#savedSetsList .set-drag-handle:hover:not(:disabled),
+#savedSetsList .wf-icon-button.set-drag-handle:hover:not(:disabled) {
     background: rgba(0, 166, 200, 0.08);
     color: var(--sea);
 }
 
-#savedSetsList .set-drag-handle:active:not(:disabled) {
+#savedSetsList .set-drag-handle:active:not(:disabled),
+#savedSetsList .wf-icon-button.set-drag-handle:active:not(:disabled) {
     cursor: grabbing;
     transform: scale(0.96);
 }
@@ -2261,7 +2278,8 @@ h2 {
     margin-left: auto;
 }
 
-#savedSetsList .set-icon-button {
+#savedSetsList .set-icon-button,
+#savedSetsList .wf-icon-button.set-icon-button {
     width: 40px;
     height: 40px;
     min-height: 40px;
@@ -2279,12 +2297,14 @@ h2 {
     transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
-#savedSetsList .set-icon-button svg {
+#savedSetsList .set-icon-button svg,
+#savedSetsList .wf-icon-button.set-icon-button svg {
     width: 18px;
     height: 18px;
 }
 
-#savedSetsList .set-icon-button:hover {
+#savedSetsList .set-icon-button:hover,
+#savedSetsList .wf-icon-button.set-icon-button:hover {
     transform: none;
 }
 
@@ -2334,14 +2354,18 @@ h2 {
     margin: 0;
 }
 
-#savedSetsList .set-icon-button:active:not(:disabled) {
+#savedSetsList .set-icon-button:active:not(:disabled),
+#savedSetsList .wf-icon-button.set-icon-button:active:not(:disabled) {
     transform: scale(0.96);
     box-shadow: none;
 }
 
 #savedSetsList .set-favorite-button:focus-visible,
+#savedSetsList .wf-icon-button.set-favorite-button:focus-visible,
 #savedSetsList .set-drag-handle:focus-visible,
-#savedSetsList .set-icon-button:focus-visible {
+#savedSetsList .wf-icon-button.set-drag-handle:focus-visible,
+#savedSetsList .set-icon-button:focus-visible,
+#savedSetsList .wf-icon-button.set-icon-button:focus-visible {
     outline: 2px solid var(--wf-color-aqua-outline);
     outline-offset: 2px;
 }
@@ -5303,6 +5327,7 @@ h2 {
 }
 
 /* Classroom Back button — official Toolbar Button style */
+.wf-toolbar-button.classroom-back-button,
 #classroomPresentationScreen #classroomBackToPickerButton,
 #classroomFlashcardsScreen #classroomFlashcardsBackButton,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsBackButton,
@@ -5334,6 +5359,7 @@ h2 {
     border-color 0.15s ease;
 }
 
+.wf-toolbar-button.classroom-back-button:hover:not(:disabled),
 #classroomPresentationScreen #classroomBackToPickerButton:hover:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsBackButton:hover:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsBackButton:hover:not(:disabled),
@@ -5342,6 +5368,7 @@ h2 {
   transform: translateY(-1px);
 }
 
+.wf-toolbar-button.classroom-back-button:active:not(:disabled),
 #classroomPresentationScreen #classroomBackToPickerButton:active:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsBackButton:active:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsBackButton:active:not(:disabled),
@@ -5350,6 +5377,7 @@ h2 {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
+.wf-toolbar-button.classroom-back-button:focus-visible,
 #classroomPresentationScreen #classroomBackToPickerButton:focus-visible,
 #classroomFlashcardsScreen #classroomFlashcardsBackButton:focus-visible,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsBackButton:focus-visible,
@@ -5359,6 +5387,7 @@ h2 {
 }
 
 /* Classroom Fullscreen button — official Toolbar Button style */
+.wf-toolbar-button.classroom-fullscreen-button,
 #classroomPresentationScreen #classroomFullscreenButton,
 #classroomFlashcardsScreen #classroomFlashcardsFullscreenButton,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsFullscreenButton,
@@ -5390,6 +5419,7 @@ h2 {
     border-color 0.15s ease;
 }
 
+.wf-toolbar-button.classroom-fullscreen-button > span,
 #classroomPresentationScreen #classroomFullscreenButton > span,
 #classroomFlashcardsScreen #classroomFlashcardsFullscreenButton > span,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsFullscreenButton > span,
@@ -5397,6 +5427,7 @@ h2 {
   display: none;
 }
 
+.wf-toolbar-button.classroom-fullscreen-button svg,
 #classroomPresentationScreen #classroomFullscreenButton svg,
 #classroomFlashcardsScreen #classroomFlashcardsFullscreenButton svg,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsFullscreenButton svg,
@@ -5406,6 +5437,7 @@ h2 {
   flex-shrink: 0;
 }
 
+.wf-toolbar-button.classroom-fullscreen-button:hover:not(:disabled),
 #classroomPresentationScreen #classroomFullscreenButton:hover:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsFullscreenButton:hover:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsFullscreenButton:hover:not(:disabled),
@@ -5415,6 +5447,7 @@ h2 {
   transform: translateY(-1px);
 }
 
+.wf-toolbar-button.classroom-fullscreen-button:active:not(:disabled),
 #classroomPresentationScreen #classroomFullscreenButton:active:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsFullscreenButton:active:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsFullscreenButton:active:not(:disabled),
@@ -5423,6 +5456,7 @@ h2 {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
+.wf-toolbar-button.classroom-fullscreen-button:focus-visible,
 #classroomPresentationScreen #classroomFullscreenButton:focus-visible,
 #classroomFlashcardsScreen #classroomFlashcardsFullscreenButton:focus-visible,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsFullscreenButton:focus-visible,
@@ -5432,6 +5466,7 @@ h2 {
 }
 
 /* Classroom Shuffle / Loop — official Toolbar Toggle style */
+.wf-toolbar-button.wf-toggle-button.classroom-flashcard-mode-toggle,
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton,
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton,
@@ -5465,6 +5500,7 @@ h2 {
     color 180ms ease-out;
 }
 
+.wf-toolbar-button.wf-toggle-button.classroom-flashcard-mode-toggle:hover:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton:hover:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton:hover:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton:hover:not(:disabled),
@@ -5474,6 +5510,7 @@ h2 {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.10);
 }
 
+.wf-toolbar-button.wf-toggle-button.classroom-flashcard-mode-toggle:active:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton:active:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton:active:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton:active:not(:disabled),
@@ -5482,6 +5519,7 @@ h2 {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
+.wf-toolbar-button.wf-toggle-button.classroom-flashcard-mode-toggle:focus-visible,
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton:focus-visible,
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton:focus-visible,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton:focus-visible,
@@ -5493,7 +5531,11 @@ h2 {
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton.classroom-shuffle-button-active,
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton.classroom-loop-button-active,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.classroom-shuffle-button-active,
-#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.classroom-loop-button-active {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.classroom-loop-button-active,
+#classroomFlashcardsScreen #classroomFlashcardsShuffleButton.wf-toggle-button--active,
+#classroomFlashcardsScreen #classroomFlashcardsLoopButton.wf-toggle-button--active,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.wf-toggle-button--active,
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.wf-toggle-button--active {
   background: linear-gradient(180deg, #75DC58 0%, #16AE4A 100%);
   border-color: rgba(10, 120, 45, 0.28);
   color: #ffffff;
@@ -5502,7 +5544,11 @@ h2 {
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton.classroom-shuffle-button-active:hover:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton.classroom-loop-button-active:hover:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.classroom-shuffle-button-active:hover:not(:disabled),
-#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.classroom-loop-button-active:hover:not(:disabled) {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.classroom-loop-button-active:hover:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsShuffleButton.wf-toggle-button--active:hover:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsLoopButton.wf-toggle-button--active:hover:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.wf-toggle-button--active:hover:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.wf-toggle-button--active:hover:not(:disabled) {
   background: linear-gradient(180deg, #7BE661 0%, #18B84E 100%);
   transform: translateY(-1px);
   box-shadow: 0 3px 6px rgba(22, 174, 74, 0.18);
@@ -5511,7 +5557,11 @@ h2 {
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton.classroom-shuffle-button-active:active:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton.classroom-loop-button-active:active:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.classroom-shuffle-button-active:active:not(:disabled),
-#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.classroom-loop-button-active:active:not(:disabled) {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.classroom-loop-button-active:active:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsShuffleButton.wf-toggle-button--active:active:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsLoopButton.wf-toggle-button--active:active:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.wf-toggle-button--active:active:not(:disabled),
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.wf-toggle-button--active:active:not(:disabled) {
   transform: translateY(1px);
   box-shadow: 0 1px 2px rgba(22, 174, 74, 0.12);
 }

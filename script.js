@@ -909,10 +909,10 @@ function renderDashboard() {
                 <div class="set-card-header">
                     <div class="set-card-header-left"></div>
                     <div class="set-card-icon-actions">
-                        <button type="button" class="set-icon-button set-icon-restore" onclick="restoreSet('${escapeAttribute(setId)}')" aria-label="Restore set" title="Restore"${disabledAttr}>
+                        <button type="button" class="set-icon-button set-icon-restore wf-icon-button" onclick="restoreSet('${escapeAttribute(setId)}')" aria-label="Restore set" title="Restore"${disabledAttr}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"/></svg>
                         </button>
-                        <button type="button" class="set-icon-button set-icon-delete" onclick="deleteForeverSet('${escapeAttribute(setId)}')" aria-label="Delete forever" title="Delete Forever"${disabledAttr}>
+                        <button type="button" class="set-icon-button set-icon-delete wf-icon-button" onclick="deleteForeverSet('${escapeAttribute(setId)}')" aria-label="Delete forever" title="Delete Forever"${disabledAttr}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
                         </button>
                     </div>
@@ -949,24 +949,24 @@ function renderDashboard() {
                 </label>
                 <div class="set-card-header">
                     <div class="set-card-header-left">
-                        <button type="button" class="set-favorite-button${isFavorite ? " is-favorite" : ""}" onclick="toggleSetFavorite('${escapeAttribute(setId)}')" aria-label="${escapeAttribute(favoriteLabel)}" aria-pressed="${isFavorite ? "true" : "false"}" title="${escapeAttribute(favoriteLabel)}">
+                        <button type="button" class="set-favorite-button wf-icon-button${isFavorite ? " is-favorite" : ""}" onclick="toggleSetFavorite('${escapeAttribute(setId)}')" aria-label="${escapeAttribute(favoriteLabel)}" aria-pressed="${isFavorite ? "true" : "false"}" title="${escapeAttribute(favoriteLabel)}">
                             ${favoriteStarSvg}
                         </button>
-                        <button type="button" class="set-drag-handle" aria-label="Drag to reorder set" title="Drag to reorder"${disabledAttr}>
+                        <button type="button" class="set-drag-handle wf-icon-button" aria-label="Drag to reorder set" title="Drag to reorder"${disabledAttr}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
                         </button>
                     </div>
                     <div class="set-card-icon-actions">
-                        <button type="button" class="set-icon-button set-icon-edit" onclick="editSet('${escapeAttribute(setId)}')" aria-label="Edit set" title="Edit"${disabledAttr}>
+                        <button type="button" class="set-icon-button set-icon-edit wf-icon-button" onclick="editSet('${escapeAttribute(setId)}')" aria-label="Edit set" title="Edit"${disabledAttr}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
                         </button>
-                        <span class="set-icon-button set-icon-duplicate" role="button"${duplicateAttrs}>
+                        <span class="set-icon-button set-icon-duplicate wf-icon-button" role="button"${duplicateAttrs}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2m-6 12h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/></svg>
                         </span>
-                        <button type="button" class="set-icon-button set-icon-export" onclick="exportSet('${escapeAttribute(setId)}')" aria-label="Export set to Excel" title="Export"${disabledAttr}>
+                        <button type="button" class="set-icon-button set-icon-export wf-icon-button" onclick="exportSet('${escapeAttribute(setId)}')" aria-label="Export set to Excel" title="Export"${disabledAttr}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
                         </button>
-                        <button type="button" class="set-icon-button set-icon-delete" onclick="deleteSet('${escapeAttribute(setId)}')" aria-label="Delete set" title="Delete"${disabledAttr}>
+                        <button type="button" class="set-icon-button set-icon-delete wf-icon-button" onclick="deleteSet('${escapeAttribute(setId)}')" aria-label="Delete set" title="Delete"${disabledAttr}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
                         </button>
                     </div>
@@ -1936,6 +1936,7 @@ function updateClassroomFlashcardsShuffleButton() {
 
     shuffleButton.setAttribute("aria-pressed", classroomFlashcardsShuffleEnabled ? "true" : "false");
     shuffleButton.classList.toggle("classroom-shuffle-button-active", classroomFlashcardsShuffleEnabled);
+    shuffleButton.classList.toggle("wf-toggle-button--active", classroomFlashcardsShuffleEnabled);
 }
 
 function updateClassroomTextFlashcardsShuffleButton() {
@@ -1947,6 +1948,7 @@ function updateClassroomTextFlashcardsShuffleButton() {
 
     shuffleButton.setAttribute("aria-pressed", classroomTextFlashcardsShuffleEnabled ? "true" : "false");
     shuffleButton.classList.toggle("classroom-shuffle-button-active", classroomTextFlashcardsShuffleEnabled);
+    shuffleButton.classList.toggle("wf-toggle-button--active", classroomTextFlashcardsShuffleEnabled);
 }
 
 function updateClassroomFlashcardsLoopButton() {
@@ -1958,6 +1960,7 @@ function updateClassroomFlashcardsLoopButton() {
 
     loopButton.setAttribute("aria-pressed", classroomFlashcardsLoopEnabled ? "true" : "false");
     loopButton.classList.toggle("classroom-loop-button-active", classroomFlashcardsLoopEnabled);
+    loopButton.classList.toggle("wf-toggle-button--active", classroomFlashcardsLoopEnabled);
 }
 
 function updateClassroomTextFlashcardsLoopButton() {
@@ -1969,6 +1972,7 @@ function updateClassroomTextFlashcardsLoopButton() {
 
     loopButton.setAttribute("aria-pressed", classroomTextFlashcardsLoopEnabled ? "true" : "false");
     loopButton.classList.toggle("classroom-loop-button-active", classroomTextFlashcardsLoopEnabled);
+    loopButton.classList.toggle("wf-toggle-button--active", classroomTextFlashcardsLoopEnabled);
 }
 
 function toggleClassroomFlashcardsLoop() {
