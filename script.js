@@ -723,7 +723,7 @@ async function onDashboardFilterChange(value) {
 
 function updateDashboardToolbarUI() {
     const sortSelect = document.getElementById("dashboardSortSelect");
-    const filterSelect = document.getElementById("dashboardFilterSelect");
+    const viewOptions = document.querySelectorAll(".dashboard-view-option");
     const sortHint = document.getElementById("dashboardSortHint");
     const hintMessages = [];
 
@@ -731,9 +731,11 @@ function updateDashboardToolbarUI() {
         sortSelect.value = dashboardSortMode;
     }
 
-    if (filterSelect) {
-        filterSelect.value = dashboardFilterMode;
-    }
+    viewOptions.forEach((option) => {
+        const isActive = option.dataset.value === dashboardFilterMode;
+        option.classList.toggle("dashboard-view-option--active", isActive);
+        option.setAttribute("aria-pressed", isActive ? "true" : "false");
+    });
 
     if (isDashboardFavoritesFilterActive() || isDashboardTrashFilterActive()) {
         hintMessages.push("Switch to All Sets and Custom order to rearrange sets.");

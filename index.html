@@ -120,40 +120,37 @@
                     </div>
                 </header>
 
-                <div class="dashboard-primary-actions">
-                    <button type="button" class="soft-button wf-cta-neutral dashboard-import-button" onclick="openExcelImportPicker()">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
-                        Import Excel
-                    </button>
-                </div>
                 <input id="excelImportInput" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden onchange="handleExcelImportSelected(event)">
 
                 <div class="dashboard-library-toolbar">
                     <div class="dashboard-toolbar">
-            <div class="dashboard-search-field">
-                <input id="dashboardSearchInput" type="search" placeholder="Search sets..." oninput="onDashboardSearchInput(this.value)" aria-label="Search sets">
-            </div>
-            <div class="dashboard-sort-field">
-                <label for="dashboardSortSelect" class="dashboard-sort-label">Sort</label>
-                <select id="dashboardSortSelect" onchange="onDashboardSortChange(this.value)">
-                    <option value="custom">Custom order</option>
-                    <option value="newest">Newest</option>
-                    <option value="oldest">Oldest</option>
-                    <option value="az">A–Z</option>
-                    <option value="za">Z–A</option>
-                </select>
-            </div>
-            <div class="dashboard-filter-field">
-                <label for="dashboardFilterSelect" class="dashboard-sort-label">Filter</label>
-                <select id="dashboardFilterSelect" onchange="onDashboardFilterChange(this.value)">
-                    <option value="all">All Sets</option>
-                    <option value="favorites">Favorites</option>
-                    <option value="trash">Trash</option>
-                </select>
-            </div>
-            <div class="dashboard-select-field">
-                <button id="dashboardSelectButton" type="button" class="soft-button wf-cta-neutral dashboard-select-button" onclick="onDashboardSelectButtonClick()">Select</button>
-            </div>
+                        <div class="dashboard-search-field">
+                            <input id="dashboardSearchInput" type="search" placeholder="Search sets..." oninput="onDashboardSearchInput(this.value)" aria-label="Search sets">
+                        </div>
+                        <div class="dashboard-view-selector" role="group" aria-label="Library view">
+                            <button type="button" class="dashboard-view-option dashboard-view-option--active" data-value="all" aria-pressed="true" onclick="onDashboardFilterChange('all')">All Sets</button>
+                            <button type="button" class="dashboard-view-option" data-value="favorites" aria-pressed="false" onclick="onDashboardFilterChange('favorites')">Favorites</button>
+                            <button type="button" class="dashboard-view-option" data-value="trash" aria-pressed="false" onclick="onDashboardFilterChange('trash')">Trash</button>
+                        </div>
+                        <div class="dashboard-sort-field">
+                            <label for="dashboardSortSelect" class="dashboard-sort-label">Sort</label>
+                            <select id="dashboardSortSelect" onchange="onDashboardSortChange(this.value)">
+                                <option value="custom">Custom order</option>
+                                <option value="newest">Newest</option>
+                                <option value="oldest">Oldest</option>
+                                <option value="az">A–Z</option>
+                                <option value="za">Z–A</option>
+                            </select>
+                        </div>
+                        <div class="dashboard-toolbar-import">
+                            <button type="button" class="soft-button wf-cta-neutral dashboard-import-button" onclick="openExcelImportPicker()">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
+                                Import Excel
+                            </button>
+                        </div>
+                        <div class="dashboard-select-field">
+                            <button id="dashboardSelectButton" type="button" class="soft-button wf-cta-neutral dashboard-select-button" onclick="onDashboardSelectButtonClick()">Select</button>
+                        </div>
                         <p id="dashboardSortHint" class="dashboard-sort-hint" style="display: none;">Switch to Custom order to rearrange sets.</p>
                     </div>
                 </div>
