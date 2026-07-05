@@ -642,10 +642,10 @@ button:active {
 }
 
 .dashboard-sidebar {
-    flex: 0 0 244px;
-    width: 244px;
-    min-width: 240px;
-    max-width: 250px;
+    flex: 0 0 232px;
+    width: 232px;
+    min-width: 228px;
+    max-width: 240px;
     display: flex;
     flex-direction: column;
     align-self: stretch;
@@ -653,7 +653,7 @@ button:active {
     border-radius: var(--wf-radius-lg);
     box-shadow: 0 3px 12px rgba(7, 59, 76, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.92);
-    padding: 16px 12px 14px;
+    padding: 16px 10px 14px;
     gap: 0;
 }
 
@@ -665,7 +665,7 @@ button:active {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 0 6px 14px;
+    padding: 0 10px 16px;
 }
 
 .dashboard-sidebar-logo-mark {
@@ -698,7 +698,7 @@ button:active {
 }
 
 .dashboard-sidebar-nav {
-    padding: 0 2px;
+    padding: 0;
 }
 
 .dashboard-sidebar-nav-list {
@@ -707,34 +707,34 @@ button:active {
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 2px;
 }
 
 .dashboard-sidebar-nav-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: flex-start;
+    gap: 10px;
     width: 100%;
-    min-height: 32px;
-    padding: 6px 10px;
-    border: 1px solid rgba(214, 238, 251, 0.45);
+    min-height: 36px;
+    padding: 8px 10px;
+    border: none;
     border-radius: 8px;
-    background: #ffffff;
-    color: rgba(7, 59, 76, 0.82);
+    background: transparent;
+    color: rgba(7, 59, 76, 0.88);
     font-family: inherit;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 1.2;
     text-align: left;
     cursor: pointer;
-    box-shadow: 0 1px 2px rgba(7, 59, 76, 0.04);
-    transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: none;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
 .dashboard-sidebar-nav-item:hover {
-    background: #ffffff;
-    border-color: rgba(186, 228, 245, 0.65);
-    box-shadow: 0 1px 3px rgba(7, 59, 76, 0.06);
+    background: rgba(7, 59, 76, 0.05);
+    color: var(--wf-ocean-ink);
 }
 
 .dashboard-sidebar-nav-item:focus-visible {
@@ -744,9 +744,8 @@ button:active {
 
 .dashboard-sidebar-nav-item[aria-current="page"],
 .dashboard-sidebar-nav-item--active {
-    background: rgba(214, 238, 251, 0.52);
-    border-color: rgba(186, 228, 245, 0.75);
-    color: var(--wf-ocean-ink);
+    background: rgba(214, 238, 251, 0.62);
+    color: #0B6E8A;
     box-shadow: none;
 }
 
@@ -754,15 +753,15 @@ button:active {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 17px;
-    height: 17px;
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
-    color: rgba(11, 110, 138, 0.58);
+    color: rgba(11, 110, 138, 0.62);
 }
 
 .dashboard-sidebar-nav-item--active .dashboard-sidebar-nav-icon,
 .dashboard-sidebar-nav-item[aria-current="page"] .dashboard-sidebar-nav-icon {
-    color: rgba(11, 110, 138, 0.72);
+    color: #0B6E8A;
 }
 
 .dashboard-sidebar-nav-icon svg {
@@ -771,24 +770,48 @@ button:active {
 }
 
 .dashboard-sidebar-divider {
-    border: none;
-    border-top: 1px solid rgba(7, 59, 76, 0.08);
-    margin: 14px 6px;
+    display: none;
 }
 
 .dashboard-sidebar-utilities {
-    padding: 0 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 0 0;
+    margin: 0;
 }
 
 .dashboard-sidebar-bottom {
     margin-top: auto;
-    padding: 14px 2px 0;
-    border-top: 1px solid rgba(7, 59, 76, 0.08);
+    padding: 28px 0 0;
+    border-top: none;
 }
 
 .dashboard-sidebar-settings,
-.dashboard-sidebar-logout {
-    color: rgba(7, 59, 76, 0.82);
+.dashboard-sidebar-help {
+    margin: 0;
+}
+
+#dashboardScreen .dashboard-sidebar-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+    padding: 0 14px;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    border-radius: 12px;
+}
+
+#dashboardScreen .dashboard-sidebar-logout svg {
+    position: relative;
+    z-index: 1;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
 }
 
 .dashboard-main {
@@ -5591,7 +5614,8 @@ h2 {
 #savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"],
 #cardsList .word-card-header button.red-button,
 #cardsList .word-card-header button[onclick^="deleteWord"],
-#settingsModal .settings-logout-button {
+#settingsModal .settings-logout-button,
+#dashboardScreen .dashboard-sidebar-logout {
   position: relative;
   overflow: hidden;
 
@@ -5618,7 +5642,8 @@ h2 {
 #savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"]::before,
 #cardsList .word-card-header button.red-button::before,
 #cardsList .word-card-header button[onclick^="deleteWord"]::before,
-#settingsModal .settings-logout-button::before {
+#settingsModal .settings-logout-button::before,
+#dashboardScreen .dashboard-sidebar-logout::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
@@ -5639,7 +5664,8 @@ h2 {
 #savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"]::after,
 #cardsList .word-card-header button.red-button::after,
 #cardsList .word-card-header button[onclick^="deleteWord"]::after,
-#settingsModal .settings-logout-button::after {
+#settingsModal .settings-logout-button::after,
+#dashboardScreen .dashboard-sidebar-logout::after {
   content: "";
   position: absolute;
   inset: auto 0 0 0;
@@ -5660,7 +5686,8 @@ h2 {
 #savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"]:not(:disabled):hover,
 #cardsList .word-card-header button.red-button:not(:disabled):hover,
 #cardsList .word-card-header button[onclick^="deleteWord"]:not(:disabled):hover,
-#settingsModal .settings-logout-button:not(:disabled):hover {
+#settingsModal .settings-logout-button:not(:disabled):hover,
+#dashboardScreen .dashboard-sidebar-logout:not(:disabled):hover {
   background: linear-gradient(180deg, #FC6860 0%, #EF2E30 100%);
   transform: translateY(-1px);
 }
@@ -5673,7 +5700,8 @@ h2 {
 #savedSetsList .set-actions-trash button[onclick^="deleteForeverSet"]:not(:disabled):active,
 #cardsList .word-card-header button.red-button:not(:disabled):active,
 #cardsList .word-card-header button[onclick^="deleteWord"]:not(:disabled):active,
-#settingsModal .settings-logout-button:not(:disabled):active {
+#settingsModal .settings-logout-button:not(:disabled):active,
+#dashboardScreen .dashboard-sidebar-logout:not(:disabled):active {
   transform: translateY(2px);
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
@@ -6144,8 +6172,8 @@ body:has(#dashboardScreen[style*="display:block"])::before {
 }
 
 #dashboardScreen.screen--dashboard {
-    width: min(1360px, calc(100vw - 28px));
-    padding: 18px 22px 24px;
+    width: min(1540px, calc(100vw - 24px));
+    padding: 16px 20px 22px;
     text-align: left;
     background: rgba(255, 255, 255, 0.58);
     border: 1px solid rgba(255, 255, 255, 0.82);

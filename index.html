@@ -96,7 +96,6 @@
                         </li>
                     </ul>
                 </nav>
-                <hr class="dashboard-sidebar-divider">
                 <div class="dashboard-sidebar-utilities">
                     <button type="button" class="dashboard-sidebar-nav-item dashboard-sidebar-settings" onclick="openSettingsModal()">
                         <span class="dashboard-sidebar-nav-icon" aria-hidden="true">
@@ -104,12 +103,16 @@
                         </span>
                         Settings
                     </button>
+                    <button type="button" class="dashboard-sidebar-nav-item dashboard-sidebar-help">
+                        <span class="dashboard-sidebar-nav-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"/></svg>
+                        </span>
+                        Help
+                    </button>
                 </div>
                 <div class="dashboard-sidebar-bottom">
-                    <button type="button" class="dashboard-sidebar-nav-item dashboard-sidebar-logout" onclick="logout()">
-                        <span class="dashboard-sidebar-nav-icon" aria-hidden="true">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/></svg>
-                        </span>
+                    <button type="button" class="red-button wf-cta-danger dashboard-sidebar-logout" onclick="logout()">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/></svg>
                         Log Out
                     </button>
                 </div>
