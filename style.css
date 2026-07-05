@@ -642,19 +642,19 @@ button:active {
 }
 
 .dashboard-sidebar {
-    flex: 0 0 240px;
-    width: 240px;
+    flex: 0 0 244px;
+    width: 244px;
     min-width: 240px;
-    max-width: 240px;
+    max-width: 250px;
     display: flex;
     flex-direction: column;
     align-self: stretch;
     background: var(--wf-card-white);
     border-radius: var(--wf-radius-lg);
-    box-shadow: 0 4px 14px rgba(7, 59, 76, 0.06);
+    box-shadow: 0 3px 12px rgba(7, 59, 76, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.92);
-    padding: 20px 14px 16px;
-    gap: 10px;
+    padding: 16px 12px 14px;
+    gap: 0;
 }
 
 .dashboard-sidebar[hidden] {
@@ -662,13 +662,22 @@ button:active {
 }
 
 .dashboard-sidebar-logo {
-    padding: 4px 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 6px 14px;
 }
 
 .dashboard-sidebar-logo-mark {
-    font-size: 22px;
-    line-height: 1;
-    margin-bottom: 4px;
+    display: block;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.dashboard-sidebar-logo-text {
+    min-width: 0;
 }
 
 .dashboard-sidebar-logo-title {
@@ -677,13 +686,19 @@ button:active {
     font-weight: 700;
     color: var(--wf-ocean-ink);
     letter-spacing: -0.01em;
+    line-height: 1.15;
 }
 
 .dashboard-sidebar-logo-subtitle {
-    margin: 2px 0 0;
+    margin: 1px 0 0;
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--wf-color-ink-muted);
+    line-height: 1.2;
+}
+
+.dashboard-sidebar-nav {
+    padding: 0 2px;
 }
 
 .dashboard-sidebar-nav-list {
@@ -692,7 +707,7 @@ button:active {
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 6px;
 }
 
 .dashboard-sidebar-nav-item {
@@ -700,11 +715,11 @@ button:active {
     align-items: center;
     gap: 8px;
     width: 100%;
-    min-height: 36px;
-    padding: 7px 10px;
-    border: none;
-    border-radius: 10px;
-    background: transparent;
+    min-height: 32px;
+    padding: 6px 10px;
+    border: 1px solid rgba(214, 238, 251, 0.45);
+    border-radius: 8px;
+    background: #ffffff;
     color: rgba(7, 59, 76, 0.82);
     font-family: inherit;
     font-size: 0.875rem;
@@ -712,12 +727,14 @@ button:active {
     line-height: 1.2;
     text-align: left;
     cursor: pointer;
-    box-shadow: none;
-    transition: background 0.15s ease, color 0.15s ease;
+    box-shadow: 0 1px 2px rgba(7, 59, 76, 0.04);
+    transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .dashboard-sidebar-nav-item:hover {
-    background: rgba(214, 238, 251, 0.45);
+    background: #ffffff;
+    border-color: rgba(186, 228, 245, 0.65);
+    box-shadow: 0 1px 3px rgba(7, 59, 76, 0.06);
 }
 
 .dashboard-sidebar-nav-item:focus-visible {
@@ -727,7 +744,8 @@ button:active {
 
 .dashboard-sidebar-nav-item[aria-current="page"],
 .dashboard-sidebar-nav-item--active {
-    background: rgba(214, 238, 251, 0.72);
+    background: rgba(214, 238, 251, 0.52);
+    border-color: rgba(186, 228, 245, 0.75);
     color: var(--wf-ocean-ink);
     box-shadow: none;
 }
@@ -736,15 +754,15 @@ button:active {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 18px;
-    height: 18px;
+    width: 17px;
+    height: 17px;
     flex-shrink: 0;
-    color: rgba(11, 110, 138, 0.62);
+    color: rgba(11, 110, 138, 0.58);
 }
 
 .dashboard-sidebar-nav-item--active .dashboard-sidebar-nav-icon,
 .dashboard-sidebar-nav-item[aria-current="page"] .dashboard-sidebar-nav-icon {
-    color: rgba(11, 110, 138, 0.78);
+    color: rgba(11, 110, 138, 0.72);
 }
 
 .dashboard-sidebar-nav-icon svg {
@@ -754,22 +772,23 @@ button:active {
 
 .dashboard-sidebar-divider {
     border: none;
-    border-top: 1px solid var(--wf-color-ink-border-soft);
-    margin: var(--space-xs) var(--space-sm);
+    border-top: 1px solid rgba(7, 59, 76, 0.08);
+    margin: 14px 6px;
 }
 
 .dashboard-sidebar-utilities {
-    padding: 0;
+    padding: 0 2px;
 }
 
 .dashboard-sidebar-bottom {
     margin-top: auto;
-    padding-top: 12px;
-    border-top: 1px solid var(--wf-color-ink-border-soft);
+    padding: 14px 2px 0;
+    border-top: 1px solid rgba(7, 59, 76, 0.08);
 }
 
+.dashboard-sidebar-settings,
 .dashboard-sidebar-logout {
-    color: var(--wf-ocean-deep);
+    color: rgba(7, 59, 76, 0.82);
 }
 
 .dashboard-main {
