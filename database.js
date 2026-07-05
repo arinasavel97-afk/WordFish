@@ -72,6 +72,7 @@ async function dbLoadSetsWithCards() {
             name: set.name,
             position: set.position,
             created_at: set.created_at,
+            updated_at: set.updated_at,
             is_favorite: !!set.is_favorite,
             cards: cardsForSet
         };
@@ -116,6 +117,7 @@ async function dbLoadTrashedSetsWithCards() {
             name: set.name,
             position: set.position,
             created_at: set.created_at,
+            updated_at: set.updated_at,
             deleted_at: set.deleted_at,
             is_favorite: !!set.is_favorite,
             cards: cardsForSet

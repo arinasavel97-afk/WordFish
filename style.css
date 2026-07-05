@@ -587,7 +587,7 @@ button:active {
 
 #savedSetsList {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
     gap: 6px;
     align-items: stretch;
     margin: 12px 0 0;
@@ -1426,7 +1426,7 @@ button:active {
 #savedSetsList .set-card-body {
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: 4px;
     flex: 1 1 auto;
     padding: 6px 10px 8px;
     min-height: 0;
@@ -1741,7 +1741,7 @@ button:active {
 }
 
 #savedSetsList .set-card-title {
-    margin: 1px 0 0;
+    margin: 0;
     color: var(--wf-ocean-ink);
     font-size: clamp(1rem, 1.35vw, 1.125rem);
     font-weight: 700;
@@ -1749,12 +1749,25 @@ button:active {
     word-break: break-word;
 }
 
+#savedSetsList .set-card-metadata-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0;
+}
+
 #savedSetsList .set-card-metadata {
-    margin: 1px 0 0;
+    margin: 0;
     font-size: 0.8125rem;
     font-weight: 500;
-    line-height: 1.2;
+    line-height: 1.25;
     color: rgba(7, 59, 76, 0.46);
+}
+
+#savedSetsList .set-card-metadata--edited {
+    color: rgba(7, 59, 76, 0.34);
 }
 
 #savedSetsList .set-card-footer {
@@ -1763,7 +1776,7 @@ button:active {
     gap: 6px;
     align-items: stretch;
     margin-top: auto;
-    padding-top: 5px;
+    padding-top: 6px;
 }
 
 #savedSetsList .set-card-footer.set-actions button {
@@ -2393,7 +2406,7 @@ button:active {
 
 @media (max-width: 1100px) {
     #savedSetsList {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(252px, 1fr));
     }
 }
 

@@ -853,6 +853,42 @@ function buildSetCardMetadataLine(wordCount, imageCount) {
     return `${wordCount} ${wordsLabel} • ${imageCount} ${imagesLabel}`;
 }
 
+function formatSetLastEditedLine(updatedAt, createdAt) {
+    const timestamp = updatedAt || createdAt;
+    if (!timestamp) {
+        return "";
+    }
+
+    const editedDate = new Date(timestamp);
+    if (Number.isNaN(editedDate.getTime())) {
+        return "";
+    }
+
+    const now = new Date();
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const timeLabel = editedDate.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    });
+
+    let dayLabel;
+    if (editedDate.toDateString() === now.toDateString()) {
+        dayLabel = "Today";
+    } else if (editedDate.toDateString() === yesterday.toDateString()) {
+        dayLabel = "Yesterday";
+    } else {
+        dayLabel = editedDate.toLocaleDateString([], {
+            month: "short",
+            day: "numeric",
+        });
+    }
+
+    return `Last edited: ${dayLabel}, ${timeLabel}`;
+}
+
 function buildSetCardOverflowMenuHtml(setId, disabledAttr) {
     const iconSvg = (paths) =>
         `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="${paths}"/></svg>`;
@@ -1016,6 +1052,7 @@ function renderDashboard() {
             let cardDisabled = dashboardSelectionMode;
             let disabledAttr = cardDisabled ? " disabled" : "";
             let metadataLine = buildSetCardMetadataLine(wordCount, imageCount);
+            let lastEditedLine = formatSetLastEditedLine(set.updated_at, set.created_at);
 
             savedSetsList.innerHTML += `
             <div class="card set-card set-card-v2 set-card-trash ${getSetCardAccentClass(setId)}${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
@@ -1025,7 +1062,10 @@ function renderDashboard() {
                         <input type="checkbox" class="set-card-select-input" aria-label="Select ${escapeAttribute(set.name)}" ${isSelected ? "checked" : ""} onchange="onSetSelectionChange('${escapeAttribute(setId)}', this.checked)">
                     </label>
                     <h2 class="set-card-title">${escapeHTML(set.name)}</h2>
-                    <p class="set-card-metadata">${metadataLine}</p>
+                    <div class="set-card-metadata-group">
+                        <p class="set-card-metadata">${metadataLine}</p>
+                        <p class="set-card-metadata set-card-metadata--edited">${escapeHTML(lastEditedLine)}</p>
+                    </div>
                     <div class="set-actions set-card-footer set-actions-trash">
                         <button class="green-button wf-cta-primary" onclick="restoreSet('${escapeAttribute(setId)}')"${disabledAttr}>Restore</button>
                         <button class="red-button wf-cta-danger" onclick="deleteForeverSet('${escapeAttribute(setId)}')"${disabledAttr}>Delete Forever</button>
@@ -1044,6 +1084,7 @@ function renderDashboard() {
             ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd"/></svg>'
             : '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"/></svg>';
         let metadataLine = buildSetCardMetadataLine(wordCount, imageCount);
+        let lastEditedLine = formatSetLastEditedLine(set.updated_at, set.created_at);
 
         savedSetsList.innerHTML += `
             <div class="card set-card set-card-v2 ${getSetCardAccentClass(setId)}${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
@@ -1062,7 +1103,10 @@ function renderDashboard() {
                         ${buildSetCardOverflowMenuHtml(setId, disabledAttr)}
                     </div>
                     <h2 class="set-card-title">${escapeHTML(set.name)}</h2>
-                    <p class="set-card-metadata">${metadataLine}</p>
+                    <div class="set-card-metadata-group">
+                        <p class="set-card-metadata">${metadataLine}</p>
+                        <p class="set-card-metadata set-card-metadata--edited">${escapeHTML(lastEditedLine)}</p>
+                    </div>
                     <div class="set-actions set-card-footer">
                         <button class="green-button wf-cta-primary" onclick="openPlayChoice('${escapeAttribute(setId)}')"${disabledAttr}>Play</button>
                         <button class="share-button wf-cta-secondary" onclick="openShareDialog('${escapeAttribute(setId)}')"${disabledAttr}>Share</button>
