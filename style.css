@@ -5456,3 +5456,65 @@ h2 {
   transform: translateY(1px);
   box-shadow: 0 1px 2px rgba(22, 174, 74, 0.12);
 }
+
+/* Text Toggle prototype — Show / Hide Translation */
+#classroomPresentationScreen #classroomToggleTranslationButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 44px;
+  min-height: 44px;
+  padding: 0 16px;
+  margin: 0;
+
+  background: #ffffff;
+  border: 1px solid rgba(120, 190, 215, 0.35);
+  border-radius: 12px;
+
+  color: #073B4C;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 180ms ease-out,
+    box-shadow 180ms ease-out,
+    background 180ms ease-out,
+    border-color 180ms ease-out;
+}
+
+#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active {
+  background: #EAF7FF;
+  border-color: rgba(120, 190, 215, 0.58);
+  color: #073B4C;
+}
+
+#classroomPresentationScreen #classroomToggleTranslationButton:hover:not(:disabled):not(.disabled-button) {
+  background: #f8fcff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.10);
+}
+
+#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active:hover:not(:disabled):not(.disabled-button) {
+  background: #F0FAFF;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(120, 190, 215, 0.14);
+}
+
+#classroomPresentationScreen #classroomToggleTranslationButton:active:not(:disabled):not(.disabled-button) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active:active:not(:disabled):not(.disabled-button) {
+  box-shadow: 0 1px 2px rgba(120, 190, 215, 0.10);
+}
+
+#classroomPresentationScreen #classroomToggleTranslationButton:focus-visible {
+  outline: 2px solid var(--wf-color-aqua-outline);
+  outline-offset: 2px;
+}

@@ -1384,6 +1384,8 @@ function updateClassroomTranslationUI() {
 
     translationEl.hidden = !classroomTranslationVisible;
     toggleButton.textContent = classroomTranslationVisible ? "Hide Translation" : "Show Translation";
+    toggleButton.classList.toggle("classroom-toggle-translation-button-active", classroomTranslationVisible);
+    toggleButton.setAttribute("aria-pressed", classroomTranslationVisible ? "true" : "false");
 }
 
 function toggleClassroomTranslation() {
