@@ -4928,7 +4928,14 @@ h2 {
 #classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"],
 #classroomPresentationScreen #classroomNextButton,
 #classroomFlashcardsScreen #classroomFlashcardsNextButton,
-#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton,
+#authScreen button.green-button[onclick="login()"],
+#dashboardBulkRestoreButton,
+#teacherScreen button.green-button[onclick="createSetAndOpenCards()"],
+#cardsScreen .editor-toolbar button.green-button[onclick="addNewWord()"],
+#gameScreen button.green-button[onclick="checkAnswer()"],
+#resultsScreen button.green-button[onclick^="startGame"],
+#savedSetsList .set-actions-trash button.green-button[onclick^="restoreSet"] {
   position: relative;
   overflow: hidden;
 
@@ -4956,7 +4963,14 @@ h2 {
 #classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]::before,
 #classroomPresentationScreen #classroomNextButton::before,
 #classroomFlashcardsScreen #classroomFlashcardsNextButton::before,
-#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton::before {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton::before,
+#authScreen button.green-button[onclick="login()"]::before,
+#dashboardBulkRestoreButton::before,
+#teacherScreen button.green-button[onclick="createSetAndOpenCards()"]::before,
+#cardsScreen .editor-toolbar button.green-button[onclick="addNewWord()"]::before,
+#gameScreen button.green-button[onclick="checkAnswer()"]::before,
+#resultsScreen button.green-button[onclick^="startGame"]::before,
+#savedSetsList .set-actions-trash button.green-button[onclick^="restoreSet"]::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
@@ -4978,7 +4992,14 @@ h2 {
 #classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]::after,
 #classroomPresentationScreen #classroomNextButton::after,
 #classroomFlashcardsScreen #classroomFlashcardsNextButton::after,
-#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton::after {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton::after,
+#authScreen button.green-button[onclick="login()"]::after,
+#dashboardBulkRestoreButton::after,
+#teacherScreen button.green-button[onclick="createSetAndOpenCards()"]::after,
+#cardsScreen .editor-toolbar button.green-button[onclick="addNewWord()"]::after,
+#gameScreen button.green-button[onclick="checkAnswer()"]::after,
+#resultsScreen button.green-button[onclick^="startGame"]::after,
+#savedSetsList .set-actions-trash button.green-button[onclick^="restoreSet"]::after {
   content: "";
   position: absolute;
   inset: auto 0 0 0;
@@ -5000,7 +5021,14 @@ h2 {
 #classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:hover,
 #classroomPresentationScreen #classroomNextButton:hover,
 #classroomFlashcardsScreen #classroomFlashcardsNextButton:hover,
-#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton:hover {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton:hover,
+#authScreen button.green-button[onclick="login()"]:hover,
+#dashboardBulkRestoreButton:hover,
+#teacherScreen button.green-button[onclick="createSetAndOpenCards()"]:hover,
+#cardsScreen .editor-toolbar button.green-button[onclick="addNewWord()"]:hover,
+#gameScreen button.green-button[onclick="checkAnswer()"]:hover,
+#resultsScreen button.green-button[onclick^="startGame"]:hover,
+#savedSetsList .set-actions-trash button.green-button[onclick^="restoreSet"]:hover {
   background: linear-gradient(180deg, #7BE661 0%, #18B84E 100%);
   transform: translateY(-1px);
 }
@@ -5014,7 +5042,14 @@ h2 {
 #classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:active,
 #classroomPresentationScreen #classroomNextButton:active,
 #classroomFlashcardsScreen #classroomFlashcardsNextButton:active,
-#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton:active {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsNextButton:active,
+#authScreen button.green-button[onclick="login()"]:active,
+#dashboardBulkRestoreButton:active,
+#teacherScreen button.green-button[onclick="createSetAndOpenCards()"]:active,
+#cardsScreen .editor-toolbar button.green-button[onclick="addNewWord()"]:active,
+#gameScreen button.green-button[onclick="checkAnswer()"]:active,
+#resultsScreen button.green-button[onclick^="startGame"]:active,
+#savedSetsList .set-actions-trash button.green-button[onclick^="restoreSet"]:active {
   transform: translateY(2px);
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),

@@ -923,7 +923,7 @@ function renderDashboard() {
                 <p><span class="small-label">Images:</span> ${imageCount}</p>
 
                 <div class="set-actions set-actions-trash">
-                    <button class="green-button" onclick="restoreSet('${escapeAttribute(setId)}')"${disabledAttr}>Restore</button>
+                    <button class="green-button wf-cta-primary" onclick="restoreSet('${escapeAttribute(setId)}')"${disabledAttr}>Restore</button>
                     <button class="red-button wf-cta-danger" onclick="deleteForeverSet('${escapeAttribute(setId)}')"${disabledAttr}>Delete Forever</button>
                 </div>
             </div>
