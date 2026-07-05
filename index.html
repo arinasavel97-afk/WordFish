@@ -64,12 +64,12 @@
         <p class="subtitle">Create vocabulary sets and play ocean-style word games.</p>
 
         <div class="dashboard-primary-actions">
-            <button class="green-button" onclick="showTeacherScreen()">➕ New Set</button>
-            <button type="button" class="soft-button dashboard-import-button" onclick="openExcelImportPicker()">
+            <button class="green-button wf-cta-primary" onclick="showTeacherScreen()">➕ New Set</button>
+            <button type="button" class="soft-button wf-cta-neutral dashboard-import-button" onclick="openExcelImportPicker()">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
                 Import Excel
             </button>
-            <button type="button" id="dashboardClassroomButton" class="soft-button dashboard-classroom-button">
+            <button type="button" id="dashboardClassroomButton" class="soft-button wf-cta-primary dashboard-classroom-button">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21h16.5a2.25 2.25 0 0 0 2.25-2.25V5.25A2.25 2.25 0 0 0 20.25 3H3.75Zm0 0H20.25M9 16.5v.75m3-3v3m3-3v3"/></svg>
                 Classroom Mode
             </button>
@@ -99,7 +99,7 @@
                 </select>
             </div>
             <div class="dashboard-select-field">
-                <button id="dashboardSelectButton" type="button" class="soft-button dashboard-select-button" onclick="onDashboardSelectButtonClick()">Select</button>
+                <button id="dashboardSelectButton" type="button" class="soft-button wf-cta-neutral dashboard-select-button" onclick="onDashboardSelectButtonClick()">Select</button>
             </div>
             <p id="dashboardSortHint" class="dashboard-sort-hint" style="display: none;">Switch to Custom order to rearrange sets.</p>
         </div>
@@ -108,10 +108,10 @@
             <span id="dashboardSelectionCount" class="dashboard-selection-count">✓ 0 selected</span>
             <div class="dashboard-selection-bar-actions">
                 <button id="dashboardBulkDuplicateButton" type="button" class="duplicate-button disabled-button" disabled onclick="openBulkDuplicateConfirm()">Duplicate</button>
-                <button id="dashboardBulkDeleteButton" type="button" class="red-button disabled-button" disabled onclick="openBulkDeleteConfirm()">Delete</button>
+                <button id="dashboardBulkDeleteButton" type="button" class="red-button wf-cta-danger disabled-button" disabled onclick="openBulkDeleteConfirm()">Delete</button>
                 <button id="dashboardBulkRestoreButton" type="button" class="green-button disabled-button" disabled onclick="restoreSelectedSets()" hidden>Restore</button>
-                <button id="dashboardBulkDeleteForeverButton" type="button" class="red-button disabled-button" disabled onclick="openBulkDeleteForeverConfirm()" hidden>Delete Forever</button>
-                <button type="button" class="soft-button" onclick="cancelDashboardSelection()">Cancel</button>
+                <button id="dashboardBulkDeleteForeverButton" type="button" class="red-button wf-cta-danger disabled-button" disabled onclick="openBulkDeleteForeverConfirm()" hidden>Delete Forever</button>
+                <button type="button" class="soft-button wf-cta-neutral" onclick="cancelDashboardSelection()">Cancel</button>
             </div>
         </div>
 
@@ -123,7 +123,7 @@
         <h1>Classroom Mode</h1>
         <p class="subtitle">Choose a vocabulary set to use on the board.</p>
 
-        <button type="button" class="soft-button classroom-nav-button" onclick="returnToDashboardFromClassroom()">⬅ Back to Dashboard</button>
+        <button type="button" class="soft-button wf-cta-neutral classroom-nav-button" onclick="returnToDashboardFromClassroom()">⬅ Back to Dashboard</button>
 
         <div id="classroomSetsList" class="classroom-sets-list"></div>
     </div>
@@ -133,7 +133,7 @@
         <h1 id="classroomActivityMenuTitle" class="classroom-activity-menu-title">Set Name</h1>
         <p class="subtitle classroom-activity-menu-subtitle">Choose an activity for your lesson.</p>
 
-        <button type="button" class="soft-button classroom-nav-button" onclick="showClassroomPicker()">⬅ Back to set picker</button>
+        <button type="button" class="soft-button wf-cta-neutral classroom-nav-button" onclick="showClassroomPicker()">⬅ Back to set picker</button>
 
         <div id="classroomActivityMenuEmpty" class="classroom-activity-menu-empty" style="display: none;">
             <div class="card classroom-empty-card classroom-no-cards-card">
@@ -147,28 +147,28 @@
                 <h2 class="classroom-activity-name">Presentation</h2>
                 <p class="classroom-activity-description">Show words and pictures on the board.</p>
                 <p class="classroom-activity-status classroom-activity-status-available">Available</p>
-                <button type="button" class="green-button" onclick="startClassroomPresentationFromActivityMenu()">Start</button>
+                <button type="button" class="green-button wf-cta-primary" onclick="startClassroomPresentationFromActivityMenu()">Start</button>
             </article>
 
             <article class="card classroom-activity-card">
                 <h2 class="classroom-activity-name">Flashcards</h2>
                 <p class="classroom-activity-description">Flip cards and practice vocabulary.</p>
                 <p class="classroom-activity-status classroom-activity-status-available">Available</p>
-                <button type="button" class="green-button" onclick="startClassroomFlashcardsFromActivityMenu()">Start</button>
+                <button type="button" class="green-button wf-cta-primary" onclick="startClassroomFlashcardsFromActivityMenu()">Start</button>
             </article>
 
             <article class="card classroom-activity-card">
                 <h2 class="classroom-activity-name">Text Flashcards</h2>
                 <p class="classroom-activity-description">Practice words without pictures.</p>
                 <p class="classroom-activity-status classroom-activity-status-available">Available</p>
-                <button type="button" class="green-button" onclick="startClassroomTextFlashcardsFromActivityMenu()">Start</button>
+                <button type="button" class="green-button wf-cta-primary" onclick="startClassroomTextFlashcardsFromActivityMenu()">Start</button>
             </article>
 
             <article class="card classroom-activity-card">
                 <h2 class="classroom-activity-name">📋 Vocabulary Board</h2>
                 <p class="classroom-activity-description">Display the entire vocabulary set on one screen.</p>
                 <p class="classroom-activity-status classroom-activity-status-available">Available</p>
-                <button type="button" class="green-button" onclick="startClassroomVocabularyBoardFromActivityMenu()">Start</button>
+                <button type="button" class="green-button wf-cta-primary" onclick="startClassroomVocabularyBoardFromActivityMenu()">Start</button>
             </article>
         </div>
     </div>
@@ -211,14 +211,14 @@
                 <div class="classroom-presentation-word-group">
                     <p id="classroomPresentationEnglish" class="classroom-presentation-english">Word</p>
                     <p id="classroomPresentationTranslation" class="classroom-presentation-translation" hidden>Translation</p>
-                    <button id="classroomToggleTranslationButton" type="button" class="soft-button classroom-toggle-translation-button" aria-pressed="false">Show Translation</button>
+                    <button id="classroomToggleTranslationButton" type="button" class="soft-button wf-toggle-button classroom-toggle-translation-button" aria-pressed="false">Show Translation</button>
                 </div>
             </section>
         </main>
 
         <footer class="classroom-presentation-footer">
-            <button id="classroomPrevButton" type="button" class="soft-button classroom-nav-prev-button">← Previous</button>
-            <button id="classroomNextButton" type="button" class="green-button classroom-nav-next-button">Next →</button>
+            <button id="classroomPrevButton" type="button" class="soft-button wf-cta-neutral classroom-nav-prev-button">← Previous</button>
+            <button id="classroomNextButton" type="button" class="green-button wf-cta-primary classroom-nav-next-button">Next →</button>
         </footer>
     </div>
 
@@ -285,8 +285,8 @@
         </main>
 
         <footer class="classroom-flashcards-footer">
-            <button id="classroomFlashcardsPrevButton" type="button" class="soft-button classroom-nav-prev-button">← Previous</button>
-            <button id="classroomFlashcardsNextButton" type="button" class="green-button classroom-nav-next-button">Next →</button>
+            <button id="classroomFlashcardsPrevButton" type="button" class="soft-button wf-cta-neutral classroom-nav-prev-button">← Previous</button>
+            <button id="classroomFlashcardsNextButton" type="button" class="green-button wf-cta-primary classroom-nav-next-button">Next →</button>
         </footer>
     </div>
 
@@ -339,8 +339,8 @@
         </main>
 
         <footer class="classroom-text-flashcards-footer">
-            <button id="classroomTextFlashcardsPrevButton" type="button" class="soft-button classroom-nav-prev-button">← Previous</button>
-            <button id="classroomTextFlashcardsNextButton" type="button" class="green-button classroom-nav-next-button">Next →</button>
+            <button id="classroomTextFlashcardsPrevButton" type="button" class="soft-button wf-cta-neutral classroom-nav-prev-button">← Previous</button>
+            <button id="classroomTextFlashcardsNextButton" type="button" class="green-button wf-cta-primary classroom-nav-next-button">Next →</button>
         </footer>
     </div>
 
@@ -447,26 +447,26 @@
 
     <div id="playChoiceModal" class="modal-backdrop" style="display: none;">
         <div class="modal-card">
-            <button class="modal-close" onclick="closePlayChoice()">✕</button>
+            <button class="modal-close wf-close-button" onclick="closePlayChoice()">✕</button>
             <div class="sea-header">🐠 🫧 🦪</div>
             <h2 id="playChoiceTitle">Choose game mode</h2>
             <p class="subtitle">How should students practise this set?</p>
-            <button class="accent-cta" onclick="startChosenSetGame('translation')">🇹🇭 Play with Translation</button>
-            <button class="accent-cta" onclick="startChosenSetGame('picture')">🖼️ Play with Pictures</button>
+            <button class="accent-cta wf-cta-accent" onclick="startChosenSetGame('translation')">🇹🇭 Play with Translation</button>
+            <button class="accent-cta wf-cta-accent" onclick="startChosenSetGame('picture')">🖼️ Play with Pictures</button>
         </div>
     </div>
 
     <div id="shareModal" class="modal-backdrop" style="display: none;">
         <div class="modal-card share-modal">
-            <button class="modal-close" onclick="closeShareDialog()">✕</button>
+            <button class="modal-close wf-close-button" onclick="closeShareDialog()">✕</button>
             <h2>Share with your students</h2>
             <p class="subtitle">Share this vocabulary set with your students.<br>Students will be able to play but not edit the set.</p>
             <div class="share-link-field">
                 <label for="shareLinkInput">Student Link</label>
                 <input id="shareLinkInput" type="text" readonly>
             </div>
-            <button class="green-button" onclick="copyShareLinkPlaceholder()">Copy Link</button>
-            <button onclick="closeShareDialog()">Close</button>
+            <button class="green-button wf-cta-primary" onclick="copyShareLinkPlaceholder()">Copy Link</button>
+            <button class="wf-cta-neutral" onclick="closeShareDialog()">Close</button>
         </div>
     </div>
 
@@ -477,8 +477,8 @@
             <p class="delete-confirm-set-name" id="deleteConfirmSetName"></p>
             <p class="delete-confirm-warning" id="deleteConfirmWarning">This action cannot be undone.</p>
             <div class="delete-confirm-actions">
-                <button type="button" class="soft-button" onclick="closeDeleteConfirm()">Cancel</button>
-                <button id="deleteConfirmActionButton" type="button" class="red-button" onclick="confirmDeleteAction()">Delete</button>
+                <button type="button" class="soft-button wf-cta-neutral" onclick="closeDeleteConfirm()">Cancel</button>
+                <button id="deleteConfirmActionButton" type="button" class="red-button wf-cta-danger" onclick="confirmDeleteAction()">Delete</button>
             </div>
         </div>
     </div>
@@ -488,7 +488,7 @@
             <h2>Duplicate selected sets?</h2>
             <p class="delete-confirm-body">Copies will be created for all selected sets.</p>
             <div class="delete-confirm-actions">
-                <button type="button" class="soft-button" onclick="closeBulkDuplicateConfirm()">Cancel</button>
+                <button type="button" class="soft-button wf-cta-neutral" onclick="closeBulkDuplicateConfirm()">Cancel</button>
                 <button type="button" class="duplicate-button" onclick="confirmBulkDuplicate()">Duplicate</button>
             </div>
         </div>
@@ -502,7 +502,7 @@
                 <h3 class="settings-section-title">👤 Account</h3>
                 <p class="settings-field-label">Email:</p>
                 <p id="settingsAccountEmail" class="settings-field-value">—</p>
-                <button type="button" class="red-button settings-logout-button" onclick="closeSettingsModal(); logout()">
+                <button type="button" class="red-button wf-cta-danger settings-logout-button" onclick="closeSettingsModal(); logout()">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/></svg>
                     Log out
                 </button>
@@ -550,7 +550,7 @@
                 <p class="settings-about-tagline">Made with ❤️ by teachers, for teachers.</p>
             </section>
 
-            <button type="button" class="soft-button settings-close-button" onclick="closeSettingsModal()">Close</button>
+            <button type="button" class="soft-button wf-cta-neutral settings-close-button" onclick="closeSettingsModal()">Close</button>
         </div>
     </div>
 

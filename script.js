@@ -924,7 +924,7 @@ function renderDashboard() {
 
                 <div class="set-actions set-actions-trash">
                     <button class="green-button" onclick="restoreSet('${escapeAttribute(setId)}')"${disabledAttr}>Restore</button>
-                    <button class="red-button" onclick="deleteForeverSet('${escapeAttribute(setId)}')"${disabledAttr}>Delete Forever</button>
+                    <button class="red-button wf-cta-danger" onclick="deleteForeverSet('${escapeAttribute(setId)}')"${disabledAttr}>Delete Forever</button>
                 </div>
             </div>
         `;
@@ -977,8 +977,8 @@ function renderDashboard() {
                 <p><span class="small-label">Images:</span> ${imageCount}</p>
 
                 <div class="set-actions">
-                    <button class="green-button" onclick="openPlayChoice('${escapeAttribute(setId)}')"${disabledAttr}>Play</button>
-                    <button class="share-button" onclick="openShareDialog('${escapeAttribute(setId)}')"${disabledAttr}>Share</button>
+                    <button class="green-button wf-cta-primary" onclick="openPlayChoice('${escapeAttribute(setId)}')"${disabledAttr}>Play</button>
+                    <button class="share-button wf-cta-secondary" onclick="openShareDialog('${escapeAttribute(setId)}')"${disabledAttr}>Share</button>
                 </div>
             </div>
         `;
@@ -1043,7 +1043,7 @@ function renderClassroomPicker() {
                 <p><span class="small-label">Images:</span> ${imageCount}</p>
                 ${emptyNote}
                 <div class="classroom-set-actions">
-                    <button type="button" class="green-button" onclick="openClassroomActivityMenu('${escapeAttribute(setId)}')">Choose Activity</button>
+                    <button type="button" class="green-button wf-cta-primary" onclick="openClassroomActivityMenu('${escapeAttribute(setId)}')">Choose Activity</button>
                 </div>
             </div>
         `;
@@ -1385,6 +1385,7 @@ function updateClassroomTranslationUI() {
     translationEl.hidden = !classroomTranslationVisible;
     toggleButton.textContent = classroomTranslationVisible ? "Hide Translation" : "Show Translation";
     toggleButton.classList.toggle("classroom-toggle-translation-button-active", classroomTranslationVisible);
+    toggleButton.classList.toggle("wf-toggle-button--active", classroomTranslationVisible);
     toggleButton.setAttribute("aria-pressed", classroomTranslationVisible ? "true" : "false");
 }
 
@@ -4195,7 +4196,7 @@ function renderCards() {
                         ↕ Drag
                     </div>
 
-                    <button class="red-button" onclick="deleteWord(${i})">🗑️ Delete</button>
+                    <button class="red-button wf-cta-danger" onclick="deleteWord(${i})">🗑️ Delete</button>
                 </div>
 
                 <div class="word-fields">

@@ -1906,7 +1906,8 @@ h2 {
     width: min(100%, 380px);
 }
 
-.modal-close {
+.modal-close,
+.wf-close-button {
     position: absolute;
     top: 12px;
     right: 12px;
@@ -1932,18 +1933,21 @@ h2 {
     transition: background 0.15s ease, transform 0.15s ease;
 }
 
-.modal-close:hover {
+.modal-close:hover,
+.wf-close-button:hover {
     background: rgba(0, 166, 200, 0.08);
     transform: none;
     box-shadow: none;
 }
 
-.modal-close:active {
+.modal-close:active,
+.wf-close-button:active {
     transform: scale(0.96);
     box-shadow: none;
 }
 
-.modal-close:focus-visible {
+.modal-close:focus-visible,
+.wf-close-button:focus-visible {
     outline: 2px solid var(--wf-color-aqua-outline);
     outline-offset: 2px;
 }
@@ -2180,7 +2184,8 @@ h2 {
     }
 }
 
-/* Dashboard Share button — matches Play prototype geometry */
+/* CTA Secondary prototype — shared selectors */
+.wf-cta-secondary,
 #savedSetsList .set-actions .share-button,
 #savedSetsList .set-actions button[onclick^="openShareDialog"] {
     position: relative;
@@ -2201,6 +2206,7 @@ h2 {
     color: #ffffff;
 }
 
+.wf-cta-secondary::before,
 #savedSetsList .set-actions .share-button::before,
 #savedSetsList .set-actions button[onclick^="openShareDialog"]::before {
     content: "";
@@ -2215,6 +2221,7 @@ h2 {
     pointer-events: none;
 }
 
+.wf-cta-secondary::after,
 #savedSetsList .set-actions .share-button::after,
 #savedSetsList .set-actions button[onclick^="openShareDialog"]::after {
     content: "";
@@ -2229,12 +2236,14 @@ h2 {
     pointer-events: none;
 }
 
+.wf-cta-secondary:hover,
 #savedSetsList .set-actions .share-button:hover,
 #savedSetsList .set-actions button[onclick^="openShareDialog"]:hover {
     background: linear-gradient(180deg, #BB7AED 0%, #8544DE 100%);
     transform: translateY(-1px);
 }
 
+.wf-cta-secondary:active,
 #savedSetsList .set-actions .share-button:active,
 #savedSetsList .set-actions button[onclick^="openShareDialog"]:active {
     transform: translateY(2px);
@@ -4886,6 +4895,7 @@ h2 {
 }
 
 /* CTA Primary prototype — shared selectors */
+.wf-cta-primary,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"],
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"],
 #shareModal button[onclick="copyShareLinkPlaceholder()"],
@@ -4913,6 +4923,7 @@ h2 {
   color: #ffffff;
 }
 
+.wf-cta-primary::before,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"]::before,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::before,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]::before,
@@ -4934,6 +4945,7 @@ h2 {
   pointer-events: none;
 }
 
+.wf-cta-primary::after,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"]::after,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::after,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]::after,
@@ -4955,6 +4967,7 @@ h2 {
   pointer-events: none;
 }
 
+.wf-cta-primary:hover,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"]:hover,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:hover,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]:hover,
@@ -4968,6 +4981,7 @@ h2 {
   transform: translateY(-1px);
 }
 
+.wf-cta-primary:active,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"]:active,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:active,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]:active,
@@ -4984,6 +4998,8 @@ h2 {
 }
 
 /* Classroom Primary CTA — override legacy green-button hover shadow */
+#classroomPickerScreen .classroom-set-card .wf-cta-primary:hover:not(:disabled):not(.disabled-button),
+#classroomActivityMenuScreen .classroom-activity-card .wf-cta-primary:hover:not(:disabled):not(.disabled-button),
 #classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:hover:not(:disabled):not(.disabled-button),
 #classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:hover:not(:disabled):not(.disabled-button) {
   box-shadow:
@@ -4991,6 +5007,8 @@ h2 {
     0 7px 12px rgba(22, 174, 74, 0.22);
 }
 
+#classroomPickerScreen .classroom-set-card .wf-cta-primary:active:not(:disabled):not(.disabled-button),
+#classroomActivityMenuScreen .classroom-activity-card .wf-cta-primary:active:not(:disabled):not(.disabled-button),
 #classroomPickerScreen .classroom-set-card button.green-button[onclick^="openClassroomActivityMenu"]:active:not(:disabled):not(.disabled-button),
 #classroomActivityMenuScreen .classroom-activity-card button.green-button[onclick^="startClassroom"]:active:not(:disabled):not(.disabled-button) {
   transform: translateY(2px);
@@ -5000,6 +5018,7 @@ h2 {
 }
 
 /* CTA Accent prototype — shared selectors */
+.wf-cta-accent,
 .accent-cta {
   position: relative;
   overflow: hidden;
@@ -5025,6 +5044,7 @@ h2 {
     border-color 180ms ease-out;
 }
 
+.wf-cta-accent::before,
 .accent-cta::before {
   content: "";
   position: absolute;
@@ -5038,6 +5058,7 @@ h2 {
   pointer-events: none;
 }
 
+.wf-cta-accent::after,
 .accent-cta::after {
   content: "";
   position: absolute;
@@ -5051,11 +5072,13 @@ h2 {
   pointer-events: none;
 }
 
+.wf-cta-accent:hover,
 .accent-cta:hover {
   background: linear-gradient(180deg, #FFE06A 0%, #F5AD28 100%);
   transform: translateY(-1px);
 }
 
+.wf-cta-accent:active,
 .accent-cta:active {
   transform: translateY(1px);
   box-shadow:
@@ -5064,6 +5087,7 @@ h2 {
 }
 
 /* Main Delete button — matches CTA prototype (text buttons only) */
+.wf-cta-danger,
 #dashboardBulkDeleteButton,
 #dashboardBulkDeleteForeverButton,
 #deleteConfirmActionButton,
@@ -5090,6 +5114,7 @@ h2 {
   color: #ffffff;
 }
 
+.wf-cta-danger::before,
 #dashboardBulkDeleteButton::before,
 #dashboardBulkDeleteForeverButton::before,
 #deleteConfirmActionButton::before,
@@ -5110,6 +5135,7 @@ h2 {
   pointer-events: none;
 }
 
+.wf-cta-danger::after,
 #dashboardBulkDeleteButton::after,
 #dashboardBulkDeleteForeverButton::after,
 #deleteConfirmActionButton::after,
@@ -5130,6 +5156,7 @@ h2 {
   pointer-events: none;
 }
 
+.wf-cta-danger:not(:disabled):hover,
 #dashboardBulkDeleteButton:not(:disabled):hover,
 #dashboardBulkDeleteForeverButton:not(:disabled):hover,
 #deleteConfirmActionButton:not(:disabled):hover,
@@ -5142,6 +5169,7 @@ h2 {
   transform: translateY(-1px);
 }
 
+.wf-cta-danger:not(:disabled):active,
 #dashboardBulkDeleteButton:not(:disabled):active,
 #dashboardBulkDeleteForeverButton:not(:disabled):active,
 #deleteConfirmActionButton:not(:disabled):active,
@@ -5157,6 +5185,7 @@ h2 {
 }
 
 /* CTA Neutral prototype — shared selectors */
+.wf-cta-neutral,
 #dashboardSelectionBar button[onclick="cancelDashboardSelection()"],
 #deleteConfirmModal button[onclick="closeDeleteConfirm()"],
 #duplicateConfirmModal button[onclick="closeBulkDuplicateConfirm()"],
@@ -5187,6 +5216,7 @@ h2 {
   color: #073B4C;
 }
 
+.wf-cta-neutral::before,
 #dashboardSelectionBar button[onclick="cancelDashboardSelection()"]::before,
 #deleteConfirmModal button[onclick="closeDeleteConfirm()"]::before,
 #duplicateConfirmModal button[onclick="closeBulkDuplicateConfirm()"]::before,
@@ -5211,6 +5241,7 @@ h2 {
   pointer-events: none;
 }
 
+.wf-cta-neutral::after,
 #dashboardSelectionBar button[onclick="cancelDashboardSelection()"]::after,
 #deleteConfirmModal button[onclick="closeDeleteConfirm()"]::after,
 #duplicateConfirmModal button[onclick="closeBulkDuplicateConfirm()"]::after,
@@ -5235,6 +5266,7 @@ h2 {
   pointer-events: none;
 }
 
+.wf-cta-neutral:hover,
 #dashboardSelectionBar button[onclick="cancelDashboardSelection()"]:hover,
 #deleteConfirmModal button[onclick="closeDeleteConfirm()"]:hover,
 #duplicateConfirmModal button[onclick="closeBulkDuplicateConfirm()"]:hover,
@@ -5251,6 +5283,7 @@ h2 {
   transform: translateY(-1px);
 }
 
+.wf-cta-neutral:active,
 #dashboardSelectionBar button[onclick="cancelDashboardSelection()"]:active,
 #deleteConfirmModal button[onclick="closeDeleteConfirm()"]:active,
 #duplicateConfirmModal button[onclick="closeBulkDuplicateConfirm()"]:active,
@@ -5484,6 +5517,7 @@ h2 {
 }
 
 /* Text Toggle prototype — Show / Hide Translation */
+#classroomPresentationScreen .wf-toggle-button,
 #classroomPresentationScreen #classroomToggleTranslationButton {
   display: inline-flex;
   align-items: center;
@@ -5513,33 +5547,39 @@ h2 {
     border-color 180ms ease-out;
 }
 
+#classroomPresentationScreen .wf-toggle-button.wf-toggle-button--active,
 #classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active {
   background: #EAF7FF;
   border-color: rgba(120, 190, 215, 0.58);
   color: #073B4C;
 }
 
+#classroomPresentationScreen .wf-toggle-button:hover:not(:disabled):not(.disabled-button),
 #classroomPresentationScreen #classroomToggleTranslationButton:hover:not(:disabled):not(.disabled-button) {
   background: #f8fcff;
   transform: translateY(-1px);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.10);
 }
 
+#classroomPresentationScreen .wf-toggle-button.wf-toggle-button--active:hover:not(:disabled):not(.disabled-button),
 #classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active:hover:not(:disabled):not(.disabled-button) {
   background: #F0FAFF;
   transform: translateY(-1px);
   box-shadow: 0 3px 6px rgba(120, 190, 215, 0.14);
 }
 
+#classroomPresentationScreen .wf-toggle-button:active:not(:disabled):not(.disabled-button),
 #classroomPresentationScreen #classroomToggleTranslationButton:active:not(:disabled):not(.disabled-button) {
   transform: translateY(1px);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
+#classroomPresentationScreen .wf-toggle-button.wf-toggle-button--active:active:not(:disabled):not(.disabled-button),
 #classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active:active:not(:disabled):not(.disabled-button) {
   box-shadow: 0 1px 2px rgba(120, 190, 215, 0.10);
 }
 
+#classroomPresentationScreen .wf-toggle-button:focus-visible,
 #classroomPresentationScreen #classroomToggleTranslationButton:focus-visible {
   outline: 2px solid var(--wf-color-aqua-outline);
   outline-offset: 2px;
