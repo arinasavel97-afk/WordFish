@@ -621,6 +621,22 @@ button:active {
     padding: 0 2px;
 }
 
+/* Dashboard v2 — Phase 1 skeleton (layout structure only) */
+.dashboard-v2-layout {
+    display: flex;
+    width: 100%;
+}
+
+.dashboard-sidebar[hidden] {
+    display: none;
+}
+
+.dashboard-main {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+}
+
 .dashboard-header-actions {
     display: flex;
     align-items: center;
