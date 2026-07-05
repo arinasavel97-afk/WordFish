@@ -1722,6 +1722,13 @@ button:active {
     opacity: 0.96;
 }
 
+#savedSetsList .set-actions-trash {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 6px;
+}
+
 #savedSetsList .set-actions-trash button {
     margin: 0;
 }
@@ -2350,8 +2357,7 @@ button:active {
         justify-content: stretch;
     }
 
-    #savedSetsList .set-card-v2 .set-card-footer.set-actions button,
-    #savedSetsList .set-card-v2 .set-card-footer.set-actions-trash button {
+    #savedSetsList .set-card-v2 .set-card-footer.set-actions:not(.set-actions-trash) button {
         flex: none;
         width: 100%;
         min-height: 44px;
@@ -2365,8 +2371,7 @@ button:active {
         grid-template-columns: 1fr;
     }
 
-    #savedSetsList .set-card-v2 .set-card-footer.set-actions button,
-    #savedSetsList .set-card-v2 .set-card-footer.set-actions-trash button {
+    #savedSetsList .set-card-v2 .set-card-footer.set-actions:not(.set-actions-trash) button {
         min-height: 44px;
         height: auto;
         max-height: none;
@@ -2899,8 +2904,7 @@ h2 {
 }
 
 /* Dashboard v2 Phase 6C — equal footer button sizing on set cards */
-#savedSetsList .set-card-v2 .set-card-footer.set-actions button,
-#savedSetsList .set-card-v2 .set-card-footer.set-actions-trash button {
+#savedSetsList .set-card-v2 .set-card-footer.set-actions:not(.set-actions-trash) button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -2912,6 +2916,32 @@ h2 {
     padding: 0 10px;
     font-size: 14px;
     flex: none;
+}
+
+/* Dashboard v2 — Trash card footer: equal 50/50 action buttons */
+#savedSetsList .set-card-v2 .set-card-footer.set-actions-trash {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 6px;
+}
+
+#savedSetsList .set-card-v2 .set-card-footer.set-actions-trash button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 0;
+    min-width: 0;
+    width: 50%;
+    max-width: 50%;
+    min-height: 38px;
+    height: 38px;
+    max-height: 38px;
+    margin: 0;
+    padding: 0 8px;
+    font-size: 12px;
+    line-height: 1.1;
+    white-space: nowrap;
 }
 
 /* Dashboard v2 — Set Card focus states */
