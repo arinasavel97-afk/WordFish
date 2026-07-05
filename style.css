@@ -764,6 +764,48 @@ button:active {
     width: 100%;
 }
 
+/* Dashboard v2 — Phase 3 compact header */
+.dashboard-v2-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin: 0 0 var(--space-lg);
+    padding: 0 var(--space-sm);
+}
+
+.dashboard-v2-header-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.dashboard-v2-header-title {
+    margin: 0 0 6px;
+    font-size: clamp(1.5rem, 2.5vw, 1.875rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--wf-ocean-ink);
+}
+
+.dashboard-v2-header-subtitle {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--wf-color-ink-muted);
+    max-width: 38ch;
+}
+
+.dashboard-v2-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+}
+
 @media (max-width: 900px) {
     #dashboardScreen .dashboard-v2-layout {
         flex-direction: column;
@@ -5099,6 +5141,7 @@ h2 {
 /* CTA Primary prototype — shared selectors */
 .wf-cta-primary,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"],
+#dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"],
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"],
 #shareModal button[onclick="copyShareLinkPlaceholder()"],
 #dashboardClassroomButton,
@@ -5134,6 +5177,7 @@ h2 {
 
 .wf-cta-primary::before,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"]::before,
+#dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"]::before,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::before,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]::before,
 #dashboardClassroomButton::before,
@@ -5163,6 +5207,7 @@ h2 {
 
 .wf-cta-primary::after,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"]::after,
+#dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"]::after,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::after,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]::after,
 #dashboardClassroomButton::after,
@@ -5192,6 +5237,7 @@ h2 {
 
 .wf-cta-primary:hover,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"]:hover,
+#dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"]:hover,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:hover,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]:hover,
 #dashboardClassroomButton:hover,
@@ -5213,6 +5259,7 @@ h2 {
 
 .wf-cta-primary:active,
 #savedSetsList .set-actions button[onclick^="openPlayChoice"]:active,
+#dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"]:active,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:active,
 #shareModal button[onclick="copyShareLinkPlaceholder()"]:active,
 #dashboardClassroomButton:active,
