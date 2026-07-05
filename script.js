@@ -723,7 +723,7 @@ async function onDashboardFilterChange(value) {
 
 function updateDashboardToolbarUI() {
     const sortSelect = document.getElementById("dashboardSortSelect");
-    const viewOptions = document.querySelectorAll(".dashboard-view-option");
+    const sidebarNavItems = document.querySelectorAll(".dashboard-sidebar-nav-item[data-dashboard-filter]");
     const sortHint = document.getElementById("dashboardSortHint");
     const hintMessages = [];
 
@@ -731,10 +731,14 @@ function updateDashboardToolbarUI() {
         sortSelect.value = dashboardSortMode;
     }
 
-    viewOptions.forEach((option) => {
-        const isActive = option.dataset.value === dashboardFilterMode;
-        option.classList.toggle("dashboard-view-option--active", isActive);
-        option.setAttribute("aria-pressed", isActive ? "true" : "false");
+    sidebarNavItems.forEach((item) => {
+        const isActive = item.dataset.dashboardFilter === dashboardFilterMode;
+        item.classList.toggle("dashboard-sidebar-nav-item--active", isActive);
+        if (isActive) {
+            item.setAttribute("aria-current", "page");
+        } else {
+            item.removeAttribute("aria-current");
+        }
     });
 
     if (isDashboardFavoritesFilterActive() || isDashboardTrashFilterActive()) {
