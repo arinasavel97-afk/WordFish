@@ -43,7 +43,7 @@
             <br>
 
             <button class="green-button wf-cta-primary" onclick="login()">🔐 Log In</button>
-            <button onclick="signUp()">✨ Create Account</button>
+            <button class="wf-cta-neutral" onclick="signUp()">✨ Create Account</button>
 
             <p id="authMessage"></p>
         </div>
@@ -107,7 +107,7 @@
         <div id="dashboardSelectionBar" class="dashboard-selection-bar" hidden>
             <span id="dashboardSelectionCount" class="dashboard-selection-count">✓ 0 selected</span>
             <div class="dashboard-selection-bar-actions">
-                <button id="dashboardBulkDuplicateButton" type="button" class="duplicate-button disabled-button" disabled onclick="openBulkDuplicateConfirm()">Duplicate</button>
+                <button id="dashboardBulkDuplicateButton" type="button" class="duplicate-button wf-cta-secondary disabled-button" disabled onclick="openBulkDuplicateConfirm()">Duplicate</button>
                 <button id="dashboardBulkDeleteButton" type="button" class="red-button wf-cta-danger disabled-button" disabled onclick="openBulkDeleteConfirm()">Delete</button>
                 <button id="dashboardBulkRestoreButton" type="button" class="green-button wf-cta-primary disabled-button" disabled onclick="restoreSelectedSets()" hidden>Restore</button>
                 <button id="dashboardBulkDeleteForeverButton" type="button" class="red-button wf-cta-danger disabled-button" disabled onclick="openBulkDeleteForeverConfirm()" hidden>Delete Forever</button>
@@ -441,7 +441,7 @@
             <div class="sea-header">🫧 🐠 🪸 🫧</div>
             <h2 class="student-unavailable-title">Set not found</h2>
             <p class="student-unavailable-message">This vocabulary set is unavailable or has been removed.</p>
-            <button onclick="backToWordFishHome()">Back to Home</button>
+            <button class="wf-cta-neutral" onclick="backToWordFishHome()">Back to Home</button>
         </div>
     </div>
 
@@ -489,7 +489,7 @@
             <p class="delete-confirm-body">Copies will be created for all selected sets.</p>
             <div class="delete-confirm-actions">
                 <button type="button" class="soft-button wf-cta-neutral" onclick="closeBulkDuplicateConfirm()">Cancel</button>
-                <button type="button" class="duplicate-button" onclick="confirmBulkDuplicate()">Duplicate</button>
+                <button type="button" class="duplicate-button wf-cta-secondary" onclick="confirmBulkDuplicate()">Duplicate</button>
             </div>
         </div>
     </div>
@@ -567,7 +567,7 @@
         <br>
 
         <button class="green-button wf-cta-primary" onclick="createSetAndOpenCards()">🐟 Create Cards</button>
-        <button onclick="showDashboard()">⬅ Back</button>
+        <button class="wf-cta-neutral" onclick="showDashboard()">⬅ Back</button>
     </div>
 
     <div id="cardsScreen" class="screen" style="display: none;">
@@ -580,11 +580,11 @@
             <br>
 
             <button class="green-button wf-cta-primary" onclick="addNewWord()">➕ New Word</button>
-            <button onclick="translateAllToThai()">🌐 Auto Translate Thai</button>
+            <button class="wf-cta-neutral" onclick="translateAllToThai()">🌐 Auto Translate Thai</button>
             <br>
             <button class="yellow-button wf-cta-accent" onclick="startGame('translation')">▶️ Play with Translation</button>
             <button class="yellow-button wf-cta-accent" onclick="startGame('picture')">🖼️ Play with Pictures</button>
-            <button onclick="backToDashboard()">🏠 Back to Dashboard</button>
+            <button class="wf-cta-neutral" onclick="backToDashboard()">🏠 Back to Dashboard</button>
         </div>
 
         <div id="cardsList"></div>
@@ -624,7 +624,7 @@
         <br><br>
 
         <button class="green-button wf-cta-primary" onclick="startGame(currentGameMode)">🔁 Play Again</button>
-        <button onclick="leaveGameResults()">🏠 Back to Dashboard</button>
+        <button class="wf-cta-neutral" onclick="leaveGameResults()">🏠 Back to Dashboard</button>
     </div>
 
     <div id="toast" class="toast"></div>

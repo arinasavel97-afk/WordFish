@@ -2204,7 +2204,9 @@ h2 {
 /* CTA Secondary prototype — shared selectors */
 .wf-cta-secondary,
 #savedSetsList .set-actions .share-button,
-#savedSetsList .set-actions button[onclick^="openShareDialog"] {
+#savedSetsList .set-actions button[onclick^="openShareDialog"],
+#dashboardBulkDuplicateButton,
+#duplicateConfirmModal button.duplicate-button[onclick="confirmBulkDuplicate()"] {
     position: relative;
     overflow: hidden;
 
@@ -2225,7 +2227,9 @@ h2 {
 
 .wf-cta-secondary::before,
 #savedSetsList .set-actions .share-button::before,
-#savedSetsList .set-actions button[onclick^="openShareDialog"]::before {
+#savedSetsList .set-actions button[onclick^="openShareDialog"]::before,
+#dashboardBulkDuplicateButton::before,
+#duplicateConfirmModal button.duplicate-button[onclick="confirmBulkDuplicate()"]::before {
     content: "";
     position: absolute;
     inset: 0 0 auto 0;
@@ -2240,7 +2244,9 @@ h2 {
 
 .wf-cta-secondary::after,
 #savedSetsList .set-actions .share-button::after,
-#savedSetsList .set-actions button[onclick^="openShareDialog"]::after {
+#savedSetsList .set-actions button[onclick^="openShareDialog"]::after,
+#dashboardBulkDuplicateButton::after,
+#duplicateConfirmModal button.duplicate-button[onclick="confirmBulkDuplicate()"]::after {
     content: "";
     position: absolute;
     inset: auto 0 0 0;
@@ -2255,14 +2261,18 @@ h2 {
 
 .wf-cta-secondary:hover,
 #savedSetsList .set-actions .share-button:hover,
-#savedSetsList .set-actions button[onclick^="openShareDialog"]:hover {
+#savedSetsList .set-actions button[onclick^="openShareDialog"]:hover,
+#dashboardBulkDuplicateButton:hover,
+#duplicateConfirmModal button.duplicate-button[onclick="confirmBulkDuplicate()"]:hover {
     background: linear-gradient(180deg, #BB7AED 0%, #8544DE 100%);
     transform: translateY(-1px);
 }
 
 .wf-cta-secondary:active,
 #savedSetsList .set-actions .share-button:active,
-#savedSetsList .set-actions button[onclick^="openShareDialog"]:active {
+#savedSetsList .set-actions button[onclick^="openShareDialog"]:active,
+#dashboardBulkDuplicateButton:active,
+#duplicateConfirmModal button.duplicate-button[onclick="confirmBulkDuplicate()"]:active {
     transform: translateY(2px);
     box-shadow:
         0 2px 4px rgba(0, 0, 0, 0.10),
@@ -5271,7 +5281,13 @@ h2 {
 #classroomPresentationScreen #classroomPrevButton,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton,
-#settingsModal .settings-close-button {
+#settingsModal .settings-close-button,
+#authScreen .auth-card button[onclick="signUp()"],
+#teacherScreen button[onclick="showDashboard()"],
+#cardsScreen .editor-toolbar button[onclick="translateAllToThai()"],
+#cardsScreen .editor-toolbar button[onclick="backToDashboard()"],
+#studentScreen #studentUnavailable button[onclick="backToWordFishHome()"],
+#resultsScreen button[onclick="leaveGameResults()"] {
   position: relative;
   overflow: hidden;
 
@@ -5302,7 +5318,13 @@ h2 {
 #classroomPresentationScreen #classroomPrevButton::before,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton::before,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton::before,
-#settingsModal .settings-close-button::before {
+#settingsModal .settings-close-button::before,
+#authScreen .auth-card button[onclick="signUp()"]::before,
+#teacherScreen button[onclick="showDashboard()"]::before,
+#cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]::before,
+#cardsScreen .editor-toolbar button[onclick="backToDashboard()"]::before,
+#studentScreen #studentUnavailable button[onclick="backToWordFishHome()"]::before,
+#resultsScreen button[onclick="leaveGameResults()"]::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
@@ -5327,7 +5349,13 @@ h2 {
 #classroomPresentationScreen #classroomPrevButton::after,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton::after,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton::after,
-#settingsModal .settings-close-button::after {
+#settingsModal .settings-close-button::after,
+#authScreen .auth-card button[onclick="signUp()"]::after,
+#teacherScreen button[onclick="showDashboard()"]::after,
+#cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]::after,
+#cardsScreen .editor-toolbar button[onclick="backToDashboard()"]::after,
+#studentScreen #studentUnavailable button[onclick="backToWordFishHome()"]::after,
+#resultsScreen button[onclick="leaveGameResults()"]::after {
   content: "";
   position: absolute;
   inset: auto 0 0 0;
@@ -5352,7 +5380,13 @@ h2 {
 #classroomPresentationScreen #classroomPrevButton:hover,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton:hover,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton:hover,
-#settingsModal .settings-close-button:hover {
+#settingsModal .settings-close-button:hover,
+#authScreen .auth-card button[onclick="signUp()"]:hover,
+#teacherScreen button[onclick="showDashboard()"]:hover,
+#cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]:hover,
+#cardsScreen .editor-toolbar button[onclick="backToDashboard()"]:hover,
+#studentScreen #studentUnavailable button[onclick="backToWordFishHome()"]:hover,
+#resultsScreen button[onclick="leaveGameResults()"]:hover {
   background: linear-gradient(180deg, #FFFFFF 0%, #F0FAFF 100%);
   transform: translateY(-1px);
 }
@@ -5369,7 +5403,13 @@ h2 {
 #classroomPresentationScreen #classroomPrevButton:active,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton:active,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton:active,
-#settingsModal .settings-close-button:active {
+#settingsModal .settings-close-button:active,
+#authScreen .auth-card button[onclick="signUp()"]:active,
+#teacherScreen button[onclick="showDashboard()"]:active,
+#cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]:active,
+#cardsScreen .editor-toolbar button[onclick="backToDashboard()"]:active,
+#studentScreen #studentUnavailable button[onclick="backToWordFishHome()"]:active,
+#resultsScreen button[onclick="leaveGameResults()"]:active {
   transform: translateY(2px);
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
