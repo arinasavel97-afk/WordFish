@@ -1616,8 +1616,10 @@ button:active {
     bottom: calc(100% + 4px);
     right: 0;
     z-index: 6;
-    min-width: 168px;
-    padding: 6px;
+    width: 240px;
+    min-width: 220px;
+    max-width: 260px;
+    padding: 4px;
     background: var(--wf-card-white);
     border: 1px solid var(--wf-color-ink-border-soft);
     border-radius: var(--wf-radius-sm);
@@ -1643,34 +1645,99 @@ button:active {
     display: none;
 }
 
+#savedSetsList .set-overflow-menu-divider {
+    height: 1px;
+    margin: 4px 8px;
+    background: var(--wf-color-ink-border-soft);
+}
+
 #savedSetsList .set-overflow-menu-item {
-    display: block;
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 10px;
     width: 100%;
-    min-height: 40px;
-    padding: 10px 12px;
+    min-height: 32px;
+    height: 32px;
+    margin: 0;
+    padding: 0 10px;
     border: none;
-    border-radius: calc(var(--wf-radius-sm) - 2px);
+    border-radius: 6px;
     background: transparent;
     color: var(--wf-ocean-ink);
     font-family: inherit;
-    font-size: 0.9375rem;
-    font-weight: 600;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.2;
     text-align: left;
+    white-space: nowrap;
     cursor: pointer;
+    box-shadow: none;
+    transform: none;
     transition: background 0.15s ease, color 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#savedSetsList .set-overflow-menu-item__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: rgba(11, 110, 138, 0.72);
+}
+
+#savedSetsList .set-overflow-menu-item__icon svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+#savedSetsList .set-overflow-menu-item__label {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #savedSetsList .set-overflow-menu-item:hover:not(:disabled) {
-    background: var(--wf-aqua-soft-hover);
+    background: rgba(214, 238, 251, 0.45);
+    color: var(--wf-ocean-ink);
+    transform: none;
+    box-shadow: none;
+}
+
+#savedSetsList .set-overflow-menu-item:active:not(:disabled) {
+    background: rgba(214, 238, 251, 0.58);
+    transform: none;
+    box-shadow: none;
 }
 
 #savedSetsList .set-overflow-menu-item--danger {
     color: var(--wf-coral-dark);
 }
 
+#savedSetsList .set-overflow-menu-item--danger .set-overflow-menu-item__icon {
+    color: var(--wf-coral-dark);
+}
+
 #savedSetsList .set-overflow-menu-item--danger:hover:not(:disabled) {
     background: rgba(239, 71, 111, 0.1);
-    color: var(--wf-coral);
+    color: var(--wf-coral-dark);
+    transform: none;
+    box-shadow: none;
+}
+
+#savedSetsList .set-overflow-menu-item--danger:active:not(:disabled) {
+    background: rgba(239, 71, 111, 0.14);
+    transform: none;
+    box-shadow: none;
+}
+
+#savedSetsList .set-overflow-menu-item:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
 }
 
 #savedSetsList .set-card-title {
@@ -2924,24 +2991,6 @@ h2 {
     flex-direction: row;
     align-items: stretch;
     gap: 6px;
-}
-
-#savedSetsList .set-card-v2 .set-card-footer.set-actions-trash button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex: 1 1 0;
-    min-width: 0;
-    width: 50%;
-    max-width: 50%;
-    min-height: 38px;
-    height: 38px;
-    max-height: 38px;
-    margin: 0;
-    padding: 0 8px;
-    font-size: 12px;
-    line-height: 1.1;
-    white-space: nowrap;
 }
 
 /* Dashboard v2 — Set Card focus states */
@@ -5882,6 +5931,26 @@ h2 {
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
     0 4px 8px rgba(236, 43, 45, 0.18);
+}
+
+/* Dashboard v2 — Trash card footer sizing (wins over CTA min-height/font-size) */
+#savedSetsList .set-card-v2 .set-card-footer.set-actions-trash button.wf-cta-primary,
+#savedSetsList .set-card-v2 .set-card-footer.set-actions-trash button.wf-cta-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 0;
+    min-width: 0;
+    width: 50%;
+    max-width: 50%;
+    min-height: 38px;
+    height: 38px;
+    max-height: 38px;
+    margin: 0;
+    padding: 0 8px;
+    font-size: 12px;
+    line-height: 1.1;
+    white-space: nowrap;
 }
 
 /* CTA Neutral prototype — shared selectors */
