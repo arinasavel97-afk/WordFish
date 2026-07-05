@@ -59,16 +59,12 @@ Logo area
 Navigation
 
 - My Sets
-- Shared with Me
 - Favorites
 - Trash
 
 Divider
 
-Utilities
-
 - Settings
-- Help
 
 Bottom
 
@@ -122,7 +118,7 @@ Primary
 
 - New Set
 
-Import Excel is moved to the Empty State.
+Import Excel is not a Primary Action. It lives in the Library Toolbar and as a shortcut in the Empty State.
 
 ---
 
@@ -135,7 +131,8 @@ Order
 1. Search
 2. View Selector
 3. Sort
-4. Select
+4. Import Excel
+5. Select
 
 Search occupies most of the width.
 
@@ -148,6 +145,8 @@ View Selector
 Future implementation may replace this with a Segmented Control.
 
 Sort remains a dropdown.
+
+Import Excel remains a Neutral CTA.
 
 Select remains a Neutral CTA.
 
@@ -291,7 +290,7 @@ or import from Excel.
 Buttons
 
 - New Set
-- Import Excel
+- Import Excel (shortcut; same action as Library Toolbar Import Excel)
 
 ---
 
@@ -359,15 +358,11 @@ Sidebar visible.
 
 Tablet
 
-Collapsible sidebar.
+Sidebar may collapse in the future.
 
 Mobile
 
-Hamburger menu.
-
-Toolbar stacks vertically.
-
-Cards become one column.
+Responsive behavior will be defined later.
 
 ---
 
@@ -407,7 +402,7 @@ The approved Dashboard reference includes:
 - Left navigation sidebar
 - Compact Welcome header
 - Classroom Mode and New Set buttons in the top-right
-- White toolbar with Search, View Selector, Sort, and Select
+- White toolbar with Search, View Selector, Sort, Import Excel, and Select
 - Card grid without image thumbnails
 - Thin colored strip at the top of each card
 - Favorite star
@@ -419,6 +414,18 @@ The approved Dashboard reference includes:
 - Treasure chest integrated into the bottom-left scenery
 
 This visual reference is the target implementation.
+
+---
+
+# Future Features
+
+The following items are intentionally out of scope for Dashboard v2:
+
+- Shared with Me
+- Help Center
+- Mobile navigation redesign
+
+These may be introduced in future versions.
 
 ---
 
