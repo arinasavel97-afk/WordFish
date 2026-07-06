@@ -6617,7 +6617,7 @@ body:has(#dashboardScreen[style*="display:block"]) .dashboard-fish-layer {
     display: block;
     width: var(--dashboard-fish-size);
     height: auto;
-    opacity: 0.58;
+    opacity: 1;
     pointer-events: none;
 }
 
