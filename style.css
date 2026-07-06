@@ -6576,6 +6576,126 @@ body:has(#dashboardScreen[style*="display:block"])::before {
     width: 100%;
 }
 
+/* Dashboard v2 — Animated fish layer (decorative background) */
+.dashboard-fish-layer {
+    --dashboard-fish-size: clamp(56px, 7vw, 80px);
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+body:has(#dashboardScreen[style*="display: block"]) .dashboard-fish-layer,
+body:has(#dashboardScreen[style*="display:block"]) .dashboard-fish-layer {
+    display: block;
+}
+
+.dashboard-fish-layer .dashboard-fish {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+}
+
+.dashboard-fish-layer .dashboard-fish--blue {
+    top: 72%;
+}
+
+.dashboard-fish-layer .dashboard-fish--yellow {
+    top: 80%;
+}
+
+.dashboard-fish-layer .dashboard-fish-swim,
+.dashboard-fish-layer .dashboard-fish-bob {
+    display: inline-block;
+    will-change: transform;
+}
+
+.dashboard-fish-layer .dashboard-fish__image {
+    display: block;
+    width: var(--dashboard-fish-size);
+    height: auto;
+    opacity: 0.58;
+    pointer-events: none;
+}
+
+@keyframes dashboard-fish-swim-ltr {
+    from {
+        transform: translateX(calc(-1 * var(--dashboard-fish-size))) scaleX(-1);
+    }
+
+    to {
+        transform: translateX(calc(100vw + var(--dashboard-fish-size))) scaleX(-1);
+    }
+}
+
+@keyframes dashboard-fish-swim-rtl {
+    from {
+        transform: translateX(calc(100vw + var(--dashboard-fish-size)));
+    }
+
+    to {
+        transform: translateX(calc(-1 * var(--dashboard-fish-size)));
+    }
+}
+
+@keyframes dashboard-fish-bob {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(8px);
+    }
+}
+
+@keyframes dashboard-fish-bob-alt {
+    from {
+        transform: translateY(-4px);
+    }
+
+    to {
+        transform: translateY(6px);
+    }
+}
+
+.dashboard-fish-layer .dashboard-fish--blue .dashboard-fish-swim {
+    animation: dashboard-fish-swim-ltr 24s linear infinite;
+}
+
+.dashboard-fish-layer .dashboard-fish--blue .dashboard-fish-bob {
+    animation: dashboard-fish-bob 5.5s ease-in-out infinite alternate;
+}
+
+.dashboard-fish-layer .dashboard-fish--yellow .dashboard-fish-swim {
+    animation: dashboard-fish-swim-rtl 31s linear 10s infinite backwards;
+}
+
+.dashboard-fish-layer .dashboard-fish--yellow .dashboard-fish-bob {
+    animation: dashboard-fish-bob-alt 6s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-fish-layer .dashboard-fish-swim,
+    .dashboard-fish-layer .dashboard-fish-bob {
+        animation: none !important;
+    }
+
+    .dashboard-fish-layer .dashboard-fish--blue .dashboard-fish-swim {
+        transform: translateX(18vw) scaleX(-1);
+    }
+
+    .dashboard-fish-layer .dashboard-fish--yellow .dashboard-fish-swim {
+        transform: translateX(62vw);
+    }
+
+    .dashboard-fish-layer .dashboard-fish-bob {
+        transform: translateY(0);
+    }
+}
+
 .dashboard-scenery {
     position: absolute;
     inset: auto 0 0 0;
