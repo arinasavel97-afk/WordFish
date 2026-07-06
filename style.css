@@ -890,7 +890,7 @@ button:active {
     flex-direction: column;
     gap: 2px;
     padding: 8px 0 0;
-    margin: auto 0 0;
+    margin: 12px 0 0;
     width: 100%;
 }
 
