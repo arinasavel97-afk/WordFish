@@ -6449,20 +6449,23 @@ body:has(#dashboardScreen[style*="display:block"])::before {
 }
 
 #dashboardScreen.screen--dashboard {
-    width: min(1540px, calc(100vw - 24px));
+    width: min(1490px, calc(100vw - 74px));
     padding: 16px 20px 22px;
     text-align: left;
-    background: rgba(255, 255, 255, 0.58);
+    background: rgba(255, 255, 255, 0.90);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     border: 1px solid rgba(255, 255, 255, 0.82);
     box-shadow: 0 10px 36px rgba(7, 59, 76, 0.08);
 }
 
 #dashboardScreen.screen--dashboard::before {
+    opacity: 0.35;
     background: linear-gradient(
         165deg,
-        rgba(244, 253, 255, 0.92) 0%,
-        rgba(233, 251, 255, 0.72) 55%,
-        rgba(214, 238, 251, 0.45) 100%
+        rgba(244, 253, 255, 0.51) 0%,
+        rgba(233, 251, 255, 0.40) 55%,
+        rgba(214, 238, 251, 0.25) 100%
     );
 }
 
