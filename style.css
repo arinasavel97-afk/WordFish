@@ -6782,7 +6782,7 @@ body.wf-page-shell {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   Page Shell — migrated panel screens (teacherScreen, cardsScreen)
+   Page Shell — migrated panel screens
    Shared ocean shell rules; Dashboard block above unchanged.
    ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -6810,27 +6810,83 @@ body.wf-page-shell:has(#teacherScreen[style*="display:block"]) {
     }
 }
 
-/* cardsScreen: solid body fill only — PNG lives on fixed .wf-ocean-backdrop (viewport-sized) */
-body.wf-page-shell:has(#cardsScreen[style*="display: block"]),
-body.wf-page-shell:has(#cardsScreen[style*="display:block"]) {
+/* Viewport-sized PNG on fixed .wf-ocean-backdrop (not scroll-growing body) */
+body.wf-page-shell:has(:is(
+    #cardsScreen,
+    #classroomPickerScreen,
+    #classroomActivityMenuScreen,
+    #classroomNoCardsScreen
+)[style*="display: block"]),
+body.wf-page-shell:has(:is(
+    #cardsScreen,
+    #classroomPickerScreen,
+    #classroomActivityMenuScreen,
+    #classroomNoCardsScreen
+)[style*="display:block"]) {
     background-color: #D6EEFB;
     background-image: none;
 }
 
-body.wf-page-shell:has(:is(#teacherScreen, #cardsScreen)[style*="display: block"])::before,
-body.wf-page-shell:has(:is(#teacherScreen, #cardsScreen)[style*="display:block"])::before {
+body.wf-page-shell:has(:is(
+    #teacherScreen,
+    #cardsScreen,
+    #classroomPickerScreen,
+    #classroomActivityMenuScreen,
+    #classroomNoCardsScreen
+)[style*="display: block"])::before,
+body.wf-page-shell:has(:is(
+    #teacherScreen,
+    #cardsScreen,
+    #classroomPickerScreen,
+    #classroomActivityMenuScreen,
+    #classroomNoCardsScreen
+)[style*="display:block"])::before {
     opacity: 0;
 }
 
-body.wf-page-shell:has(:is(#teacherScreen, #cardsScreen)[style*="display: block"]) .wf-ocean-backdrop,
-body.wf-page-shell:has(:is(#teacherScreen, #cardsScreen)[style*="display:block"]) .wf-ocean-backdrop,
-body.wf-page-shell:has(:is(#teacherScreen, #cardsScreen)[style*="display: block"]) .dashboard-fish-layer,
-body.wf-page-shell:has(:is(#teacherScreen, #cardsScreen)[style*="display:block"]) .dashboard-fish-layer {
+body.wf-page-shell:has(:is(
+    #teacherScreen,
+    #cardsScreen,
+    #classroomPickerScreen,
+    #classroomActivityMenuScreen,
+    #classroomNoCardsScreen
+)[style*="display: block"]) .wf-ocean-backdrop,
+body.wf-page-shell:has(:is(
+    #teacherScreen,
+    #cardsScreen,
+    #classroomPickerScreen,
+    #classroomActivityMenuScreen,
+    #classroomNoCardsScreen
+)[style*="display:block"]) .wf-ocean-backdrop,
+body.wf-page-shell:has(:is(
+    #teacherScreen,
+    #cardsScreen,
+    #classroomPickerScreen,
+    #classroomActivityMenuScreen,
+    #classroomNoCardsScreen
+)[style*="display: block"]) .dashboard-fish-layer,
+body.wf-page-shell:has(:is(
+    #teacherScreen,
+    #cardsScreen,
+    #classroomPickerScreen,
+    #classroomActivityMenuScreen,
+    #classroomNoCardsScreen
+)[style*="display:block"]) .dashboard-fish-layer {
     display: block;
 }
 
-body.wf-page-shell:has(#cardsScreen[style*="display: block"]) .wf-ocean-backdrop,
-body.wf-page-shell:has(#cardsScreen[style*="display:block"]) .wf-ocean-backdrop {
+body.wf-page-shell:has(:is(
+    #cardsScreen,
+    #classroomPickerScreen,
+    #classroomActivityMenuScreen,
+    #classroomNoCardsScreen
+)[style*="display: block"]) .wf-ocean-backdrop,
+body.wf-page-shell:has(:is(
+    #cardsScreen,
+    #classroomPickerScreen,
+    #classroomActivityMenuScreen,
+    #classroomNoCardsScreen
+)[style*="display:block"]) .wf-ocean-backdrop {
     background-color: #D6EEFB;
     background-image: url("assets/backgrounds/dashboard-bg-desktop.png");
     background-image: -webkit-image-set(
@@ -6847,13 +6903,29 @@ body.wf-page-shell:has(#cardsScreen[style*="display:block"]) .wf-ocean-backdrop 
 }
 
 @media (max-width: 620px) {
-    body.wf-page-shell:has(#cardsScreen[style*="display: block"]) .wf-ocean-backdrop,
-    body.wf-page-shell:has(#cardsScreen[style*="display:block"]) .wf-ocean-backdrop {
+    body.wf-page-shell:has(:is(
+        #cardsScreen,
+        #classroomPickerScreen,
+        #classroomActivityMenuScreen,
+        #classroomNoCardsScreen
+    )[style*="display: block"]) .wf-ocean-backdrop,
+    body.wf-page-shell:has(:is(
+        #cardsScreen,
+        #classroomPickerScreen,
+        #classroomActivityMenuScreen,
+        #classroomNoCardsScreen
+    )[style*="display:block"]) .wf-ocean-backdrop {
         background-image: url("assets/backgrounds/dashboard-bg-mobile.png");
     }
 }
 
-:is(#teacherScreen, #cardsScreen).wf-content-shell {
+:is(
+    #teacherScreen,
+    #cardsScreen,
+    #classroomPickerScreen,
+    #classroomActivityMenuScreen,
+    #classroomNoCardsScreen
+).wf-content-shell {
     background-color: rgba(255, 255, 255, 0.90);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -6861,7 +6933,13 @@ body.wf-page-shell:has(#cardsScreen[style*="display:block"]) .wf-ocean-backdrop 
     box-shadow: 0 10px 36px rgba(7, 59, 76, 0.08);
 }
 
-:is(#teacherScreen, #cardsScreen).wf-content-shell::before {
+:is(
+    #teacherScreen,
+    #cardsScreen,
+    #classroomPickerScreen,
+    #classroomActivityMenuScreen,
+    #classroomNoCardsScreen
+).wf-content-shell::before {
     opacity: 0.35;
     background: linear-gradient(
         165deg,
