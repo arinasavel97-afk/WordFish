@@ -1436,6 +1436,15 @@ button:active {
     justify-self: stretch;
 }
 
+#savedSetsList .set-card-shell {
+    position: relative;
+    overflow: visible;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    justify-self: stretch;
+}
+
 /* Dashboard v2 — Set Card (Phase 6C polish) */
 #savedSetsList .set-card-v2 {
     position: relative;
@@ -1475,7 +1484,7 @@ button:active {
     margin: 0;
     padding: 0;
     border: none;
-    border-radius: 0;
+    border-radius: var(--wf-radius-md) var(--wf-radius-md) 0 0;
 }
 
 #savedSetsList .set-card-accent--blue .set-card-color-strip {
@@ -1687,10 +1696,6 @@ button:active {
 
 #savedSetsList .set-overflow-menu {
     position: absolute;
-    top: auto;
-    bottom: calc(100% + 4px);
-    right: 0;
-    z-index: 6;
     width: 210px;
     min-width: 200px;
     max-width: 220px;
@@ -1701,19 +1706,24 @@ button:active {
     box-shadow: 0 4px 14px rgba(7, 59, 76, 0.1), 0 1px 3px rgba(7, 59, 76, 0.06);
 }
 
-/* Open overflow menu: escape card clipping and stack above dashboard toolbar */
+/* Menu lives outside the clipping card; opens upward from the three-dot trigger */
+#savedSetsList .set-card-shell > .set-overflow-menu {
+    top: calc(3px + 6px);
+    right: 11px;
+    left: auto;
+    bottom: auto;
+    transform: translateY(calc(-100% - 4px));
+    z-index: 50;
+}
+
+/* Open overflow menu: stack above dashboard toolbar and neighboring cards */
 #dashboardScreen .dashboard-card-grid:has(.set-overflow-menu:not([hidden])) {
     position: relative;
     z-index: 10;
 }
 
-#savedSetsList .set-card-v2:has(.set-overflow-menu:not([hidden])) {
-    overflow: visible;
+#savedSetsList .set-card-shell:has(> .set-overflow-menu:not([hidden])) {
     z-index: 11;
-}
-
-#savedSetsList .set-card-v2:has(.set-overflow-menu:not([hidden])) .set-overflow-menu {
-    z-index: 12;
 }
 
 #savedSetsList .set-overflow-menu[hidden] {
@@ -1859,6 +1869,18 @@ button:active {
     min-width: 0;
     margin: 0;
     flex: none;
+}
+
+#savedSetsList .set-card-shell.set-card-dragging .set-card-v2 {
+    opacity: 0.96;
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(7, 59, 76, 0.12);
+    border-color: rgba(63, 169, 245, 0.45);
+    z-index: 3;
+}
+
+#savedSetsList .set-card-shell.set-card-ghost .set-card-v2 {
+    opacity: 0.45;
 }
 
 #savedSetsList .set-card-dragging {

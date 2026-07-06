@@ -883,17 +883,29 @@ function formatSetLastEditedLine(updatedAt, createdAt) {
     return `Last edited: ${dayLabel}, ${timeLabel}`;
 }
 
-function buildSetCardOverflowMenuHtml(setId, disabledAttr) {
+function buildSetCardOverflowMenuIcons() {
     const iconSvg = (paths) =>
         `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="${paths}"/></svg>`;
 
-    const menuIcons = {
+    return {
         edit: iconSvg("m16.862 4.487 1.687-1.687a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"),
         duplicate: iconSvg("M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125H4.875A1.125 1.125 0 0 1 3.75 20.625V7.875c0-.621.504-1.125 1.125-1.125H6.75v9A2.25 2.25 0 0 0 9 18.75h6.75ZM6 7.5h9A2.25 2.25 0 0 1 17.25 9.75v9A2.25 2.25 0 0 1 15 21H6A2.25 2.25 0 0 1 3.75 18.75V9.75A2.25 2.25 0 0 1 6 7.5Z"),
         export: iconSvg("M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"),
         delete: iconSvg("m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"),
     };
+}
 
+function buildSetCardOverflowTriggerHtml(disabledAttr) {
+    return `
+                <div class="set-card-overflow">
+                    <button type="button" class="set-overflow-trigger wf-icon-button" onclick="toggleSetCardOverflowMenu(event)" aria-label="Set actions" aria-haspopup="menu" aria-expanded="false"${disabledAttr}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+                    </button>
+                </div>`;
+}
+
+function buildSetCardOverflowMenuPanelHtml(setId, disabledAttr) {
+    const menuIcons = buildSetCardOverflowMenuIcons();
     const menuRow = (icon, label, extraAttrs = "") =>
         `<button type="button" class="set-overflow-menu-item" role="menuitem"${extraAttrs}${disabledAttr}>
             <span class="set-overflow-menu-item__icon" aria-hidden="true">${menuIcons[icon]}</span>
@@ -906,21 +918,16 @@ function buildSetCardOverflowMenuHtml(setId, disabledAttr) {
         : menuRow("duplicate", "Duplicate", ` onclick="closeAllSetCardOverflowMenus(); duplicateSet('${escapeAttribute(setId)}')" onkeydown="handleDuplicateSetKeydown(event, '${escapeAttribute(setId)}')"`);
 
     return `
-                <div class="set-card-overflow">
-                    <button type="button" class="set-overflow-trigger wf-icon-button" onclick="toggleSetCardOverflowMenu(event)" aria-label="Set actions" aria-haspopup="menu" aria-expanded="false"${disabledAttr}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
-                    </button>
-                    <div class="set-overflow-menu" role="menu" hidden>
-                        ${menuRow("edit", "Edit", ` onclick="closeAllSetCardOverflowMenus(); editSet('${escapeAttribute(setId)}')"`)}
-                        ${duplicateItem}
-                        ${menuRow("export", "Export", ` onclick="closeAllSetCardOverflowMenus(); exportSet('${escapeAttribute(setId)}')"`)}
-                        <div class="set-overflow-menu-divider" role="separator"></div>
-                        <button type="button" class="set-overflow-menu-item set-overflow-menu-item--danger" role="menuitem" onclick="closeAllSetCardOverflowMenus(); deleteSet('${escapeAttribute(setId)}')"${disabledAttr}>
-                            <span class="set-overflow-menu-item__icon" aria-hidden="true">${menuIcons.delete}</span>
-                            <span class="set-overflow-menu-item__label">Delete</span>
-                        </button>
-                    </div>
-                </div>`;
+            <div class="set-overflow-menu" role="menu" hidden>
+                ${menuRow("edit", "Edit", ` onclick="closeAllSetCardOverflowMenus(); editSet('${escapeAttribute(setId)}')"`)}
+                ${duplicateItem}
+                ${menuRow("export", "Export", ` onclick="closeAllSetCardOverflowMenus(); exportSet('${escapeAttribute(setId)}')"`)}
+                <div class="set-overflow-menu-divider" role="separator"></div>
+                <button type="button" class="set-overflow-menu-item set-overflow-menu-item--danger" role="menuitem" onclick="closeAllSetCardOverflowMenus(); deleteSet('${escapeAttribute(setId)}')"${disabledAttr}>
+                    <span class="set-overflow-menu-item__icon" aria-hidden="true">${menuIcons.delete}</span>
+                    <span class="set-overflow-menu-item__label">Delete</span>
+                </button>
+            </div>`;
 }
 
 function closeAllSetCardOverflowMenus() {
@@ -939,9 +946,9 @@ function toggleSetCardOverflowMenu(event) {
         return;
     }
 
-    const overflow = event.currentTarget.closest(".set-card-overflow");
-    const menu = overflow.querySelector(".set-overflow-menu");
-    const trigger = overflow.querySelector(".set-overflow-trigger");
+    const shell = event.currentTarget.closest(".set-card-shell");
+    const menu = shell.querySelector(":scope > .set-overflow-menu");
+    const trigger = event.currentTarget;
     const willOpen = menu.hidden;
 
     closeAllSetCardOverflowMenus();
@@ -960,7 +967,7 @@ function initSetCardOverflowMenus() {
     window.setCardOverflowMenusInitialized = true;
 
     document.addEventListener("click", (event) => {
-        if (!event.target.closest(".set-card-overflow")) {
+        if (!event.target.closest(".set-card-overflow") && !event.target.closest(".set-overflow-menu")) {
             closeAllSetCardOverflowMenus();
         }
     });
@@ -1081,31 +1088,34 @@ function renderDashboard() {
         let lastEditedLine = formatSetLastEditedLine(set.updated_at, set.created_at);
 
         savedSetsList.innerHTML += `
-            <div class="card set-card set-card-v2 ${getSetCardAccentClass(setId)}${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
-                <div class="set-card-color-strip" aria-hidden="true"></div>
-                <div class="set-card-body">
-                    <label class="set-card-select">
-                        <input type="checkbox" class="set-card-select-input" aria-label="Select ${escapeAttribute(set.name)}" ${isSelected ? "checked" : ""} onchange="onSetSelectionChange('${escapeAttribute(setId)}', this.checked)">
-                    </label>
-                    <div class="set-card-controls">
-                        <button type="button" class="set-favorite-button wf-icon-button${isFavorite ? " is-favorite" : ""}" onclick="toggleSetFavorite('${escapeAttribute(setId)}')" aria-label="${escapeAttribute(favoriteLabel)}" aria-pressed="${isFavorite ? "true" : "false"}" title="${escapeAttribute(favoriteLabel)}">
-                            ${favoriteStarSvg}
-                        </button>
-                        <button type="button" class="set-drag-handle wf-icon-button" aria-label="Drag to reorder set" title="Drag to reorder"${disabledAttr}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75h.008v.008H9V6.75Zm0 5.25h.008v.008H9V12Zm0 5.25h.008v.008H9v-.008ZM15 6.75h.008v.008H15V6.75Zm0 5.25h.008v.008H15V12Zm0 5.25h.008v.008H15v-.008Z"/></svg>
-                        </button>
-                        ${buildSetCardOverflowMenuHtml(setId, disabledAttr)}
-                    </div>
-                    <h2 class="set-card-title">${escapeHTML(set.name)}</h2>
-                    <div class="set-card-metadata-group">
-                        <p class="set-card-metadata">${metadataLine}</p>
-                        <p class="set-card-metadata set-card-metadata--edited">${escapeHTML(lastEditedLine)}</p>
-                    </div>
-                    <div class="set-actions set-card-footer">
-                        <button class="green-button wf-cta-primary" onclick="openPlayChoice('${escapeAttribute(setId)}')"${disabledAttr}>Play</button>
-                        <button class="share-button wf-cta-secondary" onclick="openShareDialog('${escapeAttribute(setId)}')"${disabledAttr}>Share</button>
+            <div class="set-card-shell">
+                <div class="card set-card set-card-v2 ${getSetCardAccentClass(setId)}${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
+                    <div class="set-card-color-strip" aria-hidden="true"></div>
+                    <div class="set-card-body">
+                        <label class="set-card-select">
+                            <input type="checkbox" class="set-card-select-input" aria-label="Select ${escapeAttribute(set.name)}" ${isSelected ? "checked" : ""} onchange="onSetSelectionChange('${escapeAttribute(setId)}', this.checked)">
+                        </label>
+                        <div class="set-card-controls">
+                            <button type="button" class="set-favorite-button wf-icon-button${isFavorite ? " is-favorite" : ""}" onclick="toggleSetFavorite('${escapeAttribute(setId)}')" aria-label="${escapeAttribute(favoriteLabel)}" aria-pressed="${isFavorite ? "true" : "false"}" title="${escapeAttribute(favoriteLabel)}">
+                                ${favoriteStarSvg}
+                            </button>
+                            <button type="button" class="set-drag-handle wf-icon-button" aria-label="Drag to reorder set" title="Drag to reorder"${disabledAttr}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75h.008v.008H9V6.75Zm0 5.25h.008v.008H9V12Zm0 5.25h.008v.008H9v-.008ZM15 6.75h.008v.008H15V6.75Zm0 5.25h.008v.008H15V12Zm0 5.25h.008v.008H15v-.008Z"/></svg>
+                            </button>
+                            ${buildSetCardOverflowTriggerHtml(disabledAttr)}
+                        </div>
+                        <h2 class="set-card-title">${escapeHTML(set.name)}</h2>
+                        <div class="set-card-metadata-group">
+                            <p class="set-card-metadata">${metadataLine}</p>
+                            <p class="set-card-metadata set-card-metadata--edited">${escapeHTML(lastEditedLine)}</p>
+                        </div>
+                        <div class="set-actions set-card-footer">
+                            <button class="green-button wf-cta-primary" onclick="openPlayChoice('${escapeAttribute(setId)}')"${disabledAttr}>Play</button>
+                            <button class="share-button wf-cta-secondary" onclick="openShareDialog('${escapeAttribute(setId)}')"${disabledAttr}>Share</button>
+                        </div>
                     </div>
                 </div>
+                ${buildSetCardOverflowMenuPanelHtml(setId, disabledAttr)}
             </div>
         `;
     }
@@ -3471,7 +3481,7 @@ function initSetsSortable() {
     setsSortable = new Sortable(savedSetsList, {
         animation: 150,
         handle: ".set-drag-handle",
-        draggable: ".set-card",
+        draggable: ".set-card-shell",
         delayOnTouchOnly: true,
         delay: 120,
         touchStartThreshold: 4,
