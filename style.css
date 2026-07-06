@@ -6418,15 +6418,34 @@ h2 {
   outline-offset: 2px;
 }
 
-/* Dashboard v2 — Visual refinement pass */
+/* Dashboard v2 — Background Integration (Phase 1) */
 body:has(#dashboardScreen[style*="display: block"]),
 body:has(#dashboardScreen[style*="display:block"]) {
-    background: linear-gradient(180deg, var(--wf-sand-top) 0%, var(--wf-sand-mid) 42%, #D6EEFB 100%);
+    background-color: #D6EEFB;
+    background-image: url("assets/backgrounds/dashboard-bg-desktop.png");
+    background-image: -webkit-image-set(
+        url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
+        url("assets/backgrounds/dashboard-bg-retina.png") 2x
+    );
+    background-image: image-set(
+        url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
+        url("assets/backgrounds/dashboard-bg-retina.png") 2x
+    );
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+@media (max-width: 620px) {
+    body:has(#dashboardScreen[style*="display: block"]),
+    body:has(#dashboardScreen[style*="display:block"]) {
+        background-image: url("assets/backgrounds/dashboard-bg-mobile.png");
+    }
 }
 
 body:has(#dashboardScreen[style*="display: block"])::before,
 body:has(#dashboardScreen[style*="display:block"])::before {
-    opacity: 0.18;
+    opacity: 0;
 }
 
 #dashboardScreen.screen--dashboard {
@@ -6464,6 +6483,7 @@ body:has(#dashboardScreen[style*="display:block"])::before {
     pointer-events: none;
     z-index: 0;
     overflow: hidden;
+    display: none;
 }
 
 .dashboard-scenery-plant {
