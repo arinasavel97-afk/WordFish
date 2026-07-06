@@ -6750,3 +6750,92 @@ body:has(#dashboardScreen[style*="display:block"]) .dashboard-fish-layer {
         justify-content: flex-start;
     }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   WordFish Page Shell Architecture — Step 1 (alias layer)
+   New shared classes alias the current implementation. Existing selectors
+   remain authoritative; nothing here overrides Dashboard or other screens.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.wf-page-shell {
+    /* Viewport shell host. Visuals from body {} (lines 257–268). */
+}
+
+.wf-ocean-backdrop {
+    /* Decorative ocean layer host. Visuals from .dashboard-fish-layer {} (6580+). */
+}
+
+.wf-content-shell {
+    /* Frosted content panel host. Visuals from .screen {} (405–433). */
+}
+
+body.wf-page-shell {
+    /* Alias: body is the page shell; no property overrides. */
+}
+
+.wf-ocean-backdrop.dashboard-fish-layer {
+    /* Alias: fish layer carries both class names; no property overrides. */
+}
+
+.wf-content-shell.screen {
+    /* Alias: panel screens carry both class names; no property overrides. */
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Page Shell — teacherScreen migration (Step 2)
+   Duplicated Dashboard ocean shell rules; Dashboard block above unchanged.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+body.wf-page-shell:has(#teacherScreen[style*="display: block"]),
+body.wf-page-shell:has(#teacherScreen[style*="display:block"]) {
+    background-color: #D6EEFB;
+    background-image: url("assets/backgrounds/dashboard-bg-desktop.png");
+    background-image: -webkit-image-set(
+        url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
+        url("assets/backgrounds/dashboard-bg-retina.png") 2x
+    );
+    background-image: image-set(
+        url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
+        url("assets/backgrounds/dashboard-bg-retina.png") 2x
+    );
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+@media (max-width: 620px) {
+    body.wf-page-shell:has(#teacherScreen[style*="display: block"]),
+    body.wf-page-shell:has(#teacherScreen[style*="display:block"]) {
+        background-image: url("assets/backgrounds/dashboard-bg-mobile.png");
+    }
+}
+
+body.wf-page-shell:has(#teacherScreen[style*="display: block"])::before,
+body.wf-page-shell:has(#teacherScreen[style*="display:block"])::before {
+    opacity: 0;
+}
+
+body.wf-page-shell:has(#teacherScreen[style*="display: block"]) .wf-ocean-backdrop,
+body.wf-page-shell:has(#teacherScreen[style*="display:block"]) .wf-ocean-backdrop,
+body.wf-page-shell:has(#teacherScreen[style*="display: block"]) .dashboard-fish-layer,
+body.wf-page-shell:has(#teacherScreen[style*="display:block"]) .dashboard-fish-layer {
+    display: block;
+}
+
+#teacherScreen.wf-content-shell {
+    background: rgba(255, 255, 255, 0.90);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid rgba(255, 255, 255, 0.82);
+    box-shadow: 0 10px 36px rgba(7, 59, 76, 0.08);
+}
+
+#teacherScreen.wf-content-shell::before {
+    opacity: 0.35;
+    background: linear-gradient(
+        165deg,
+        rgba(244, 253, 255, 0.51) 0%,
+        rgba(233, 251, 255, 0.40) 55%,
+        rgba(214, 238, 251, 0.25) 100%
+    );
+}
