@@ -4484,47 +4484,47 @@ function renderCards() {
                     <button class="red-button wf-cta-danger" onclick="deleteWord(${i})">Delete</button>
                 </div>
 
-                <div class="word-fields">
-                    <div class="field-group">
-                        <label>English word</label>
-                        <input 
-                            value="${escapeAttribute(cards[i].english)}" 
-                            oninput="updateCardField(${i}, 'english', this.value)"
-                            placeholder="English word"
-                        >
+                <div class="word-card-body">
+                    <div class="word-fields">
+                        <div class="field-group">
+                            <label>English word</label>
+                            <input 
+                                value="${escapeAttribute(cards[i].english)}" 
+                                oninput="updateCardField(${i}, 'english', this.value)"
+                                placeholder="English word"
+                            >
+                        </div>
+
+                        <div class="field-group">
+                            <label>Thai translation</label>
+                            <input 
+                                value="${escapeAttribute(cards[i].thai)}" 
+                                oninput="updateCardField(${i}, 'thai', this.value)"
+                                placeholder="Thai translation"
+                            >
+                        </div>
                     </div>
 
-                    <div class="field-group">
-                        <label>Thai translation</label>
-                        <input 
-                            value="${escapeAttribute(cards[i].thai)}" 
-                            oninput="updateCardField(${i}, 'thai', this.value)"
-                            placeholder="Thai translation"
+                    <div class="image-preview">
+                        <strong>Picture clue</strong>
+
+                        ${cards[i].imageUrl ? `<img src="${escapeAttribute(cards[i].imageUrl)}" alt="">` : `<p>No image yet</p>`}
+
+                        <input
+                            type="hidden"
+                            class="word-card-image-url"
+                            value="${escapeAttribute(cards[i].imageUrl)}"
+                            oninput="updateCardField(${i}, 'imageUrl', this.value)"
                         >
+
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onchange="uploadImage(event, ${i})"
+                        >
+
+                        <button class="disabled-button" onclick="aiComingSoon()">AI Generation Coming Soon</button>
                     </div>
-                </div>
-
-                <div class="image-preview">
-                    <strong>Picture clue</strong>
-
-                    ${cards[i].imageUrl ? `<img src="${escapeAttribute(cards[i].imageUrl)}" alt="">` : `<p>No image yet</p>`}
-
-                    <input
-                        type="hidden"
-                        class="word-card-image-url"
-                        value="${escapeAttribute(cards[i].imageUrl)}"
-                        oninput="updateCardField(${i}, 'imageUrl', this.value)"
-                    >
-
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onchange="uploadImage(event, ${i})"
-                    >
-
-                    <br>
-
-                    <button class="disabled-button" onclick="aiComingSoon()">AI Generation Coming Soon</button>
                 </div>
             </div>
         `;
