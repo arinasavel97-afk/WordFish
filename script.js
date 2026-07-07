@@ -19,6 +19,7 @@ let dashboardSelectedSetIds = new Set();
 let currentGameMode = "translation";
 let autoSaveTimer = null;
 let autoSaveInProgress = false;
+let activeWordCardImagePopoverIndex = null;
 let isGameRunning = false;
 let selectedPlaySetIndex = null;
 let selectedShareSetIndex = null;
@@ -4311,6 +4312,11 @@ document.addEventListener("keydown", (event) => {
 
     if (event.key !== "Escape") return;
 
+    if (activeWordCardImagePopoverIndex !== null) {
+        closeWordCardImagePopover();
+        return;
+    }
+
     const builderColorPopover = document.getElementById("builderHeaderColorPopover");
     if (builderColorPopover && !builderColorPopover.hidden) {
         closeBuilderHeaderColorPopover();
@@ -4349,6 +4355,8 @@ function getBuilderHeaderElement() {
 }
 
 function openBuilderHeaderColorPopover() {
+    closeWordCardImagePopover();
+
     const popover = document.getElementById("builderHeaderColorPopover");
     const button = document.getElementById("builderHeaderColorButton");
 
@@ -4442,10 +4450,234 @@ function initBuilderHeaderColorPicker() {
     });
 }
 
+const WORD_CARD_IMAGE_PLUS_ICON = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>`;
+const WORD_CARD_IMAGE_POPOVER_GAP = 8;
+const WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING = 12;
+
+let wordCardImagePopoverRepositionHandler = null;
+
+function unbindWordCardImagePopoverReposition() {
+    if (!wordCardImagePopoverRepositionHandler) {
+        return;
+    }
+
+    window.removeEventListener("resize", wordCardImagePopoverRepositionHandler);
+    window.removeEventListener("scroll", wordCardImagePopoverRepositionHandler, true);
+    wordCardImagePopoverRepositionHandler = null;
+}
+
+function resetWordCardImagePopoverPosition(popover) {
+    if (!popover) {
+        return;
+    }
+
+    popover.style.top = "";
+    popover.style.left = "";
+    popover.classList.remove(
+        "word-card-image-popover--below",
+        "word-card-image-popover--above"
+    );
+}
+
+function positionWordCardImagePopover(index) {
+    const tile = document.getElementById(`wordCardImageTile-${index}`);
+    const popover = document.getElementById(`wordCardImagePopover-${index}`);
+
+    if (!tile || !popover) {
+        return;
+    }
+
+    resetWordCardImagePopoverPosition(popover);
+
+    popover.hidden = false;
+    popover.style.visibility = "hidden";
+
+    const tileRect = tile.getBoundingClientRect();
+    const popoverRect = popover.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - tileRect.bottom - WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING;
+    const spaceAbove = tileRect.top - WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING;
+    const openAbove = spaceBelow < popoverRect.height + WORD_CARD_IMAGE_POPOVER_GAP
+        && spaceAbove >= popoverRect.height + WORD_CARD_IMAGE_POPOVER_GAP;
+
+    popover.classList.add(openAbove ? "word-card-image-popover--above" : "word-card-image-popover--below");
+
+    let top = openAbove
+        ? tileRect.top - popoverRect.height - WORD_CARD_IMAGE_POPOVER_GAP
+        : tileRect.bottom + WORD_CARD_IMAGE_POPOVER_GAP;
+
+    let left = tileRect.right - popoverRect.width;
+    const maxLeft = window.innerWidth - popoverRect.width - WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING;
+    left = Math.max(WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING, Math.min(left, maxLeft));
+    top = Math.max(
+        WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING,
+        Math.min(top, window.innerHeight - popoverRect.height - WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING)
+    );
+
+    popover.style.top = `${top}px`;
+    popover.style.left = `${left}px`;
+    popover.style.visibility = "";
+}
+
+function bindWordCardImagePopoverReposition(index) {
+    unbindWordCardImagePopoverReposition();
+    wordCardImagePopoverRepositionHandler = () => positionWordCardImagePopover(index);
+    window.addEventListener("resize", wordCardImagePopoverRepositionHandler);
+    window.addEventListener("scroll", wordCardImagePopoverRepositionHandler, true);
+}
+
+function closeWordCardImagePopover() {
+    if (activeWordCardImagePopoverIndex === null) {
+        return;
+    }
+
+    const popover = document.getElementById(`wordCardImagePopover-${activeWordCardImagePopoverIndex}`);
+    const tile = document.getElementById(`wordCardImageTile-${activeWordCardImagePopoverIndex}`);
+
+    unbindWordCardImagePopoverReposition();
+
+    if (popover) {
+        resetWordCardImagePopoverPosition(popover);
+        popover.hidden = true;
+    }
+
+    if (tile) {
+        tile.setAttribute("aria-expanded", "false");
+    }
+
+    activeWordCardImagePopoverIndex = null;
+}
+
+function openWordCardImagePopover(index) {
+    closeWordCardImagePopover();
+    closeBuilderHeaderColorPopover();
+
+    const popover = document.getElementById(`wordCardImagePopover-${index}`);
+    const tile = document.getElementById(`wordCardImageTile-${index}`);
+
+    if (!popover || !tile) {
+        return;
+    }
+
+    tile.setAttribute("aria-expanded", "true");
+    activeWordCardImagePopoverIndex = index;
+    positionWordCardImagePopover(index);
+    bindWordCardImagePopoverReposition(index);
+}
+
+function toggleWordCardImagePopover(event, index) {
+    if (event) {
+        event.stopPropagation();
+    }
+
+    if (activeWordCardImagePopoverIndex === index) {
+        closeWordCardImagePopover();
+        return;
+    }
+
+    openWordCardImagePopover(index);
+}
+
+function triggerWordCardImageUpload(index) {
+    closeWordCardImagePopover();
+
+    const fileInput = document.getElementById(`wordCardImageFile-${index}`);
+
+    if (!fileInput) {
+        return;
+    }
+
+    fileInput.value = "";
+    fileInput.click();
+}
+
+function buildWordCardImageSectionMarkup(index, imageUrl) {
+    const normalizedImageUrl = imageUrl || "";
+    const hasDisplayImage = normalizedImageUrl && normalizedImageUrl !== "Uploading...";
+    const isUploading = normalizedImageUrl === "Uploading...";
+
+    const tileContent = hasDisplayImage
+        ? `<img class="word-card-image-tile__img" src="${escapeAttribute(normalizedImageUrl)}" alt="">`
+        : `<span class="word-card-image-tile__placeholder">${WORD_CARD_IMAGE_PLUS_ICON}</span>`;
+
+    const uploadingMarkup = isUploading
+        ? `<span class="word-card-image-tile__uploading">Uploading...</span>`
+        : "";
+
+    return `
+                    <div class="word-card-image-section">
+                        <strong class="word-card-image-label">Picture clue</strong>
+                        <div class="word-card-image-control">
+                            <button
+                                type="button"
+                                id="wordCardImageTile-${index}"
+                                class="word-card-image-tile"
+                                aria-label="Picture clue image options"
+                                aria-haspopup="dialog"
+                                aria-expanded="false"
+                                aria-controls="wordCardImagePopover-${index}"
+                                onclick="toggleWordCardImagePopover(event, ${index})"
+                            >
+                                ${tileContent}
+                                ${uploadingMarkup}
+                            </button>
+                            <div
+                                id="wordCardImagePopover-${index}"
+                                class="word-card-image-popover"
+                                role="dialog"
+                                aria-label="Picture clue options"
+                                hidden
+                            >
+                                <button
+                                    type="button"
+                                    class="word-card-image-popover-action"
+                                    onclick="triggerWordCardImageUpload(${index})"
+                                >
+                                    Upload image
+                                </button>
+                                <button
+                                    type="button"
+                                    class="word-card-image-popover-action"
+                                    disabled
+                                >
+                                    Generate image — Coming soon
+                                </button>
+                            </div>
+                            <input
+                                type="hidden"
+                                class="word-card-image-url"
+                                value="${escapeAttribute(normalizedImageUrl)}"
+                                oninput="updateCardField(${index}, 'imageUrl', this.value)"
+                            >
+                            <input
+                                type="file"
+                                id="wordCardImageFile-${index}"
+                                class="word-card-image-file"
+                                accept="image/*"
+                                hidden
+                                tabindex="-1"
+                                onchange="uploadImage(event, ${index})"
+                            >
+                        </div>
+                    </div>`;
+}
+
+function initWordCardImagePopover() {
+    document.addEventListener("click", (event) => {
+        if (activeWordCardImagePopoverIndex === null) {
+            return;
+        }
+
+        if (!event.target.closest("#cardsList .word-card-image-control")) {
+            closeWordCardImagePopover();
+        }
+    });
+}
+
 function showCardsScreen(addToHistory = true) {
     isGameRunning = false;
     displayScreen("cardsScreen", addToHistory);
     closeBuilderHeaderColorPopover();
+    closeWordCardImagePopover();
     document.getElementById("builderSetName").value = currentSetName || "";
     loadBuilderHeaderAccentFromSet();
     setSaveStatus("Saved", "saved");
@@ -4455,7 +4687,9 @@ function showCardsScreen(addToHistory = true) {
 
 function renderCards() {
     let cardsList = document.getElementById("cardsList");
+    unbindWordCardImagePopoverReposition();
     cardsList.innerHTML = "";
+    activeWordCardImagePopoverIndex = null;
 
     if (cards.length === 0) {
         cardsList.innerHTML = `
@@ -4505,26 +4739,7 @@ function renderCards() {
                         </div>
                     </div>
 
-                    <div class="image-preview">
-                        <strong>Picture clue</strong>
-
-                        ${cards[i].imageUrl ? `<img src="${escapeAttribute(cards[i].imageUrl)}" alt="">` : `<p>No image yet</p>`}
-
-                        <input
-                            type="hidden"
-                            class="word-card-image-url"
-                            value="${escapeAttribute(cards[i].imageUrl)}"
-                            oninput="updateCardField(${i}, 'imageUrl', this.value)"
-                        >
-
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onchange="uploadImage(event, ${i})"
-                        >
-
-                        <button class="disabled-button" onclick="aiComingSoon()">AI Generation Coming Soon</button>
-                    </div>
+                    ${buildWordCardImageSectionMarkup(i, cards[i].imageUrl)}
                 </div>
             </div>
         `;
@@ -5762,6 +5977,7 @@ function initApp() {
     initClassroomShortcutsHint();
     initSetCardOverflowMenus();
     initBuilderHeaderColorPicker();
+    initWordCardImagePopover();
     checkAuth();
 }
 
