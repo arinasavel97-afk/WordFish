@@ -1955,6 +1955,25 @@ button:active {
     font-size: clamp(20px, 3vw, 28px);
 }
 
+#cardsScreen .builder-header {
+    --builder-header-accent: #FFB703;
+    position: relative;
+    margin: calc(-1 * clamp(18px, 3vw, 32px)) calc(-1 * clamp(18px, 3vw, 32px)) clamp(12px, 2vw, 18px);
+    padding: clamp(18px, 3vw, 32px) clamp(18px, 3vw, 32px) clamp(22px, 3.5vw, 30px);
+    text-align: center;
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--builder-header-accent) 34%, #ffffff) 0%,
+        color-mix(in srgb, var(--builder-header-accent) 16%, rgba(255, 255, 255, 0.92)) 38%,
+        color-mix(in srgb, var(--builder-header-accent) 6%, transparent) 72%,
+        transparent 100%
+    );
+}
+
+#cardsScreen .builder-header h1 {
+    margin: clamp(48px, 10vw, 56px) 0 0;
+}
+
 .save-status {
     display: inline-block;
     margin: 4px auto 10px;
@@ -2575,14 +2594,19 @@ button:active {
         width: 100%;
     }
 
-    #cardsScreen > button[onclick="backToDashboard()"] {
+    #cardsScreen .builder-header {
+        margin: -18px -18px clamp(10px, 2vw, 14px);
+        padding: 18px 18px clamp(18px, 3vw, 24px);
+    }
+
+    #cardsScreen .builder-header > button[onclick="backToDashboard()"] {
         width: auto;
         max-width: calc(100% - 36px);
         top: 12px;
         left: 12px;
     }
 
-    #cardsScreen > h1 {
+    #cardsScreen .builder-header h1 {
         margin-top: 56px;
     }
 
@@ -6102,7 +6126,7 @@ h2 {
 #authScreen .auth-card button[onclick="signUp()"],
 #teacherScreen button[onclick="showDashboard()"],
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"],
-#cardsScreen > button[onclick="backToDashboard()"],
+#cardsScreen .builder-header > button[onclick="backToDashboard()"],
 #studentScreen #studentUnavailable button[onclick="backToWordFishHome()"],
 #resultsScreen button[onclick="leaveGameResults()"] {
   position: relative;
@@ -6138,7 +6162,7 @@ h2 {
 #authScreen .auth-card button[onclick="signUp()"]::before,
 #teacherScreen button[onclick="showDashboard()"]::before,
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]::before,
-#cardsScreen > button[onclick="backToDashboard()"]::before,
+#cardsScreen .builder-header > button[onclick="backToDashboard()"]::before,
 #studentScreen #studentUnavailable button[onclick="backToWordFishHome()"]::before,
 #resultsScreen button[onclick="leaveGameResults()"]::before {
   content: "";
@@ -6168,7 +6192,7 @@ h2 {
 #authScreen .auth-card button[onclick="signUp()"]::after,
 #teacherScreen button[onclick="showDashboard()"]::after,
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]::after,
-#cardsScreen > button[onclick="backToDashboard()"]::after,
+#cardsScreen .builder-header > button[onclick="backToDashboard()"]::after,
 #studentScreen #studentUnavailable button[onclick="backToWordFishHome()"]::after,
 #resultsScreen button[onclick="leaveGameResults()"]::after {
   content: "";
@@ -6198,7 +6222,7 @@ h2 {
 #authScreen .auth-card button[onclick="signUp()"]:hover,
 #teacherScreen button[onclick="showDashboard()"]:hover,
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]:hover,
-#cardsScreen > button[onclick="backToDashboard()"]:hover,
+#cardsScreen .builder-header > button[onclick="backToDashboard()"]:hover,
 #studentScreen #studentUnavailable button[onclick="backToWordFishHome()"]:hover,
 #resultsScreen button[onclick="leaveGameResults()"]:hover {
   background: linear-gradient(180deg, #FFFFFF 0%, #F0FAFF 100%);
@@ -6220,7 +6244,7 @@ h2 {
 #authScreen .auth-card button[onclick="signUp()"]:active,
 #teacherScreen button[onclick="showDashboard()"]:active,
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]:active,
-#cardsScreen > button[onclick="backToDashboard()"]:active,
+#cardsScreen .builder-header > button[onclick="backToDashboard()"]:active,
 #studentScreen #studentUnavailable button[onclick="backToWordFishHome()"]:active,
 #resultsScreen button[onclick="leaveGameResults()"]:active {
   transform: translateY(2px);
@@ -6229,7 +6253,7 @@ h2 {
     0 4px 8px rgba(120, 190, 215, 0.14);
 }
 
-#cardsScreen > button[onclick="backToDashboard()"] {
+#cardsScreen .builder-header > button[onclick="backToDashboard()"] {
     position: absolute;
     top: 18px;
     left: 18px;
@@ -6242,10 +6266,6 @@ h2 {
     align-items: center;
     justify-content: center;
     white-space: nowrap;
-}
-
-#cardsScreen > h1 {
-    margin-top: clamp(52px, 11vw, 60px);
 }
 
 /* Classroom Back button — official Toolbar Button style */

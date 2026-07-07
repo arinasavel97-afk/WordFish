@@ -657,8 +657,10 @@
     </div>
 
     <div id="cardsScreen" class="screen wf-content-shell" style="display: none;">
-        <button class="wf-cta-neutral" onclick="backToDashboard()">Back to Dashboard</button>
-        <h1>Vocabulary Builder</h1>
+        <div class="builder-header">
+            <button class="wf-cta-neutral" onclick="backToDashboard()">Back to Dashboard</button>
+            <h1>Vocabulary Builder</h1>
+        </div>
 
         <div class="editor-toolbar">
             <input id="builderSetName" placeholder="Set name" oninput="updateSetName(this.value)">
