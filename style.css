@@ -1974,6 +1974,166 @@ button:active {
     margin: clamp(48px, 10vw, 56px) 0 0;
 }
 
+#cardsScreen .builder-header-color-control {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 5;
+}
+
+#cardsScreen .builder-header-color-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    margin: 0;
+    border: 1px solid rgba(120, 190, 215, 0.45);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.94);
+    color: #073B4C;
+    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+#cardsScreen .builder-header-color-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+#cardsScreen .builder-header-color-button:hover {
+    transform: translateY(-1px);
+    background: #ffffff;
+    box-shadow: 0 3px 8px rgba(7, 59, 76, 0.14);
+}
+
+#cardsScreen .builder-header-color-button:active {
+    transform: translateY(1px);
+}
+
+#cardsScreen .builder-header-color-button:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+#cardsScreen .builder-header-color-popover {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 6;
+    min-width: 152px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(120, 190, 215, 0.35);
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(7, 59, 76, 0.12), 0 1px 3px rgba(7, 59, 76, 0.06);
+}
+
+#cardsScreen .builder-header-color-popover[hidden] {
+    display: none;
+}
+
+#cardsScreen .builder-header-color-swatches {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+#cardsScreen .builder-header-color-swatch {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
+    margin: 0;
+    border: 2px solid rgba(255, 255, 255, 0.92);
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(7, 59, 76, 0.12);
+    cursor: pointer;
+    font-size: 0;
+    line-height: 0;
+    color: transparent;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+#cardsScreen .builder-header-color-swatch:hover {
+    transform: translateY(-1px);
+}
+
+#cardsScreen .builder-header-color-swatch:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+#cardsScreen .builder-header-color-swatch.is-selected {
+    transform: scale(1.06);
+    box-shadow:
+        0 0 0 2px #ffffff,
+        0 0 0 4px rgba(63, 169, 245, 0.85),
+        0 2px 5px rgba(7, 59, 76, 0.12);
+}
+
+#cardsScreen .builder-header-color-swatch.is-selected::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: center / 14px 14px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='3' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m4.5 12.75 6 6 9-13.5'/%3E%3C/svg%3E");
+}
+
+#cardsScreen .builder-header-color-swatch[data-color="orange"],
+#cardsScreen .builder-header-color-swatch[data-color="orange"]:hover,
+#cardsScreen .builder-header-color-swatch[data-color="orange"]:active {
+    background: linear-gradient(180deg, #FFC94A 0%, #FFB703 100%);
+}
+
+#cardsScreen .builder-header-color-swatch[data-color="yellow"],
+#cardsScreen .builder-header-color-swatch[data-color="yellow"]:hover,
+#cardsScreen .builder-header-color-swatch[data-color="yellow"]:active {
+    background: linear-gradient(180deg, #FFE08A 0%, #FFD166 100%);
+}
+
+#cardsScreen .builder-header-color-swatch[data-color="green"],
+#cardsScreen .builder-header-color-swatch[data-color="green"]:hover,
+#cardsScreen .builder-header-color-swatch[data-color="green"]:active {
+    background: linear-gradient(180deg, #34E0B3 0%, #06D6A0 100%);
+}
+
+#cardsScreen .builder-header-color-swatch[data-color="teal"],
+#cardsScreen .builder-header-color-swatch[data-color="teal"]:hover,
+#cardsScreen .builder-header-color-swatch[data-color="teal"]:active {
+    background: linear-gradient(180deg, #33C9DC 0%, #00A6C8 100%);
+}
+
+#cardsScreen .builder-header-color-swatch[data-color="blue"],
+#cardsScreen .builder-header-color-swatch[data-color="blue"]:hover,
+#cardsScreen .builder-header-color-swatch[data-color="blue"]:active {
+    background: linear-gradient(180deg, #6BC4FF 0%, #3FA9F5 100%);
+}
+
+#cardsScreen .builder-header-color-swatch[data-color="purple"],
+#cardsScreen .builder-header-color-swatch[data-color="purple"]:hover,
+#cardsScreen .builder-header-color-swatch[data-color="purple"]:active {
+    background: linear-gradient(180deg, #C889F0 0%, #B36DE7 100%);
+}
+
+#cardsScreen .builder-header-color-swatch[data-color="pink"],
+#cardsScreen .builder-header-color-swatch[data-color="pink"]:hover,
+#cardsScreen .builder-header-color-swatch[data-color="pink"]:active {
+    background: linear-gradient(180deg, #F8A8CC 0%, #F472B6 100%);
+}
+
+#cardsScreen .builder-header-color-swatch[data-color="red"],
+#cardsScreen .builder-header-color-swatch[data-color="red"]:hover,
+#cardsScreen .builder-header-color-swatch[data-color="red"]:active {
+    background: linear-gradient(180deg, #FF7A96 0%, #EF476F 100%);
+}
+
 .save-status {
     display: inline-block;
     margin: 4px auto 10px;
@@ -2597,6 +2757,29 @@ button:active {
     #cardsScreen .builder-header {
         margin: -18px -18px clamp(10px, 2vw, 14px);
         padding: 18px 18px clamp(18px, 3vw, 24px);
+    }
+
+    #cardsScreen .builder-header-color-control {
+        top: 12px;
+        right: 12px;
+    }
+
+    #cardsScreen .builder-header-color-button,
+    #cardsScreen .builder-header-color-swatch {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        max-width: 44px;
+        display: inline-flex;
+    }
+
+    #cardsScreen .builder-header-color-swatch {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+        max-width: 36px;
     }
 
     #cardsScreen .builder-header > button[onclick="backToDashboard()"] {

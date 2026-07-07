@@ -4288,6 +4288,12 @@ document.addEventListener("keydown", (event) => {
 
     if (event.key !== "Escape") return;
 
+    const builderColorPopover = document.getElementById("builderHeaderColorPopover");
+    if (builderColorPopover && !builderColorPopover.hidden) {
+        closeBuilderHeaderColorPopover();
+        return;
+    }
+
     const settingsModal = document.getElementById("settingsModal");
     if (settingsModal && settingsModal.style.display === "flex") {
         closeSettingsModal();
@@ -4315,9 +4321,84 @@ function prepareCards(oldCards) {
     }));
 }
 
+function getBuilderHeaderElement() {
+    return document.querySelector("#cardsScreen .builder-header");
+}
+
+function openBuilderHeaderColorPopover() {
+    const popover = document.getElementById("builderHeaderColorPopover");
+    const button = document.getElementById("builderHeaderColorButton");
+
+    if (!popover || !button) {
+        return;
+    }
+
+    popover.hidden = false;
+    button.setAttribute("aria-expanded", "true");
+}
+
+function closeBuilderHeaderColorPopover() {
+    const popover = document.getElementById("builderHeaderColorPopover");
+    const button = document.getElementById("builderHeaderColorButton");
+
+    if (!popover || !button) {
+        return;
+    }
+
+    popover.hidden = true;
+    button.setAttribute("aria-expanded", "false");
+}
+
+function toggleBuilderHeaderColorPopover(event) {
+    if (event) {
+        event.stopPropagation();
+    }
+
+    const popover = document.getElementById("builderHeaderColorPopover");
+
+    if (!popover) {
+        return;
+    }
+
+    if (popover.hidden) {
+        openBuilderHeaderColorPopover();
+    } else {
+        closeBuilderHeaderColorPopover();
+    }
+}
+
+function selectBuilderHeaderPreviewColor(colorId, accentValue) {
+    const header = getBuilderHeaderElement();
+
+    if (header) {
+        header.style.setProperty("--builder-header-accent", accentValue);
+    }
+
+    document.querySelectorAll("#cardsScreen .builder-header-color-swatch").forEach((swatch) => {
+        const isSelected = swatch.dataset.color === colorId;
+        swatch.classList.toggle("is-selected", isSelected);
+        swatch.setAttribute("aria-checked", isSelected ? "true" : "false");
+    });
+}
+
+function initBuilderHeaderColorPicker() {
+    document.addEventListener("click", (event) => {
+        const popover = document.getElementById("builderHeaderColorPopover");
+
+        if (!popover || popover.hidden) {
+            return;
+        }
+
+        if (!event.target.closest("#cardsScreen .builder-header-color-control")) {
+            closeBuilderHeaderColorPopover();
+        }
+    });
+}
+
 function showCardsScreen(addToHistory = true) {
     isGameRunning = false;
     displayScreen("cardsScreen", addToHistory);
+    closeBuilderHeaderColorPopover();
     document.getElementById("builderSetName").value = currentSetName || "";
     setSaveStatus("Saved", "saved");
 
@@ -5625,6 +5706,7 @@ function initApp() {
     initClassroomVocabularyBoardControls();
     initClassroomShortcutsHint();
     initSetCardOverflowMenus();
+    initBuilderHeaderColorPicker();
     checkAuth();
 }
 
