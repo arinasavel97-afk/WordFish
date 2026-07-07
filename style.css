@@ -300,8 +300,7 @@ textarea {
 
 :is(
     body,
-    .wf-ocean-screen-bg,
-    #gameScreen
+    .wf-ocean-screen-bg
 )::before {
     content: "";
     position: absolute;
@@ -320,8 +319,7 @@ body::before {
 
 :is(
     body,
-    .wf-ocean-screen-bg,
-    #gameScreen
+    .wf-ocean-screen-bg
 )::after {
     content: "";
     position: absolute;
@@ -337,10 +335,7 @@ body::after {
     position: fixed;
 }
 
-:is(
-    .wf-ocean-screen-bg,
-    #gameScreen
-) > * {
+.wf-ocean-screen-bg > * {
     position: relative;
     z-index: 1;
 }
@@ -348,13 +343,11 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
     :is(
         body,
-        .wf-ocean-screen-bg,
-        #gameScreen
+        .wf-ocean-screen-bg
     )::before,
     :is(
         body,
-        .wf-ocean-screen-bg,
-        #gameScreen
+        .wf-ocean-screen-bg
     )::after {
         animation: none;
     }
@@ -2290,11 +2283,17 @@ button:active {
 #gameScreen {
     width: min(1120px, 100%);
     min-height: min(720px, calc(100vh - 32px));
-    background: var(--wf-gradient-ocean-immersive);
+    background: rgba(255, 255, 255, 0.68);
     border-radius: 38px;
     padding: clamp(22px, 4vw, 42px);
     color: var(--wf-color-text-on-primary);
     overflow: hidden;
+}
+
+#gameTitle,
+#feedback,
+#scoreText {
+    text-shadow: 0 1px 3px rgba(7, 59, 76, 0.35);
 }
 
 .game-exit-button {
@@ -2316,6 +2315,7 @@ button:active {
     font-size: clamp(34px, 6vw, 64px);
     background: #FFD166;
     color: var(--ink);
+    text-shadow: none;
     padding: clamp(22px, 4vw, 34px) clamp(30px, 6vw, 72px);
     border-radius: 72px;
     display: inline-block;
@@ -6801,6 +6801,7 @@ body.wf-page-shell {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])),
+body.wf-page-shell:has(#gameScreen:not([style*="display: none"])),
 body.wf-page-shell:has(#resultsScreen:not([style*="display: none"])),
 body.wf-page-shell:has(:is(
     #classroomPresentationScreen,
@@ -6831,6 +6832,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active {
 
 @media (max-width: 620px) {
     body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])),
+    body.wf-page-shell:has(#gameScreen:not([style*="display: none"])),
     body.wf-page-shell:has(#resultsScreen:not([style*="display: none"])),
     body.wf-page-shell:has(:is(
         #classroomPresentationScreen,
@@ -6866,6 +6868,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
 }
 
 body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"]))::before,
+body.wf-page-shell:has(#gameScreen:not([style*="display: none"]))::before,
 body.wf-page-shell:has(#resultsScreen:not([style*="display: none"]))::before,
 body.wf-page-shell:has(:is(
     #classroomPresentationScreen,
@@ -6888,6 +6891,8 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active::before {
 
 body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])) .wf-ocean-backdrop,
 body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])) .dashboard-fish-layer,
+body.wf-page-shell:has(#gameScreen:not([style*="display: none"])) .wf-ocean-backdrop,
+body.wf-page-shell:has(#gameScreen:not([style*="display: none"])) .dashboard-fish-layer,
 body.wf-page-shell:has(#resultsScreen:not([style*="display: none"])) .wf-ocean-backdrop,
 body.wf-page-shell:has(#resultsScreen:not([style*="display: none"])) .dashboard-fish-layer,
 body.wf-page-shell:has(:is(
