@@ -1472,24 +1472,36 @@ button:active {
     border-radius: var(--wf-radius-md) var(--wf-radius-md) 0 0;
 }
 
-#savedSetsList .set-card-accent--blue .set-card-color-strip {
-    background: linear-gradient(90deg, #3FA9F5 0%, #00A6C8 100%);
+#savedSetsList .set-card-accent--orange .set-card-color-strip {
+    background: linear-gradient(90deg, #FFB703 0%, #F59E0B 100%);
+}
+
+#savedSetsList .set-card-accent--yellow .set-card-color-strip {
+    background: linear-gradient(90deg, #FFD166 0%, #F59E0B 100%);
 }
 
 #savedSetsList .set-card-accent--green .set-card-color-strip {
     background: linear-gradient(90deg, #06D6A0 0%, #16AE4A 100%);
 }
 
+#savedSetsList .set-card-accent--teal .set-card-color-strip {
+    background: linear-gradient(90deg, #33C9DC 0%, #00A6C8 100%);
+}
+
+#savedSetsList .set-card-accent--blue .set-card-color-strip {
+    background: linear-gradient(90deg, #3FA9F5 0%, #00A6C8 100%);
+}
+
 #savedSetsList .set-card-accent--purple .set-card-color-strip {
     background: linear-gradient(90deg, #B36DE7 0%, #7D3BD9 100%);
 }
 
-#savedSetsList .set-card-accent--orange .set-card-color-strip {
-    background: linear-gradient(90deg, #FFB703 0%, #F59E0B 100%);
-}
-
 #savedSetsList .set-card-accent--pink .set-card-color-strip {
     background: linear-gradient(90deg, #F472B6 0%, #EF476F 100%);
+}
+
+#savedSetsList .set-card-accent--red .set-card-color-strip {
+    background: linear-gradient(90deg, #FF7A96 0%, #EF476F 100%);
 }
 
 #savedSetsList .set-card-body {

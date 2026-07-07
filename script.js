@@ -8,6 +8,7 @@ let answerShown = false;
 let hintsUsed = 0;
 let editingSetId = null;
 let currentSetName = "";
+let currentSetAccentColor = "orange";
 let cardsSortable = null;
 let setsSortable = null;
 let dashboardSearchQuery = "";
@@ -850,17 +851,35 @@ function updateDashboardSelectionUI() {
     }
 }
 
-const SET_CARD_ACCENT_COLORS = ["blue", "green", "purple", "orange", "pink"];
+const SET_ACCENT_COLOR_IDS = ["orange", "yellow", "green", "teal", "blue", "purple", "pink", "red"];
+const DEFAULT_SET_ACCENT_COLOR = "orange";
+const BUILDER_ACCENT_HEX_BY_ID = {
+    orange: "#FFB703",
+    yellow: "#FFD166",
+    green: "#06D6A0",
+    teal: "#00A6C8",
+    blue: "#3FA9F5",
+    purple: "#B36DE7",
+    pink: "#F472B6",
+    red: "#EF476F"
+};
 
-function getSetCardAccentClass(setId) {
-    let hash = 0;
-    const id = String(setId);
+function normalizeSetAccentColor(color) {
+    const normalized = String(color || "").trim().toLowerCase();
 
-    for (let i = 0; i < id.length; i++) {
-        hash = ((hash << 5) - hash + id.charCodeAt(i)) | 0;
+    if (SET_ACCENT_COLOR_IDS.includes(normalized)) {
+        return normalized;
     }
 
-    return `set-card-accent--${SET_CARD_ACCENT_COLORS[Math.abs(hash) % SET_CARD_ACCENT_COLORS.length]}`;
+    return DEFAULT_SET_ACCENT_COLOR;
+}
+
+function getSetAccentHex(color) {
+    return BUILDER_ACCENT_HEX_BY_ID[normalizeSetAccentColor(color)];
+}
+
+function getSetCardAccentClass(accentColor) {
+    return `set-card-accent--${normalizeSetAccentColor(accentColor)}`;
 }
 
 function buildSetCardMetadataLine(wordCount, imageCount) {
@@ -1072,7 +1091,7 @@ function renderDashboard() {
             let lastEditedLine = formatSetLastEditedLine(set.updated_at, set.created_at);
 
             savedSetsList.innerHTML += `
-            <div class="card set-card set-card-v2 set-card-trash ${getSetCardAccentClass(setId)}${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
+            <div class="card set-card set-card-v2 set-card-trash ${getSetCardAccentClass(set.accentColor)}${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
                 <div class="set-card-color-strip" aria-hidden="true"></div>
                 <div class="set-card-body">
                     <label class="set-card-select">
@@ -1105,7 +1124,7 @@ function renderDashboard() {
 
         savedSetsList.innerHTML += `
             <div class="set-card-shell">
-                <div class="card set-card set-card-v2 ${getSetCardAccentClass(setId)}${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
+                <div class="card set-card set-card-v2 ${getSetCardAccentClass(set.accentColor)}${isSelected ? " set-card-selected" : ""}" data-set-id="${escapeAttribute(setId)}">
                     <div class="set-card-color-strip" aria-hidden="true"></div>
                     <div class="set-card-body">
                         <label class="set-card-select">
@@ -3704,9 +3723,12 @@ async function createSetAndOpenCards() {
         }));
 
     try {
-        const newSet = await dbCreateSetWithCards(setName.trim(), cards);
+        currentSetAccentColor = DEFAULT_SET_ACCENT_COLOR;
+        const newSet = await dbCreateSetWithCards(setName.trim(), cards, currentSetAccentColor);
         editingSetId = newSet.id;
         currentSetName = newSet.name;
+        currentSetAccentColor = normalizeSetAccentColor(newSet.accentColor || currentSetAccentColor);
+        syncSavedSetAccentColor(newSet.id, currentSetAccentColor);
         showCardsScreen();
         showToast("Set created! 🐠", "success");
     } catch (error) {
@@ -3724,6 +3746,7 @@ function editSet(indexOrId) {
 
     editingSetId = selectedSet.id;
     currentSetName = selectedSet.name;
+    currentSetAccentColor = normalizeSetAccentColor(selectedSet.accentColor);
     cards = prepareCards(selectedSet.cards || []);
 
     showCardsScreen();
@@ -4367,18 +4390,42 @@ function toggleBuilderHeaderColorPopover(event) {
     }
 }
 
-function selectBuilderHeaderPreviewColor(colorId, accentValue) {
+function syncSavedSetAccentColor(setId, accentColor) {
+    const setIndex = savedSets.findIndex(set => set.id === setId);
+
+    if (setIndex >= 0) {
+        savedSets[setIndex].accentColor = accentColor;
+    }
+}
+
+function applyBuilderHeaderAccentColor(color) {
+    currentSetAccentColor = normalizeSetAccentColor(color);
     const header = getBuilderHeaderElement();
 
     if (header) {
-        header.style.setProperty("--builder-header-accent", accentValue);
+        header.style.setProperty("--builder-header-accent", getSetAccentHex(currentSetAccentColor));
     }
 
     document.querySelectorAll("#cardsScreen .builder-header-color-swatch").forEach((swatch) => {
-        const isSelected = swatch.dataset.color === colorId;
+        const isSelected = swatch.dataset.color === currentSetAccentColor;
         swatch.classList.toggle("is-selected", isSelected);
         swatch.setAttribute("aria-checked", isSelected ? "true" : "false");
     });
+}
+
+function loadBuilderHeaderAccentFromSet() {
+    if (!editingSetId) {
+        applyBuilderHeaderAccentColor(DEFAULT_SET_ACCENT_COLOR);
+        return;
+    }
+
+    const activeSet = savedSets.find(set => set.id === editingSetId);
+    applyBuilderHeaderAccentColor(activeSet?.accentColor ?? currentSetAccentColor);
+}
+
+function selectBuilderHeaderPreviewColor(colorId, accentValue) {
+    applyBuilderHeaderAccentColor(colorId);
+    scheduleAutoSave(100);
 }
 
 function initBuilderHeaderColorPicker() {
@@ -4400,6 +4447,7 @@ function showCardsScreen(addToHistory = true) {
     displayScreen("cardsScreen", addToHistory);
     closeBuilderHeaderColorPopover();
     document.getElementById("builderSetName").value = currentSetName || "";
+    loadBuilderHeaderAccentFromSet();
     setSaveStatus("Saved", "saved");
 
     renderCards();
@@ -4643,9 +4691,17 @@ async function autoSaveNow() {
     autoSaveInProgress = true;
 
     try {
-        const savedSet = await dbSaveSetWithCards(editingSetId, setName.trim(), cleaned);
+        const savedSet = await dbSaveSetWithCards(
+            editingSetId,
+            setName.trim(),
+            cleaned,
+            currentSetAccentColor
+        );
         editingSetId = savedSet.id;
         currentSetName = savedSet.name;
+        currentSetAccentColor = normalizeSetAccentColor(savedSet.accentColor || currentSetAccentColor);
+        syncSavedSetAccentColor(editingSetId, currentSetAccentColor);
+        applyBuilderHeaderAccentColor(currentSetAccentColor);
         cards = prepareCards(cleaned);
         setSaveStatus("Saved", "saved");
     } catch (error) {
