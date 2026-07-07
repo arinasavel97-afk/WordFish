@@ -423,7 +423,7 @@ p {
     to { opacity: 1; transform: translateY(0); }
 }
 
-.screen:not(#resultsScreen)::before {
+.screen:not(#resultsScreen):not(.wf-content-shell)::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -6766,7 +6766,7 @@ body:has(#dashboardScreen[style*="display:block"]) .dashboard-fish-layer {
 }
 
 .wf-content-shell {
-    /* Frosted content panel host. Visuals from .screen {} (405–433). */
+    /* Frosted content panel host. Visuals from :is(...).wf-content-shell {} (page shell block). */
 }
 
 body.wf-page-shell {
@@ -6784,15 +6784,15 @@ body.wf-page-shell {
 /* ═══════════════════════════════════════════════════════════════════════════
    Page Shell — migrated panel screens
    Shared ocean shell rules; Dashboard block above unchanged.
+   Panel list mirrors OCEAN_PANEL_SCREEN_IDS (+ #appLoadingScreen) in script.js.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])),
-body.wf-page-shell:has(#teacherScreen[style*="display: block"]),
-body.wf-page-shell:has(#teacherScreen[style*="display:block"]),
-body.wf-page-shell:has(#studentScreen[style*="display: block"]),
-body.wf-page-shell:has(#studentScreen[style*="display:block"]),
-body.wf-page-shell:has(#authScreen[style*="display: block"]),
-body.wf-page-shell:has(#authScreen[style*="display:block"]),
+body.wf-page-shell:has(:is(
+    #teacherScreen,
+    #studentScreen,
+    #authScreen
+):is([style*="display: block"], [style*="display:block"])),
 body.wf-page-shell.wf-page-shell--ocean-panel-active {
     background-color: #D6EEFB;
     background-image: url("assets/backgrounds/dashboard-bg-desktop.png");
@@ -6811,12 +6811,11 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active {
 
 @media (max-width: 620px) {
     body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])),
-    body.wf-page-shell:has(#teacherScreen[style*="display: block"]),
-    body.wf-page-shell:has(#teacherScreen[style*="display:block"]),
-    body.wf-page-shell:has(#studentScreen[style*="display: block"]),
-    body.wf-page-shell:has(#studentScreen[style*="display:block"]),
-    body.wf-page-shell:has(#authScreen[style*="display: block"]),
-    body.wf-page-shell:has(#authScreen[style*="display:block"]),
+    body.wf-page-shell:has(:is(
+        #teacherScreen,
+        #studentScreen,
+        #authScreen
+    ):is([style*="display: block"], [style*="display:block"])),
     body.wf-page-shell.wf-page-shell--ocean-panel-active {
         background-image: url("assets/backgrounds/dashboard-bg-mobile.png");
     }
@@ -6828,25 +6827,13 @@ body.wf-page-shell:has(:is(
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
     #classroomNoCardsScreen
-)[style*="display: block"]),
-body.wf-page-shell:has(:is(
-    #cardsScreen,
-    #classroomPickerScreen,
-    #classroomActivityMenuScreen,
-    #classroomNoCardsScreen
-)[style*="display:block"]),
+):is([style*="display: block"], [style*="display:block"])),
 body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     #cardsScreen,
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
     #classroomNoCardsScreen
-)[style*="display: block"]),
-body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
-    #cardsScreen,
-    #classroomPickerScreen,
-    #classroomActivityMenuScreen,
-    #classroomNoCardsScreen
-)[style*="display:block"]) {
+):is([style*="display: block"], [style*="display:block"])) {
     background-color: #D6EEFB;
     background-image: none;
 }
@@ -6860,16 +6847,7 @@ body.wf-page-shell:has(:is(
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
     #classroomNoCardsScreen
-)[style*="display: block"])::before,
-body.wf-page-shell:has(:is(
-    #teacherScreen,
-    #studentScreen,
-    #authScreen,
-    #cardsScreen,
-    #classroomPickerScreen,
-    #classroomActivityMenuScreen,
-    #classroomNoCardsScreen
-)[style*="display:block"])::before,
+):is([style*="display: block"], [style*="display:block"]))::before,
 body.wf-page-shell.wf-page-shell--ocean-panel-active::before {
     opacity: 0;
 }
@@ -6884,7 +6862,7 @@ body.wf-page-shell:has(:is(
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
     #classroomNoCardsScreen
-)[style*="display: block"]) .wf-ocean-backdrop,
+):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop,
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
@@ -6893,25 +6871,7 @@ body.wf-page-shell:has(:is(
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
     #classroomNoCardsScreen
-)[style*="display:block"]) .wf-ocean-backdrop,
-body.wf-page-shell:has(:is(
-    #teacherScreen,
-    #studentScreen,
-    #authScreen,
-    #cardsScreen,
-    #classroomPickerScreen,
-    #classroomActivityMenuScreen,
-    #classroomNoCardsScreen
-)[style*="display: block"]) .dashboard-fish-layer,
-body.wf-page-shell:has(:is(
-    #teacherScreen,
-    #studentScreen,
-    #authScreen,
-    #cardsScreen,
-    #classroomPickerScreen,
-    #classroomActivityMenuScreen,
-    #classroomNoCardsScreen
-)[style*="display:block"]) .dashboard-fish-layer,
+):is([style*="display: block"], [style*="display:block"])) .dashboard-fish-layer,
 body.wf-page-shell.wf-page-shell--ocean-panel-active .wf-ocean-backdrop,
 body.wf-page-shell.wf-page-shell--ocean-panel-active .dashboard-fish-layer {
     display: block;
@@ -6922,25 +6882,13 @@ body.wf-page-shell:has(:is(
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
     #classroomNoCardsScreen
-)[style*="display: block"]) .wf-ocean-backdrop,
-body.wf-page-shell:has(:is(
-    #cardsScreen,
-    #classroomPickerScreen,
-    #classroomActivityMenuScreen,
-    #classroomNoCardsScreen
-)[style*="display:block"]) .wf-ocean-backdrop,
+):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop,
 body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     #cardsScreen,
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
     #classroomNoCardsScreen
-)[style*="display: block"]) .wf-ocean-backdrop,
-body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
-    #cardsScreen,
-    #classroomPickerScreen,
-    #classroomActivityMenuScreen,
-    #classroomNoCardsScreen
-)[style*="display:block"]) .wf-ocean-backdrop {
+):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop {
     background-color: #D6EEFB;
     background-image: url("assets/backgrounds/dashboard-bg-desktop.png");
     background-image: -webkit-image-set(
@@ -6962,25 +6910,13 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
         #classroomPickerScreen,
         #classroomActivityMenuScreen,
         #classroomNoCardsScreen
-    )[style*="display: block"]) .wf-ocean-backdrop,
-    body.wf-page-shell:has(:is(
-        #cardsScreen,
-        #classroomPickerScreen,
-        #classroomActivityMenuScreen,
-        #classroomNoCardsScreen
-    )[style*="display:block"]) .wf-ocean-backdrop,
+    ):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop,
     body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
         #cardsScreen,
         #classroomPickerScreen,
         #classroomActivityMenuScreen,
         #classroomNoCardsScreen
-    )[style*="display: block"]) .wf-ocean-backdrop,
-    body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
-        #cardsScreen,
-        #classroomPickerScreen,
-        #classroomActivityMenuScreen,
-        #classroomNoCardsScreen
-    )[style*="display:block"]) .wf-ocean-backdrop {
+    ):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop {
         background-image: url("assets/backgrounds/dashboard-bg-mobile.png");
     }
 }
