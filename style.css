@@ -5322,6 +5322,11 @@ h2 {
     max-width: min(520px, 100%);
 }
 
+#studentScreen .student-choice-back,
+#studentScreen #studentUnavailable button[onclick="backToWordFishHome()"] {
+    display: none;
+}
+
 #studentScreen.student-loading-active {
     pointer-events: none;
     user-select: none;
