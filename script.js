@@ -348,6 +348,7 @@ function isClassroomVocabularyBoardRefreshRequested() {
 
 const OCEAN_PANEL_SCREEN_IDS = new Set([
     "dashboardScreen",
+    "authScreen",
     "teacherScreen",
     "cardsScreen",
     "classroomPickerScreen",

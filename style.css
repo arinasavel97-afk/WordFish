@@ -6791,6 +6791,8 @@ body.wf-page-shell:has(#teacherScreen[style*="display: block"]),
 body.wf-page-shell:has(#teacherScreen[style*="display:block"]),
 body.wf-page-shell:has(#studentScreen[style*="display: block"]),
 body.wf-page-shell:has(#studentScreen[style*="display:block"]),
+body.wf-page-shell:has(#authScreen[style*="display: block"]),
+body.wf-page-shell:has(#authScreen[style*="display:block"]),
 body.wf-page-shell.wf-page-shell--ocean-panel-active {
     background-color: #D6EEFB;
     background-image: url("assets/backgrounds/dashboard-bg-desktop.png");
@@ -6813,6 +6815,8 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active {
     body.wf-page-shell:has(#teacherScreen[style*="display:block"]),
     body.wf-page-shell:has(#studentScreen[style*="display: block"]),
     body.wf-page-shell:has(#studentScreen[style*="display:block"]),
+    body.wf-page-shell:has(#authScreen[style*="display: block"]),
+    body.wf-page-shell:has(#authScreen[style*="display:block"]),
     body.wf-page-shell.wf-page-shell--ocean-panel-active {
         background-image: url("assets/backgrounds/dashboard-bg-mobile.png");
     }
@@ -6851,6 +6855,7 @@ body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"]))::before,
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
+    #authScreen,
     #cardsScreen,
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
@@ -6859,6 +6864,7 @@ body.wf-page-shell:has(:is(
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
+    #authScreen,
     #cardsScreen,
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
@@ -6873,6 +6879,7 @@ body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])) .dashboa
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
+    #authScreen,
     #cardsScreen,
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
@@ -6881,6 +6888,7 @@ body.wf-page-shell:has(:is(
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
+    #authScreen,
     #cardsScreen,
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
@@ -6889,6 +6897,7 @@ body.wf-page-shell:has(:is(
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
+    #authScreen,
     #cardsScreen,
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
@@ -6897,6 +6906,7 @@ body.wf-page-shell:has(:is(
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
+    #authScreen,
     #cardsScreen,
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
@@ -6977,6 +6987,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
 
 :is(
     #appLoadingScreen,
+    #authScreen,
     #teacherScreen,
     #studentScreen,
     #cardsScreen,
@@ -6993,6 +7004,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
 
 :is(
     #appLoadingScreen,
+    #authScreen,
     #teacherScreen,
     #studentScreen,
     #cardsScreen,
