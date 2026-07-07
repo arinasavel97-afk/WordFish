@@ -120,6 +120,23 @@
         radial-gradient(circle at 50% 100%, var(--wf-color-mint-glow), transparent 55%),
         var(--wf-overlay-ink-38);
 
+    /* --- Page shell (Dashboard reference) --- */
+    --wf-ocean-shell-bg: #D6EEFB;
+    --wf-ocean-bg-position: center center;
+    --wf-ocean-bg-size: cover;
+    --wf-ocean-bg-repeat: no-repeat;
+    --wf-ocean-panel-surface: rgba(255, 255, 255, 0.90);
+    --wf-ocean-panel-border: 1px solid rgba(255, 255, 255, 0.82);
+    --wf-ocean-panel-shadow: 0 10px 36px rgba(7, 59, 76, 0.08);
+    --wf-ocean-panel-wash-opacity: 0.35;
+    --wf-ocean-panel-wash: linear-gradient(
+        165deg,
+        rgba(244, 253, 255, 0.51) 0%,
+        rgba(233, 251, 255, 0.40) 55%,
+        rgba(214, 238, 251, 0.25) 100%
+    );
+    --wf-ocean-game-surface: rgba(255, 255, 255, 0.68);
+
     /* --- Shadows --- */
     --wf-shadow-ink-12: 0 8px 20px rgba(7, 59, 76, 0.12);
     --wf-shadow-ink-14: 0 2px 8px rgba(7, 59, 76, 0.12);
@@ -2283,7 +2300,9 @@ button:active {
 #gameScreen {
     width: min(1120px, 100%);
     min-height: min(720px, calc(100vh - 32px));
-    background: rgba(255, 255, 255, 0.68);
+    background: var(--wf-ocean-game-surface);
+    border: var(--wf-ocean-panel-border);
+    box-shadow: var(--wf-ocean-panel-shadow);
     border-radius: 38px;
     padding: clamp(22px, 4vw, 42px);
     color: var(--wf-color-text-on-primary);
@@ -2385,29 +2404,9 @@ button:active {
 }
 
 #resultsScreen {
-    background-color: rgba(255, 255, 255, 0.90);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: 1px solid rgba(255, 255, 255, 0.82);
-    box-shadow: 0 10px 36px rgba(7, 59, 76, 0.08);
     color: var(--ink);
     max-width: min(560px, 100%);
     overflow: hidden;
-}
-
-#resultsScreen::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.35;
-    background: linear-gradient(
-        165deg,
-        rgba(244, 253, 255, 0.51) 0%,
-        rgba(233, 251, 255, 0.40) 55%,
-        rgba(214, 238, 251, 0.25) 100%
-    );
 }
 
 #resultsScreen > * {
@@ -6526,7 +6525,7 @@ h2 {
 /* Dashboard v2 — Background Integration (Phase 1) */
 body:has(#dashboardScreen[style*="display: block"]),
 body:has(#dashboardScreen[style*="display:block"]) {
-    background-color: #D6EEFB;
+    background-color: var(--wf-ocean-shell-bg);
     background-image: url("assets/backgrounds/dashboard-bg-desktop.png");
     background-image: -webkit-image-set(
         url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
@@ -6536,9 +6535,9 @@ body:has(#dashboardScreen[style*="display:block"]) {
         url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
         url("assets/backgrounds/dashboard-bg-retina.png") 2x
     );
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
+    background-repeat: var(--wf-ocean-bg-repeat);
+    background-position: var(--wf-ocean-bg-position);
+    background-size: var(--wf-ocean-bg-size);
 }
 
 @media (max-width: 620px) {
@@ -6557,21 +6556,6 @@ body:has(#dashboardScreen[style*="display:block"])::before {
     width: min(1490px, calc(100vw - 74px));
     padding: 16px 20px 22px;
     text-align: left;
-    background: rgba(255, 255, 255, 0.90);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: 1px solid rgba(255, 255, 255, 0.82);
-    box-shadow: 0 10px 36px rgba(7, 59, 76, 0.08);
-}
-
-#dashboardScreen.screen--dashboard::before {
-    opacity: 0.35;
-    background: linear-gradient(
-        165deg,
-        rgba(244, 253, 255, 0.51) 0%,
-        rgba(233, 251, 255, 0.40) 55%,
-        rgba(214, 238, 251, 0.25) 100%
-    );
 }
 
 #dashboardScreen .dashboard-main {
@@ -6815,7 +6799,7 @@ body.wf-page-shell:has(:is(
     #authScreen
 ):is([style*="display: block"], [style*="display:block"])),
 body.wf-page-shell.wf-page-shell--ocean-panel-active {
-    background-color: #D6EEFB;
+    background-color: var(--wf-ocean-shell-bg);
     background-image: url("assets/backgrounds/dashboard-bg-desktop.png");
     background-image: -webkit-image-set(
         url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
@@ -6825,9 +6809,9 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active {
         url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
         url("assets/backgrounds/dashboard-bg-retina.png") 2x
     );
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
+    background-repeat: var(--wf-ocean-bg-repeat);
+    background-position: var(--wf-ocean-bg-position);
+    background-size: var(--wf-ocean-bg-size);
 }
 
 @media (max-width: 620px) {
@@ -6863,7 +6847,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     #classroomActivityMenuScreen,
     #classroomNoCardsScreen
 ):is([style*="display: block"], [style*="display:block"])) {
-    background-color: #D6EEFB;
+    background-color: var(--wf-ocean-shell-bg);
     background-image: none;
 }
 
@@ -6942,7 +6926,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     #classroomActivityMenuScreen,
     #classroomNoCardsScreen
 ):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop {
-    background-color: #D6EEFB;
+    background-color: var(--wf-ocean-shell-bg);
     background-image: url("assets/backgrounds/dashboard-bg-desktop.png");
     background-image: -webkit-image-set(
         url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
@@ -6952,9 +6936,9 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
         url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
         url("assets/backgrounds/dashboard-bg-retina.png") 2x
     );
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
+    background-repeat: var(--wf-ocean-bg-repeat);
+    background-position: var(--wf-ocean-bg-position);
+    background-size: var(--wf-ocean-bg-size);
 }
 
 @media (max-width: 620px) {
@@ -6974,40 +6958,49 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     }
 }
 
+/* Shared ocean panel surface + wash (Dashboard reference) */
 :is(
-    #appLoadingScreen,
-    #authScreen,
-    #teacherScreen,
-    #studentScreen,
-    #cardsScreen,
-    #classroomPickerScreen,
-    #classroomActivityMenuScreen,
-    #classroomNoCardsScreen
-).wf-content-shell {
-    background-color: rgba(255, 255, 255, 0.90);
+    #dashboardScreen.screen--dashboard,
+    :is(
+        #appLoadingScreen,
+        #authScreen,
+        #teacherScreen,
+        #studentScreen,
+        #cardsScreen,
+        #classroomPickerScreen,
+        #classroomActivityMenuScreen,
+        #classroomNoCardsScreen
+    ).wf-content-shell,
+    #resultsScreen
+) {
+    background-color: var(--wf-ocean-panel-surface);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    border: 1px solid rgba(255, 255, 255, 0.82);
-    box-shadow: 0 10px 36px rgba(7, 59, 76, 0.08);
+    border: var(--wf-ocean-panel-border);
+    box-shadow: var(--wf-ocean-panel-shadow);
 }
 
 :is(
-    #appLoadingScreen,
-    #authScreen,
-    #teacherScreen,
-    #studentScreen,
-    #cardsScreen,
-    #classroomPickerScreen,
-    #classroomActivityMenuScreen,
-    #classroomNoCardsScreen
-).wf-content-shell::before {
-    opacity: 0.35;
-    background: linear-gradient(
-        165deg,
-        rgba(244, 253, 255, 0.51) 0%,
-        rgba(233, 251, 255, 0.40) 55%,
-        rgba(214, 238, 251, 0.25) 100%
-    );
+    #dashboardScreen.screen--dashboard,
+    :is(
+        #appLoadingScreen,
+        #authScreen,
+        #teacherScreen,
+        #studentScreen,
+        #cardsScreen,
+        #classroomPickerScreen,
+        #classroomActivityMenuScreen,
+        #classroomNoCardsScreen
+    ).wf-content-shell,
+    #resultsScreen
+)::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: var(--wf-ocean-panel-wash-opacity);
+    background: var(--wf-ocean-panel-wash);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -7019,7 +7012,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
 .classroom-flashcards-screen:fullscreen,
 .classroom-text-flashcards-screen:fullscreen,
 .classroom-vocabulary-board-screen:fullscreen {
-    background-color: #D6EEFB;
+    background-color: var(--wf-ocean-shell-bg);
     background-image: url("assets/backgrounds/dashboard-bg-desktop.png");
     background-image: -webkit-image-set(
         url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
@@ -7029,9 +7022,9 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
         url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
         url("assets/backgrounds/dashboard-bg-retina.png") 2x
     );
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
+    background-repeat: var(--wf-ocean-bg-repeat);
+    background-position: var(--wf-ocean-bg-position);
+    background-size: var(--wf-ocean-bg-size);
 }
 
 @media (max-width: 620px) {
