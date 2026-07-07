@@ -301,7 +301,6 @@ textarea {
 :is(
     body,
     .wf-ocean-screen-bg,
-    .classroom-presentation-screen,
     .classroom-flashcards-screen,
     .classroom-text-flashcards-screen,
     .classroom-vocabulary-board-screen,
@@ -326,7 +325,6 @@ body::before {
 :is(
     body,
     .wf-ocean-screen-bg,
-    .classroom-presentation-screen,
     .classroom-flashcards-screen,
     .classroom-text-flashcards-screen,
     .classroom-vocabulary-board-screen,
@@ -349,7 +347,6 @@ body::after {
 
 :is(
     .wf-ocean-screen-bg,
-    .classroom-presentation-screen,
     .classroom-flashcards-screen,
     .classroom-text-flashcards-screen,
     .classroom-vocabulary-board-screen,
@@ -364,7 +361,6 @@ body::after {
     :is(
         body,
         .wf-ocean-screen-bg,
-        .classroom-presentation-screen,
         .classroom-flashcards-screen,
         .classroom-text-flashcards-screen,
         .classroom-vocabulary-board-screen,
@@ -374,7 +370,6 @@ body::after {
     :is(
         body,
         .wf-ocean-screen-bg,
-        .classroom-presentation-screen,
         .classroom-flashcards-screen,
         .classroom-text-flashcards-screen,
         .classroom-vocabulary-board-screen,
@@ -3855,9 +3850,14 @@ h2 {
     border-radius: 0;
     box-shadow: none;
     text-align: center;
-    background: var(--wf-gradient-classroom-screen);
+    background: transparent;
     overflow: hidden;
     gap: clamp(10px, 1.6vh, 16px);
+}
+
+.classroom-presentation-screen > * {
+    position: relative;
+    z-index: 1;
 }
 
 .classroom-presentation-header {
@@ -6581,7 +6581,11 @@ body:has(#dashboardScreen[style*="display:block"])::before {
     --dashboard-fish-size: clamp(56px, 7vw, 80px);
     display: none;
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
     z-index: 0;
     overflow: hidden;
     pointer-events: none;
@@ -6595,21 +6599,37 @@ body:has(#dashboardScreen[style*="display:block"]) .dashboard-fish-layer {
 .dashboard-fish-layer .dashboard-fish {
     position: absolute;
     left: 0;
-    width: 100%;
     pointer-events: none;
 }
 
 .dashboard-fish-layer .dashboard-fish--blue {
     top: 72%;
+    animation: dashboard-fish-swim-ltr 24s linear infinite;
+}
+
+.dashboard-fish-layer .dashboard-fish--blue .dashboard-fish-swim {
+    transform: scaleX(-1);
+}
+
+.dashboard-fish-layer .dashboard-fish--blue .dashboard-fish-bob {
+    animation: dashboard-fish-bob 5.5s ease-in-out infinite alternate;
 }
 
 .dashboard-fish-layer .dashboard-fish--yellow {
     top: 80%;
+    animation: dashboard-fish-swim-rtl 31s linear 10s infinite backwards;
+}
+
+.dashboard-fish-layer .dashboard-fish--yellow .dashboard-fish-bob {
+    animation: dashboard-fish-bob-alt 6s ease-in-out infinite alternate;
 }
 
 .dashboard-fish-layer .dashboard-fish-swim,
 .dashboard-fish-layer .dashboard-fish-bob {
     display: inline-block;
+}
+
+.dashboard-fish-layer .dashboard-fish-bob {
     will-change: transform;
 }
 
@@ -6623,21 +6643,21 @@ body:has(#dashboardScreen[style*="display:block"]) .dashboard-fish-layer {
 
 @keyframes dashboard-fish-swim-ltr {
     from {
-        transform: translateX(calc(-1 * var(--dashboard-fish-size))) scaleX(-1);
+        left: calc(-1 * var(--dashboard-fish-size));
     }
 
     to {
-        transform: translateX(calc(100vw + var(--dashboard-fish-size))) scaleX(-1);
+        left: calc(100vw + var(--dashboard-fish-size));
     }
 }
 
 @keyframes dashboard-fish-swim-rtl {
     from {
-        transform: translateX(calc(100vw + var(--dashboard-fish-size)));
+        left: calc(100vw + var(--dashboard-fish-size));
     }
 
     to {
-        transform: translateX(calc(-1 * var(--dashboard-fish-size)));
+        left: calc(-1 * var(--dashboard-fish-size));
     }
 }
 
@@ -6661,34 +6681,19 @@ body:has(#dashboardScreen[style*="display:block"]) .dashboard-fish-layer {
     }
 }
 
-.dashboard-fish-layer .dashboard-fish--blue .dashboard-fish-swim {
-    animation: dashboard-fish-swim-ltr 24s linear infinite;
-}
-
-.dashboard-fish-layer .dashboard-fish--blue .dashboard-fish-bob {
-    animation: dashboard-fish-bob 5.5s ease-in-out infinite alternate;
-}
-
-.dashboard-fish-layer .dashboard-fish--yellow .dashboard-fish-swim {
-    animation: dashboard-fish-swim-rtl 31s linear 10s infinite backwards;
-}
-
-.dashboard-fish-layer .dashboard-fish--yellow .dashboard-fish-bob {
-    animation: dashboard-fish-bob-alt 6s ease-in-out infinite alternate;
-}
-
 @media (prefers-reduced-motion: reduce) {
-    .dashboard-fish-layer .dashboard-fish-swim,
+    .dashboard-fish-layer .dashboard-fish--blue,
+    .dashboard-fish-layer .dashboard-fish--yellow,
     .dashboard-fish-layer .dashboard-fish-bob {
         animation: none !important;
     }
 
-    .dashboard-fish-layer .dashboard-fish--blue .dashboard-fish-swim {
-        transform: translateX(18vw) scaleX(-1);
+    .dashboard-fish-layer .dashboard-fish--blue {
+        left: 18vw;
     }
 
-    .dashboard-fish-layer .dashboard-fish--yellow .dashboard-fish-swim {
-        transform: translateX(62vw);
+    .dashboard-fish-layer .dashboard-fish--yellow {
+        left: 62vw;
     }
 
     .dashboard-fish-layer .dashboard-fish-bob {
@@ -6788,6 +6793,7 @@ body.wf-page-shell {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])),
+body.wf-page-shell:has(#classroomPresentationScreen:not([style*="display: none"])),
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
@@ -6811,6 +6817,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active {
 
 @media (max-width: 620px) {
     body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])),
+    body.wf-page-shell:has(#classroomPresentationScreen:not([style*="display: none"])),
     body.wf-page-shell:has(:is(
         #teacherScreen,
         #studentScreen,
@@ -6839,6 +6846,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
 }
 
 body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"]))::before,
+body.wf-page-shell:has(#classroomPresentationScreen:not([style*="display: none"]))::before,
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
@@ -6854,6 +6862,8 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active::before {
 
 body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])) .wf-ocean-backdrop,
 body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])) .dashboard-fish-layer,
+body.wf-page-shell:has(#classroomPresentationScreen:not([style*="display: none"])) .wf-ocean-backdrop,
+body.wf-page-shell:has(#classroomPresentationScreen:not([style*="display: none"])) .dashboard-fish-layer,
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
@@ -6955,4 +6965,31 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
         rgba(233, 251, 255, 0.40) 55%,
         rgba(214, 238, 251, 0.25) 100%
     );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Page Shell — immersive screens (Phase 2)
+   Fullscreen hosts stay transparent; ocean PNG on :fullscreen stacking root.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.classroom-presentation-screen:fullscreen {
+    background-color: #D6EEFB;
+    background-image: url("assets/backgrounds/dashboard-bg-desktop.png");
+    background-image: -webkit-image-set(
+        url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
+        url("assets/backgrounds/dashboard-bg-retina.png") 2x
+    );
+    background-image: image-set(
+        url("assets/backgrounds/dashboard-bg-desktop.png") 1x,
+        url("assets/backgrounds/dashboard-bg-retina.png") 2x
+    );
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+@media (max-width: 620px) {
+    .classroom-presentation-screen:fullscreen {
+        background-image: url("assets/backgrounds/dashboard-bg-mobile.png");
+    }
 }
