@@ -4578,11 +4578,21 @@ function toggleWordCardImagePopover(event, index) {
 }
 
 function triggerWordCardImageUpload(index) {
+    const uploadIndex = normalizeCardIndex(activeWordCardImagePopoverIndex)
+        ?? normalizeCardIndex(index);
+
+    if (uploadIndex === null) {
+        showToast("Could not upload image: card was not found", "error");
+        closeWordCardImagePopover();
+        return;
+    }
+
     closeWordCardImagePopover();
 
-    const fileInput = document.getElementById(`wordCardImageFile-${index}`);
+    const fileInput = document.getElementById(`wordCardImageFile-${uploadIndex}`);
 
     if (!fileInput) {
+        showToast("Could not upload image: card was not found", "error");
         return;
     }
 
@@ -4671,6 +4681,156 @@ function initWordCardImagePopover() {
             closeWordCardImagePopover();
         }
     });
+
+    document.addEventListener("paste", handleWordCardImagePaste);
+}
+
+function isWordCardImagePasteBlockedByFocus() {
+    const activeElement = document.activeElement;
+
+    if (!activeElement) {
+        return false;
+    }
+
+    if (activeElement.closest("#cardsList .word-fields")) {
+        return true;
+    }
+
+    if (activeElement.id === "builderSetName") {
+        return true;
+    }
+
+    if (activeElement.tagName === "TEXTAREA" || activeElement.isContentEditable) {
+        return true;
+    }
+
+    return false;
+}
+
+function getClipboardImageFile(dataTransfer) {
+    if (!dataTransfer?.items) {
+        return null;
+    }
+
+    const imageTypes = new Set(["image/png", "image/jpeg", "image/webp"]);
+
+    for (const item of dataTransfer.items) {
+        if (item.kind !== "file" || !imageTypes.has(item.type)) {
+            continue;
+        }
+
+        const file = item.getAsFile();
+
+        if (!file) {
+            continue;
+        }
+
+        const extensionByType = {
+            "image/png": "png",
+            "image/jpeg": "jpg",
+            "image/webp": "webp"
+        };
+        const extension = extensionByType[item.type] || "png";
+        const fileName = file.name && file.name.includes(".") ? file.name : `pasted-image.${extension}`;
+
+        return new File([file], fileName, { type: item.type });
+    }
+
+    return null;
+}
+
+function handleWordCardImagePaste(event) {
+    if (currentScreenId !== "cardsScreen") {
+        return;
+    }
+
+    if (activeWordCardImagePopoverIndex === null) {
+        return;
+    }
+
+    const index = activeWordCardImagePopoverIndex;
+
+    if (!isValidCardIndex(index)) {
+        return;
+    }
+
+    if (isWordCardImagePasteBlockedByFocus()) {
+        return;
+    }
+
+    const clipboardFile = getClipboardImageFile(event.clipboardData);
+
+    if (!clipboardFile) {
+        return;
+    }
+
+    event.preventDefault();
+    closeWordCardImagePopover();
+    uploadCardImageFile(index, clipboardFile);
+}
+
+function normalizeCardIndex(index) {
+    if (index === null || index === undefined || index === "") {
+        return null;
+    }
+
+    const numericIndex = typeof index === "number"
+        ? index
+        : Number.parseInt(String(index), 10);
+
+    if (!Number.isInteger(numericIndex) || numericIndex < 0 || numericIndex >= cards.length) {
+        return null;
+    }
+
+    if (cards[numericIndex] == null) {
+        return null;
+    }
+
+    return numericIndex;
+}
+
+function isValidCardIndex(index) {
+    return normalizeCardIndex(index) !== null;
+}
+
+function parseWordCardImageFileInputIndex(fileInput) {
+    if (!fileInput?.id?.startsWith("wordCardImageFile-")) {
+        return null;
+    }
+
+    return normalizeCardIndex(fileInput.id.slice("wordCardImageFile-".length));
+}
+
+function resolveWordCardImageUploadIndex(index, fileInput) {
+    const fromFileInput = parseWordCardImageFileInputIndex(fileInput);
+
+    if (fromFileInput !== null) {
+        return fromFileInput;
+    }
+
+    const fromPopover = normalizeCardIndex(activeWordCardImagePopoverIndex);
+
+    if (fromPopover !== null) {
+        return fromPopover;
+    }
+
+    return normalizeCardIndex(index);
+}
+
+function resolveWordCardImageUploadIndexAfterAsync(originalIndex, cardId) {
+    const normalizedOriginal = normalizeCardIndex(originalIndex);
+
+    if (normalizedOriginal !== null) {
+        return normalizedOriginal;
+    }
+
+    if (cardId) {
+        const indexById = cards.findIndex((card) => card.id === cardId);
+
+        return normalizeCardIndex(indexById);
+    }
+
+    return null;
 }
 
 function showCardsScreen(addToHistory = true) {
@@ -4811,27 +4971,56 @@ function deleteWord(index) {
     scheduleAutoSave();
 }
 
-async function uploadImage(event, index) {
-    let file = event.target.files[0];
+async function uploadCardImageFile(index, file) {
+    const uploadIndex = normalizeCardIndex(index);
 
-    if (!file) return;
+    if (uploadIndex === null) {
+        showToast("Could not upload image: card was not found", "error");
+        return;
+    }
+
+    if (!file) {
+        return;
+    }
+
+    const cardId = cards[uploadIndex].id;
 
     try {
-        cards[index].imageUrl = "Uploading...";
+        cards[uploadIndex].imageUrl = "Uploading...";
         renderCards();
         setSaveStatus("Uploading image...", "saving");
 
         const imageUrl = await dbUploadImage(file);
 
-        cards[index].imageUrl = imageUrl;
+        const targetIndex = resolveWordCardImageUploadIndexAfterAsync(uploadIndex, cardId);
+
+        if (targetIndex === null) {
+            showToast("Could not upload image: card was not found", "error");
+            return;
+        }
+
+        cards[targetIndex].imageUrl = imageUrl;
         renderCards();
         scheduleAutoSave(100);
         showToast("Image uploaded", "success");
     } catch (error) {
         showToast("Could not upload image: " + error.message, "error");
-        cards[index].imageUrl = "";
-        renderCards();
+
+        const targetIndex = resolveWordCardImageUploadIndexAfterAsync(uploadIndex, cardId);
+
+        if (targetIndex !== null) {
+            cards[targetIndex].imageUrl = "";
+            renderCards();
+        }
     }
+}
+
+async function uploadImage(event, index) {
+    const fileInput = event.target;
+    const file = fileInput?.files?.[0];
+    const uploadIndex = resolveWordCardImageUploadIndex(index, fileInput);
+
+    await uploadCardImageFile(uploadIndex, file);
 }
 
 async function translateAllToThai() {
@@ -4916,7 +5105,6 @@ async function autoSaveNow() {
         currentSetAccentColor = normalizeSetAccentColor(savedSet.accentColor || currentSetAccentColor);
         syncSavedSetAccentColor(editingSetId, currentSetAccentColor);
         applyBuilderHeaderAccentColor(currentSetAccentColor);
-        cards = prepareCards(cleaned);
         setSaveStatus("Saved", "saved");
     } catch (error) {
         setSaveStatus("Not saved", "error");
