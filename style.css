@@ -6786,6 +6786,7 @@ body.wf-page-shell {
    Shared ocean shell rules; Dashboard block above unchanged.
    ═══════════════════════════════════════════════════════════════════════════ */
 
+body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])),
 body.wf-page-shell:has(#teacherScreen[style*="display: block"]),
 body.wf-page-shell:has(#teacherScreen[style*="display:block"]),
 body.wf-page-shell:has(#studentScreen[style*="display: block"]),
@@ -6807,6 +6808,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active {
 }
 
 @media (max-width: 620px) {
+    body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])),
     body.wf-page-shell:has(#teacherScreen[style*="display: block"]),
     body.wf-page-shell:has(#teacherScreen[style*="display:block"]),
     body.wf-page-shell:has(#studentScreen[style*="display: block"]),
@@ -6845,6 +6847,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     background-image: none;
 }
 
+body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"]))::before,
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
@@ -6865,6 +6868,8 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active::before {
     opacity: 0;
 }
 
+body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])) .wf-ocean-backdrop,
+body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])) .dashboard-fish-layer,
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
@@ -6971,6 +6976,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
 }
 
 :is(
+    #appLoadingScreen,
     #teacherScreen,
     #studentScreen,
     #cardsScreen,
@@ -6986,6 +6992,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
 }
 
 :is(
+    #appLoadingScreen,
     #teacherScreen,
     #studentScreen,
     #cardsScreen,
