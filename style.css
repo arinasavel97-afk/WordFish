@@ -301,9 +301,6 @@ textarea {
 :is(
     body,
     .wf-ocean-screen-bg,
-    .classroom-flashcards-screen,
-    .classroom-text-flashcards-screen,
-    .classroom-vocabulary-board-screen,
     #gameScreen,
     #resultsScreen
 )::before {
@@ -325,9 +322,6 @@ body::before {
 :is(
     body,
     .wf-ocean-screen-bg,
-    .classroom-flashcards-screen,
-    .classroom-text-flashcards-screen,
-    .classroom-vocabulary-board-screen,
     #gameScreen,
     #resultsScreen
 )::after {
@@ -347,9 +341,6 @@ body::after {
 
 :is(
     .wf-ocean-screen-bg,
-    .classroom-flashcards-screen,
-    .classroom-text-flashcards-screen,
-    .classroom-vocabulary-board-screen,
     #gameScreen,
     #resultsScreen
 ) > * {
@@ -361,18 +352,12 @@ body::after {
     :is(
         body,
         .wf-ocean-screen-bg,
-        .classroom-flashcards-screen,
-        .classroom-text-flashcards-screen,
-        .classroom-vocabulary-board-screen,
         #gameScreen,
         #resultsScreen
     )::before,
     :is(
         body,
         .wf-ocean-screen-bg,
-        .classroom-flashcards-screen,
-        .classroom-text-flashcards-screen,
-        .classroom-vocabulary-board-screen,
         #gameScreen,
         #resultsScreen
     )::after {
@@ -4138,9 +4123,14 @@ h2 {
     border-radius: 0;
     box-shadow: none;
     text-align: center;
-    background: var(--wf-gradient-classroom-screen);
+    background: transparent;
     overflow: hidden;
     gap: clamp(10px, 1.6vh, 16px);
+}
+
+.classroom-flashcards-screen > * {
+    position: relative;
+    z-index: 1;
 }
 
 .classroom-flashcards-header {
@@ -4327,9 +4317,14 @@ h2 {
     border-radius: 0;
     box-shadow: none;
     text-align: center;
-    background: var(--wf-gradient-classroom-screen);
+    background: transparent;
     overflow: hidden;
     gap: clamp(10px, 1.6vh, 16px);
+}
+
+.classroom-text-flashcards-screen > * {
+    position: relative;
+    z-index: 1;
 }
 
 .classroom-text-flashcards-header {
@@ -4704,9 +4699,14 @@ h2 {
     border-radius: 0;
     box-shadow: none;
     text-align: center;
-    background: var(--wf-gradient-classroom-screen);
+    background: transparent;
     overflow: hidden;
     gap: clamp(4px, 0.55vh, 7px);
+}
+
+.classroom-vocabulary-board-screen > * {
+    position: relative;
+    z-index: 1;
 }
 
 .classroom-vocabulary-board-header {
@@ -6793,7 +6793,12 @@ body.wf-page-shell {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])),
-body.wf-page-shell:has(#classroomPresentationScreen:not([style*="display: none"])),
+body.wf-page-shell:has(:is(
+    #classroomPresentationScreen,
+    #classroomFlashcardsScreen,
+    #classroomTextFlashcardsScreen,
+    #classroomVocabularyBoardScreen
+):not([style*="display: none"])),
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
@@ -6817,7 +6822,12 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active {
 
 @media (max-width: 620px) {
     body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])),
-    body.wf-page-shell:has(#classroomPresentationScreen:not([style*="display: none"])),
+    body.wf-page-shell:has(:is(
+        #classroomPresentationScreen,
+        #classroomFlashcardsScreen,
+        #classroomTextFlashcardsScreen,
+        #classroomVocabularyBoardScreen
+    ):not([style*="display: none"])),
     body.wf-page-shell:has(:is(
         #teacherScreen,
         #studentScreen,
@@ -6846,7 +6856,12 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
 }
 
 body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"]))::before,
-body.wf-page-shell:has(#classroomPresentationScreen:not([style*="display: none"]))::before,
+body.wf-page-shell:has(:is(
+    #classroomPresentationScreen,
+    #classroomFlashcardsScreen,
+    #classroomTextFlashcardsScreen,
+    #classroomVocabularyBoardScreen
+):not([style*="display: none"]))::before,
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
@@ -6862,8 +6877,18 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active::before {
 
 body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])) .wf-ocean-backdrop,
 body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])) .dashboard-fish-layer,
-body.wf-page-shell:has(#classroomPresentationScreen:not([style*="display: none"])) .wf-ocean-backdrop,
-body.wf-page-shell:has(#classroomPresentationScreen:not([style*="display: none"])) .dashboard-fish-layer,
+body.wf-page-shell:has(:is(
+    #classroomPresentationScreen,
+    #classroomFlashcardsScreen,
+    #classroomTextFlashcardsScreen,
+    #classroomVocabularyBoardScreen
+):not([style*="display: none"])) .wf-ocean-backdrop,
+body.wf-page-shell:has(:is(
+    #classroomPresentationScreen,
+    #classroomFlashcardsScreen,
+    #classroomTextFlashcardsScreen,
+    #classroomVocabularyBoardScreen
+):not([style*="display: none"])) .dashboard-fish-layer,
 body.wf-page-shell:has(:is(
     #teacherScreen,
     #studentScreen,
@@ -6972,7 +6997,10 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
    Fullscreen hosts stay transparent; ocean PNG on :fullscreen stacking root.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-.classroom-presentation-screen:fullscreen {
+.classroom-presentation-screen:fullscreen,
+.classroom-flashcards-screen:fullscreen,
+.classroom-text-flashcards-screen:fullscreen,
+.classroom-vocabulary-board-screen:fullscreen {
     background-color: #D6EEFB;
     background-image: url("assets/backgrounds/dashboard-bg-desktop.png");
     background-image: -webkit-image-set(
@@ -6989,7 +7017,10 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
 }
 
 @media (max-width: 620px) {
-    .classroom-presentation-screen:fullscreen {
+    .classroom-presentation-screen:fullscreen,
+    .classroom-flashcards-screen:fullscreen,
+    .classroom-text-flashcards-screen:fullscreen,
+    .classroom-vocabulary-board-screen:fullscreen {
         background-image: url("assets/backgrounds/dashboard-bg-mobile.png");
     }
 }
