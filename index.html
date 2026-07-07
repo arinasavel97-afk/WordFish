@@ -657,20 +657,19 @@
     </div>
 
     <div id="cardsScreen" class="screen wf-content-shell" style="display: none;">
-        <div class="sea-header">🐟 📝 🐟</div>
-        <h1>📝 Vocabulary Builder</h1>
+        <h1>Vocabulary Builder</h1>
 
         <div class="editor-toolbar">
             <input id="builderSetName" placeholder="Set name" oninput="updateSetName(this.value)">
-            <div id="saveStatus" class="save-status">✅ Saved</div>
+            <div id="saveStatus" class="save-status">Saved</div>
             <br>
 
-            <button class="green-button wf-cta-primary" onclick="addNewWord()">➕ New Word</button>
-            <button class="wf-cta-neutral" onclick="translateAllToThai()">🌐 Auto Translate Thai</button>
+            <button class="green-button wf-cta-primary" onclick="addNewWord()">New Word</button>
+            <button class="wf-cta-neutral" onclick="translateAllToThai()">Auto Translate Thai</button>
             <br>
-            <button class="yellow-button wf-cta-accent" onclick="startGame('translation')">▶️ Play with Translation</button>
-            <button class="yellow-button wf-cta-accent" onclick="startGame('picture')">🖼️ Play with Pictures</button>
-            <button class="wf-cta-neutral" onclick="backToDashboard()">🏠 Back to Dashboard</button>
+            <button class="yellow-button wf-cta-accent" onclick="startGame('translation')">Play with Translation</button>
+            <button class="yellow-button wf-cta-accent" onclick="startGame('picture')">Play with Pictures</button>
+            <button class="wf-cta-neutral" onclick="backToDashboard()">Back to Dashboard</button>
         </div>
 
         <div id="cardsList"></div>

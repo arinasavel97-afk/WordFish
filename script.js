@@ -4319,7 +4319,7 @@ function showCardsScreen(addToHistory = true) {
     isGameRunning = false;
     displayScreen("cardsScreen", addToHistory);
     document.getElementById("builderSetName").value = currentSetName || "";
-    setSaveStatus("✅ Saved", "saved");
+    setSaveStatus("Saved", "saved");
 
     renderCards();
 }
@@ -4331,7 +4331,7 @@ function renderCards() {
     if (cards.length === 0) {
         cardsList.innerHTML = `
             <div class="card empty-library-card">
-                <h2>🐚 No cards yet</h2>
+                <h2>No cards yet</h2>
                 <p>Click + New Word to add your first card.</p>
             </div>
         `;
@@ -4346,18 +4346,18 @@ function renderCards() {
         cardsList.innerHTML += `
             <div class="card word-card">
                 <div class="word-card-header">
-                    <div class="card-number">🐟 Card ${i + 1}</div>
+                    <div class="card-number">Card ${i + 1}</div>
 
                     <div class="drag-handle">
                         ↕ Drag
                     </div>
 
-                    <button class="red-button wf-cta-danger" onclick="deleteWord(${i})">🗑️ Delete</button>
+                    <button class="red-button wf-cta-danger" onclick="deleteWord(${i})">Delete</button>
                 </div>
 
                 <div class="word-fields">
                     <div class="field-group">
-                        <label>🇬🇧 English word</label>
+                        <label>English word</label>
                         <input 
                             value="${escapeAttribute(cards[i].english)}" 
                             oninput="updateCardField(${i}, 'english', this.value)"
@@ -4366,7 +4366,7 @@ function renderCards() {
                     </div>
 
                     <div class="field-group">
-                        <label>🇹🇭 Thai translation</label>
+                        <label>Thai translation</label>
                         <input 
                             value="${escapeAttribute(cards[i].thai)}" 
                             oninput="updateCardField(${i}, 'thai', this.value)"
@@ -4376,9 +4376,9 @@ function renderCards() {
                 </div>
 
                 <div class="image-preview">
-                    <strong>🖼️ Picture clue</strong>
+                    <strong>Picture clue</strong>
 
-                    ${cards[i].imageUrl ? `<img src="${escapeAttribute(cards[i].imageUrl)}">` : `<p>🐚 No image yet</p>`}
+                    ${cards[i].imageUrl ? `<img src="${escapeAttribute(cards[i].imageUrl)}">` : `<p>No image yet</p>`}
 
                     <input 
                         value="${escapeAttribute(cards[i].imageUrl)}"
@@ -4396,7 +4396,7 @@ function renderCards() {
 
                     <br>
 
-                    <button class="disabled-button" onclick="aiComingSoon()">🤖✨ AI Generation Coming Soon</button>
+                    <button class="disabled-button" onclick="aiComingSoon()">AI Generation Coming Soon</button>
                 </div>
             </div>
         `;
@@ -4448,7 +4448,7 @@ function updateCardField(index, field, value) {
 }
 
 function aiComingSoon() {
-    showToast("🤖 AI image generation is coming soon!", "info");
+    showToast("AI image generation is coming soon!", "info");
 }
 
 function addNewWord() {
@@ -4476,14 +4476,14 @@ async function uploadImage(event, index) {
     try {
         cards[index].imageUrl = "Uploading...";
         renderCards();
-        setSaveStatus("🫧 Uploading image...", "saving");
+        setSaveStatus("Uploading image...", "saving");
 
         const imageUrl = await dbUploadImage(file);
 
         cards[index].imageUrl = imageUrl;
         renderCards();
         scheduleAutoSave(100);
-        showToast("Image uploaded 🖼️", "success");
+        showToast("Image uploaded", "success");
     } catch (error) {
         showToast("Could not upload image: " + error.message, "error");
         cards[index].imageUrl = "";
@@ -4492,7 +4492,7 @@ async function uploadImage(event, index) {
 }
 
 async function translateAllToThai() {
-    setSaveStatus("🌐 Translating...", "saving");
+    setSaveStatus("Translating...", "saving");
 
     for (let i = 0; i < cards.length; i++) {
         if (cards[i].thai.trim() === "" && cards[i].english.trim() !== "") {
@@ -4502,7 +4502,7 @@ async function translateAllToThai() {
 
     renderCards();
     scheduleAutoSave(100);
-    showToast("Translations added 🌐", "success");
+    showToast("Translations added", "success");
 }
 
 async function translateWordToThai(word) {
@@ -4535,7 +4535,7 @@ function scheduleAutoSave(delay = 1200) {
     if (!editingSetId || isGameRunning || isStudentMode) return;
 
     clearTimeout(autoSaveTimer);
-    setSaveStatus("💾 Saving...", "saving");
+    setSaveStatus("Saving...", "saving");
 
     autoSaveTimer = setTimeout(() => {
         autoSaveNow();
@@ -4548,14 +4548,14 @@ async function autoSaveNow() {
     let setName = document.getElementById("builderSetName")?.value || currentSetName;
 
     if (setName.trim() === "") {
-        setSaveStatus("⚠️ Add set name", "warning");
+        setSaveStatus("Add set name", "warning");
         return;
     }
 
     const cleaned = cleanCardsForSaving();
 
     if (cleaned.length === 0) {
-        setSaveStatus("⚠️ Add a word", "warning");
+        setSaveStatus("Add a word", "warning");
         return;
     }
 
@@ -4566,9 +4566,9 @@ async function autoSaveNow() {
         editingSetId = savedSet.id;
         currentSetName = savedSet.name;
         cards = prepareCards(cleaned);
-        setSaveStatus("✅ Saved", "saved");
+        setSaveStatus("Saved", "saved");
     } catch (error) {
-        setSaveStatus("⚠️ Not saved", "error");
+        setSaveStatus("Not saved", "error");
         showToast("Could not autosave: " + error.message, "error");
     } finally {
         autoSaveInProgress = false;
