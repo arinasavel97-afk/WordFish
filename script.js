@@ -346,6 +346,16 @@ function isClassroomVocabularyBoardRefreshRequested() {
     return window.location.hash.replace(/^#/, "") === "classroomVocabularyBoard";
 }
 
+const OCEAN_PANEL_SCREEN_IDS = new Set([
+    "dashboardScreen",
+    "teacherScreen",
+    "cardsScreen",
+    "classroomPickerScreen",
+    "classroomActivityMenuScreen",
+    "classroomNoCardsScreen",
+    "studentScreen"
+]);
+
 function displayScreen(screenId, addToHistory = true) {
     const classroomShortcutsHintScreens = [
         "classroomPresentationScreen",
@@ -371,6 +381,11 @@ function displayScreen(screenId, addToHistory = true) {
         || screenId === "classroomVocabularyBoardScreen"
     ) ? "grid" : "block";
     currentScreenId = screenId;
+
+    document.body.classList.toggle(
+        "wf-page-shell--ocean-panel-active",
+        OCEAN_PANEL_SCREEN_IDS.has(screenId)
+    );
 
     if (addToHistory && !suppressHistoryPush) {
         history.pushState({ screen: screenId }, "", "#" + screenId.replace("Screen", ""));
