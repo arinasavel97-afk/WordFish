@@ -2575,6 +2575,17 @@ button:active {
         width: 100%;
     }
 
+    #cardsScreen > button[onclick="backToDashboard()"] {
+        width: auto;
+        max-width: calc(100% - 36px);
+        top: 12px;
+        left: 12px;
+    }
+
+    #cardsScreen > h1 {
+        margin-top: 56px;
+    }
+
     #cardsList .word-card-header {
         align-items: stretch;
     }
@@ -6091,7 +6102,7 @@ h2 {
 #authScreen .auth-card button[onclick="signUp()"],
 #teacherScreen button[onclick="showDashboard()"],
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"],
-#cardsScreen .editor-toolbar button[onclick="backToDashboard()"],
+#cardsScreen > button[onclick="backToDashboard()"],
 #studentScreen #studentUnavailable button[onclick="backToWordFishHome()"],
 #resultsScreen button[onclick="leaveGameResults()"] {
   position: relative;
@@ -6127,7 +6138,7 @@ h2 {
 #authScreen .auth-card button[onclick="signUp()"]::before,
 #teacherScreen button[onclick="showDashboard()"]::before,
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]::before,
-#cardsScreen .editor-toolbar button[onclick="backToDashboard()"]::before,
+#cardsScreen > button[onclick="backToDashboard()"]::before,
 #studentScreen #studentUnavailable button[onclick="backToWordFishHome()"]::before,
 #resultsScreen button[onclick="leaveGameResults()"]::before {
   content: "";
@@ -6157,7 +6168,7 @@ h2 {
 #authScreen .auth-card button[onclick="signUp()"]::after,
 #teacherScreen button[onclick="showDashboard()"]::after,
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]::after,
-#cardsScreen .editor-toolbar button[onclick="backToDashboard()"]::after,
+#cardsScreen > button[onclick="backToDashboard()"]::after,
 #studentScreen #studentUnavailable button[onclick="backToWordFishHome()"]::after,
 #resultsScreen button[onclick="leaveGameResults()"]::after {
   content: "";
@@ -6187,7 +6198,7 @@ h2 {
 #authScreen .auth-card button[onclick="signUp()"]:hover,
 #teacherScreen button[onclick="showDashboard()"]:hover,
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]:hover,
-#cardsScreen .editor-toolbar button[onclick="backToDashboard()"]:hover,
+#cardsScreen > button[onclick="backToDashboard()"]:hover,
 #studentScreen #studentUnavailable button[onclick="backToWordFishHome()"]:hover,
 #resultsScreen button[onclick="leaveGameResults()"]:hover {
   background: linear-gradient(180deg, #FFFFFF 0%, #F0FAFF 100%);
@@ -6209,13 +6220,32 @@ h2 {
 #authScreen .auth-card button[onclick="signUp()"]:active,
 #teacherScreen button[onclick="showDashboard()"]:active,
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]:active,
-#cardsScreen .editor-toolbar button[onclick="backToDashboard()"]:active,
+#cardsScreen > button[onclick="backToDashboard()"]:active,
 #studentScreen #studentUnavailable button[onclick="backToWordFishHome()"]:active,
 #resultsScreen button[onclick="leaveGameResults()"]:active {
   transform: translateY(2px);
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
     0 4px 8px rgba(120, 190, 215, 0.14);
+}
+
+#cardsScreen > button[onclick="backToDashboard()"] {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    z-index: 4;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+#cardsScreen > h1 {
+    margin-top: clamp(52px, 11vw, 60px);
 }
 
 /* Classroom Back button — official Toolbar Button style */
