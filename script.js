@@ -4507,18 +4507,17 @@ function renderCards() {
                 <div class="image-preview">
                     <strong>Picture clue</strong>
 
-                    ${cards[i].imageUrl ? `<img src="${escapeAttribute(cards[i].imageUrl)}">` : `<p>No image yet</p>`}
+                    ${cards[i].imageUrl ? `<img src="${escapeAttribute(cards[i].imageUrl)}" alt="">` : `<p>No image yet</p>`}
 
-                    <input 
+                    <input
+                        type="hidden"
+                        class="word-card-image-url"
                         value="${escapeAttribute(cards[i].imageUrl)}"
                         oninput="updateCardField(${i}, 'imageUrl', this.value)"
-                        placeholder="Image URL"
                     >
 
-                    <br>
-
-                    <input 
-                        type="file" 
+                    <input
+                        type="file"
                         accept="image/*"
                         onchange="uploadImage(event, ${i})"
                     >

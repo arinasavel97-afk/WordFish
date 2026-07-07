@@ -2321,13 +2321,9 @@ button:active {
     font-size: 14px;
 }
 
-.image-preview input:not([type="file"]) {
-    margin: var(--space-sm) 0 0;
-}
-
 .image-preview input[type="file"] {
     display: block;
-    margin: var(--space-sm) auto 0;
+    margin: var(--space-xs) auto 0;
     max-width: 100%;
 }
 
