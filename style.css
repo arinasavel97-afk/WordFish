@@ -2190,7 +2190,7 @@ button:active {
     border: 2px solid var(--color-input-border);
     border-radius: var(--radius-lg);
     box-shadow: var(--soft-shadow);
-    padding: var(--space-lg);
+    padding: var(--space-md);
     margin: 0 auto;
     width: min(94%, 840px);
     transition: border-color 0.18s ease, box-shadow 0.18s ease;
@@ -2220,7 +2220,7 @@ button:active {
     align-items: center;
     gap: var(--space-sm);
     flex-wrap: wrap;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
     padding-bottom: var(--space-sm);
     border-bottom: 1px solid rgba(63, 169, 245, 0.12);
 }
@@ -2255,15 +2255,23 @@ button:active {
     box-shadow: var(--shadow-button), 0 4px 0 var(--color-danger-dark);
 }
 
-.word-fields {
+#cardsList .word-card-body {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-md);
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: var(--space-sm);
+    align-items: stretch;
+}
+
+.word-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
     margin-top: 0;
-    padding: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
     background: #f8fcff;
     border-radius: var(--radius-input);
     border: 1px solid rgba(63, 169, 245, 0.12);
+    height: 100%;
 }
 
 .field-group {
@@ -2297,49 +2305,147 @@ button:active {
     margin: 0;
 }
 
-.image-preview {
-    margin-top: var(--space-md);
-    padding: var(--space-md);
-    background: #f8fcff;
-    border: 2px dashed var(--color-input-border);
-    border-radius: var(--radius-input);
-    text-align: center;
+#cardsList .word-card-image-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    height: 100%;
 }
 
-.image-preview strong {
+#cardsList .word-card-image-label {
     display: block;
-    margin-bottom: var(--space-sm);
+    margin: 0;
     color: var(--sea-deep);
     font-size: 13px;
     font-weight: var(--font-weight-button);
     letter-spacing: 0.02em;
 }
 
-.image-preview p {
-    margin: var(--space-sm) 0;
-    color: var(--color-text);
-    font-size: 14px;
+#cardsList .word-card-image-control {
+    position: relative;
+    flex: 1;
+    display: flex;
+    min-height: 148px;
 }
 
-.image-preview input[type="file"] {
-    display: block;
-    margin: var(--space-xs) auto 0;
-    max-width: 100%;
-}
-
-.image-preview button {
-    margin-top: var(--space-sm);
-}
-
-.image-preview img {
-    max-width: min(260px, 90%);
-    max-height: 190px;
+#cardsList .word-card-image-tile {
+    width: 100%;
+    min-height: 148px;
+    padding: 0;
+    margin: 0;
+    border: 2px dashed var(--color-input-border);
     border-radius: var(--radius-input);
-    display: block;
-    margin: var(--space-sm) auto;
-    border: 3px solid #ffffff;
-    box-shadow: var(--soft-shadow);
+    background: #f8fcff;
+    color: rgba(7, 59, 76, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease, background 0.15s ease;
+}
+
+#cardsList .word-card-image-tile:hover {
+    border-color: rgba(63, 169, 245, 0.55);
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(34, 51, 68, 0.08);
+    transform: translateY(-1px);
+}
+
+#cardsList .word-card-image-tile:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+#cardsList .word-card-image-tile__placeholder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+}
+
+#cardsList .word-card-image-tile__placeholder svg {
+    width: 40px;
+    height: 40px;
+}
+
+#cardsList .word-card-image-tile__img {
+    width: 100%;
+    height: 100%;
+    min-height: 148px;
     object-fit: cover;
+    display: block;
+    border-radius: calc(var(--radius-input) - 2px);
+}
+
+#cardsList .word-card-image-tile__uploading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(248, 252, 255, 0.88);
+    color: var(--sea-deep);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#cardsList .word-card-image-popover {
+    position: fixed;
+    top: auto;
+    right: auto;
+    z-index: 1200;
+    min-width: 220px;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(120, 190, 215, 0.35);
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(7, 59, 76, 0.12), 0 1px 3px rgba(7, 59, 76, 0.06);
+}
+
+#cardsList .word-card-image-popover[hidden] {
+    display: none;
+}
+
+#cardsList .word-card-image-popover-action {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: rgba(7, 59, 76, 0.88);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: none;
+    transform: none;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+#cardsList .word-card-image-popover-action:hover:not(:disabled) {
+    background: rgba(7, 59, 76, 0.05);
+}
+
+#cardsList .word-card-image-popover-action:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: -2px;
+}
+
+#cardsList .word-card-image-popover-action:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+#cardsList .word-card-image-file {
+    display: none;
 }
 
 .auth-card {
@@ -2691,9 +2797,21 @@ button:active {
         max-width: none;
     }
 
-    #cardsList .word-fields {
+    #cardsList .word-card-body {
         grid-template-columns: 1fr;
-        gap: var(--space-md);
+    }
+
+    #cardsList .word-fields {
+        height: auto;
+    }
+
+    #cardsList .word-card-image-control {
+        min-height: 132px;
+    }
+
+    #cardsList .word-card-image-tile,
+    #cardsList .word-card-image-tile__img {
+        min-height: 132px;
     }
 
     #cardsList .word-card-header {
