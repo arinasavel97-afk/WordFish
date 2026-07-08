@@ -62,6 +62,7 @@ let classroomVocabularyBoardMode = "pictureEnglish";
 let classroomVocabularyBoardCards = [];
 let classroomVocabularyBoardCardSize = "medium";
 const GAME_CONTEXT_STORAGE_KEY = "wordfish_game_context";
+const BUILDER_CONTEXT_STORAGE_KEY = "wordfish_builder_context";
 const CLASSROOM_PRESENTATION_CONTEXT_STORAGE_KEY = "wordfish_classroom_presentation_context";
 const CLASSROOM_ACTIVITY_CONTEXT_STORAGE_KEY = "wordfish_classroom_activity_context";
 const CLASSROOM_FLASHCARDS_CONTEXT_STORAGE_KEY = "wordfish_classroom_flashcards_context";
@@ -190,8 +191,35 @@ function clearGameContext() {
     sessionStorage.removeItem(GAME_CONTEXT_STORAGE_KEY);
 }
 
+function saveBuilderContext() {
+    if (!editingSetId) {
+        return;
+    }
+
+    sessionStorage.setItem(BUILDER_CONTEXT_STORAGE_KEY, JSON.stringify({
+        setId: editingSetId
+    }));
+}
+
+function loadBuilderContext() {
+    try {
+        const raw = sessionStorage.getItem(BUILDER_CONTEXT_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function clearBuilderContext() {
+    sessionStorage.removeItem(BUILDER_CONTEXT_STORAGE_KEY);
+}
+
 function isGameRefreshRequested() {
     return window.location.hash.replace(/^#/, "") === "game";
+}
+
+function isBuilderRefreshRequested() {
+    return window.location.hash.replace(/^#/, "") === "cards";
 }
 
 function saveClassroomPresentationContext() {
@@ -5046,10 +5074,8 @@ function getClipboardImageFile(dataTransfer) {
         return null;
     }
 
-    const imageTypes = new Set(["image/png", "image/jpeg", "image/webp"]);
-
     for (const item of dataTransfer.items) {
-        if (item.kind !== "file" || !imageTypes.has(item.type)) {
+        if (item.kind !== "file" || !WORD_CARD_IMAGE_DROP_MIME_TYPES.has(item.type)) {
             continue;
         }
 
@@ -5062,7 +5088,8 @@ function getClipboardImageFile(dataTransfer) {
         const extensionByType = {
             "image/png": "png",
             "image/jpeg": "jpg",
-            "image/webp": "webp"
+            "image/webp": "webp",
+            "image/gif": "gif"
         };
         const extension = extensionByType[item.type] || "png";
         const fileName = file.name && file.name.includes(".") ? file.name : `pasted-image.${extension}`;
@@ -5176,6 +5203,7 @@ function showCardsScreen(addToHistory = true) {
     document.getElementById("builderSetName").value = currentSetName || "";
     loadBuilderHeaderAccentFromSet();
     setSaveStatus("Saved", "saved");
+    saveBuilderContext();
 
     renderCards();
 }
@@ -5455,6 +5483,7 @@ async function autoSaveNow() {
 async function backToDashboard() {
     clearTimeout(autoSaveTimer);
     await autoSaveNow();
+    clearBuilderContext();
     await showDashboard();
 }
 
@@ -6338,6 +6367,59 @@ async function tryRestoreGameOnRefresh() {
     return restoreGameFromRefresh(context);
 }
 
+async function restoreBuilderFromContext(context) {
+    const setId = context?.setId;
+
+    if (!setId) {
+        return false;
+    }
+
+    try {
+        const { data } = await supabaseClient.auth.getSession();
+
+        if (!data.session) {
+            return false;
+        }
+
+        savedSets = await dbLoadSetsWithCards();
+        const set = savedSets.find((item) => item.id === setId);
+
+        if (!set) {
+            return false;
+        }
+
+        editingSetId = set.id;
+        currentSetName = set.name;
+        currentSetAccentColor = normalizeSetAccentColor(set.accentColor);
+        cards = prepareCards(set.cards || []);
+        showCardsScreen(false);
+        return true;
+    } catch (error) {
+        console.error("Vocabulary Builder restore failed:", error);
+        return false;
+    }
+}
+
+async function tryRestoreBuilderOnRefresh() {
+    if (!isBuilderRefreshRequested()) {
+        return false;
+    }
+
+    const context = loadBuilderContext();
+
+    if (!context) {
+        return false;
+    }
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (!data.session) {
+        return false;
+    }
+
+    return restoreBuilderFromContext(context);
+}
+
 async function checkAuth() {
     showAppLoading();
     initStudentShareLink();
@@ -6411,6 +6493,16 @@ async function checkAuth() {
         hideAppLoading();
         await handleFailedClassroomActivityMenuRefresh();
         return;
+    }
+
+    if (await tryRestoreBuilderOnRefresh()) {
+        hideAppLoading();
+        return;
+    }
+
+    if (isBuilderRefreshRequested()) {
+        clearBuilderContext();
+        history.replaceState(null, "", window.location.pathname + window.location.search);
     }
 
     const { data } = await supabaseClient.auth.getSession();
