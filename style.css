@@ -2392,6 +2392,31 @@ button:active {
     font-weight: 600;
 }
 
+#cardsList .word-card-image-tile__drop-hint {
+    display: none;
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.78);
+    color: var(--sea-deep);
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 3;
+    pointer-events: none;
+}
+
+#cardsList .word-card-image-tile--drop-target {
+    border-color: rgba(63, 169, 245, 0.85);
+    background: #ffffff;
+    box-shadow: 0 0 0 2px rgba(63, 169, 245, 0.35), 0 4px 12px rgba(34, 51, 68, 0.08);
+    transform: none;
+}
+
+#cardsList .word-card-image-tile--drop-target .word-card-image-tile__drop-hint {
+    display: flex;
+}
+
 #cardsList .word-card-image-tile-delete {
     position: absolute;
     top: 8px;

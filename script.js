@@ -4778,6 +4778,7 @@ function buildWordCardImageSectionMarkup(index, imageUrl) {
                             >
                                 ${tileContent}
                                 ${uploadingMarkup}
+                                <span class="word-card-image-tile__drop-hint" aria-hidden="true">Drop image here</span>
                             </button>
                             ${deleteButtonMarkup}
                             ${deleteConfirmMarkup}
@@ -4843,6 +4844,179 @@ function initWordCardImagePopover() {
     });
 
     document.addEventListener("paste", handleWordCardImagePaste);
+}
+
+const WORD_CARD_IMAGE_DROP_MIME_TYPES = new Set([
+    "image/png",
+    "image/jpeg",
+    "image/webp",
+    "image/gif",
+]);
+
+let activeWordCardImageDropTile = null;
+
+function isExternalFileDrag(dataTransfer) {
+    if (!dataTransfer?.types) {
+        return false;
+    }
+
+    return Array.from(dataTransfer.types).includes("Files");
+}
+
+function dataTransferHasAllowedWordCardImage(dataTransfer) {
+    if (!dataTransfer?.items?.length) {
+        return false;
+    }
+
+    for (const item of dataTransfer.items) {
+        if (item.kind === "file" && WORD_CARD_IMAGE_DROP_MIME_TYPES.has(item.type)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function getWordCardImageDropFile(dataTransfer) {
+    if (!dataTransfer?.items?.length) {
+        return null;
+    }
+
+    for (const item of dataTransfer.items) {
+        if (item.kind !== "file" || !WORD_CARD_IMAGE_DROP_MIME_TYPES.has(item.type)) {
+            continue;
+        }
+
+        const file = item.getAsFile();
+
+        if (file) {
+            return file;
+        }
+    }
+
+    return null;
+}
+
+function parseWordCardImageTileIndex(tile) {
+    if (!tile?.id?.startsWith("wordCardImageTile-")) {
+        return null;
+    }
+
+    return normalizeCardIndex(tile.id.slice("wordCardImageTile-".length));
+}
+
+function clearWordCardImageTileDropHighlight() {
+    if (!activeWordCardImageDropTile) {
+        return;
+    }
+
+    activeWordCardImageDropTile.classList.remove("word-card-image-tile--drop-target");
+    activeWordCardImageDropTile = null;
+}
+
+function setWordCardImageTileDropHighlight(tile) {
+    if (activeWordCardImageDropTile === tile) {
+        return;
+    }
+
+    clearWordCardImageTileDropHighlight();
+    tile.classList.add("word-card-image-tile--drop-target");
+    activeWordCardImageDropTile = tile;
+}
+
+function handleWordCardImageTileDragEnter(event) {
+    if (!isExternalFileDrag(event.dataTransfer) || !dataTransferHasAllowedWordCardImage(event.dataTransfer)) {
+        return;
+    }
+
+    const tile = event.target.closest("#cardsList .word-card-image-tile");
+
+    if (!tile) {
+        return;
+    }
+
+    event.preventDefault();
+    setWordCardImageTileDropHighlight(tile);
+}
+
+function handleWordCardImageTileDragOver(event) {
+    if (!isExternalFileDrag(event.dataTransfer) || !dataTransferHasAllowedWordCardImage(event.dataTransfer)) {
+        return;
+    }
+
+    const tile = event.target.closest("#cardsList .word-card-image-tile");
+
+    if (!tile) {
+        return;
+    }
+
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "copy";
+    setWordCardImageTileDropHighlight(tile);
+}
+
+function handleWordCardImageTileDragLeave(event) {
+    const tile = event.target.closest("#cardsList .word-card-image-tile");
+
+    if (!tile || tile !== activeWordCardImageDropTile) {
+        return;
+    }
+
+    const relatedTarget = event.relatedTarget;
+
+    if (relatedTarget && tile.contains(relatedTarget)) {
+        return;
+    }
+
+    clearWordCardImageTileDropHighlight();
+}
+
+function handleWordCardImageTileDrop(event) {
+    clearWordCardImageTileDropHighlight();
+
+    if (!isExternalFileDrag(event.dataTransfer)) {
+        return;
+    }
+
+    const tile = event.target.closest("#cardsList .word-card-image-tile");
+
+    if (!tile) {
+        return;
+    }
+
+    const file = getWordCardImageDropFile(event.dataTransfer);
+
+    if (!file) {
+        return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const index = parseWordCardImageTileIndex(tile);
+
+    if (index === null) {
+        return;
+    }
+
+    closeWordCardImagePopover();
+    closeWordCardImageDeleteConfirm();
+    uploadCardImageFile(index, file);
+}
+
+function initWordCardImageTileDrop() {
+    const cardsList = document.getElementById("cardsList");
+
+    if (!cardsList || cardsList.dataset.wordCardImageDropBound === "true") {
+        return;
+    }
+
+    cardsList.dataset.wordCardImageDropBound = "true";
+    cardsList.addEventListener("dragenter", handleWordCardImageTileDragEnter);
+    cardsList.addEventListener("dragover", handleWordCardImageTileDragOver);
+    cardsList.addEventListener("dragleave", handleWordCardImageTileDragLeave);
+    cardsList.addEventListener("drop", handleWordCardImageTileDrop);
+    document.addEventListener("dragend", clearWordCardImageTileDropHighlight);
 }
 
 function isWordCardImagePasteBlockedByFocus() {
@@ -5010,6 +5184,7 @@ function renderCards() {
     let cardsList = document.getElementById("cardsList");
     unbindWordCardImagePopoverReposition();
     unbindWordCardImageDeleteConfirmReposition();
+    clearWordCardImageTileDropHighlight();
     cardsList.innerHTML = "";
     activeWordCardImagePopoverIndex = null;
     activeWordCardImageDeleteConfirmIndex = null;
@@ -6329,6 +6504,7 @@ function initApp() {
     initSetCardOverflowMenus();
     initBuilderHeaderColorPicker();
     initWordCardImagePopover();
+    initWordCardImageTileDrop();
     checkAuth();
 }
 
