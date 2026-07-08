@@ -2392,6 +2392,116 @@ button:active {
     font-weight: 600;
 }
 
+#cardsList .word-card-image-tile-delete {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(7, 59, 76, 0.62);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(7, 59, 76, 0.18);
+    transition: opacity 0.18s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+#cardsList .word-card-image-tile-delete svg {
+    width: 18px;
+    height: 18px;
+}
+
+#cardsList .word-card-image-control--has-image:hover .word-card-image-tile-delete,
+#cardsList .word-card-image-tile-delete:focus-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#cardsList .word-card-image-tile-delete:hover {
+    background: rgba(7, 59, 76, 0.78);
+    transform: scale(1.04);
+}
+
+#cardsList .word-card-image-tile-delete:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+#cardsList .word-card-image-control:has(.word-card-image-popover:not([hidden])) .word-card-image-tile-delete {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+#cardsList .word-card-image-delete-confirm {
+    position: fixed;
+    top: auto;
+    right: auto;
+    z-index: 1201;
+    min-width: 200px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(120, 190, 215, 0.35);
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(7, 59, 76, 0.12), 0 1px 3px rgba(7, 59, 76, 0.06);
+}
+
+#cardsList .word-card-image-delete-confirm[hidden] {
+    display: none;
+}
+
+#cardsList .word-card-image-delete-confirm__message {
+    margin: 0 0 12px;
+    color: rgba(7, 59, 76, 0.92);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+#cardsList .word-card-image-delete-confirm__actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+#cardsList .word-card-image-delete-confirm__cancel {
+    flex: 1 1 0;
+    min-height: 40px;
+    margin: 0;
+    padding: 6px 12px;
+    border: 1px solid rgba(120, 190, 215, 0.45);
+    border-radius: 6px;
+    background: transparent;
+    color: rgba(7, 59, 76, 0.88);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: none;
+    transform: none;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+#cardsList .word-card-image-delete-confirm__cancel:hover {
+    background: rgba(7, 59, 76, 0.05);
+}
+
+#cardsList .word-card-image-delete-confirm__confirm {
+    flex: 1 1 0;
+    min-height: 40px;
+    margin: 0;
+    padding: 6px 12px;
+    font-size: 0.875rem;
+}
+
 #cardsList .word-card-image-popover {
     position: fixed;
     top: auto;

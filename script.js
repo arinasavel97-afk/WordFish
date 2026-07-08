@@ -20,6 +20,7 @@ let currentGameMode = "translation";
 let autoSaveTimer = null;
 let autoSaveInProgress = false;
 let activeWordCardImagePopoverIndex = null;
+let activeWordCardImageDeleteConfirmIndex = null;
 let isGameRunning = false;
 let selectedPlaySetIndex = null;
 let selectedShareSetIndex = null;
@@ -4312,6 +4313,11 @@ document.addEventListener("keydown", (event) => {
 
     if (event.key !== "Escape") return;
 
+    if (activeWordCardImageDeleteConfirmIndex !== null) {
+        closeWordCardImageDeleteConfirm();
+        return;
+    }
+
     if (activeWordCardImagePopoverIndex !== null) {
         closeWordCardImagePopover();
         return;
@@ -4451,10 +4457,12 @@ function initBuilderHeaderColorPicker() {
 }
 
 const WORD_CARD_IMAGE_PLUS_ICON = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>`;
+const WORD_CARD_IMAGE_TRASH_ICON = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>`;
 const WORD_CARD_IMAGE_POPOVER_GAP = 8;
 const WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING = 12;
 
 let wordCardImagePopoverRepositionHandler = null;
+let wordCardImageDeleteConfirmRepositionHandler = null;
 
 function unbindWordCardImagePopoverReposition() {
     if (!wordCardImagePopoverRepositionHandler) {
@@ -4577,6 +4585,122 @@ function toggleWordCardImagePopover(event, index) {
     openWordCardImagePopover(index);
 }
 
+function unbindWordCardImageDeleteConfirmReposition() {
+    if (!wordCardImageDeleteConfirmRepositionHandler) {
+        return;
+    }
+
+    window.removeEventListener("resize", wordCardImageDeleteConfirmRepositionHandler);
+    window.removeEventListener("scroll", wordCardImageDeleteConfirmRepositionHandler, true);
+    wordCardImageDeleteConfirmRepositionHandler = null;
+}
+
+function resetWordCardImageDeleteConfirmPosition(confirm) {
+    if (!confirm) {
+        return;
+    }
+
+    confirm.style.top = "";
+    confirm.style.left = "";
+}
+
+function positionWordCardImageDeleteConfirm(index) {
+    const tile = document.getElementById(`wordCardImageTile-${index}`);
+    const confirm = document.getElementById(`wordCardImageDeleteConfirm-${index}`);
+
+    if (!tile || !confirm) {
+        return;
+    }
+
+    resetWordCardImageDeleteConfirmPosition(confirm);
+
+    confirm.hidden = false;
+    confirm.style.visibility = "hidden";
+
+    const tileRect = tile.getBoundingClientRect();
+    const confirmRect = confirm.getBoundingClientRect();
+
+    let top = tileRect.bottom + WORD_CARD_IMAGE_POPOVER_GAP;
+    let left = tileRect.right - confirmRect.width;
+
+    const maxLeft = window.innerWidth - confirmRect.width - WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING;
+    left = Math.max(WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING, Math.min(left, maxLeft));
+    top = Math.max(
+        WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING,
+        Math.min(top, window.innerHeight - confirmRect.height - WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING)
+    );
+
+    confirm.style.top = `${top}px`;
+    confirm.style.left = `${left}px`;
+    confirm.style.visibility = "";
+}
+
+function bindWordCardImageDeleteConfirmReposition(index) {
+    unbindWordCardImageDeleteConfirmReposition();
+    wordCardImageDeleteConfirmRepositionHandler = () => positionWordCardImageDeleteConfirm(index);
+    window.addEventListener("resize", wordCardImageDeleteConfirmRepositionHandler);
+    window.addEventListener("scroll", wordCardImageDeleteConfirmRepositionHandler, true);
+}
+
+function closeWordCardImageDeleteConfirm() {
+    if (activeWordCardImageDeleteConfirmIndex === null) {
+        return;
+    }
+
+    const confirm = document.getElementById(`wordCardImageDeleteConfirm-${activeWordCardImageDeleteConfirmIndex}`);
+
+    unbindWordCardImageDeleteConfirmReposition();
+
+    if (confirm) {
+        resetWordCardImageDeleteConfirmPosition(confirm);
+        confirm.hidden = true;
+    }
+
+    activeWordCardImageDeleteConfirmIndex = null;
+}
+
+function openWordCardImageDeleteConfirm(index) {
+    closeWordCardImageDeleteConfirm();
+    closeWordCardImagePopover();
+
+    const cardIndex = normalizeCardIndex(index);
+
+    if (cardIndex === null) {
+        return;
+    }
+
+    const confirm = document.getElementById(`wordCardImageDeleteConfirm-${cardIndex}`);
+
+    if (!confirm) {
+        return;
+    }
+
+    activeWordCardImageDeleteConfirmIndex = cardIndex;
+    positionWordCardImageDeleteConfirm(cardIndex);
+    bindWordCardImageDeleteConfirmReposition(cardIndex);
+}
+
+function handleWordCardImageDeleteClick(event, index) {
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
+    openWordCardImageDeleteConfirm(index);
+}
+
+function confirmWordCardImageDelete(index) {
+    const cardIndex = normalizeCardIndex(index);
+
+    if (cardIndex === null) {
+        return;
+    }
+
+    closeWordCardImageDeleteConfirm();
+    updateCardField(cardIndex, "imageUrl", "");
+    renderCards();
+}
+
 function triggerWordCardImageUpload(index) {
     const uploadIndex = normalizeCardIndex(activeWordCardImagePopoverIndex)
         ?? normalizeCardIndex(index);
@@ -4613,10 +4737,35 @@ function buildWordCardImageSectionMarkup(index, imageUrl) {
         ? `<span class="word-card-image-tile__uploading">Uploading...</span>`
         : "";
 
+    const deleteButtonMarkup = hasDisplayImage
+        ? `<button
+                                type="button"
+                                class="word-card-image-tile-delete"
+                                aria-label="Delete image"
+                                onclick="handleWordCardImageDeleteClick(event, ${index})"
+                            >${WORD_CARD_IMAGE_TRASH_ICON}</button>`
+        : "";
+
+    const deleteConfirmMarkup = hasDisplayImage
+        ? `<div
+                                id="wordCardImageDeleteConfirm-${index}"
+                                class="word-card-image-delete-confirm"
+                                role="dialog"
+                                aria-label="Delete image confirmation"
+                                hidden
+                            >
+                                <p class="word-card-image-delete-confirm__message">Delete image?</p>
+                                <div class="word-card-image-delete-confirm__actions">
+                                    <button type="button" class="word-card-image-delete-confirm__cancel" onclick="closeWordCardImageDeleteConfirm()">Cancel</button>
+                                    <button type="button" class="word-card-image-delete-confirm__confirm wf-cta-danger" onclick="confirmWordCardImageDelete(${index})">Delete</button>
+                                </div>
+                            </div>`
+        : "";
+
     return `
                     <div class="word-card-image-section">
                         <strong class="word-card-image-label">Picture clue</strong>
-                        <div class="word-card-image-control">
+                        <div class="word-card-image-control${hasDisplayImage ? " word-card-image-control--has-image" : ""}">
                             <button
                                 type="button"
                                 id="wordCardImageTile-${index}"
@@ -4630,6 +4779,8 @@ function buildWordCardImageSectionMarkup(index, imageUrl) {
                                 ${tileContent}
                                 ${uploadingMarkup}
                             </button>
+                            ${deleteButtonMarkup}
+                            ${deleteConfirmMarkup}
                             <div
                                 id="wordCardImagePopover-${index}"
                                 class="word-card-image-popover"
@@ -4673,6 +4824,15 @@ function buildWordCardImageSectionMarkup(index, imageUrl) {
 
 function initWordCardImagePopover() {
     document.addEventListener("click", (event) => {
+        if (activeWordCardImageDeleteConfirmIndex !== null) {
+            if (!event.target.closest(".word-card-image-delete-confirm")
+                && !event.target.closest(".word-card-image-tile-delete")) {
+                closeWordCardImageDeleteConfirm();
+            }
+
+            return;
+        }
+
         if (activeWordCardImagePopoverIndex === null) {
             return;
         }
@@ -4838,6 +4998,7 @@ function showCardsScreen(addToHistory = true) {
     displayScreen("cardsScreen", addToHistory);
     closeBuilderHeaderColorPopover();
     closeWordCardImagePopover();
+    closeWordCardImageDeleteConfirm();
     document.getElementById("builderSetName").value = currentSetName || "";
     loadBuilderHeaderAccentFromSet();
     setSaveStatus("Saved", "saved");
@@ -4848,8 +5009,10 @@ function showCardsScreen(addToHistory = true) {
 function renderCards() {
     let cardsList = document.getElementById("cardsList");
     unbindWordCardImagePopoverReposition();
+    unbindWordCardImageDeleteConfirmReposition();
     cardsList.innerHTML = "";
     activeWordCardImagePopoverIndex = null;
+    activeWordCardImageDeleteConfirmIndex = null;
 
     if (cards.length === 0) {
         cardsList.innerHTML = `
