@@ -42,6 +42,7 @@ let classroomPresentationSetName = "";
 let classroomPresentationLoopEnabled = false;
 let classroomPresentationShuffleEnabled = false;
 let classroomPresentationShuffledOrder = [];
+let classroomPresentationAutoPronounceEnabled = false;
 let classroomTranslationVisible = false;
 let classroomFlashcardsCards = [];
 let classroomFlashcardsIndex = 0;
@@ -50,6 +51,7 @@ let classroomFlashcardSide = "front";
 let classroomFlashcardsShuffleEnabled = false;
 let classroomFlashcardsShuffledOrder = [];
 let classroomFlashcardsLoopEnabled = false;
+let classroomFlashcardsAutoPronounceEnabled = false;
 let classroomFlashcardsJumpIndex = [];
 let classroomTextFlashcardsCards = [];
 let classroomTextFlashcardsIndex = 0;
@@ -1421,6 +1423,7 @@ function startClassroomPresentation(set, addToHistory = true) {
     classroomPresentationSetName = set.name;
     classroomPresentationCards = presentationCards;
     classroomPresentationIndex = 0;
+    classroomPresentationAutoPronounceEnabled = false;
     classroomTranslationVisible = false;
 
     if (classroomPresentationShuffleEnabled) {
@@ -1434,6 +1437,7 @@ function startClassroomPresentation(set, addToHistory = true) {
 
 function showClassroomPresentation(addToHistory = true) {
     displayScreen("classroomPresentationScreen", addToHistory);
+    updateClassroomPresentationAutoPronounceButton();
     renderClassroomPresentationCard();
     maybeShowClassroomShortcutsHint("Space Show / Hide Translation");
 }
@@ -1621,7 +1625,64 @@ function applyClassroomPresentationCardContent(options = {}) {
 
     updateClassroomPresentationNav();
     updateClassroomPresentationPronounceButton();
+    updateClassroomPresentationAutoPronounceButton();
     saveClassroomPresentationContext();
+    maybeAutoPronounceClassroomPresentationWord();
+}
+
+function updateClassroomPresentationAutoPronounceButton() {
+    const autoPronounceButton = document.getElementById("classroomPresentationAutoPronounceButton");
+
+    if (!autoPronounceButton) {
+        return;
+    }
+
+    autoPronounceButton.setAttribute(
+        "aria-pressed",
+        classroomPresentationAutoPronounceEnabled ? "true" : "false"
+    );
+    autoPronounceButton.classList.toggle(
+        "classroom-auto-pronounce-button-active",
+        classroomPresentationAutoPronounceEnabled
+    );
+    autoPronounceButton.classList.toggle(
+        "wf-toggle-button--active",
+        classroomPresentationAutoPronounceEnabled
+    );
+}
+
+function toggleClassroomPresentationAutoPronounce() {
+    if (currentScreenId !== "classroomPresentationScreen") {
+        return;
+    }
+
+    classroomPresentationAutoPronounceEnabled = !classroomPresentationAutoPronounceEnabled;
+    updateClassroomPresentationAutoPronounceButton();
+
+    if (classroomPresentationAutoPronounceEnabled) {
+        maybeAutoPronounceClassroomPresentationWord();
+        return;
+    }
+
+    stopClassroomPresentationPronunciation();
+}
+
+function maybeAutoPronounceClassroomPresentationWord() {
+    if (currentScreenId !== "classroomPresentationScreen" || !classroomPresentationAutoPronounceEnabled) {
+        return;
+    }
+
+    const englishWord = getClassroomPresentationEnglishWord();
+
+    if (!englishWord || typeof speakEnglishWord !== "function") {
+        return;
+    }
+
+    if (typeof isEnglishPronunciationAvailable === "function" && !isEnglishPronunciationAvailable()) {
+        return;
+    }
+
+    speakEnglishWord(englishWord, { source: "presentation", auto: true });
 }
 
 function getClassroomPresentationEnglishWord() {
@@ -1847,6 +1908,7 @@ function pulseClassroomFinishButton() {
 
 function finishClassroomPresentation() {
     stopClassroomPresentationPronunciation();
+    classroomPresentationAutoPronounceEnabled = false;
     exitClassroomFullscreenIfActive();
     clearClassroomPresentationContext();
     showClassroomActivityMenuForSelectedSet();
@@ -1854,6 +1916,7 @@ function finishClassroomPresentation() {
 
 function returnToClassroomActivityMenu() {
     stopClassroomPresentationPronunciation();
+    classroomPresentationAutoPronounceEnabled = false;
     exitClassroomFullscreenIfActive();
     clearClassroomPresentationContext();
     showClassroomActivityMenuForSelectedSet();
@@ -2417,6 +2480,7 @@ function startClassroomFlashcards(set, addToHistory = true) {
     classroomFlashcardsShuffleEnabled = false;
     classroomFlashcardsShuffledOrder = [];
     classroomFlashcardsLoopEnabled = false;
+    classroomFlashcardsAutoPronounceEnabled = false;
     rebuildClassroomFlashcardsJumpIndex();
     showClassroomFlashcards(addToHistory);
 }
@@ -2425,6 +2489,7 @@ function showClassroomFlashcards(addToHistory = true) {
     displayScreen("classroomFlashcardsScreen", addToHistory);
     updateClassroomFlashcardsShuffleButton();
     updateClassroomFlashcardsLoopButton();
+    updateClassroomFlashcardsAutoPronounceButton();
     renderClassroomFlashcard();
     maybeShowClassroomShortcutsHint("Space Flip Card");
 }
@@ -2497,7 +2562,72 @@ function applyClassroomFlashcardContent(options = {}) {
     updateClassroomFlashcardsShuffleButton();
     updateClassroomFlashcardsLoopButton();
     updateClassroomFlashcardsPronounceButton();
+    updateClassroomFlashcardsAutoPronounceButton();
     saveClassroomFlashcardsContext();
+    maybeAutoPronounceClassroomFlashcardsWord();
+}
+
+function isClassroomFlashcardEnglishVisible() {
+    return classroomFlashcardSide === "back";
+}
+
+function updateClassroomFlashcardsAutoPronounceButton() {
+    const autoPronounceButton = document.getElementById("classroomFlashcardsAutoPronounceButton");
+
+    if (!autoPronounceButton) {
+        return;
+    }
+
+    autoPronounceButton.setAttribute(
+        "aria-pressed",
+        classroomFlashcardsAutoPronounceEnabled ? "true" : "false"
+    );
+    autoPronounceButton.classList.toggle(
+        "classroom-auto-pronounce-button-active",
+        classroomFlashcardsAutoPronounceEnabled
+    );
+    autoPronounceButton.classList.toggle(
+        "wf-toggle-button--active",
+        classroomFlashcardsAutoPronounceEnabled
+    );
+}
+
+function toggleClassroomFlashcardsAutoPronounce() {
+    if (currentScreenId !== "classroomFlashcardsScreen") {
+        return;
+    }
+
+    classroomFlashcardsAutoPronounceEnabled = !classroomFlashcardsAutoPronounceEnabled;
+    updateClassroomFlashcardsAutoPronounceButton();
+
+    if (classroomFlashcardsAutoPronounceEnabled) {
+        maybeAutoPronounceClassroomFlashcardsWord();
+        return;
+    }
+
+    stopClassroomFlashcardsPronunciation();
+}
+
+function maybeAutoPronounceClassroomFlashcardsWord() {
+    if (
+        currentScreenId !== "classroomFlashcardsScreen"
+        || !classroomFlashcardsAutoPronounceEnabled
+        || !isClassroomFlashcardEnglishVisible()
+    ) {
+        return;
+    }
+
+    const englishWord = getClassroomFlashcardsEnglishWord();
+
+    if (!englishWord || typeof speakEnglishWord !== "function") {
+        return;
+    }
+
+    if (typeof isEnglishPronunciationAvailable === "function" && !isEnglishPronunciationAvailable()) {
+        return;
+    }
+
+    speakEnglishWord(englishWord, { source: "flashcards", auto: true });
 }
 
 function getClassroomFlashcardsEnglishWord() {
@@ -2564,6 +2694,12 @@ function toggleClassroomFlashcard() {
     classroomFlashcardSide = classroomFlashcardSide === "front" ? "back" : "front";
     updateClassroomFlashcardFlipUI();
     saveClassroomFlashcardsContext();
+
+    if (classroomFlashcardSide === "back") {
+        maybeAutoPronounceClassroomFlashcardsWord();
+    } else {
+        stopClassroomFlashcardsPronunciation();
+    }
 }
 
 function updateClassroomFlashcardsNav() {
@@ -2652,6 +2788,7 @@ function classroomFlashcardsNextButtonClick() {
 
 function finishClassroomFlashcards() {
     stopClassroomFlashcardsPronunciation();
+    classroomFlashcardsAutoPronounceEnabled = false;
     exitClassroomFullscreenIfActive();
     closeClassroomFlashcardsJumpDropdown();
     clearClassroomFlashcardsContext();
@@ -2660,6 +2797,7 @@ function finishClassroomFlashcards() {
 
 function returnToClassroomActivityMenuFromFlashcards() {
     stopClassroomFlashcardsPronunciation();
+    classroomFlashcardsAutoPronounceEnabled = false;
     exitClassroomFullscreenIfActive();
     closeClassroomFlashcardsJumpDropdown();
     clearClassroomFlashcardsContext();
@@ -2752,6 +2890,12 @@ function initClassroomFlashcardsControls() {
     const fullscreenButton = document.getElementById("classroomFlashcardsFullscreenButton");
     const backButton = document.getElementById("classroomFlashcardsBackButton");
     const pronounceButton = document.getElementById("classroomFlashcardsPronounceButton");
+    const autoPronounceButton = document.getElementById("classroomFlashcardsAutoPronounceButton");
+
+    if (autoPronounceButton && autoPronounceButton.dataset.handlerAttached !== "true") {
+        autoPronounceButton.dataset.handlerAttached = "true";
+        autoPronounceButton.addEventListener("click", toggleClassroomFlashcardsAutoPronounce);
+    }
 
     if (pronounceButton && pronounceButton.dataset.handlerAttached !== "true") {
         pronounceButton.dataset.handlerAttached = "true";
@@ -3802,6 +3946,12 @@ function initClassroomPresentationControls() {
     const loopButton = document.getElementById("classroomPresentationLoopButton");
     const shuffleButton = document.getElementById("classroomPresentationShuffleButton");
     const pronounceButton = document.getElementById("classroomPresentationPronounceButton");
+    const autoPronounceButton = document.getElementById("classroomPresentationAutoPronounceButton");
+
+    if (autoPronounceButton && autoPronounceButton.dataset.handlerAttached !== "true") {
+        autoPronounceButton.dataset.handlerAttached = "true";
+        autoPronounceButton.addEventListener("click", toggleClassroomPresentationAutoPronounce);
+    }
 
     if (pronounceButton && pronounceButton.dataset.handlerAttached !== "true") {
         pronounceButton.dataset.handlerAttached = "true";

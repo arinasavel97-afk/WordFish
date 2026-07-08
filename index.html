@@ -313,7 +313,10 @@
                         </button>
                     </div>
                     <p id="classroomPresentationTranslation" class="classroom-presentation-translation" hidden>Translation</p>
-                    <button id="classroomToggleTranslationButton" type="button" class="soft-button wf-toggle-button classroom-toggle-translation-button" aria-pressed="false">Show Translation</button>
+                    <div class="classroom-presentation-toggle-row">
+                        <button id="classroomToggleTranslationButton" type="button" class="soft-button wf-toggle-button classroom-toggle-translation-button" aria-pressed="false">Show Translation</button>
+                        <button id="classroomPresentationAutoPronounceButton" type="button" class="soft-button wf-toggle-button classroom-auto-pronounce-button" aria-pressed="false">Auto Pronounce</button>
+                    </div>
                 </div>
             </section>
         </main>
@@ -347,6 +350,7 @@
                 </div>
                 <button id="classroomFlashcardsShuffleButton" type="button" class="classroom-flashcard-mode-toggle classroom-shuffle-button wf-toolbar-button wf-toggle-button" aria-pressed="false">🔀 Shuffle</button>
                 <button id="classroomFlashcardsLoopButton" type="button" class="classroom-flashcard-mode-toggle classroom-loop-button wf-toolbar-button wf-toggle-button" aria-pressed="false">🔁 Loop</button>
+                <button id="classroomFlashcardsAutoPronounceButton" type="button" class="classroom-flashcard-mode-toggle classroom-auto-pronounce-button wf-toolbar-button wf-toggle-button" aria-pressed="false">Auto Pronounce</button>
                 <button id="classroomFlashcardsFullscreenButton" type="button" class="classroom-fullscreen-button wf-toolbar-button" aria-label="Enter fullscreen" title="Fullscreen">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"/></svg>
                     <span id="classroomFlashcardsFullscreenButtonLabel">Fullscreen</span>

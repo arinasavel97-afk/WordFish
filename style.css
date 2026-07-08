@@ -4713,6 +4713,15 @@ h2 {
     display: none;
 }
 
+.classroom-presentation-toggle-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
 .classroom-toggle-translation-button {
     min-width: min(100%, 260px);
     min-height: 48px;
@@ -5347,6 +5356,7 @@ h2 {
 
 #classroomFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-shuffle-button-active,
 #classroomFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-loop-button-active,
+#classroomFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-auto-pronounce-button-active,
 #classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-shuffle-button-active,
 #classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-loop-button-active {
     background: var(--wf-color-accent-tint);
@@ -5357,6 +5367,7 @@ h2 {
 
 #classroomFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button),
 #classroomFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-loop-button-active:hover:not(:disabled):not(.disabled-button),
+#classroomFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-auto-pronounce-button-active:hover:not(:disabled):not(.disabled-button),
 #classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button),
 #classroomTextFlashcardsScreen .classroom-flashcard-mode-toggle.classroom-loop-button-active:hover:not(:disabled):not(.disabled-button) {
     background: var(--wf-color-accent-tint-hover);
@@ -7254,6 +7265,7 @@ h2 {
 .wf-toolbar-button.wf-toggle-button.classroom-flashcard-mode-toggle,
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton,
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton,
+#classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton {
   display: inline-flex;
@@ -7288,6 +7300,7 @@ h2 {
 .wf-toolbar-button.wf-toggle-button.classroom-flashcard-mode-toggle:hover:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton:hover:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton:hover:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton:hover:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton:hover:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton:hover:not(:disabled) {
   background: #f8fcff;
@@ -7298,6 +7311,7 @@ h2 {
 .wf-toolbar-button.wf-toggle-button.classroom-flashcard-mode-toggle:active:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton:active:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton:active:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton:active:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton:active:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton:active:not(:disabled) {
   transform: translateY(1px);
@@ -7307,6 +7321,7 @@ h2 {
 .wf-toolbar-button.wf-toggle-button.classroom-flashcard-mode-toggle:focus-visible,
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton:focus-visible,
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton:focus-visible,
+#classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton:focus-visible,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton:focus-visible,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton:focus-visible {
   outline: 2px solid var(--wf-color-aqua-outline);
@@ -7315,10 +7330,12 @@ h2 {
 
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton.classroom-shuffle-button-active,
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton.classroom-loop-button-active,
+#classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton.classroom-auto-pronounce-button-active,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.classroom-shuffle-button-active,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.classroom-loop-button-active,
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton.wf-toggle-button--active,
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton.wf-toggle-button--active,
+#classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton.wf-toggle-button--active,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.wf-toggle-button--active,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.wf-toggle-button--active {
   background: linear-gradient(180deg, #75DC58 0%, #16AE4A 100%);
@@ -7328,10 +7345,12 @@ h2 {
 
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton.classroom-shuffle-button-active:hover:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton.classroom-loop-button-active:hover:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton.classroom-auto-pronounce-button-active:hover:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.classroom-shuffle-button-active:hover:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.classroom-loop-button-active:hover:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton.wf-toggle-button--active:hover:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton.wf-toggle-button--active:hover:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton.wf-toggle-button--active:hover:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.wf-toggle-button--active:hover:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.wf-toggle-button--active:hover:not(:disabled) {
   background: linear-gradient(180deg, #7BE661 0%, #18B84E 100%);
@@ -7341,10 +7360,12 @@ h2 {
 
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton.classroom-shuffle-button-active:active:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton.classroom-loop-button-active:active:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton.classroom-auto-pronounce-button-active:active:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.classroom-shuffle-button-active:active:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.classroom-loop-button-active:active:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsShuffleButton.wf-toggle-button--active:active:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton.wf-toggle-button--active:active:not(:disabled),
+#classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton.wf-toggle-button--active:active:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton.wf-toggle-button--active:active:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton.wf-toggle-button--active:active:not(:disabled) {
   transform: translateY(1px);
@@ -7383,7 +7404,8 @@ h2 {
 }
 
 #classroomPresentationScreen .wf-toggle-button.wf-toggle-button--active,
-#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active {
+#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active,
+#classroomPresentationScreen #classroomPresentationAutoPronounceButton.classroom-auto-pronounce-button-active {
   background: #EAF7FF;
   border-color: rgba(120, 190, 215, 0.58);
   color: #073B4C;
@@ -7397,7 +7419,8 @@ h2 {
 }
 
 #classroomPresentationScreen .wf-toggle-button.wf-toggle-button--active:hover:not(:disabled):not(.disabled-button),
-#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active:hover:not(:disabled):not(.disabled-button) {
+#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active:hover:not(:disabled):not(.disabled-button),
+#classroomPresentationScreen #classroomPresentationAutoPronounceButton.classroom-auto-pronounce-button-active:hover:not(:disabled):not(.disabled-button) {
   background: #F0FAFF;
   transform: translateY(-1px);
   box-shadow: 0 3px 6px rgba(120, 190, 215, 0.14);
@@ -7410,7 +7433,8 @@ h2 {
 }
 
 #classroomPresentationScreen .wf-toggle-button.wf-toggle-button--active:active:not(:disabled):not(.disabled-button),
-#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active:active:not(:disabled):not(.disabled-button) {
+#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active:active:not(:disabled):not(.disabled-button),
+#classroomPresentationScreen #classroomPresentationAutoPronounceButton.classroom-auto-pronounce-button-active:active:not(:disabled):not(.disabled-button) {
   box-shadow: 0 1px 2px rgba(120, 190, 215, 0.10);
 }
 
