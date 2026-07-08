@@ -233,6 +233,10 @@
                 <h2 class="classroom-activity-name">Presentation</h2>
                 <p class="classroom-activity-description">Show words and pictures on the board.</p>
                 <p class="classroom-activity-status classroom-activity-status-available">Available</p>
+                <div class="classroom-presentation-options">
+                    <button id="classroomPresentationLoopButton" type="button" class="classroom-presentation-mode-toggle classroom-loop-button wf-toggle-button" aria-pressed="false">🔁 Loop</button>
+                    <button id="classroomPresentationShuffleButton" type="button" class="classroom-presentation-mode-toggle classroom-shuffle-button wf-toggle-button" aria-pressed="false">🔀 Shuffle</button>
+                </div>
                 <button type="button" class="green-button wf-cta-primary" onclick="startClassroomPresentationFromActivityMenu()">Start</button>
             </article>
 
@@ -295,7 +299,19 @@
 
             <section class="classroom-presentation-text-column" aria-label="Vocabulary word">
                 <div class="classroom-presentation-word-group">
-                    <p id="classroomPresentationEnglish" class="classroom-presentation-english">Word</p>
+                    <div class="classroom-presentation-english-row">
+                        <p id="classroomPresentationEnglish" class="classroom-presentation-english">Word</p>
+                        <button
+                            id="classroomPresentationPronounceButton"
+                            type="button"
+                            class="classroom-presentation-pronounce-button wf-icon-button"
+                            aria-label="Pronounce word"
+                            title="Pronounce"
+                            hidden
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"/></svg>
+                        </button>
+                    </div>
                     <p id="classroomPresentationTranslation" class="classroom-presentation-translation" hidden>Translation</p>
                     <button id="classroomToggleTranslationButton" type="button" class="soft-button wf-toggle-button classroom-toggle-translation-button" aria-pressed="false">Show Translation</button>
                 </div>
@@ -363,7 +379,19 @@
                                 <p class="classroom-image-placeholder-label">No image</p>
                             </div>
                         </div>
-                        <p id="classroomFlashcardBackEnglish" class="classroom-flashcard-english">Word</p>
+                        <div class="classroom-flashcard-english-row">
+                            <p id="classroomFlashcardBackEnglish" class="classroom-flashcard-english">Word</p>
+                            <button
+                                id="classroomFlashcardsPronounceButton"
+                                type="button"
+                                class="classroom-flashcards-pronounce-button wf-icon-button"
+                                aria-label="Pronounce word"
+                                title="Pronounce"
+                                hidden
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"/></svg>
+                            </button>
+                        </div>
                         <p id="classroomFlashcardBackTranslation" class="classroom-flashcard-translation">Translation</p>
                     </div>
                 </div>
@@ -415,10 +443,34 @@
             <div id="classroomTextFlashcard" class="classroom-text-flashcard" role="button" tabindex="0" aria-label="Flip card">
                 <div id="classroomTextFlashcardInner" class="classroom-text-flashcard-inner">
                     <div class="classroom-text-flashcard-face classroom-text-flashcard-front">
-                        <p id="classroomTextFlashcardFrontText" class="classroom-text-flashcard-text">Translation</p>
+                        <div class="classroom-text-flashcard-text-row">
+                            <p id="classroomTextFlashcardFrontText" class="classroom-text-flashcard-text">Translation</p>
+                            <button
+                                id="classroomTextFlashcardsPronounceButtonFront"
+                                type="button"
+                                class="classroom-text-flashcards-pronounce-button wf-icon-button"
+                                aria-label="Pronounce word"
+                                title="Pronounce"
+                                hidden
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"/></svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="classroom-text-flashcard-face classroom-text-flashcard-back">
-                        <p id="classroomTextFlashcardBackText" class="classroom-text-flashcard-text">English</p>
+                        <div class="classroom-text-flashcard-text-row">
+                            <p id="classroomTextFlashcardBackText" class="classroom-text-flashcard-text">English</p>
+                            <button
+                                id="classroomTextFlashcardsPronounceButtonBack"
+                                type="button"
+                                class="classroom-text-flashcards-pronounce-button wf-icon-button"
+                                aria-label="Pronounce word"
+                                title="Pronounce"
+                                hidden
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"/></svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -723,8 +775,20 @@
 
         <br>
 
-        <button class="green-button wf-cta-primary" onclick="checkAnswer()">✅ Check</button>
-        <button class="yellow-button wf-cta-accent" onclick="showAnswer()">💡 Show Answer</button>
+        <div class="game-actions-row">
+            <button
+                id="gamePronounceButton"
+                type="button"
+                class="game-pronounce-button wf-icon-button"
+                aria-label="Pronounce word"
+                title="Pronounce"
+                hidden
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"/></svg>
+            </button>
+            <button class="green-button wf-cta-primary" onclick="checkAnswer()">✅ Check</button>
+            <button class="yellow-button wf-cta-accent" onclick="showAnswer()">💡 Show Answer</button>
+        </div>
 
         <p id="feedback"></p>
         <p id="scoreText"></p>
@@ -764,6 +828,7 @@
     <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="database.js"></script>
+    <script src="pronunciation.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

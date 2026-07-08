@@ -39,6 +39,9 @@ let classroomSelectedSetId = null;
 let classroomPresentationCards = [];
 let classroomPresentationIndex = 0;
 let classroomPresentationSetName = "";
+let classroomPresentationLoopEnabled = false;
+let classroomPresentationShuffleEnabled = false;
+let classroomPresentationShuffledOrder = [];
 let classroomTranslationVisible = false;
 let classroomFlashcardsCards = [];
 let classroomFlashcardsIndex = 0;
@@ -231,7 +234,10 @@ function saveClassroomPresentationContext() {
         mode: "classroomPresentation",
         setId: classroomSelectedSetId,
         currentCardIndex: classroomPresentationIndex,
-        translationVisible: classroomTranslationVisible
+        translationVisible: classroomTranslationVisible,
+        loopEnabled: classroomPresentationLoopEnabled,
+        shuffleEnabled: classroomPresentationShuffleEnabled,
+        shuffledOrder: classroomPresentationShuffledOrder
     }));
 }
 
@@ -1260,12 +1266,17 @@ function openClassroomActivityMenu(setId) {
     }
 
     classroomSelectedSetId = setId;
+    classroomPresentationLoopEnabled = false;
+    classroomPresentationShuffleEnabled = false;
+    classroomPresentationShuffledOrder = [];
     showClassroomActivityMenu(selectedSet);
 }
 
 function showClassroomActivityMenu(set, addToHistory = true) {
     document.getElementById("classroomActivityMenuTitle").textContent = set.name;
     updateClassroomActivityMenuEmptyState(set);
+    updateClassroomPresentationLoopButton();
+    updateClassroomPresentationShuffleButton();
     clearClassroomPresentationContext();
     clearClassroomFlashcardsContext();
     clearClassroomTextFlashcardsContext();
@@ -1411,6 +1422,13 @@ function startClassroomPresentation(set, addToHistory = true) {
     classroomPresentationCards = presentationCards;
     classroomPresentationIndex = 0;
     classroomTranslationVisible = false;
+
+    if (classroomPresentationShuffleEnabled) {
+        classroomPresentationShuffledOrder = createClassroomShuffledOrder(presentationCards.length);
+    } else {
+        classroomPresentationShuffledOrder = [];
+    }
+
     showClassroomPresentation(addToHistory);
 }
 
@@ -1543,9 +1561,43 @@ function setClassroomFlashcardSideToFrontWithoutFlip(flashcardInnerId, updateFli
     }
 }
 
+function getClassroomPresentationActiveOrder() {
+    if (
+        classroomPresentationShuffleEnabled
+        && classroomPresentationShuffledOrder.length === classroomPresentationCards.length
+    ) {
+        return classroomPresentationShuffledOrder;
+    }
+
+    return classroomPresentationCards.map((_, index) => index);
+}
+
+function getClassroomPresentationCurrentCard() {
+    const activeOrder = getClassroomPresentationActiveOrder();
+    const originalIndex = activeOrder[classroomPresentationIndex] ?? 0;
+
+    return classroomPresentationCards[originalIndex];
+}
+
+function restoreClassroomPresentationShuffleState(context, cardCount) {
+    classroomPresentationLoopEnabled = !!context.loopEnabled;
+    classroomPresentationShuffleEnabled = !!context.shuffleEnabled;
+
+    if (classroomPresentationShuffleEnabled) {
+        classroomPresentationShuffledOrder = normalizeClassroomShuffledOrder(context.shuffledOrder, cardCount);
+
+        if (classroomPresentationShuffledOrder.length !== cardCount) {
+            classroomPresentationShuffleEnabled = false;
+            classroomPresentationShuffledOrder = [];
+        }
+    } else {
+        classroomPresentationShuffledOrder = [];
+    }
+}
+
 function applyClassroomPresentationCardContent(options = {}) {
     const preserveTranslation = options.preserveTranslation === true;
-    const card = classroomPresentationCards[classroomPresentationIndex];
+    const card = getClassroomPresentationCurrentCard();
     const total = classroomPresentationCards.length;
     const current = classroomPresentationIndex + 1;
 
@@ -1568,10 +1620,54 @@ function applyClassroomPresentationCardContent(options = {}) {
     setClassroomCardImage(imageEl, placeholderEl, card);
 
     updateClassroomPresentationNav();
+    updateClassroomPresentationPronounceButton();
     saveClassroomPresentationContext();
 }
 
+function getClassroomPresentationEnglishWord() {
+    const card = getClassroomPresentationCurrentCard();
+
+    return (card?.english || "").trim();
+}
+
+function updateClassroomPresentationPronounceButton() {
+    const pronounceButton = document.getElementById("classroomPresentationPronounceButton");
+
+    if (!pronounceButton) {
+        return;
+    }
+
+    const isAvailable = typeof isEnglishPronunciationAvailable === "function"
+        && isEnglishPronunciationAvailable();
+    const englishWord = getClassroomPresentationEnglishWord();
+
+    pronounceButton.hidden = !isAvailable;
+    pronounceButton.disabled = !isAvailable || englishWord === "";
+}
+
+function stopClassroomPresentationPronunciation() {
+    if (typeof stopEnglishPronunciation === "function") {
+        stopEnglishPronunciation();
+    }
+}
+
+function pronounceClassroomPresentationWord() {
+    if (currentScreenId !== "classroomPresentationScreen") {
+        return;
+    }
+
+    const englishWord = getClassroomPresentationEnglishWord();
+
+    if (!englishWord || typeof speakEnglishWord !== "function") {
+        return;
+    }
+
+    speakEnglishWord(englishWord, { source: "presentation" });
+}
+
 function renderClassroomPresentationCard(options = {}) {
+    stopClassroomPresentationPronunciation();
+
     withClassroomContentTransition(
         getClassroomPresentationTransitionTargets(),
         () => applyClassroomPresentationCardContent(options),
@@ -1604,15 +1700,26 @@ function updateClassroomPresentationNav() {
     const prevButton = document.getElementById("classroomPrevButton");
     const nextButton = document.getElementById("classroomNextButton");
     const isFirst = classroomPresentationIndex === 0;
-    const isLast = classroomPresentationIndex === classroomPresentationCards.length - 1;
+    const isLast = classroomPresentationIndex >= classroomPresentationCards.length - 1;
+    const loopEnabled = classroomPresentationLoopEnabled && classroomPresentationCards.length > 0;
 
-    prevButton.disabled = isFirst;
-    prevButton.classList.toggle("disabled-button", isFirst);
-    nextButton.textContent = isLast ? "Finish" : "Next →";
+    prevButton.disabled = loopEnabled ? false : isFirst;
+    prevButton.classList.toggle("disabled-button", loopEnabled ? false : isFirst);
+    nextButton.textContent = isLast && !loopEnabled ? "Finish" : "Next →";
 }
 
 function classroomPresentationPrevious() {
+    if (classroomPresentationCards.length === 0) {
+        return;
+    }
+
     if (classroomPresentationIndex <= 0) {
+        if (classroomPresentationLoopEnabled) {
+            classroomPresentationIndex = classroomPresentationCards.length - 1;
+            classroomTranslationVisible = false;
+            renderClassroomPresentationCard({ animate: true });
+        }
+
         return;
     }
 
@@ -1648,7 +1755,17 @@ function isClassroomPresentationOnLastCard() {
 }
 
 function classroomPresentationAdvance() {
+    if (classroomPresentationCards.length === 0) {
+        return;
+    }
+
     if (isClassroomPresentationOnLastCard()) {
+        if (classroomPresentationLoopEnabled) {
+            classroomPresentationIndex = 0;
+            classroomTranslationVisible = false;
+            renderClassroomPresentationCard({ animate: true });
+        }
+
         return;
     }
 
@@ -1659,11 +1776,58 @@ function classroomPresentationAdvance() {
 
 function classroomPresentationNextButtonClick() {
     if (isClassroomPresentationOnLastCard()) {
+        if (classroomPresentationLoopEnabled) {
+            classroomPresentationAdvance();
+            return;
+        }
+
         finishClassroomPresentation();
         return;
     }
 
     classroomPresentationAdvance();
+}
+
+function updateClassroomPresentationLoopButton() {
+    const loopButton = document.getElementById("classroomPresentationLoopButton");
+
+    if (!loopButton) {
+        return;
+    }
+
+    loopButton.setAttribute("aria-pressed", classroomPresentationLoopEnabled ? "true" : "false");
+    loopButton.classList.toggle("classroom-loop-button-active", classroomPresentationLoopEnabled);
+    loopButton.classList.toggle("wf-toggle-button--active", classroomPresentationLoopEnabled);
+}
+
+function updateClassroomPresentationShuffleButton() {
+    const shuffleButton = document.getElementById("classroomPresentationShuffleButton");
+
+    if (!shuffleButton) {
+        return;
+    }
+
+    shuffleButton.setAttribute("aria-pressed", classroomPresentationShuffleEnabled ? "true" : "false");
+    shuffleButton.classList.toggle("classroom-shuffle-button-active", classroomPresentationShuffleEnabled);
+    shuffleButton.classList.toggle("wf-toggle-button--active", classroomPresentationShuffleEnabled);
+}
+
+function toggleClassroomPresentationLoop() {
+    if (currentScreenId !== "classroomActivityMenuScreen") {
+        return;
+    }
+
+    classroomPresentationLoopEnabled = !classroomPresentationLoopEnabled;
+    updateClassroomPresentationLoopButton();
+}
+
+function toggleClassroomPresentationShuffle() {
+    if (currentScreenId !== "classroomActivityMenuScreen") {
+        return;
+    }
+
+    classroomPresentationShuffleEnabled = !classroomPresentationShuffleEnabled;
+    updateClassroomPresentationShuffleButton();
 }
 
 function pulseClassroomFinishButton() {
@@ -1682,12 +1846,14 @@ function pulseClassroomFinishButton() {
 }
 
 function finishClassroomPresentation() {
+    stopClassroomPresentationPronunciation();
     exitClassroomFullscreenIfActive();
     clearClassroomPresentationContext();
     showClassroomActivityMenuForSelectedSet();
 }
 
 function returnToClassroomActivityMenu() {
+    stopClassroomPresentationPronunciation();
     exitClassroomFullscreenIfActive();
     clearClassroomPresentationContext();
     showClassroomActivityMenuForSelectedSet();
@@ -2330,10 +2496,59 @@ function applyClassroomFlashcardContent(options = {}) {
     updateClassroomFlashcardsNav();
     updateClassroomFlashcardsShuffleButton();
     updateClassroomFlashcardsLoopButton();
+    updateClassroomFlashcardsPronounceButton();
     saveClassroomFlashcardsContext();
 }
 
+function getClassroomFlashcardsEnglishWord() {
+    const card = getClassroomFlashcardsCurrentCard();
+
+    return (card?.english || "").trim();
+}
+
+function updateClassroomFlashcardsPronounceButton() {
+    const pronounceButton = document.getElementById("classroomFlashcardsPronounceButton");
+
+    if (!pronounceButton) {
+        return;
+    }
+
+    const isAvailable = typeof isEnglishPronunciationAvailable === "function"
+        && isEnglishPronunciationAvailable();
+    const englishWord = getClassroomFlashcardsEnglishWord();
+
+    pronounceButton.hidden = !isAvailable;
+    pronounceButton.disabled = !isAvailable || englishWord === "";
+}
+
+function stopClassroomFlashcardsPronunciation() {
+    if (typeof stopEnglishPronunciation === "function") {
+        stopEnglishPronunciation();
+    }
+}
+
+function pronounceClassroomFlashcardsWord(event) {
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
+    if (currentScreenId !== "classroomFlashcardsScreen") {
+        return;
+    }
+
+    const englishWord = getClassroomFlashcardsEnglishWord();
+
+    if (!englishWord || typeof speakEnglishWord !== "function") {
+        return;
+    }
+
+    speakEnglishWord(englishWord, { source: "flashcards" });
+}
+
 function renderClassroomFlashcard(options = {}) {
+    stopClassroomFlashcardsPronunciation();
+
     withClassroomContentTransition(
         document.getElementById("classroomFlashcardInner"),
         () => applyClassroomFlashcardContent(options),
@@ -2436,6 +2651,7 @@ function classroomFlashcardsNextButtonClick() {
 }
 
 function finishClassroomFlashcards() {
+    stopClassroomFlashcardsPronunciation();
     exitClassroomFullscreenIfActive();
     closeClassroomFlashcardsJumpDropdown();
     clearClassroomFlashcardsContext();
@@ -2443,6 +2659,7 @@ function finishClassroomFlashcards() {
 }
 
 function returnToClassroomActivityMenuFromFlashcards() {
+    stopClassroomFlashcardsPronunciation();
     exitClassroomFullscreenIfActive();
     closeClassroomFlashcardsJumpDropdown();
     clearClassroomFlashcardsContext();
@@ -2534,6 +2751,12 @@ function initClassroomFlashcardsControls() {
     const flashcardButton = document.getElementById("classroomFlashcard");
     const fullscreenButton = document.getElementById("classroomFlashcardsFullscreenButton");
     const backButton = document.getElementById("classroomFlashcardsBackButton");
+    const pronounceButton = document.getElementById("classroomFlashcardsPronounceButton");
+
+    if (pronounceButton && pronounceButton.dataset.handlerAttached !== "true") {
+        pronounceButton.dataset.handlerAttached = "true";
+        pronounceButton.addEventListener("click", pronounceClassroomFlashcardsWord);
+    }
 
     if (prevButton && prevButton.dataset.handlerAttached !== "true") {
         prevButton.dataset.handlerAttached = "true";
@@ -2689,10 +2912,68 @@ function applyClassroomTextFlashcardContent(options = {}) {
     updateClassroomTextFlashcardsNav();
     updateClassroomTextFlashcardsShuffleButton();
     updateClassroomTextFlashcardsLoopButton();
+    updateClassroomTextFlashcardsPronounceButton();
     saveClassroomTextFlashcardsContext();
 }
 
+function getClassroomTextFlashcardsEnglishWord() {
+    const card = getClassroomTextFlashcardsCurrentCard();
+
+    return (card?.english || "").trim();
+}
+
+function isClassroomTextFlashcardEnglishOnFront() {
+    return classroomTextFlashcardDirection === "englishToTranslation";
+}
+
+function updateClassroomTextFlashcardsPronounceButton() {
+    const frontButton = document.getElementById("classroomTextFlashcardsPronounceButtonFront");
+    const backButton = document.getElementById("classroomTextFlashcardsPronounceButtonBack");
+    const isAvailable = typeof isEnglishPronunciationAvailable === "function"
+        && isEnglishPronunciationAvailable();
+    const englishWord = getClassroomTextFlashcardsEnglishWord();
+    const englishOnFront = isClassroomTextFlashcardEnglishOnFront();
+    const isDisabled = !isAvailable || englishWord === "";
+
+    if (frontButton) {
+        frontButton.hidden = !isAvailable || !englishOnFront;
+        frontButton.disabled = isDisabled;
+    }
+
+    if (backButton) {
+        backButton.hidden = !isAvailable || englishOnFront;
+        backButton.disabled = isDisabled;
+    }
+}
+
+function stopClassroomTextFlashcardsPronunciation() {
+    if (typeof stopEnglishPronunciation === "function") {
+        stopEnglishPronunciation();
+    }
+}
+
+function pronounceClassroomTextFlashcardsWord(event) {
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
+    if (currentScreenId !== "classroomTextFlashcardsScreen") {
+        return;
+    }
+
+    const englishWord = getClassroomTextFlashcardsEnglishWord();
+
+    if (!englishWord || typeof speakEnglishWord !== "function") {
+        return;
+    }
+
+    speakEnglishWord(englishWord, { source: "text-flashcards" });
+}
+
 function renderClassroomTextFlashcard(options = {}) {
+    stopClassroomTextFlashcardsPronunciation();
+
     withClassroomContentTransition(
         document.getElementById("classroomTextFlashcardInner"),
         () => applyClassroomTextFlashcardContent(options),
@@ -2808,6 +3089,7 @@ function classroomTextFlashcardsNextButtonClick() {
 }
 
 function finishClassroomTextFlashcards() {
+    stopClassroomTextFlashcardsPronunciation();
     exitClassroomFullscreenIfActive();
     closeClassroomTextFlashcardsJumpDropdown();
     clearClassroomTextFlashcardsContext();
@@ -2815,6 +3097,7 @@ function finishClassroomTextFlashcards() {
 }
 
 function returnToClassroomActivityMenuFromTextFlashcards() {
+    stopClassroomTextFlashcardsPronunciation();
     exitClassroomFullscreenIfActive();
     closeClassroomTextFlashcardsJumpDropdown();
     clearClassroomTextFlashcardsContext();
@@ -2907,6 +3190,14 @@ function initClassroomTextFlashcardsControls() {
     const directionButton = document.getElementById("classroomTextFlashcardDirectionButton");
     const fullscreenButton = document.getElementById("classroomTextFlashcardsFullscreenButton");
     const backButton = document.getElementById("classroomTextFlashcardsBackButton");
+    const pronounceButtons = document.querySelectorAll(".classroom-text-flashcards-pronounce-button");
+
+    pronounceButtons.forEach((pronounceButton) => {
+        if (pronounceButton.dataset.handlerAttached !== "true") {
+            pronounceButton.dataset.handlerAttached = "true";
+            pronounceButton.addEventListener("click", pronounceClassroomTextFlashcardsWord);
+        }
+    });
 
     if (prevButton && prevButton.dataset.handlerAttached !== "true") {
         prevButton.dataset.handlerAttached = "true";
@@ -2965,6 +3256,87 @@ function getClassroomVocabularyBoardModeLabel(boardMode) {
 }
 
 const CLASSROOM_VOCABULARY_BOARD_PLACEHOLDER_SVG = `<svg class="classroom-image-placeholder-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" /></svg>`;
+const CLASSROOM_VOCABULARY_BOARD_PRONOUNCE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"/></svg>`;
+
+function buildClassroomVocabularyBoardPronounceButtonHtml(cardIndex) {
+    return `
+        <button
+            type="button"
+            class="classroom-vocabulary-board-pronounce-button wf-icon-button"
+            data-vocabulary-board-card-index="${cardIndex}"
+            aria-label="Pronounce word"
+            title="Pronounce"
+            hidden
+        >
+            ${CLASSROOM_VOCABULARY_BOARD_PRONOUNCE_SVG}
+        </button>
+    `;
+}
+
+function getClassroomVocabularyBoardEnglishWord(cardIndex) {
+    const card = classroomVocabularyBoardCards[cardIndex];
+
+    return (card?.english || "").trim();
+}
+
+function updateClassroomVocabularyBoardPronounceButtons() {
+    const grid = document.getElementById("classroomVocabularyBoardGrid");
+
+    if (!grid) {
+        return;
+    }
+
+    const isAvailable = typeof isEnglishPronunciationAvailable === "function"
+        && isEnglishPronunciationAvailable();
+
+    grid.querySelectorAll(".classroom-vocabulary-board-pronounce-button").forEach((button) => {
+        const cardIndex = Number.parseInt(button.dataset.vocabularyBoardCardIndex, 10);
+        const englishWord = Number.isInteger(cardIndex)
+            ? getClassroomVocabularyBoardEnglishWord(cardIndex)
+            : "";
+
+        button.hidden = !isAvailable;
+        button.disabled = !isAvailable || englishWord === "";
+    });
+}
+
+function stopClassroomVocabularyBoardPronunciation() {
+    if (typeof stopEnglishPronunciation === "function") {
+        stopEnglishPronunciation();
+    }
+}
+
+function pronounceClassroomVocabularyBoardWord(button) {
+    if (currentScreenId !== "classroomVocabularyBoardScreen" || !button) {
+        return;
+    }
+
+    const cardIndex = Number.parseInt(button.dataset.vocabularyBoardCardIndex, 10);
+
+    if (!Number.isInteger(cardIndex)) {
+        return;
+    }
+
+    const englishWord = getClassroomVocabularyBoardEnglishWord(cardIndex);
+
+    if (!englishWord || typeof speakEnglishWord !== "function") {
+        return;
+    }
+
+    speakEnglishWord(englishWord, { source: "vocabulary-board" });
+}
+
+function handleClassroomVocabularyBoardGridClick(event) {
+    const button = event.target.closest(".classroom-vocabulary-board-pronounce-button");
+
+    if (!button) {
+        return;
+    }
+
+    event.stopPropagation();
+    event.preventDefault();
+    pronounceClassroomVocabularyBoardWord(button);
+}
 
 function loadClassroomVocabularyBoardCardSize() {
     const stored = localStorage.getItem(CLASSROOM_VOCABULARY_BOARD_CARD_SIZE_STORAGE_KEY);
@@ -2994,7 +3366,7 @@ function saveClassroomVocabularyBoardMode(mode) {
     localStorage.setItem(CLASSROOM_VOCABULARY_BOARD_MODE_STORAGE_KEY, mode);
 }
 
-function buildClassroomVocabularyBoardPictureEnglishCardHtml(card) {
+function buildClassroomVocabularyBoardPictureEnglishCardHtml(card, cardIndex) {
     return `
         <article class="classroom-vocabulary-board-card">
             <div class="classroom-vocabulary-board-card-media">
@@ -3004,17 +3376,19 @@ function buildClassroomVocabularyBoardPictureEnglishCardHtml(card) {
                     <p class="classroom-image-placeholder-label">No image</p>
                 </div>
                 <p class="classroom-vocabulary-board-card-label">${escapeHTML(card.english)}</p>
+                ${buildClassroomVocabularyBoardPronounceButtonHtml(cardIndex)}
             </div>
         </article>
     `;
 }
 
-function buildClassroomVocabularyBoardEnglishThaiCardHtml(card) {
+function buildClassroomVocabularyBoardEnglishThaiCardHtml(card, cardIndex) {
     const translation = getClassroomCardTranslation(card) || "—";
 
     return `
         <article class="classroom-vocabulary-board-card">
             <div class="classroom-vocabulary-board-card-media classroom-vocabulary-board-card-text">
+                ${buildClassroomVocabularyBoardPronounceButtonHtml(cardIndex)}
                 <p class="classroom-vocabulary-board-card-english">${escapeHTML(card.english)}</p>
                 <p class="classroom-vocabulary-board-card-translation">${escapeHTML(translation)}</p>
             </div>
@@ -3023,11 +3397,11 @@ function buildClassroomVocabularyBoardEnglishThaiCardHtml(card) {
 }
 
 function buildClassroomVocabularyBoardPictureEnglishGridHtml(cards) {
-    return cards.map((card) => buildClassroomVocabularyBoardPictureEnglishCardHtml(card)).join("");
+    return cards.map((card, index) => buildClassroomVocabularyBoardPictureEnglishCardHtml(card, index)).join("");
 }
 
 function buildClassroomVocabularyBoardEnglishThaiGridHtml(cards) {
-    return cards.map((card) => buildClassroomVocabularyBoardEnglishThaiCardHtml(card)).join("");
+    return cards.map((card, index) => buildClassroomVocabularyBoardEnglishThaiCardHtml(card, index)).join("");
 }
 
 function getClassroomVocabularyBoardGridSignature() {
@@ -3035,6 +3409,8 @@ function getClassroomVocabularyBoardGridSignature() {
 }
 
 function applyClassroomVocabularyBoardGridContent() {
+    stopClassroomVocabularyBoardPronunciation();
+
     const grid = document.getElementById("classroomVocabularyBoardGrid");
 
     if (!grid) {
@@ -3052,6 +3428,8 @@ function applyClassroomVocabularyBoardGridContent() {
     if (classroomVocabularyBoardMode === "pictureEnglish") {
         applyClassroomVocabularyBoardCardImages();
     }
+
+    updateClassroomVocabularyBoardPronounceButtons();
 }
 
 function applyClassroomVocabularyBoardCardImages() {
@@ -3126,6 +3504,7 @@ function setClassroomVocabularyBoardMode(mode) {
         return;
     }
 
+    stopClassroomVocabularyBoardPronunciation();
     classroomVocabularyBoardMode = mode;
     saveClassroomVocabularyBoardMode(mode);
     updateClassroomVocabularyBoardModeTabs();
@@ -3223,6 +3602,7 @@ function renderClassroomVocabularyBoard() {
 }
 
 function returnToClassroomActivityMenuFromVocabularyBoard() {
+    stopClassroomVocabularyBoardPronunciation();
     exitClassroomFullscreenIfActive();
     clearClassroomVocabularyBoardContext();
     showClassroomActivityMenuForSelectedSet();
@@ -3277,6 +3657,12 @@ function handleClassroomVocabularyBoardKeydown(event) {
 function initClassroomVocabularyBoardControls() {
     const fullscreenButton = document.getElementById("classroomVocabularyBoardFullscreenButton");
     const backButton = document.getElementById("classroomVocabularyBoardBackButton");
+    const grid = document.getElementById("classroomVocabularyBoardGrid");
+
+    if (grid && grid.dataset.pronounceHandlerAttached !== "true") {
+        grid.dataset.pronounceHandlerAttached = "true";
+        grid.addEventListener("click", handleClassroomVocabularyBoardGridClick);
+    }
 
     if (fullscreenButton && fullscreenButton.dataset.handlerAttached !== "true") {
         fullscreenButton.dataset.handlerAttached = "true";
@@ -3376,6 +3762,11 @@ function handleClassroomPresentationKeydown(event) {
         event.preventDefault();
 
         if (isClassroomPresentationOnLastCard()) {
+            if (classroomPresentationLoopEnabled) {
+                classroomPresentationAdvance();
+                return;
+            }
+
             pulseClassroomFinishButton();
             return;
         }
@@ -3408,6 +3799,24 @@ function initClassroomPresentationControls() {
     const toggleButton = document.getElementById("classroomToggleTranslationButton");
     const fullscreenButton = document.getElementById("classroomFullscreenButton");
     const backButton = document.getElementById("classroomBackToPickerButton");
+    const loopButton = document.getElementById("classroomPresentationLoopButton");
+    const shuffleButton = document.getElementById("classroomPresentationShuffleButton");
+    const pronounceButton = document.getElementById("classroomPresentationPronounceButton");
+
+    if (pronounceButton && pronounceButton.dataset.handlerAttached !== "true") {
+        pronounceButton.dataset.handlerAttached = "true";
+        pronounceButton.addEventListener("click", pronounceClassroomPresentationWord);
+    }
+
+    if (loopButton && loopButton.dataset.handlerAttached !== "true") {
+        loopButton.dataset.handlerAttached = "true";
+        loopButton.addEventListener("click", toggleClassroomPresentationLoop);
+    }
+
+    if (shuffleButton && shuffleButton.dataset.handlerAttached !== "true") {
+        shuffleButton.dataset.handlerAttached = "true";
+        shuffleButton.addEventListener("click", toggleClassroomPresentationShuffle);
+    }
 
     if (prevButton && prevButton.dataset.handlerAttached !== "true") {
         prevButton.dataset.handlerAttached = "true";
@@ -5578,6 +5987,7 @@ function getOrderSignature(cardList) {
 }
 
 function exitGame() {
+    stopGamePronunciation();
     isGameRunning = false;
     clearGameContext();
     returnToPreGameScreen();
@@ -5682,11 +6092,63 @@ function backToWordFishHome() {
 }
 
 function leaveGameResults() {
+    stopGamePronunciation();
     clearGameContext();
     navigateAfterGame();
 }
 
+function getGameEnglishWord() {
+    const card = gameCards[currentIndex];
+
+    return (card?.english || "").trim();
+}
+
+function updateGamePronounceButton() {
+    const pronounceButton = document.getElementById("gamePronounceButton");
+
+    if (!pronounceButton) {
+        return;
+    }
+
+    const isAvailable = typeof isEnglishPronunciationAvailable === "function"
+        && isEnglishPronunciationAvailable();
+    const englishWord = getGameEnglishWord();
+
+    pronounceButton.hidden = !isAvailable;
+    pronounceButton.disabled = !isAvailable || englishWord === "";
+}
+
+function stopGamePronunciation() {
+    if (typeof stopEnglishPronunciation === "function") {
+        stopEnglishPronunciation();
+    }
+}
+
+function pronounceGameWord() {
+    if (currentScreenId !== "gameScreen") {
+        return;
+    }
+
+    const englishWord = getGameEnglishWord();
+
+    if (!englishWord || typeof speakEnglishWord !== "function") {
+        return;
+    }
+
+    speakEnglishWord(englishWord, { source: "game" });
+}
+
+function initGameControls() {
+    const pronounceButton = document.getElementById("gamePronounceButton");
+
+    if (pronounceButton && pronounceButton.dataset.handlerAttached !== "true") {
+        pronounceButton.dataset.handlerAttached = "true";
+        pronounceButton.addEventListener("click", pronounceGameWord);
+    }
+}
+
 function showCard() {
+    stopGamePronunciation();
     answerShown = false;
     currentCardMistakes = 0;
 
@@ -5724,6 +6186,7 @@ function showCard() {
     document.getElementById("scoreText").textContent = "Score: " + score + " / " + gameCards.length;
 
     updatePearls();
+    updateGamePronounceButton();
 }
 
 function checkAnswer() {
@@ -5792,6 +6255,7 @@ function updatePearls() {
 }
 
 function showResults() {
+    stopGamePronunciation();
     isGameRunning = false;
     displayScreen("resultsScreen");
 
@@ -6292,6 +6756,7 @@ async function restoreClassroomPresentationFromContext(context) {
 
         classroomPresentationSetName = set.name;
         classroomPresentationCards = presentationCards;
+        restoreClassroomPresentationShuffleState(context, presentationCards.length);
 
         let restoredIndex = Number(context.currentCardIndex);
         if (!Number.isFinite(restoredIndex)) {
@@ -6600,6 +7065,7 @@ function initApp() {
     initBuilderHeaderColorPicker();
     initWordCardImagePopover();
     initWordCardImageTileDrop();
+    initGameControls();
     checkAuth();
 }
 

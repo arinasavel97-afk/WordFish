@@ -3368,6 +3368,66 @@ h2 {
 }
 
 /* Design System Phase 1D-2 — Picture Mode Image Frame */
+.game-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+#gameScreen .game-pronounce-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    margin: 0;
+    border: 1px solid rgba(120, 190, 215, 0.45);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--sea-deep);
+    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    flex-shrink: 0;
+}
+
+#gameScreen .game-pronounce-button[hidden] {
+    display: none;
+}
+
+#gameScreen .game-pronounce-button svg {
+    width: 22px;
+    height: 22px;
+}
+
+#gameScreen .game-pronounce-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: #ffffff;
+    border-color: rgba(63, 169, 245, 0.45);
+    box-shadow: 0 3px 8px rgba(7, 59, 76, 0.12);
+}
+
+#gameScreen .game-pronounce-button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(7, 59, 76, 0.1);
+}
+
+#gameScreen .game-pronounce-button:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+#gameScreen .game-pronounce-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
 #gameScreen #gameImage {
     display: block;
     margin-left: auto;
@@ -3987,6 +4047,65 @@ h2 {
     color: var(--color-text-muted, #4A6278);
 }
 
+.classroom-presentation-options {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 var(--space-md);
+}
+
+.classroom-presentation-mode-toggle {
+    min-width: 0;
+    min-height: 40px;
+    margin: 0;
+    padding: 8px 14px;
+    border: 1px solid rgba(186, 228, 245, 0.75);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: rgba(7, 59, 76, 0.82);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.2;
+    box-shadow: 0 1px 3px rgba(7, 59, 76, 0.04);
+    transform: none;
+    transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+}
+
+.classroom-presentation-mode-toggle:hover:not(:disabled):not(.disabled-button) {
+    border-color: rgba(120, 190, 215, 0.9);
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.06);
+    transform: none;
+}
+
+.classroom-presentation-mode-toggle:active:not(:disabled):not(.disabled-button) {
+    transform: none;
+    box-shadow: 0 1px 3px rgba(7, 59, 76, 0.04);
+}
+
+.classroom-presentation-mode-toggle:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+.classroom-presentation-mode-toggle.classroom-loop-button-active,
+.classroom-presentation-mode-toggle.classroom-shuffle-button-active,
+.classroom-presentation-mode-toggle.wf-toggle-button--active {
+    border-color: rgba(63, 169, 245, 0.55);
+    background: linear-gradient(180deg, #ffffff 0%, #f4fbff 100%);
+    color: var(--sea-deep);
+    box-shadow: 0 0 0 2px rgba(63, 169, 245, 0.1), 0 2px 6px rgba(7, 59, 76, 0.05);
+}
+
+.classroom-presentation-mode-toggle.classroom-loop-button-active:hover:not(:disabled):not(.disabled-button),
+.classroom-presentation-mode-toggle.classroom-shuffle-button-active:hover:not(:disabled):not(.disabled-button),
+.classroom-presentation-mode-toggle.wf-toggle-button--active:hover:not(:disabled):not(.disabled-button) {
+    border-color: rgba(63, 169, 245, 0.72);
+    background: linear-gradient(180deg, #ffffff 0%, #eef8ff 100%);
+    transform: none;
+}
+
 .classroom-activity-card .green-button,
 .classroom-activity-card .soft-button {
     min-width: 120px;
@@ -4511,6 +4630,66 @@ h2 {
     max-width: 520px;
 }
 
+.classroom-presentation-english-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+#classroomPresentationScreen .classroom-presentation-pronounce-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    margin: 0;
+    border: 1px solid rgba(120, 190, 215, 0.45);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--sea-deep);
+    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+#classroomPresentationScreen .classroom-presentation-pronounce-button[hidden] {
+    display: none;
+}
+
+#classroomPresentationScreen .classroom-presentation-pronounce-button svg {
+    width: 22px;
+    height: 22px;
+}
+
+#classroomPresentationScreen .classroom-presentation-pronounce-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: #ffffff;
+    border-color: rgba(63, 169, 245, 0.45);
+    box-shadow: 0 3px 8px rgba(7, 59, 76, 0.12);
+}
+
+#classroomPresentationScreen .classroom-presentation-pronounce-button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(7, 59, 76, 0.1);
+}
+
+#classroomPresentationScreen .classroom-presentation-pronounce-button:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+#classroomPresentationScreen .classroom-presentation-pronounce-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
 .classroom-presentation-english {
     margin: 0;
     font-size: clamp(34px, 6vw, 64px);
@@ -4518,6 +4697,7 @@ h2 {
     font-weight: var(--font-weight-button);
     color: var(--ink);
     word-break: break-word;
+    text-align: center;
 }
 
 .classroom-presentation-translation {
@@ -4770,6 +4950,67 @@ h2 {
     object-fit: contain;
 }
 
+.classroom-flashcard-english-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+#classroomFlashcardsScreen .classroom-flashcards-pronounce-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    margin: 0;
+    border: 1px solid rgba(120, 190, 215, 0.45);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--sea-deep);
+    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+#classroomFlashcardsScreen .classroom-flashcards-pronounce-button[hidden] {
+    display: none;
+}
+
+#classroomFlashcardsScreen .classroom-flashcards-pronounce-button svg {
+    width: 22px;
+    height: 22px;
+}
+
+#classroomFlashcardsScreen .classroom-flashcards-pronounce-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: #ffffff;
+    border-color: rgba(63, 169, 245, 0.45);
+    box-shadow: 0 3px 8px rgba(7, 59, 76, 0.12);
+}
+
+#classroomFlashcardsScreen .classroom-flashcards-pronounce-button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(7, 59, 76, 0.1);
+}
+
+#classroomFlashcardsScreen .classroom-flashcards-pronounce-button:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+#classroomFlashcardsScreen .classroom-flashcards-pronounce-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
 .classroom-flashcard-english {
     margin: 0;
     font-size: clamp(28px, 4.5vw, 52px);
@@ -4778,6 +5019,7 @@ h2 {
     line-height: 1.15;
     word-break: break-word;
     flex-shrink: 0;
+    text-align: center;
 }
 
 .classroom-flashcard-translation {
@@ -4950,6 +5192,67 @@ h2 {
     transform: rotateY(180deg);
 }
 
+.classroom-text-flashcard-text-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+#classroomTextFlashcardsScreen .classroom-text-flashcards-pronounce-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    margin: 0;
+    border: 1px solid rgba(120, 190, 215, 0.45);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--sea-deep);
+    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    flex-shrink: 0;
+}
+
+#classroomTextFlashcardsScreen .classroom-text-flashcards-pronounce-button[hidden] {
+    display: none;
+}
+
+#classroomTextFlashcardsScreen .classroom-text-flashcards-pronounce-button svg {
+    width: 22px;
+    height: 22px;
+}
+
+#classroomTextFlashcardsScreen .classroom-text-flashcards-pronounce-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: #ffffff;
+    border-color: rgba(63, 169, 245, 0.45);
+    box-shadow: 0 3px 8px rgba(7, 59, 76, 0.12);
+}
+
+#classroomTextFlashcardsScreen .classroom-text-flashcards-pronounce-button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(7, 59, 76, 0.1);
+}
+
+#classroomTextFlashcardsScreen .classroom-text-flashcards-pronounce-button:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+#classroomTextFlashcardsScreen .classroom-text-flashcards-pronounce-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
 .classroom-text-flashcard-text {
     margin: 0;
     font-size: clamp(32px, 5.5vw, 64px);
@@ -4958,6 +5261,7 @@ h2 {
     line-height: 1.15;
     word-break: break-word;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .classroom-text-flashcards-footer {
@@ -5582,6 +5886,61 @@ h2 {
     background: var(--wf-color-glass-strong);
     box-shadow: var(--soft-shadow);
     transition: var(--vocab-board-size-transition);
+}
+
+#classroomVocabularyBoardScreen .classroom-vocabulary-board-pronounce-button {
+    position: absolute;
+    top: var(--vocab-board-label-inset, 8px);
+    right: var(--vocab-board-label-inset, 8px);
+    z-index: 3;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0;
+    margin: 0;
+    border: 1px solid rgba(120, 190, 215, 0.45);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--sea-deep);
+    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+#classroomVocabularyBoardScreen .classroom-vocabulary-board-pronounce-button[hidden] {
+    display: none;
+}
+
+#classroomVocabularyBoardScreen .classroom-vocabulary-board-pronounce-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+#classroomVocabularyBoardScreen .classroom-vocabulary-board-pronounce-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: #ffffff;
+    border-color: rgba(63, 169, 245, 0.45);
+    box-shadow: 0 3px 8px rgba(7, 59, 76, 0.12);
+}
+
+#classroomVocabularyBoardScreen .classroom-vocabulary-board-pronounce-button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(7, 59, 76, 0.1);
+}
+
+#classroomVocabularyBoardScreen .classroom-vocabulary-board-pronounce-button:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+#classroomVocabularyBoardScreen .classroom-vocabulary-board-pronounce-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
 }
 
 .classroom-vocabulary-board-card-image {
