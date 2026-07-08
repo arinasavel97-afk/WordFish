@@ -4759,7 +4759,10 @@ function buildWordCardImageSectionMarkup(index, imageUrl) {
 
     const tileContent = hasDisplayImage
         ? `<img class="word-card-image-tile__img" src="${escapeAttribute(normalizedImageUrl)}" alt="">`
-        : `<span class="word-card-image-tile__placeholder">${WORD_CARD_IMAGE_PLUS_ICON}</span>`;
+        : `<span class="word-card-image-tile__empty">
+                                <span class="word-card-image-tile__placeholder">${WORD_CARD_IMAGE_PLUS_ICON}</span>
+                                <span class="word-card-image-tile__helper">Drop, Paste or Upload</span>
+                            </span>`;
 
     const uploadingMarkup = isUploading
         ? `<span class="word-card-image-tile__uploading">Uploading...</span>`
