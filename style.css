@@ -3727,23 +3727,71 @@ h2 {
     text-align: left;
 }
 
-.settings-modal h2 {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: var(--space-md);
+.settings-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+    margin: 0 0 clamp(18px, 2.2vh, 24px);
+    padding: 0;
+}
+
+.settings-modal-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: 0;
+    min-width: 0;
+    font-family: var(--font-family);
+    font-size: clamp(19px, 2.5vw, 22px);
+    font-weight: var(--font-weight-button);
+    color: var(--sea-deep);
+    line-height: 1.2;
+}
+
+.settings-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: var(--sea-deep);
+}
+
+.settings-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.settings-modal .settings-modal-header .modal-close {
+    position: static;
+    top: auto;
+    right: auto;
+}
+
+.wf-panel-card {
+    background: var(--wf-gradient-hint-panel);
+    border: 1px solid color-mix(in oklab, var(--color-input-border) 55%, transparent);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--soft-shadow);
+    padding: var(--space-lg);
+}
+
+.settings-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
 }
 
 .settings-section {
-    padding: var(--space-md) 0;
-    border-top: 1px solid rgba(142, 220, 230, 0.55);
-}
-
-.settings-section:first-of-type {
-    border-top: none;
-    padding-top: 0;
+    margin: 0;
 }
 
 .settings-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin: 0 0 var(--space-sm);
     font-size: clamp(17px, 2.2vw, 20px);
     color: var(--sea-deep);
@@ -3783,10 +3831,24 @@ h2 {
 .settings-radio-group {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
-.settings-radio-option,
+.settings-radio-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 4px 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid color-mix(in oklab, var(--color-input-border) 55%, transparent);
+    background: var(--wf-color-glass-soft);
+    cursor: pointer;
+    font-weight: var(--font-weight-ui);
+    color: var(--color-text);
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
 .settings-checkbox-option {
     display: flex;
     align-items: center;
@@ -3802,13 +3864,52 @@ h2 {
     transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.settings-radio-option:hover,
+.settings-radio-option:hover {
+    border-color: color-mix(in oklab, var(--wf-aqua) 30%, transparent);
+    background: color-mix(in oklab, var(--wf-aqua) 3%, white);
+}
+
 .settings-checkbox-option:hover {
     border-color: rgba(63, 169, 245, 0.45);
     background: #F7FDFF;
 }
 
-.settings-radio-option input,
+.settings-radio-option:has(input:checked) {
+    background: color-mix(in oklab, var(--wf-aqua) 6%, white);
+    border: 1px solid color-mix(in oklab, var(--wf-aqua) 45%, white);
+    box-shadow: 0 0 0 3px rgba(80, 170, 255, 0.08);
+}
+
+.settings-radio-option:has(input:checked):hover {
+    background: color-mix(in oklab, var(--wf-aqua) 8%, white);
+    border-color: color-mix(in oklab, var(--wf-aqua) 50%, white);
+    box-shadow: 0 0 0 3px rgba(80, 170, 255, 0.1);
+}
+
+.settings-radio-option:has(input:focus-visible) {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+.settings-radio-option input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--color-primary);
+    flex-shrink: 0;
+    box-shadow: none;
+    outline: none;
+    filter: none;
+}
+
+.settings-radio-option input[type="radio"]:checked,
+.settings-radio-option input[type="radio"]:focus,
+.settings-radio-option input[type="radio"]:focus-visible {
+    box-shadow: none;
+    outline: none;
+    filter: none;
+}
+
 .settings-checkbox-option input {
     width: 18px;
     height: 18px;
@@ -3863,6 +3964,10 @@ h2 {
     text-align: center;
 }
 
+.settings-section-about .settings-section-title {
+    justify-content: center;
+}
+
 .settings-about-name {
     margin: 0 0 4px;
     font-size: clamp(20px, 2.6vw, 24px);
@@ -3880,13 +3985,6 @@ h2 {
     margin: 0;
     font-size: 15px;
     color: var(--color-text);
-}
-
-.settings-close-button {
-    display: block;
-    width: min(100%, 220px);
-    min-height: 48px;
-    margin: var(--space-md) auto 0;
 }
 
 @media (max-width: 620px) {
@@ -7007,7 +7105,6 @@ h2 {
 #classroomPresentationScreen #classroomPrevButton,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton,
-#settingsModal .settings-close-button,
 #authScreen .auth-card button[onclick="signUp()"],
 #teacherScreen button[onclick="showDashboard()"],
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"],
@@ -7043,7 +7140,6 @@ h2 {
 #classroomPresentationScreen #classroomPrevButton::before,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton::before,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton::before,
-#settingsModal .settings-close-button::before,
 #authScreen .auth-card button[onclick="signUp()"]::before,
 #teacherScreen button[onclick="showDashboard()"]::before,
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]::before,
@@ -7073,7 +7169,6 @@ h2 {
 #classroomPresentationScreen #classroomPrevButton::after,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton::after,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton::after,
-#settingsModal .settings-close-button::after,
 #authScreen .auth-card button[onclick="signUp()"]::after,
 #teacherScreen button[onclick="showDashboard()"]::after,
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]::after,
@@ -7103,7 +7198,6 @@ h2 {
 #classroomPresentationScreen #classroomPrevButton:hover,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton:hover,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton:hover,
-#settingsModal .settings-close-button:hover,
 #authScreen .auth-card button[onclick="signUp()"]:hover,
 #teacherScreen button[onclick="showDashboard()"]:hover,
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]:hover,
@@ -7125,7 +7219,6 @@ h2 {
 #classroomPresentationScreen #classroomPrevButton:active,
 #classroomFlashcardsScreen #classroomFlashcardsPrevButton:active,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsPrevButton:active,
-#settingsModal .settings-close-button:active,
 #authScreen .auth-card button[onclick="signUp()"]:active,
 #teacherScreen button[onclick="showDashboard()"]:active,
 #cardsScreen .editor-toolbar button[onclick="translateAllToThai()"]:active,
