@@ -1282,8 +1282,6 @@ function openClassroomActivityMenu(setId) {
 function showClassroomActivityMenu(set, addToHistory = true) {
     document.getElementById("classroomActivityMenuTitle").textContent = set.name;
     updateClassroomActivityMenuEmptyState(set);
-    updateClassroomPresentationLoopButton();
-    updateClassroomPresentationShuffleButton();
     clearClassroomPresentationContext();
     clearClassroomFlashcardsContext();
     clearClassroomTextFlashcardsContext();
@@ -1441,6 +1439,9 @@ function startClassroomPresentation(set, addToHistory = true) {
 
 function showClassroomPresentation(addToHistory = true) {
     displayScreen("classroomPresentationScreen", addToHistory);
+    updateClassroomPresentationLoopButton();
+    updateClassroomPresentationShuffleButton();
+    updateClassroomPresentationAutoPronounceButton();
     renderClassroomPresentationCard();
     maybeShowClassroomShortcutsHint("Space Show / Hide Translation");
 }
@@ -1842,22 +1843,57 @@ function updateClassroomPresentationShuffleButton() {
     shuffleButton.classList.toggle("wf-toggle-button--active", classroomPresentationShuffleEnabled);
 }
 
+function updateClassroomPresentationAutoPronounceButton() {
+    const autoPronounceButton = document.getElementById("classroomPresentationAutoPronounceButton");
+
+    if (!autoPronounceButton) {
+        return;
+    }
+
+    const isEnabled = isGlobalAutoPronounceEnabled();
+
+    autoPronounceButton.setAttribute("aria-pressed", isEnabled ? "true" : "false");
+    autoPronounceButton.classList.toggle("classroom-auto-pronounce-button-active", isEnabled);
+    autoPronounceButton.classList.toggle("wf-toggle-button--active", isEnabled);
+}
+
 function toggleClassroomPresentationLoop() {
-    if (currentScreenId !== "classroomActivityMenuScreen") {
+    if (currentScreenId !== "classroomPresentationScreen") {
         return;
     }
 
     classroomPresentationLoopEnabled = !classroomPresentationLoopEnabled;
     updateClassroomPresentationLoopButton();
+    updateClassroomPresentationNav();
+    saveClassroomPresentationContext();
 }
 
 function toggleClassroomPresentationShuffle() {
-    if (currentScreenId !== "classroomActivityMenuScreen") {
+    if (currentScreenId !== "classroomPresentationScreen") {
         return;
     }
 
     classroomPresentationShuffleEnabled = !classroomPresentationShuffleEnabled;
     updateClassroomPresentationShuffleButton();
+    saveClassroomPresentationContext();
+}
+
+function toggleClassroomPresentationAutoPronounce() {
+    if (currentScreenId !== "classroomPresentationScreen") {
+        return;
+    }
+
+    const enabled = !isGlobalAutoPronounceEnabled();
+
+    onSettingsAutoPronounceChange(enabled);
+    updateClassroomPresentationAutoPronounceButton();
+
+    if (enabled) {
+        maybeAutoPronounceClassroomPresentationWord();
+        return;
+    }
+
+    stopClassroomPresentationPronunciation();
 }
 
 function pulseClassroomFinishButton() {
@@ -3913,6 +3949,12 @@ function initClassroomPresentationControls() {
     const loopButton = document.getElementById("classroomPresentationLoopButton");
     const shuffleButton = document.getElementById("classroomPresentationShuffleButton");
     const pronounceButton = document.getElementById("classroomPresentationPronounceButton");
+    const autoPronounceButton = document.getElementById("classroomPresentationAutoPronounceButton");
+
+    if (autoPronounceButton && autoPronounceButton.dataset.handlerAttached !== "true") {
+        autoPronounceButton.dataset.handlerAttached = "true";
+        autoPronounceButton.addEventListener("click", toggleClassroomPresentationAutoPronounce);
+    }
 
     if (pronounceButton && pronounceButton.dataset.handlerAttached !== "true") {
         pronounceButton.dataset.handlerAttached = "true";
