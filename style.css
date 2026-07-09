@@ -8500,6 +8500,25 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     background: var(--wf-ocean-panel-wash);
 }
 
+/* Classroom Picker — underwater glass override */
+#classroomPickerScreen.wf-content-shell {
+    background-color: transparent;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 12px 30px rgba(26, 123, 160, 0.08);
+}
+
+#classroomPickerScreen.wf-content-shell::before {
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.18) 0%,
+        rgba(255, 255, 255, 0.26) 45%,
+        rgba(255, 255, 255, 0.34) 100%
+    );
+    opacity: 1;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    Page Shell — immersive screens (Phase 2)
    Fullscreen hosts stay transparent; ocean PNG on :fullscreen stacking root.
