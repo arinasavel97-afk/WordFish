@@ -4215,9 +4215,9 @@ h2 {
 /* Classroom Mode */
 .classroom-mode-header-image {
     display: block;
-    width: clamp(220px, 30vw, 360px);
+    width: clamp(238px, 30vw, 389px);
     height: auto;
-    margin: 0 auto 18px;
+    margin: 0 auto 23px;
     user-select: none;
     pointer-events: none;
 }
@@ -4238,10 +4238,30 @@ h2 {
     margin: 0 auto var(--space-lg);
 }
 
+@keyframes classroomHeaderIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes classroomCardIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.classroom-mode-header-image,
+#classroomPickerScreen h1,
+#classroomPickerScreen .subtitle {
+    animation: classroomHeaderIn 200ms cubic-bezier(.22,.61,.36,1) both;
+}
+
+#classroomPickerScreen .classroom-set-card {
+    animation: classroomCardIn 250ms cubic-bezier(.22,.61,.36,1) 60ms both;
+}
+
 @media (max-width: 600px) {
     .classroom-mode-header-image {
-        width: clamp(200px, 55vw, 240px);
-        margin-bottom: 14px;
+        width: clamp(216px, 55vw, 259px);
+        margin-bottom: 18px;
     }
 }
 
@@ -4271,14 +4291,16 @@ h2 {
     max-width: none;
     aspect-ratio: 1820 / 637;
     margin: 0 auto;
-    padding: clamp(24px, 4.5vw, 52px) clamp(28px, 5.5vw, 68px);
+    padding: clamp(24px, 4.5vw, 52px) clamp(28px, 5.5vw, 68px) clamp(20px, 3.5vw, 42px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     overflow: visible;
     transition: none;
     box-sizing: border-box;
+    position: relative;
 }
+
 
 .classroom-set-card:hover {
     transform: none;
@@ -4289,11 +4311,12 @@ h2 {
     display: flex;
     align-items: center;
     gap: 18px;
-    margin-bottom: var(--space-sm);
+    margin-top: 12px;
+    margin-bottom: 10px;
 }
 
 .classroom-set-books {
-    width: clamp(62px, 6.9vw, 99px);
+    width: clamp(65px, 6.9vw, 104px);
     height: auto;
     flex: 0 0 auto;
     object-fit: contain;
@@ -4305,7 +4328,7 @@ h2 {
     margin: 0;
     font-size: clamp(44px, 3vw, 56px);
     font-weight: 800;
-    color: var(--sea-deep);
+    color: #0A6480;
     word-break: break-word;
 }
 
@@ -4317,7 +4340,9 @@ h2 {
 .classroom-set-stats {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
+    padding-left: clamp(83px, calc(6.9vw + 18px), 122px);
+    margin-top: 24px;
 }
 
 .classroom-set-stat {
@@ -4332,6 +4357,18 @@ h2 {
 .classroom-set-stat .small-label {
     font-size: clamp(28px, 2.2vw, 36px);
     font-weight: 800;
+}
+
+.classroom-set-stats .classroom-set-stat:first-child,
+.classroom-set-stats .classroom-set-stat:first-child .small-label,
+.classroom-set-stats .classroom-set-stat:first-child span:not(.small-label) {
+    color: var(--sea-deep);
+}
+
+.classroom-set-stats .classroom-set-stat:last-child,
+.classroom-set-stats .classroom-set-stat:last-child .small-label,
+.classroom-set-stats .classroom-set-stat:last-child span:not(.small-label) {
+    color: #0C7898;
 }
 
 .classroom-set-stat span:not(.small-label) {
@@ -4352,6 +4389,7 @@ h2 {
     display: flex;
     justify-content: flex-end;
     margin-top: var(--space-md);
+    margin-bottom: 16px;
 }
 
 .classroom-set-actions .green-button {
@@ -4427,7 +4465,11 @@ h2 {
     }
 
     .classroom-set-books {
-        width: clamp(46px, 11.5vw, 70px);
+        width: clamp(48px, 11.5vw, 74px);
+    }
+
+    .classroom-set-stats {
+        padding-left: clamp(58px, calc(11.5vw + 10px), 84px);
     }
 
     .classroom-set-stat-icon {
@@ -4962,6 +5004,17 @@ h2 {
         ) {
         transition: background-color 190ms ease, box-shadow 190ms ease, border-color 190ms ease;
         transform: none !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .classroom-mode-header-image,
+    #classroomPickerScreen h1,
+    #classroomPickerScreen .subtitle,
+    #classroomPickerScreen .classroom-set-card {
+        animation: none;
+        opacity: 1;
+        transform: none;
     }
 }
 
@@ -7274,7 +7327,7 @@ h2 {
     font-size: clamp(14px, 1.5vw, 17px);
     font-weight: 800;
     overflow: visible;
-    transition: transform 0.12s ease, filter 0.12s ease;
+    transition: filter 0.16s ease;
 }
 
 #classroomPickerScreen .classroom-set-card .classroom-set-actions button.green-button.classroom-activity-button::before,
@@ -7291,14 +7344,14 @@ h2 {
     background-color: transparent;
     border: none;
     box-shadow: none;
-    transform: translateY(-1px) scale(1.02);
-    filter: brightness(1.08);
+    transform: none;
+    filter: brightness(1.04);
 }
 
 #classroomPickerScreen .classroom-set-card button.green-button.classroom-activity-button[onclick^="openClassroomActivityMenu"]:active:not(:disabled),
 #classroomPickerScreen .classroom-set-card .classroom-set-actions button.green-button.classroom-activity-button:active:not(:disabled) {
-    transform: translateY(1px) scale(0.99);
-    filter: brightness(0.94);
+    transform: none;
+    filter: brightness(0.96);
     box-shadow: none;
 }
 
@@ -7665,6 +7718,64 @@ h2 {
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
     0 4px 8px rgba(120, 190, 215, 0.14);
+}
+
+/* Classroom Picker — back navigation link style */
+#classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav,
+#classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"] {
+    background: none;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    min-height: unset;
+    padding: 4px 2px;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(7, 59, 76, 0.52);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.16s ease, transform 0.16s ease;
+    overflow: visible;
+    position: absolute;
+    top: clamp(14px, 2vw, 22px);
+    left: clamp(14px, 2vw, 22px);
+    z-index: 2;
+}
+
+#classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav::before,
+#classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav::after,
+#classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]::before,
+#classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]::after {
+    display: none !important;
+    content: none !important;
+}
+
+#classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]:hover,
+#classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover {
+    background: none;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    color: rgba(7, 59, 76, 0.82);
+    transform: translateX(-2px);
+}
+
+#classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]:active,
+#classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:active {
+    background: none;
+    box-shadow: none;
+    color: rgba(7, 59, 76, 0.96);
+    transform: translateX(0);
+}
+
+#classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible {
+    outline: 2px solid rgba(7, 59, 76, 0.35);
+    outline-offset: 4px;
+    border-radius: 4px;
+    box-shadow: none;
 }
 
 #cardsScreen .builder-header > button[onclick="backToDashboard()"] {
