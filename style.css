@@ -4525,7 +4525,8 @@ h2 {
 }
 
 .classroom-activity-menu-screen {
-    max-width: min(760px, 100%);
+    width: min(75vw, 1240px);
+    max-width: min(calc(100vw - 48px), 1240px);
 }
 
 .classroom-activity-menu-title {
@@ -4542,7 +4543,7 @@ h2 {
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
-    max-width: 640px;
+    max-width: min(900px, 100%);
     margin: 0 auto;
     text-align: left;
 }
@@ -8361,30 +8362,6 @@ body:has(#dashboardScreen[style*="display:block"]) .dashboard-fish-layer {
    New shared classes alias the current implementation. Existing selectors
    remain authoritative; nothing here overrides Dashboard or other screens.
    ═══════════════════════════════════════════════════════════════════════════ */
-
-.wf-page-shell {
-    /* Viewport shell host. Visuals from body {} (lines 257–268). */
-}
-
-.wf-ocean-backdrop {
-    /* Decorative ocean layer host. Visuals from .dashboard-fish-layer {} (6580+). */
-}
-
-.wf-content-shell {
-    /* Frosted content panel host. Visuals from :is(...).wf-content-shell {} (page shell block). */
-}
-
-body.wf-page-shell {
-    /* Alias: body is the page shell; no property overrides. */
-}
-
-.wf-ocean-backdrop.dashboard-fish-layer {
-    /* Alias: fish layer carries both class names; no property overrides. */
-}
-
-.wf-content-shell.screen {
-    /* Alias: panel screens carry both class names; no property overrides. */
-}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Page Shell — migrated panel screens
