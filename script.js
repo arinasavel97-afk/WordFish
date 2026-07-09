@@ -1252,12 +1252,25 @@ function renderClassroomPicker() {
 
         classroomSetsList.innerHTML += `
             <div class="card classroom-set-card${hasActivityCards ? "" : " classroom-set-card-empty"}">
-                <h2 class="classroom-set-name">📚 ${escapeHTML(set.name)}</h2>
-                <p><span class="small-label">Words:</span> ${wordCount}</p>
-                <p><span class="small-label">Images:</span> ${imageCount}</p>
+                <div class="classroom-set-title-row">
+                    <img src="assets/decorations/classroom/classroom-books.png" alt="" aria-hidden="true" class="classroom-set-books">
+                    <h2 class="classroom-set-name">${escapeHTML(set.name)}</h2>
+                </div>
+                <div class="classroom-set-stats">
+                    <p class="classroom-set-stat">
+                        <img class="classroom-set-stat-icon" src="assets/decorations/classroom/shell-blue.png" alt="" aria-hidden="true">
+                        <span class="small-label">Words:</span>
+                        <span>${wordCount}</span>
+                    </p>
+                    <p class="classroom-set-stat">
+                        <img class="classroom-set-stat-icon" src="assets/decorations/classroom/starfish-pink.png" alt="" aria-hidden="true">
+                        <span class="small-label">Images:</span>
+                        <span>${imageCount}</span>
+                    </p>
+                </div>
                 ${emptyNote}
                 <div class="classroom-set-actions">
-                    <button type="button" class="green-button wf-cta-primary" onclick="openClassroomActivityMenu('${escapeAttribute(setId)}')">Choose Activity</button>
+                    <button type="button" class="green-button wf-cta-primary classroom-activity-button" onclick="openClassroomActivityMenu('${escapeAttribute(setId)}')">Choose Activity</button>
                 </div>
             </div>
         `;

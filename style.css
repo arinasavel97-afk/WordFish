@@ -3854,14 +3854,14 @@ h2 {
     align-items: center;
     gap: 10px;
     margin: 0;
-    padding: 10px 12px;
+    padding: 4px 12px;
     border-radius: var(--radius-md);
-    border: 2px solid rgba(142, 220, 230, 0.45);
+    border: 1px solid color-mix(in oklab, var(--color-input-border) 55%, transparent);
     background: var(--wf-color-glass-soft);
     cursor: pointer;
     font-weight: var(--font-weight-ui);
     color: var(--color-text);
-    transition: border-color 0.15s ease, background 0.15s ease;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 
 .settings-radio-option:hover {
@@ -3870,8 +3870,25 @@ h2 {
 }
 
 .settings-checkbox-option:hover {
-    border-color: rgba(63, 169, 245, 0.45);
-    background: #F7FDFF;
+    border-color: color-mix(in oklab, var(--wf-aqua) 30%, transparent);
+    background: color-mix(in oklab, var(--wf-aqua) 3%, white);
+}
+
+.settings-checkbox-option:has(input:checked) {
+    background: color-mix(in oklab, var(--wf-aqua) 6%, white);
+    border: 1px solid color-mix(in oklab, var(--wf-aqua) 45%, white);
+    box-shadow: 0 0 0 3px rgba(80, 170, 255, 0.08);
+}
+
+.settings-checkbox-option:has(input:checked):hover {
+    background: color-mix(in oklab, var(--wf-aqua) 8%, white);
+    border-color: color-mix(in oklab, var(--wf-aqua) 50%, white);
+    box-shadow: 0 0 0 3px rgba(80, 170, 255, 0.1);
+}
+
+.settings-checkbox-option:has(input:focus-visible) {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
 }
 
 .settings-radio-option:has(input:checked) {
@@ -3916,6 +3933,17 @@ h2 {
     margin: 0;
     accent-color: var(--color-primary);
     flex-shrink: 0;
+    box-shadow: none;
+    outline: none;
+    filter: none;
+}
+
+.settings-checkbox-option input:checked,
+.settings-checkbox-option input:focus,
+.settings-checkbox-option input:focus-visible {
+    box-shadow: none;
+    outline: none;
+    filter: none;
 }
 
 .settings-checkbox-option + .settings-checkbox-option {
@@ -4098,6 +4126,55 @@ h2 {
     }
 }
 
+.settings-section-trash {
+    position: relative;
+}
+
+.settings-radio-option {
+    position: relative;
+    padding-right: 56px;
+}
+
+.settings-decoration-starfish {
+    display: none;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 38px;
+    height: auto;
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+    opacity: 1;
+}
+
+.settings-radio-option:has(input:checked) .settings-decoration-starfish {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .settings-decoration-starfish {
+        width: 32px;
+        right: 8px;
+    }
+
+    .settings-radio-option {
+        padding-right: 48px;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-decoration-starfish {
+        width: 28px;
+        right: 8px;
+    }
+
+    .settings-radio-option {
+        padding-right: 44px;
+    }
+}
+
 .settings-section-about {
     text-align: center;
 }
@@ -4136,6 +4213,23 @@ h2 {
 }
 
 /* Classroom Mode */
+.classroom-mode-header-image {
+    display: block;
+    width: clamp(220px, 30vw, 360px);
+    height: auto;
+    margin: 0 auto 18px;
+    user-select: none;
+    pointer-events: none;
+}
+
+#classroomPickerScreen h1 {
+    margin: 0 auto 10px;
+}
+
+#classroomPickerScreen .subtitle {
+    margin: 0 auto 28px;
+}
+
 .classroom-nav-button {
     display: inline-flex;
     align-items: center;
@@ -4144,26 +4238,73 @@ h2 {
     margin: 0 auto var(--space-lg);
 }
 
+@media (max-width: 600px) {
+    .classroom-mode-header-image {
+        width: clamp(200px, 55vw, 240px);
+        margin-bottom: 14px;
+    }
+}
+
 .classroom-sets-list {
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
-    max-width: 840px;
+    max-width: min(1080px, calc(100vw - 64px));
     margin: 0 auto;
     text-align: left;
 }
 
+#classroomPickerScreen {
+    width: min(1180px, 100%);
+}
+
 .classroom-set-card {
-    background: var(--wf-gradient-hint-panel);
-    border: 2px solid var(--color-input-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--soft-shadow);
-    padding: var(--space-lg);
+    background-image: url("assets/decorations/classroom/classroom-card-frame.png");
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    width: min(1080px, calc(100vw - 64px));
+    max-width: none;
+    aspect-ratio: 1820 / 637;
+    margin: 0 auto;
+    padding: clamp(24px, 4.5vw, 52px) clamp(28px, 5.5vw, 68px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: visible;
+    transition: none;
+    box-sizing: border-box;
+}
+
+.classroom-set-card:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.classroom-set-title-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: var(--space-sm);
+}
+
+.classroom-set-books {
+    width: clamp(62px, 6.9vw, 99px);
+    height: auto;
+    flex: 0 0 auto;
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
 }
 
 .classroom-set-name {
-    margin: 0 0 var(--space-sm);
-    font-size: clamp(20px, 3vw, 26px);
+    margin: 0;
+    font-size: clamp(44px, 3vw, 56px);
+    font-weight: 800;
     color: var(--sea-deep);
     word-break: break-word;
 }
@@ -4171,6 +4312,40 @@ h2 {
 .classroom-set-card p {
     margin: 0 0 6px;
     font-size: clamp(15px, 2vw, 17px);
+}
+
+.classroom-set-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.classroom-set-stat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: clamp(24px, 1.8vw, 30px);
+    font-weight: 700;
+}
+
+.classroom-set-stat .small-label {
+    font-size: clamp(28px, 2.2vw, 36px);
+    font-weight: 800;
+}
+
+.classroom-set-stat span:not(.small-label) {
+    font-size: clamp(26px, 2vw, 34px);
+    font-weight: 700;
+}
+
+.classroom-set-stat-icon {
+    width: clamp(34px, 3vw, 46px);
+    height: auto;
+    object-fit: contain;
+    flex: 0 0 auto;
+    pointer-events: none;
+    user-select: none;
 }
 
 .classroom-set-actions {
@@ -4223,7 +4398,57 @@ h2 {
 }
 
 .classroom-set-card-empty {
-    border-color: rgba(142, 220, 230, 0.85);
+    opacity: 0.72;
+}
+
+@media (max-width: 960px) {
+    .classroom-set-card {
+        width: min(calc(100vw - 48px), 1080px);
+        padding: clamp(18px, 3.5vw, 36px) clamp(20px, 4vw, 44px);
+    }
+}
+
+@media (max-width: 720px) {
+    #classroomPickerScreen {
+        width: min(100%, 100%);
+    }
+
+    .classroom-set-card {
+        width: min(100%, calc(100vw - 32px));
+        max-width: none;
+        aspect-ratio: auto;
+        min-height: unset;
+        padding: 16px 18px;
+        background-size: 100% 100%;
+    }
+
+    .classroom-set-title-row {
+        gap: 10px;
+    }
+
+    .classroom-set-books {
+        width: clamp(46px, 11.5vw, 70px);
+    }
+
+    .classroom-set-stat-icon {
+        width: clamp(26px, 5.5vw, 36px);
+    }
+
+    .classroom-set-name {
+        font-size: clamp(28px, 5vw, 44px);
+    }
+
+    .classroom-set-stat {
+        font-size: clamp(16px, 3.5vw, 24px);
+    }
+
+    .classroom-set-stat .small-label {
+        font-size: clamp(20px, 4.5vw, 28px);
+    }
+
+    .classroom-set-stat span:not(.small-label) {
+        font-size: clamp(18px, 4vw, 26px);
+    }
 }
 
 .classroom-image-placeholder {
@@ -7022,6 +7247,79 @@ h2 {
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.10),
     0 4px 8px rgba(22, 174, 74, 0.18);
+}
+
+/* Classroom Activity Button — illustrated PNG button */
+#classroomPickerScreen .classroom-set-card .classroom-set-actions button.green-button.classroom-activity-button,
+#classroomPickerScreen .classroom-set-card button.green-button.classroom-activity-button[onclick^="openClassroomActivityMenu"] {
+    background-image: url("assets/decorations/classroom/classroom-button.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    width: clamp(210px, 22vw, 280px);
+    aspect-ratio: 1626 / 516;
+    height: auto;
+    min-height: unset;
+    min-width: unset;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+    text-shadow: none;
+    font-size: clamp(14px, 1.5vw, 17px);
+    font-weight: 800;
+    overflow: visible;
+    transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+#classroomPickerScreen .classroom-set-card .classroom-set-actions button.green-button.classroom-activity-button::before,
+#classroomPickerScreen .classroom-set-card .classroom-set-actions button.green-button.classroom-activity-button::after,
+#classroomPickerScreen .classroom-set-card button.green-button.classroom-activity-button[onclick^="openClassroomActivityMenu"]::before,
+#classroomPickerScreen .classroom-set-card button.green-button.classroom-activity-button[onclick^="openClassroomActivityMenu"]::after {
+    display: none !important;
+    content: none !important;
+}
+
+#classroomPickerScreen .classroom-set-card button.green-button.classroom-activity-button[onclick^="openClassroomActivityMenu"]:hover:not(:disabled),
+#classroomPickerScreen .classroom-set-card .classroom-set-actions button.green-button.classroom-activity-button:hover:not(:disabled) {
+    background-image: url("assets/decorations/classroom/classroom-button.png");
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    transform: translateY(-1px) scale(1.02);
+    filter: brightness(1.08);
+}
+
+#classroomPickerScreen .classroom-set-card button.green-button.classroom-activity-button[onclick^="openClassroomActivityMenu"]:active:not(:disabled),
+#classroomPickerScreen .classroom-set-card .classroom-set-actions button.green-button.classroom-activity-button:active:not(:disabled) {
+    transform: translateY(1px) scale(0.99);
+    filter: brightness(0.94);
+    box-shadow: none;
+}
+
+#classroomPickerScreen .classroom-set-card button.green-button.classroom-activity-button:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 4px;
+    box-shadow: none;
+}
+
+@media (max-width: 960px) {
+    #classroomPickerScreen .classroom-set-card button.green-button.classroom-activity-button[onclick^="openClassroomActivityMenu"],
+    #classroomPickerScreen .classroom-set-card .classroom-set-actions button.green-button.classroom-activity-button {
+        width: clamp(180px, 26vw, 260px);
+    }
+}
+
+@media (max-width: 720px) {
+    #classroomPickerScreen .classroom-set-card button.green-button.classroom-activity-button[onclick^="openClassroomActivityMenu"],
+    #classroomPickerScreen .classroom-set-card .classroom-set-actions button.green-button.classroom-activity-button {
+        width: clamp(160px, 48vw, 230px);
+    }
 }
 
 /* CTA Accent prototype — shared selectors */
