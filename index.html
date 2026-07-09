@@ -313,10 +313,7 @@
                         </button>
                     </div>
                     <p id="classroomPresentationTranslation" class="classroom-presentation-translation" hidden>Translation</p>
-                    <div class="classroom-presentation-toggle-row">
-                        <button id="classroomToggleTranslationButton" type="button" class="soft-button wf-toggle-button classroom-toggle-translation-button" aria-pressed="false">Show Translation</button>
-                        <button id="classroomPresentationAutoPronounceButton" type="button" class="soft-button wf-toggle-button classroom-auto-pronounce-button" aria-pressed="false">Auto Pronounce</button>
-                    </div>
+                    <button id="classroomToggleTranslationButton" type="button" class="soft-button wf-toggle-button classroom-toggle-translation-button" aria-pressed="false">Show Translation</button>
                 </div>
             </section>
         </main>
@@ -671,6 +668,29 @@
                         <span>90 days</span>
                     </label>
                 </div>
+            </section>
+
+            <section class="settings-section">
+                <h3 class="settings-section-title">Pronunciation</h3>
+                <label class="settings-field-group" for="settingsPronunciationLocale">
+                    <span class="settings-field-label">Voice</span>
+                    <select id="settingsPronunciationLocale" class="settings-select" onchange="onSettingsPronunciationLocaleChange(this.value)">
+                        <option value="en-US">American English</option>
+                        <option value="en-GB">British English</option>
+                    </select>
+                </label>
+                <label class="settings-field-group" for="settingsPronunciationRate">
+                    <span class="settings-field-label">Speech Speed</span>
+                    <select id="settingsPronunciationRate" class="settings-select" onchange="onSettingsPronunciationRateChange(this.value)">
+                        <option value="slow">Slow</option>
+                        <option value="normal">Normal</option>
+                        <option value="fast">Fast</option>
+                    </select>
+                </label>
+                <label class="settings-checkbox-option">
+                    <input id="settingsAutoPronounce" type="checkbox" onchange="onSettingsAutoPronounceChange(this.checked)">
+                    <span>Enable Auto Pronounce</span>
+                </label>
             </section>
 
             <section class="settings-section">

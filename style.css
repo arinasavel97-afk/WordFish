@@ -3821,6 +3821,44 @@ h2 {
     margin-top: 10px;
 }
 
+.settings-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 0 var(--space-md);
+}
+
+.settings-field-group:last-child {
+    margin-bottom: 0;
+}
+
+.settings-select {
+    width: 100%;
+    min-height: 48px;
+    margin: 0;
+    padding: 10px 14px;
+    border: 2px solid rgba(142, 220, 230, 0.45);
+    border-radius: var(--radius-md);
+    background: var(--wf-color-glass-soft);
+    color: var(--color-text);
+    font-family: var(--font-family);
+    font-size: 15px;
+    font-weight: var(--font-weight-ui);
+    line-height: 1.2;
+    box-shadow: none;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.settings-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-focus);
+    outline: none;
+}
+
+.settings-field-group + .settings-checkbox-option {
+    margin-top: 10px;
+}
+
 .settings-section-about {
     text-align: center;
 }
@@ -7404,8 +7442,7 @@ h2 {
 }
 
 #classroomPresentationScreen .wf-toggle-button.wf-toggle-button--active,
-#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active,
-#classroomPresentationScreen #classroomPresentationAutoPronounceButton.classroom-auto-pronounce-button-active {
+#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active {
   background: #EAF7FF;
   border-color: rgba(120, 190, 215, 0.58);
   color: #073B4C;
@@ -7419,8 +7456,7 @@ h2 {
 }
 
 #classroomPresentationScreen .wf-toggle-button.wf-toggle-button--active:hover:not(:disabled):not(.disabled-button),
-#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active:hover:not(:disabled):not(.disabled-button),
-#classroomPresentationScreen #classroomPresentationAutoPronounceButton.classroom-auto-pronounce-button-active:hover:not(:disabled):not(.disabled-button) {
+#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active:hover:not(:disabled):not(.disabled-button) {
   background: #F0FAFF;
   transform: translateY(-1px);
   box-shadow: 0 3px 6px rgba(120, 190, 215, 0.14);
@@ -7433,8 +7469,7 @@ h2 {
 }
 
 #classroomPresentationScreen .wf-toggle-button.wf-toggle-button--active:active:not(:disabled):not(.disabled-button),
-#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active:active:not(:disabled):not(.disabled-button),
-#classroomPresentationScreen #classroomPresentationAutoPronounceButton.classroom-auto-pronounce-button-active:active:not(:disabled):not(.disabled-button) {
+#classroomPresentationScreen #classroomToggleTranslationButton.classroom-toggle-translation-button-active:active:not(:disabled):not(.disabled-button) {
   box-shadow: 0 1px 2px rgba(120, 190, 215, 0.10);
 }
 

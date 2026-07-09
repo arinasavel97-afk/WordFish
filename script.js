@@ -42,7 +42,6 @@ let classroomPresentationSetName = "";
 let classroomPresentationLoopEnabled = false;
 let classroomPresentationShuffleEnabled = false;
 let classroomPresentationShuffledOrder = [];
-let classroomPresentationAutoPronounceEnabled = false;
 let classroomTranslationVisible = false;
 let classroomFlashcardsCards = [];
 let classroomFlashcardsIndex = 0;
@@ -81,12 +80,18 @@ const CLASSROOM_SHORTCUTS_HINT_STORAGE_KEY = "wordfish_hide_classroom_shortcuts_
 const SETTINGS_KEYS = {
     trashAutoDelete: "wordfish_settings_trash_auto_delete",
     enableAnimations: "wordfish_settings_enable_animations",
-    celebrationPerfect: "wordfish_settings_celebration_perfect"
+    celebrationPerfect: "wordfish_settings_celebration_perfect",
+    pronunciationLocale: "wordfish_settings_pronunciation_locale",
+    pronunciationRate: "wordfish_settings_pronunciation_rate",
+    autoPronounce: "wordfish_settings_auto_pronounce"
 };
 const SETTINGS_DEFAULTS = {
     trashAutoDelete: "never",
     enableAnimations: true,
-    celebrationPerfect: true
+    celebrationPerfect: true,
+    pronunciationLocale: "en-US",
+    pronunciationRate: "normal",
+    autoPronounce: false
 };
 
 /*
@@ -1423,7 +1428,6 @@ function startClassroomPresentation(set, addToHistory = true) {
     classroomPresentationSetName = set.name;
     classroomPresentationCards = presentationCards;
     classroomPresentationIndex = 0;
-    classroomPresentationAutoPronounceEnabled = false;
     classroomTranslationVisible = false;
 
     if (classroomPresentationShuffleEnabled) {
@@ -1437,7 +1441,6 @@ function startClassroomPresentation(set, addToHistory = true) {
 
 function showClassroomPresentation(addToHistory = true) {
     displayScreen("classroomPresentationScreen", addToHistory);
-    updateClassroomPresentationAutoPronounceButton();
     renderClassroomPresentationCard();
     maybeShowClassroomShortcutsHint("Space Show / Hide Translation");
 }
@@ -1625,50 +1628,16 @@ function applyClassroomPresentationCardContent(options = {}) {
 
     updateClassroomPresentationNav();
     updateClassroomPresentationPronounceButton();
-    updateClassroomPresentationAutoPronounceButton();
     saveClassroomPresentationContext();
     maybeAutoPronounceClassroomPresentationWord();
 }
 
-function updateClassroomPresentationAutoPronounceButton() {
-    const autoPronounceButton = document.getElementById("classroomPresentationAutoPronounceButton");
-
-    if (!autoPronounceButton) {
-        return;
-    }
-
-    autoPronounceButton.setAttribute(
-        "aria-pressed",
-        classroomPresentationAutoPronounceEnabled ? "true" : "false"
-    );
-    autoPronounceButton.classList.toggle(
-        "classroom-auto-pronounce-button-active",
-        classroomPresentationAutoPronounceEnabled
-    );
-    autoPronounceButton.classList.toggle(
-        "wf-toggle-button--active",
-        classroomPresentationAutoPronounceEnabled
-    );
-}
-
-function toggleClassroomPresentationAutoPronounce() {
-    if (currentScreenId !== "classroomPresentationScreen") {
-        return;
-    }
-
-    classroomPresentationAutoPronounceEnabled = !classroomPresentationAutoPronounceEnabled;
-    updateClassroomPresentationAutoPronounceButton();
-
-    if (classroomPresentationAutoPronounceEnabled) {
-        maybeAutoPronounceClassroomPresentationWord();
-        return;
-    }
-
-    stopClassroomPresentationPronunciation();
+function isGlobalAutoPronounceEnabled() {
+    return readBoolSetting(SETTINGS_KEYS.autoPronounce, SETTINGS_DEFAULTS.autoPronounce);
 }
 
 function maybeAutoPronounceClassroomPresentationWord() {
-    if (currentScreenId !== "classroomPresentationScreen" || !classroomPresentationAutoPronounceEnabled) {
+    if (currentScreenId !== "classroomPresentationScreen" || !isGlobalAutoPronounceEnabled()) {
         return;
     }
 
@@ -1908,7 +1877,6 @@ function pulseClassroomFinishButton() {
 
 function finishClassroomPresentation() {
     stopClassroomPresentationPronunciation();
-    classroomPresentationAutoPronounceEnabled = false;
     exitClassroomFullscreenIfActive();
     clearClassroomPresentationContext();
     showClassroomActivityMenuForSelectedSet();
@@ -1916,7 +1884,6 @@ function finishClassroomPresentation() {
 
 function returnToClassroomActivityMenu() {
     stopClassroomPresentationPronunciation();
-    classroomPresentationAutoPronounceEnabled = false;
     exitClassroomFullscreenIfActive();
     clearClassroomPresentationContext();
     showClassroomActivityMenuForSelectedSet();
@@ -3946,12 +3913,6 @@ function initClassroomPresentationControls() {
     const loopButton = document.getElementById("classroomPresentationLoopButton");
     const shuffleButton = document.getElementById("classroomPresentationShuffleButton");
     const pronounceButton = document.getElementById("classroomPresentationPronounceButton");
-    const autoPronounceButton = document.getElementById("classroomPresentationAutoPronounceButton");
-
-    if (autoPronounceButton && autoPronounceButton.dataset.handlerAttached !== "true") {
-        autoPronounceButton.dataset.handlerAttached = "true";
-        autoPronounceButton.addEventListener("click", toggleClassroomPresentationAutoPronounce);
-    }
 
     if (pronounceButton && pronounceButton.dataset.handlerAttached !== "true") {
         pronounceButton.dataset.handlerAttached = "true";
@@ -4153,6 +4114,22 @@ function isTeacherCelebrationPerfectEnabled() {
     return readBoolSetting(SETTINGS_KEYS.celebrationPerfect, SETTINGS_DEFAULTS.celebrationPerfect);
 }
 
+function getPronunciationLocaleSetting() {
+    const raw = localStorage.getItem(SETTINGS_KEYS.pronunciationLocale);
+
+    return raw === "en-GB" ? "en-GB" : SETTINGS_DEFAULTS.pronunciationLocale;
+}
+
+function getPronunciationRateSetting() {
+    const raw = localStorage.getItem(SETTINGS_KEYS.pronunciationRate);
+
+    if (raw === "slow" || raw === "fast") {
+        return raw;
+    }
+
+    return SETTINGS_DEFAULTS.pronunciationRate;
+}
+
 function syncSettingsModalControls() {
     const trashValue = getTrashAutoDeleteSetting();
     const trashRadio = document.querySelector(`input[name="settingsTrashAutoDelete"][value="${trashValue}"]`);
@@ -4163,6 +4140,9 @@ function syncSettingsModalControls() {
 
     document.getElementById("settingsEnableAnimations").checked = isTeacherAnimationsEnabled();
     document.getElementById("settingsCelebrationPerfect").checked = isTeacherCelebrationPerfectEnabled();
+    document.getElementById("settingsPronunciationLocale").value = getPronunciationLocaleSetting();
+    document.getElementById("settingsPronunciationRate").value = getPronunciationRateSetting();
+    document.getElementById("settingsAutoPronounce").checked = isGlobalAutoPronounceEnabled();
 }
 
 async function openSettingsModal() {
@@ -4200,6 +4180,20 @@ function onSettingsEnableAnimationsChange(enabled) {
 
 function onSettingsCelebrationPerfectChange(enabled) {
     localStorage.setItem(SETTINGS_KEYS.celebrationPerfect, enabled ? "true" : "false");
+}
+
+function onSettingsPronunciationLocaleChange(value) {
+    const locale = value === "en-GB" ? "en-GB" : SETTINGS_DEFAULTS.pronunciationLocale;
+    localStorage.setItem(SETTINGS_KEYS.pronunciationLocale, locale);
+}
+
+function onSettingsPronunciationRateChange(value) {
+    const rate = value === "slow" || value === "fast" ? value : SETTINGS_DEFAULTS.pronunciationRate;
+    localStorage.setItem(SETTINGS_KEYS.pronunciationRate, rate);
+}
+
+function onSettingsAutoPronounceChange(enabled) {
+    localStorage.setItem(SETTINGS_KEYS.autoPronounce, enabled ? "true" : "false");
 }
 
 

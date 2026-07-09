@@ -3,6 +3,13 @@
 const WORDFISH_PRONUNCIATION_DEFAULT_LOCALE = "en-US";
 const WORDFISH_PRONUNCIATION_SUPPORTED_LOCALES = new Set(["en-US", "en-GB"]);
 const WORDFISH_PRONUNCIATION_VOICE_INIT_TIMEOUT_MS = 250;
+const WORDFISH_SETTINGS_PRONUNCIATION_LOCALE_KEY = "wordfish_settings_pronunciation_locale";
+const WORDFISH_SETTINGS_PRONUNCIATION_RATE_KEY = "wordfish_settings_pronunciation_rate";
+const WORDFISH_PRONUNCIATION_RATE_VALUES = {
+    slow: 0.75,
+    normal: 1,
+    fast: 1.25
+};
 
 let wordfishPronunciationVoicesCache = null;
 let wordfishPronunciationVoicesReady = false;
@@ -30,6 +37,50 @@ function normalizeEnglishPronunciationLocale(locale) {
     }
 
     return WORDFISH_PRONUNCIATION_DEFAULT_LOCALE;
+}
+
+function readStoredEnglishPronunciationLocale() {
+    try {
+        const stored = localStorage.getItem(WORDFISH_SETTINGS_PRONUNCIATION_LOCALE_KEY);
+
+        return normalizeEnglishPronunciationLocale(stored || WORDFISH_PRONUNCIATION_DEFAULT_LOCALE);
+    } catch (error) {
+        return WORDFISH_PRONUNCIATION_DEFAULT_LOCALE;
+    }
+}
+
+function readStoredEnglishPronunciationRateSymbol() {
+    try {
+        const stored = localStorage.getItem(WORDFISH_SETTINGS_PRONUNCIATION_RATE_KEY);
+
+        if (stored === "slow" || stored === "fast") {
+            return stored;
+        }
+
+        return "normal";
+    } catch (error) {
+        return "normal";
+    }
+}
+
+function resolveEnglishPronunciationLocale(options = {}) {
+    if (options.locale !== undefined && options.locale !== null && options.locale !== "") {
+        return normalizeEnglishPronunciationLocale(options.locale);
+    }
+
+    return readStoredEnglishPronunciationLocale();
+}
+
+function resolveEnglishPronunciationRate(options = {}) {
+    if (typeof options.rate === "number" && Number.isFinite(options.rate)) {
+        return options.rate;
+    }
+
+    const rateSymbol = typeof options.rate === "string" && options.rate
+        ? options.rate
+        : readStoredEnglishPronunciationRateSymbol();
+
+    return WORDFISH_PRONUNCIATION_RATE_VALUES[rateSymbol] ?? WORDFISH_PRONUNCIATION_RATE_VALUES.normal;
 }
 
 function refreshEnglishPronunciationVoicesCache() {
@@ -189,7 +240,8 @@ async function speakEnglishWord(text, options = {}) {
         return false;
     }
 
-    const locale = normalizeEnglishPronunciationLocale(options.locale);
+    const locale = resolveEnglishPronunciationLocale(options);
+    const rate = resolveEnglishPronunciationRate(options);
     const shouldInterrupt = options.interrupt !== false;
 
     if (shouldInterrupt) {
@@ -219,6 +271,8 @@ async function speakEnglishWord(text, options = {}) {
             if (voice) {
                 utterance.voice = voice;
             }
+
+            utterance.rate = rate;
 
             const finish = (didSpeak) => {
                 if (utteranceGeneration !== wordfishPronunciationGeneration) {
