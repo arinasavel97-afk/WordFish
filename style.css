@@ -4250,7 +4250,9 @@ h2 {
 
 .classroom-mode-header-image,
 #classroomPickerScreen h1,
-#classroomPickerScreen .subtitle {
+#classroomPickerScreen .subtitle,
+#classroomActivityMenuScreen h1,
+#classroomActivityMenuScreen .subtitle {
     animation: classroomHeaderIn 200ms cubic-bezier(.22,.61,.36,1) both;
 }
 
@@ -4493,6 +4495,23 @@ h2 {
     }
 }
 
+@media (max-width: 540px) {
+    .classroom-activity-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .activity-card-illustration {
+        width: clamp(64px, 18vw, 96px);
+        height: clamp(64px, 18vw, 96px);
+    }
+
+    .activity-card-action {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
 .classroom-image-placeholder {
     display: none;
     flex-direction: column;
@@ -4524,19 +4543,21 @@ h2 {
     color: var(--color-text-muted, #4A6278);
 }
 
-.classroom-activity-menu-screen {
-    width: min(75vw, 1240px);
-    max-width: min(calc(100vw - 48px), 1240px);
+#classroomActivityMenuScreen {
+    width: min(75vw, 1180px);
+    max-width: min(calc(100vw - 48px), 1180px);
 }
 
 .classroom-activity-menu-title {
-    margin: 0 0 var(--space-sm);
+    margin: 0 auto 8px;
     color: var(--sea-deep);
     word-break: break-word;
+    text-align: center;
 }
 
 .classroom-activity-menu-subtitle {
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-md);
+    text-align: center;
 }
 
 .classroom-activity-list {
@@ -4549,11 +4570,61 @@ h2 {
 }
 
 .classroom-activity-card {
-    background: var(--wf-gradient-hint-panel);
-    border: 2px solid var(--color-input-border);
+    background: linear-gradient(135deg, rgba(230, 246, 255, 0.72) 0%, rgba(245, 252, 255, 0.60) 100%);
+    border: 1px solid rgba(160, 215, 240, 0.45);
     border-radius: var(--radius-lg);
-    box-shadow: var(--soft-shadow);
-    padding: var(--space-lg);
+    box-shadow: 0 4px 16px rgba(7, 59, 76, 0.07);
+    padding: clamp(16px, 2.5vw, 28px);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(16px, 2.5vw, 32px);
+    transition: box-shadow 0.17s ease, transform 0.17s ease;
+}
+
+.classroom-activity-card:hover {
+    box-shadow: 0 8px 28px rgba(7, 59, 76, 0.13);
+    transform: translateY(-2px);
+}
+
+.activity-card-illustration {
+    flex: 0 0 auto;
+    width: clamp(80px, 10vw, 140px);
+    height: clamp(80px, 10vw, 140px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.activity-card-illustration img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+}
+
+.activity-card-illustration--empty {
+    background: rgba(160, 215, 240, 0.12);
+    border-radius: var(--radius-md, 12px);
+    border: 1px dashed rgba(160, 215, 240, 0.4);
+}
+
+#classroomActivityMenuScreen .classroom-activity-card:first-child .activity-card-illustration {
+    width: clamp(110px, 14vw, 190px);
+    height: clamp(110px, 14vw, 190px);
+}
+
+.activity-card-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.activity-card-action {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
 }
 
 .classroom-activity-card-disabled {
@@ -4574,8 +4645,8 @@ h2 {
 }
 
 .classroom-activity-status {
-    margin: 0 0 var(--space-md);
-    font-size: 14px;
+    margin: 0;
+    font-size: 13px;
     font-weight: var(--font-weight-button);
     letter-spacing: 0.3px;
     text-transform: uppercase;
@@ -5012,7 +5083,9 @@ h2 {
     .classroom-mode-header-image,
     #classroomPickerScreen h1,
     #classroomPickerScreen .subtitle,
-    #classroomPickerScreen .classroom-set-card {
+    #classroomPickerScreen .classroom-set-card,
+    #classroomActivityMenuScreen h1,
+    #classroomActivityMenuScreen .subtitle {
         animation: none;
         opacity: 1;
         transform: none;
@@ -7721,9 +7794,10 @@ h2 {
     0 4px 8px rgba(120, 190, 215, 0.14);
 }
 
-/* Classroom Picker — back navigation link style */
+/* Classroom Picker / Activity Menu — back navigation link style */
 #classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav,
-#classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"] {
+#classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"],
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav {
     background: none;
     background-color: transparent;
     border: none;
@@ -7749,13 +7823,16 @@ h2 {
 #classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav::before,
 #classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav::after,
 #classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]::before,
-#classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]::after {
+#classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]::after,
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav::before,
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav::after {
     display: none !important;
     content: none !important;
 }
 
 #classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]:hover,
-#classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover {
+#classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover,
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover {
     background: none;
     background-color: transparent;
     border: none;
@@ -7765,14 +7842,16 @@ h2 {
 }
 
 #classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]:active,
-#classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:active {
+#classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:active,
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav:active {
     background: none;
     box-shadow: none;
     color: rgba(7, 59, 76, 0.96);
     transform: translateX(0);
 }
 
-#classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible {
+#classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible,
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible {
     outline: 2px solid rgba(7, 59, 76, 0.35);
     outline-offset: 4px;
     border-radius: 4px;
@@ -8598,6 +8677,91 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
 }
 
 #classroomPickerScreen.wf-content-shell::before {
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.18) 0%,
+        rgba(255, 255, 255, 0.26) 45%,
+        rgba(255, 255, 255, 0.34) 100%
+    );
+    opacity: 1;
+}
+
+/* Activity Picker — standalone illustrated button component */
+button.activity-picker-button {
+    display: inline-block;
+    background: transparent url("assets/decorations/activity-picker/activity-button.png") center / contain no-repeat;
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    width: clamp(150px, 18vw, 230px);
+    aspect-ratio: 1615 / 497;
+    height: auto;
+    min-height: unset;
+    min-width: unset;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+    overflow: visible;
+    transform: none;
+    filter: none;
+    transition: filter 0.16s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+button.activity-picker-button:hover {
+    background: transparent url("assets/decorations/activity-picker/activity-button.png") center / contain no-repeat;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    outline: none;
+    filter: brightness(1.04);
+}
+
+button.activity-picker-button:active {
+    background: transparent url("assets/decorations/activity-picker/activity-button.png") center / contain no-repeat;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    filter: brightness(0.96);
+}
+
+button.activity-picker-button:disabled {
+    background: transparent url("assets/decorations/activity-picker/activity-button.png") center / contain no-repeat;
+    transform: none;
+    box-shadow: none;
+    opacity: 0.45;
+    cursor: not-allowed;
+    filter: none;
+}
+
+button.activity-picker-button:focus-visible {
+    outline: 3px solid rgba(7, 59, 76, 0.45);
+    outline-offset: 6px;
+    border-radius: 4px;
+}
+
+@media (max-width: 960px) {
+    button.activity-picker-button {
+        width: clamp(130px, 22vw, 200px);
+    }
+}
+
+/* Activity Menu — underwater glass override (mirrors Classroom Picker) */
+#classroomActivityMenuScreen.wf-content-shell {
+    background-color: transparent;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 12px 30px rgba(26, 123, 160, 0.08);
+}
+
+#classroomActivityMenuScreen.wf-content-shell::before {
     background: linear-gradient(
         180deg,
         rgba(255, 255, 255, 0.18) 0%,

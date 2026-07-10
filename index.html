@@ -215,11 +215,11 @@
     </div>
 
     <div id="classroomActivityMenuScreen" class="screen classroom-activity-menu-screen wf-content-shell" style="display: none;">
-        <div class="sea-header">🫧 📽️ 🫧</div>
+        <button type="button" class="soft-button wf-cta-neutral classroom-nav-button classroom-back-nav" onclick="showClassroomPicker()">← Back</button>
+
+        <img src="assets/decorations/activity-picker/activity-header.png" alt="" aria-hidden="true" class="classroom-mode-header-image">
         <h1 id="classroomActivityMenuTitle" class="classroom-activity-menu-title">Set Name</h1>
         <p class="subtitle classroom-activity-menu-subtitle">Choose an activity for your lesson.</p>
-
-        <button type="button" class="soft-button wf-cta-neutral classroom-nav-button" onclick="showClassroomPicker()">⬅ Back to set picker</button>
 
         <div id="classroomActivityMenuEmpty" class="classroom-activity-menu-empty" style="display: none;">
             <div class="card classroom-empty-card classroom-no-cards-card">
@@ -230,31 +230,59 @@
 
         <div class="classroom-activity-list">
             <article class="card classroom-activity-card">
-                <h2 class="classroom-activity-name">Presentation</h2>
-                <p class="classroom-activity-description">Show words and pictures on the board.</p>
-                <p class="classroom-activity-status classroom-activity-status-available">Available</p>
-                <button type="button" class="green-button wf-cta-primary" onclick="startClassroomPresentationFromActivityMenu()">Start</button>
+                <div class="activity-card-illustration">
+                    <img src="assets/decorations/activity-picker/presentation-icon.png" alt="" aria-hidden="true">
+                </div>
+                <div class="activity-card-body">
+                    <h2 class="classroom-activity-name">Presentation</h2>
+                    <p class="classroom-activity-description">Show words and pictures on the board.</p>
+                    <p class="classroom-activity-status classroom-activity-status-available">Available</p>
+                </div>
+                <div class="activity-card-action">
+                    <button type="button" class="activity-picker-button" onclick="startClassroomPresentationFromActivityMenu()">Start</button>
+                </div>
             </article>
 
             <article class="card classroom-activity-card">
-                <h2 class="classroom-activity-name">Flashcards</h2>
-                <p class="classroom-activity-description">Flip cards and practice vocabulary.</p>
-                <p class="classroom-activity-status classroom-activity-status-available">Available</p>
-                <button type="button" class="green-button wf-cta-primary" onclick="startClassroomFlashcardsFromActivityMenu()">Start</button>
+                <div class="activity-card-illustration">
+                    <img src="assets/decorations/activity-picker/flashcards-icon.png" alt="" aria-hidden="true">
+                </div>
+                <div class="activity-card-body">
+                    <h2 class="classroom-activity-name">Flashcards</h2>
+                    <p class="classroom-activity-description">Flip cards and practice vocabulary.</p>
+                    <p class="classroom-activity-status classroom-activity-status-available">Available</p>
+                </div>
+                <div class="activity-card-action">
+                    <button type="button" class="activity-picker-button" onclick="startClassroomFlashcardsFromActivityMenu()">Start</button>
+                </div>
             </article>
 
             <article class="card classroom-activity-card">
-                <h2 class="classroom-activity-name">Text Flashcards</h2>
-                <p class="classroom-activity-description">Practice words without pictures.</p>
-                <p class="classroom-activity-status classroom-activity-status-available">Available</p>
-                <button type="button" class="green-button wf-cta-primary" onclick="startClassroomTextFlashcardsFromActivityMenu()">Start</button>
+                <div class="activity-card-illustration">
+                    <img src="assets/decorations/activity-picker/text-flashcards-icon.png" alt="" aria-hidden="true">
+                </div>
+                <div class="activity-card-body">
+                    <h2 class="classroom-activity-name">Text Flashcards</h2>
+                    <p class="classroom-activity-description">Practice words without pictures.</p>
+                    <p class="classroom-activity-status classroom-activity-status-available">Available</p>
+                </div>
+                <div class="activity-card-action">
+                    <button type="button" class="activity-picker-button" onclick="startClassroomTextFlashcardsFromActivityMenu()">Start</button>
+                </div>
             </article>
 
             <article class="card classroom-activity-card">
-                <h2 class="classroom-activity-name">📋 Vocabulary Board</h2>
-                <p class="classroom-activity-description">Display the entire vocabulary set on one screen.</p>
-                <p class="classroom-activity-status classroom-activity-status-available">Available</p>
-                <button type="button" class="green-button wf-cta-primary" onclick="startClassroomVocabularyBoardFromActivityMenu()">Start</button>
+                <div class="activity-card-illustration">
+                    <img src="assets/decorations/activity-picker/vocabulary-board-icon.png" alt="" aria-hidden="true">
+                </div>
+                <div class="activity-card-body">
+                    <h2 class="classroom-activity-name">Vocabulary Board</h2>
+                    <p class="classroom-activity-description">Display the entire vocabulary set on one screen.</p>
+                    <p class="classroom-activity-status classroom-activity-status-available">Available</p>
+                </div>
+                <div class="activity-card-action">
+                    <button type="button" class="activity-picker-button" onclick="startClassroomVocabularyBoardFromActivityMenu()">Start</button>
+                </div>
             </article>
         </div>
     </div>
