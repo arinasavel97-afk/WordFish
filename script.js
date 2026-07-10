@@ -167,6 +167,7 @@ function hideAllScreens() {
     document.getElementById("cardsScreen").style.display = "none";
     document.getElementById("gameScreen").style.display = "none";
     document.getElementById("resultsScreen").style.display = "none";
+    document.getElementById("gameLibraryScreen").style.display = "none";
 }
 
 function showAppLoading() {
@@ -398,7 +399,8 @@ const OCEAN_PANEL_SCREEN_IDS = new Set([
     "classroomPickerScreen",
     "classroomActivityMenuScreen",
     "classroomNoCardsScreen",
-    "studentScreen"
+    "studentScreen",
+    "gameLibraryScreen"
 ]);
 
 function displayScreen(screenId, addToHistory = true) {
@@ -473,6 +475,8 @@ window.addEventListener("popstate", (event) => {
         showClassroomNoCardsState(false);
     } else if (screenId === "classroomVocabularyBoardScreen") {
         showClassroomVocabularyBoardForSelectedSet(false);
+    } else if (screenId === "gameLibraryScreen") {
+        displayScreen("gameLibraryScreen", false);
     }
 
     suppressHistoryPush = false;
@@ -1188,7 +1192,7 @@ function renderDashboard() {
                             <p class="set-card-metadata set-card-metadata--edited">${escapeHTML(lastEditedLine)}</p>
                         </div>
                         <div class="set-actions set-card-footer">
-                            <button class="green-button wf-cta-primary" onclick="openPlayChoice('${escapeAttribute(setId)}')"${disabledAttr}>Play</button>
+                            <button class="green-button wf-cta-primary" onclick="openGameLibrary('${escapeAttribute(setId)}')"${disabledAttr}>Play</button>
                             <button class="share-button wf-cta-secondary" onclick="openShareDialog('${escapeAttribute(setId)}')"${disabledAttr}>Share</button>
                         </div>
                     </div>
@@ -4262,6 +4266,20 @@ function openPlayChoice(indexOrId) {
     const selectedSet = savedSets[index];
     document.getElementById("playChoiceTitle").textContent = "Play: " + selectedSet.name;
     document.getElementById("playChoiceModal").style.display = "flex";
+}
+
+function openGameLibrary(indexOrId) {
+    if (dashboardSelectionMode) return;
+
+    const index = resolveSetIndex(indexOrId);
+    if (index < 0) return;
+
+    selectedPlaySetIndex = index;
+    const selectedSet = savedSets[index];
+    editingSetId = selectedSet.id;
+    currentSetName = selectedSet.name;
+    cards = prepareCards(selectedSet.cards || []);
+    displayScreen("gameLibraryScreen");
 }
 
 function closePlayChoice() {

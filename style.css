@@ -7820,7 +7820,8 @@ h2 {
 #classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav,
 #classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"],
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav,
-#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav {
+#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav,
+#gameLibraryScreen button.soft-button.classroom-nav-button.classroom-back-nav {
     background: none;
     background-color: transparent;
     border: none;
@@ -7852,7 +7853,9 @@ h2 {
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav::before,
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav::after,
 #cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav::before,
-#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav::after {
+#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav::after,
+#gameLibraryScreen button.soft-button.classroom-nav-button.classroom-back-nav::before,
+#gameLibraryScreen button.soft-button.classroom-nav-button.classroom-back-nav::after {
     display: none !important;
     content: none !important;
 }
@@ -7860,7 +7863,8 @@ h2 {
 #classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]:hover,
 #classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover,
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover,
-#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover {
+#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover,
+#gameLibraryScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover {
     background: none;
     background-color: transparent;
     border: none;
@@ -7872,7 +7876,8 @@ h2 {
 #classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]:active,
 #classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:active,
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav:active,
-#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav:active {
+#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav:active,
+#gameLibraryScreen button.soft-button.classroom-nav-button.classroom-back-nav:active {
     background: none;
     box-shadow: none;
     color: rgba(7, 59, 76, 0.96);
@@ -7881,7 +7886,8 @@ h2 {
 
 #classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible,
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible,
-#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible {
+#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible,
+#gameLibraryScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible {
     outline: 2px solid rgba(7, 59, 76, 0.35);
     outline-offset: 4px;
     border-radius: 4px;
@@ -8533,13 +8539,15 @@ body.wf-page-shell:has(:is(
     #cardsScreen,
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
-    #classroomNoCardsScreen
+    #classroomNoCardsScreen,
+    #gameLibraryScreen
 ):is([style*="display: block"], [style*="display:block"])),
 body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     #cardsScreen,
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
-    #classroomNoCardsScreen
+    #classroomNoCardsScreen,
+    #gameLibraryScreen
 ):is([style*="display: block"], [style*="display:block"])) {
     background-color: var(--wf-ocean-shell-bg);
     background-image: none;
@@ -8612,13 +8620,15 @@ body.wf-page-shell:has(:is(
     #cardsScreen,
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
-    #classroomNoCardsScreen
+    #classroomNoCardsScreen,
+    #gameLibraryScreen
 ):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop,
 body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     #cardsScreen,
     #classroomPickerScreen,
     #classroomActivityMenuScreen,
-    #classroomNoCardsScreen
+    #classroomNoCardsScreen,
+    #gameLibraryScreen
 ):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop {
     background-color: var(--wf-ocean-shell-bg);
     background-image: url("assets/backgrounds/dashboard-bg-desktop.png");
@@ -8640,13 +8650,15 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
         #cardsScreen,
         #classroomPickerScreen,
         #classroomActivityMenuScreen,
-        #classroomNoCardsScreen
+        #classroomNoCardsScreen,
+        #gameLibraryScreen
     ):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop,
     body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
         #cardsScreen,
         #classroomPickerScreen,
         #classroomActivityMenuScreen,
-        #classroomNoCardsScreen
+        #classroomNoCardsScreen,
+        #gameLibraryScreen
     ):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop {
         background-image: url("assets/backgrounds/dashboard-bg-mobile.png");
     }
@@ -8818,6 +8830,136 @@ button.activity-picker-button:focus-visible {
         rgba(255, 255, 255, 0.34) 100%
     );
     opacity: 1;
+}
+
+/* Game Library — underwater glass shell (mirrors Activity Picker) */
+.game-library-screen {
+    width: min(75vw, 1180px);
+    max-width: min(calc(100vw - 48px), 1180px);
+    background-color: transparent;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 12px 30px rgba(26, 123, 160, 0.08);
+}
+
+.game-library-screen::before {
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.18) 0%,
+        rgba(255, 255, 255, 0.26) 45%,
+        rgba(255, 255, 255, 0.34) 100%
+    );
+    opacity: 1;
+}
+
+.game-library-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: min(900px, 100%);
+    margin: 0 auto;
+    text-align: left;
+}
+
+/* Game Library cards */
+.game-library-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(16px, 2.5vw, 32px);
+    background: linear-gradient(135deg, rgba(230, 246, 255, 0.72) 0%, rgba(245, 252, 255, 0.60) 100%);
+    border: 1px solid rgba(160, 215, 240, 0.45);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 14px rgba(7, 59, 76, 0.06);
+    padding: clamp(12px, 2vw, 22px) clamp(16px, 2.5vw, 28px);
+    transition: box-shadow 0.17s ease, transform 0.17s ease;
+}
+
+.game-library-card:hover {
+    box-shadow: 0 8px 24px rgba(7, 59, 76, 0.11);
+    transform: translateY(-2px);
+}
+
+.game-library-card-illustration {
+    flex: 0 0 clamp(110px, 14vw, 190px);
+    align-self: center;
+    width: clamp(110px, 14vw, 190px);
+    height: clamp(110px, 14vw, 190px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-library-card-illustration img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+}
+
+.game-library-card-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: left;
+}
+
+.game-library-card-action {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(150px, 18vw, 230px);
+}
+
+.game-library-card-name {
+    margin: 0 0 var(--space-sm);
+    font-size: clamp(20px, 3vw, 27px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--sea-deep);
+}
+
+.game-library-card-description {
+    margin: 0 0 var(--space-sm);
+    font-size: clamp(15px, 2vw, 17px);
+    color: var(--color-text);
+    line-height: 1.5;
+}
+
+.game-library-card-status {
+    margin: 2px 0 0;
+    font-size: 13px;
+    font-weight: var(--font-weight-button);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.game-library-card-status--available {
+    color: var(--wf-mint-dark, #05A87D);
+}
+
+.game-library-card-status--coming-soon {
+    color: var(--color-text-muted, #4A6278);
+}
+
+@media (max-width: 540px) {
+    .game-library-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .game-library-card-illustration {
+        width: clamp(64px, 18vw, 96px);
+        height: clamp(64px, 18vw, 96px);
+    }
+
+    .game-library-card-action {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
