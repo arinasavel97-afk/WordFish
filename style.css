@@ -1967,19 +1967,29 @@ button:active {
     font-size: clamp(20px, 3vw, 28px);
 }
 
-#cardsScreen .builder-header {
+#cardsScreen .editor-toolbar {
     --builder-header-accent: #FFB703;
+    position: relative;
+    background:
+        linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--builder-header-accent) 12%, transparent) 0%,
+            color-mix(in srgb, var(--builder-header-accent) 6%, transparent) 45%,
+            color-mix(in srgb, var(--builder-header-accent) 2%, transparent) 75%,
+            transparent 100%
+        ),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.82) 100%);
+    border: 1px solid rgba(90, 190, 220, 0.55);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 14px rgba(7, 59, 76, 0.08);
+    padding: clamp(16px, 3vw, 24px);
+}
+
+#cardsScreen .builder-header {
     position: relative;
     margin: calc(-1 * clamp(18px, 3vw, 32px)) calc(-1 * clamp(18px, 3vw, 32px)) clamp(12px, 2vw, 18px);
     padding: clamp(18px, 3vw, 32px) clamp(18px, 3vw, 32px) clamp(22px, 3.5vw, 30px);
     text-align: center;
-    background: linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--builder-header-accent) 34%, #ffffff) 0%,
-        color-mix(in srgb, var(--builder-header-accent) 16%, rgba(255, 255, 255, 0.92)) 38%,
-        color-mix(in srgb, var(--builder-header-accent) 6%, transparent) 72%,
-        transparent 100%
-    );
 }
 
 #cardsScreen .builder-header h1 {
@@ -1988,23 +1998,23 @@ button:active {
 
 #cardsScreen .builder-header-color-control {
     position: absolute;
-    top: 18px;
-    right: 18px;
+    top: clamp(4px, 1vw, 10px);
+    right: clamp(4px, 1vw, 10px);
     z-index: 5;
 }
 
 #cardsScreen .builder-header-color-button {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
+    width: clamp(30px, 4vw, 36px);
+    height: clamp(30px, 4vw, 36px);
+    min-width: clamp(30px, 4vw, 36px);
+    min-height: clamp(30px, 4vw, 36px);
     padding: 0;
     margin: 0;
-    border: 1px solid rgba(120, 190, 215, 0.45);
+    border: 1px solid rgba(120, 190, 215, 0.35);
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.94);
+    background: rgba(255, 255, 255, 0.78);
     color: #073B4C;
-    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.12);
+    box-shadow: 0 1px 4px rgba(7, 59, 76, 0.08);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -2013,14 +2023,14 @@ button:active {
 }
 
 #cardsScreen .builder-header-color-button svg {
-    width: 20px;
-    height: 20px;
+    width: clamp(14px, 2vw, 17px);
+    height: clamp(14px, 2vw, 17px);
 }
 
 #cardsScreen .builder-header-color-button:hover {
     transform: translateY(-1px);
-    background: #ffffff;
-    box-shadow: 0 3px 8px rgba(7, 59, 76, 0.14);
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.1);
 }
 
 #cardsScreen .builder-header-color-button:active {
@@ -3061,18 +3071,8 @@ button:active {
     }
 
     #cardsScreen .builder-header-color-control {
-        top: 12px;
-        right: 12px;
-    }
-
-    #cardsScreen .builder-header-color-button,
-    #cardsScreen .builder-header-color-swatch {
-        width: 44px;
-        height: 44px;
-        min-width: 44px;
-        min-height: 44px;
-        max-width: 44px;
-        display: inline-flex;
+        top: 8px;
+        right: 8px;
     }
 
     #cardsScreen .builder-header-color-swatch {
@@ -7484,8 +7484,6 @@ h2 {
 /* CTA Accent prototype — shared selectors */
 .wf-cta-accent,
 .accent-cta,
-#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('translation')"],
-#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('picture')"],
 #gameScreen button.yellow-button[onclick="showAnswer()"] {
   position: relative;
   overflow: hidden;
@@ -7513,8 +7511,6 @@ h2 {
 
 .wf-cta-accent::before,
 .accent-cta::before,
-#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('translation')"]::before,
-#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('picture')"]::before,
 #gameScreen button.yellow-button[onclick="showAnswer()"]::before {
   content: "";
   position: absolute;
@@ -7530,8 +7526,6 @@ h2 {
 
 .wf-cta-accent::after,
 .accent-cta::after,
-#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('translation')"]::after,
-#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('picture')"]::after,
 #gameScreen button.yellow-button[onclick="showAnswer()"]::after {
   content: "";
   position: absolute;
@@ -7547,8 +7541,6 @@ h2 {
 
 .wf-cta-accent:hover,
 .accent-cta:hover,
-#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('translation')"]:hover,
-#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('picture')"]:hover,
 #gameScreen button.yellow-button[onclick="showAnswer()"]:hover {
   background: linear-gradient(180deg, #FFE06A 0%, #F5AD28 100%);
   transform: translateY(-1px);
@@ -7556,8 +7548,6 @@ h2 {
 
 .wf-cta-accent:active,
 .accent-cta:active,
-#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('translation')"]:active,
-#cardsScreen .editor-toolbar button.yellow-button[onclick="startGame('picture')"]:active,
 #gameScreen button.yellow-button[onclick="showAnswer()"]:active {
   transform: translateY(1px);
   box-shadow:
@@ -7829,7 +7819,8 @@ h2 {
 /* Classroom Picker / Activity Menu — back navigation link style */
 #classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav,
 #classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"],
-#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav {
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav,
+#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav {
     background: none;
     background-color: transparent;
     border: none;
@@ -7838,6 +7829,8 @@ h2 {
     min-height: unset;
     padding: 4px 2px;
     margin: 0;
+    width: auto;
+    max-width: none;
     font-size: 15px;
     font-weight: 500;
     color: rgba(7, 59, 76, 0.52);
@@ -7857,14 +7850,17 @@ h2 {
 #classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]::before,
 #classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]::after,
 #classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav::before,
-#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav::after {
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav::after,
+#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav::before,
+#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav::after {
     display: none !important;
     content: none !important;
 }
 
 #classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]:hover,
 #classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover,
-#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover {
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover,
+#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover {
     background: none;
     background-color: transparent;
     border: none;
@@ -7875,7 +7871,8 @@ h2 {
 
 #classroomPickerScreen button.soft-button.classroom-back-nav[onclick="returnToDashboardFromClassroom()"]:active,
 #classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:active,
-#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav:active {
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav:active,
+#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav:active {
     background: none;
     box-shadow: none;
     color: rgba(7, 59, 76, 0.96);
@@ -7883,7 +7880,8 @@ h2 {
 }
 
 #classroomPickerScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible,
-#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible {
+#classroomActivityMenuScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible,
+#cardsScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible {
     outline: 2px solid rgba(7, 59, 76, 0.35);
     outline-offset: 4px;
     border-radius: 4px;
@@ -8794,6 +8792,25 @@ button.activity-picker-button:focus-visible {
 }
 
 #classroomActivityMenuScreen.wf-content-shell::before {
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.18) 0%,
+        rgba(255, 255, 255, 0.26) 45%,
+        rgba(255, 255, 255, 0.34) 100%
+    );
+    opacity: 1;
+}
+
+/* Vocabulary Builder — real glass screen (mirrors Activity Picker / Classroom Picker) */
+#cardsScreen.wf-content-shell {
+    background-color: transparent;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 12px 30px rgba(26, 123, 160, 0.08);
+}
+
+#cardsScreen.wf-content-shell::before {
     background: linear-gradient(
         180deg,
         rgba(255, 255, 255, 0.18) 0%,

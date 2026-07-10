@@ -4993,7 +4993,7 @@ function prepareCards(oldCards) {
 }
 
 function getBuilderHeaderElement() {
-    return document.querySelector("#cardsScreen .builder-header");
+    return document.querySelector("#cardsScreen .editor-toolbar");
 }
 
 function openBuilderHeaderColorPopover() {

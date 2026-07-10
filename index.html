@@ -820,9 +820,13 @@
     </div>
 
     <div id="cardsScreen" class="screen wf-content-shell" style="display: none;">
+        <button type="button" class="soft-button wf-cta-neutral classroom-nav-button classroom-back-nav" onclick="backToDashboard()">← Back</button>
         <div class="builder-header">
-            <button class="wf-cta-neutral" onclick="backToDashboard()">Back to Dashboard</button>
+            <img src="assets/decorations/vocabulary-builder/vocabulary-builder-header.png" alt="" aria-hidden="true" class="classroom-mode-header-image">
             <h1>Vocabulary Builder</h1>
+        </div>
+
+        <div class="editor-toolbar">
             <div class="builder-header-color-control">
                 <button
                     type="button"
@@ -851,18 +855,12 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="editor-toolbar">
             <input id="builderSetName" placeholder="Set name" oninput="updateSetName(this.value)">
             <div id="saveStatus" class="save-status">Saved</div>
             <br>
 
             <button class="green-button wf-cta-primary" onclick="addNewWord()">New Word</button>
             <button class="wf-cta-neutral" onclick="translateAllToThai()">Auto Translate Thai</button>
-            <br>
-            <button class="yellow-button wf-cta-accent" onclick="startGame('translation')">Play with Translation</button>
-            <button class="yellow-button wf-cta-accent" onclick="startGame('picture')">Play with Pictures</button>
         </div>
 
         <div id="cardsList"></div>
