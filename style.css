@@ -4549,21 +4549,21 @@ h2 {
 }
 
 .classroom-activity-menu-title {
-    margin: 0 auto 8px;
+    margin: 0 auto 6px;
     color: var(--sea-deep);
     word-break: break-word;
     text-align: center;
 }
 
 .classroom-activity-menu-subtitle {
-    margin-bottom: var(--space-md);
+    margin-bottom: 12px;
     text-align: center;
 }
 
 .classroom-activity-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-md);
+    gap: 8px;
     max-width: min(900px, 100%);
     margin: 0 auto;
     text-align: left;
@@ -4573,8 +4573,8 @@ h2 {
     background: linear-gradient(135deg, rgba(230, 246, 255, 0.72) 0%, rgba(245, 252, 255, 0.60) 100%);
     border: 1px solid rgba(160, 215, 240, 0.45);
     border-radius: var(--radius-lg);
-    box-shadow: 0 4px 16px rgba(7, 59, 76, 0.07);
-    padding: clamp(16px, 2.5vw, 28px);
+    box-shadow: 0 4px 14px rgba(7, 59, 76, 0.06);
+    padding: clamp(12px, 2vw, 22px) clamp(16px, 2.5vw, 28px);
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -4583,14 +4583,15 @@ h2 {
 }
 
 .classroom-activity-card:hover {
-    box-shadow: 0 8px 28px rgba(7, 59, 76, 0.13);
+    box-shadow: 0 8px 24px rgba(7, 59, 76, 0.11);
     transform: translateY(-2px);
 }
 
 .activity-card-illustration {
-    flex: 0 0 auto;
-    width: clamp(80px, 10vw, 140px);
-    height: clamp(80px, 10vw, 140px);
+    flex: 0 0 clamp(110px, 14vw, 190px);
+    align-self: center;
+    width: clamp(110px, 14vw, 190px);
+    height: clamp(110px, 14vw, 190px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -4611,9 +4612,20 @@ h2 {
     border: 1px dashed rgba(160, 215, 240, 0.4);
 }
 
-#classroomActivityMenuScreen .classroom-activity-card:first-child .activity-card-illustration {
-    width: clamp(110px, 14vw, 190px);
-    height: clamp(110px, 14vw, 190px);
+#classroomActivityMenuScreen .classroom-activity-card:first-child .activity-card-illustration img {
+    width: 100%;
+    height: 100%;
+}
+
+#classroomActivityMenuScreen .classroom-activity-card:nth-child(2) .activity-card-illustration img,
+#classroomActivityMenuScreen .classroom-activity-card:nth-child(3) .activity-card-illustration img {
+    width: clamp(80px, 10vw, 140px);
+    height: clamp(80px, 10vw, 140px);
+}
+
+#classroomActivityMenuScreen .classroom-activity-card:nth-child(4) .activity-card-illustration img {
+    width: clamp(88px, 11vw, 152px);
+    height: clamp(88px, 11vw, 152px);
 }
 
 .activity-card-body {
@@ -4633,7 +4645,9 @@ h2 {
 
 .classroom-activity-name {
     margin: 0 0 var(--space-sm);
-    font-size: clamp(20px, 3vw, 26px);
+    font-size: clamp(20px, 3vw, 27px);
+    font-weight: 700;
+    line-height: 1.2;
     color: var(--sea-deep);
 }
 
@@ -4641,14 +4655,14 @@ h2 {
     margin: 0 0 var(--space-sm);
     font-size: clamp(15px, 2vw, 17px);
     color: var(--color-text);
-    line-height: 1.45;
+    line-height: 1.5;
 }
 
 .classroom-activity-status {
-    margin: 0;
+    margin: 2px 0 0;
     font-size: 13px;
     font-weight: var(--font-weight-button);
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
