@@ -6862,7 +6862,6 @@ h2 {
     max-width: min(520px, 100%);
 }
 
-#studentScreen .student-choice-back,
 #studentScreen #studentUnavailable button[onclick="backToWordFishHome()"] {
     display: none;
 }
@@ -6874,152 +6873,6 @@ h2 {
 
 #studentScreen h1 {
     margin-bottom: var(--space-sm);
-}
-
-#studentScreen #studentSetTitle {
-    color: var(--sea-deep);
-    margin-bottom: var(--space-lg);
-    word-break: break-word;
-    font-size: clamp(22px, 4vw, 30px);
-}
-
-#studentScreen .student-choice-panel .subtitle {
-    margin-bottom: var(--space-sm);
-}
-
-.student-choice-panel {
-    max-width: min(100%, 420px);
-    margin: 0 auto;
-    position: relative;
-}
-
-.student-choice-back {
-    display: inline-flex;
-    align-items: center;
-    min-height: 36px;
-    padding: 6px 14px;
-    margin-bottom: var(--space-md);
-    border: 2px solid rgba(142, 220, 230, 0.75);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.85);
-    color: var(--sea-deep);
-    font-family: var(--font-family);
-    font-size: 14px;
-    font-weight: var(--font-weight-button);
-    cursor: pointer;
-    box-shadow: var(--soft-shadow);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.student-choice-back:hover {
-    transform: scale(1.02);
-    box-shadow: var(--wf-shadow-ink-28);
-}
-
-.student-choice-back:active {
-    transform: scale(0.98);
-}
-
-.student-choice-heading {
-    margin-bottom: var(--space-sm);
-}
-
-.student-choice-helper {
-    margin: 0 auto var(--space-lg);
-    max-width: 360px;
-    color: var(--color-text-muted, #4A6278);
-    font-size: clamp(15px, 2.5vw, 17px);
-    font-weight: var(--font-weight-ui);
-    line-height: 1.45;
-}
-
-.student-mode-actions {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-    align-items: stretch;
-}
-
-.student-mode-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    width: 100%;
-    min-height: 52px;
-    padding: 12px 18px;
-    border: 2px solid rgba(255, 255, 255, 0.65);
-    border-radius: var(--radius-button);
-    color: white;
-    font-family: var(--font-family);
-    font-size: clamp(16px, 2.8vw, 18px);
-    font-weight: var(--font-weight-button);
-    cursor: pointer;
-    box-shadow: var(--shadow-button);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
-}
-
-.student-mode-button-icon {
-    display: inline-flex;
-    flex-shrink: 0;
-}
-
-.student-mode-button-icon svg {
-    width: 22px;
-    height: 22px;
-}
-
-.student-mode-button-picture {
-    background: linear-gradient(180deg, var(--sun) 0%, var(--sun-dark) 100%);
-    color: var(--ink);
-}
-
-.student-mode-button-picture:hover:not(:disabled) {
-    background: linear-gradient(180deg, #FFC533 0%, var(--sun-dark) 100%);
-}
-
-.student-mode-button-translation {
-    background: linear-gradient(180deg, var(--sea) 0%, var(--sea-dark) 100%);
-    color: white;
-}
-
-.student-mode-button-translation:hover:not(:disabled) {
-    background: linear-gradient(180deg, #1BB8D9 0%, var(--sea-dark) 100%);
-}
-
-@media (hover: hover) {
-    .student-mode-button:hover:not(:disabled) {
-        transform: scale(1.02);
-        box-shadow: 0 8px 0 rgba(34, 51, 68, 0.2);
-    }
-}
-
-.student-mode-button:active:not(:disabled) {
-    transform: scale(0.99) translateY(1px);
-    box-shadow: 0 2px 0 rgba(34, 51, 68, 0.15);
-}
-
-.student-mode-button:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    box-shadow: none;
-}
-
-.student-picture-unavailable {
-    margin: calc(var(--space-sm) * -1) 0 0;
-    color: var(--color-text-muted, #4A6278);
-    font-size: var(--font-size-sm, 14px);
-    font-weight: var(--font-weight-ui);
-    line-height: 1.4;
-}
-
-.student-mode-note {
-    margin-top: var(--space-lg);
-    padding-top: var(--space-md);
-    border-top: 1px solid rgba(142, 220, 230, 0.45);
-    color: var(--color-text-muted, #4A6278);
-    font-size: var(--font-size-sm, 15px);
-    font-weight: var(--font-weight-button);
 }
 
 .student-loading-panel {
@@ -7095,17 +6948,6 @@ h2 {
     color: var(--sea-deep);
     font-size: clamp(17px, 2.5vw, 20px);
     font-weight: var(--font-weight-button);
-}
-
-@media (max-width: 620px) {
-    .student-mode-button {
-        min-height: 48px;
-        padding: 11px 16px;
-    }
-
-    .student-choice-helper {
-        margin-bottom: var(--space-md);
-    }
 }
 
 .student-unavailable-title {
@@ -7217,7 +7059,6 @@ h2 {
 
 /* CTA Primary prototype — shared selectors */
 .wf-cta-primary,
-#savedSetsList .set-actions button[onclick^="openPlayChoice"],
 #dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"],
 #dashboardScreen .dashboard-header-import-button,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"],
@@ -7253,7 +7094,6 @@ h2 {
 }
 
 .wf-cta-primary::before,
-#savedSetsList .set-actions button[onclick^="openPlayChoice"]::before,
 #dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"]::before,
 #dashboardScreen .dashboard-header-import-button::before,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::before,
@@ -7283,7 +7123,6 @@ h2 {
 }
 
 .wf-cta-primary::after,
-#savedSetsList .set-actions button[onclick^="openPlayChoice"]::after,
 #dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"]::after,
 #dashboardScreen .dashboard-header-import-button::after,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]::after,
@@ -7313,7 +7152,6 @@ h2 {
 }
 
 .wf-cta-primary:hover,
-#savedSetsList .set-actions button[onclick^="openPlayChoice"]:hover,
 #dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"]:hover,
 #dashboardScreen .dashboard-header-import-button:hover,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:hover,
@@ -7335,7 +7173,6 @@ h2 {
 }
 
 .wf-cta-primary:active,
-#savedSetsList .set-actions button[onclick^="openPlayChoice"]:active,
 #dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"]:active,
 #dashboardScreen .dashboard-header-import-button:active,
 #dashboardScreen .dashboard-primary-actions button[onclick="showTeacherScreen()"]:active,

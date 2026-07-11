@@ -4295,18 +4295,6 @@ function onSettingsAutoPronounceChange(enabled) {
 }
 
 
-function openPlayChoice(indexOrId) {
-    if (dashboardSelectionMode) return;
-
-    const index = resolveSetIndex(indexOrId);
-    if (index < 0) return;
-
-    selectedPlaySetIndex = index;
-    const selectedSet = savedSets[index];
-    document.getElementById("playChoiceTitle").textContent = "Play: " + selectedSet.name;
-    document.getElementById("playChoiceModal").style.display = "flex";
-}
-
 function openGameLibrary(indexOrId) {
     if (dashboardSelectionMode) return;
 
@@ -4321,13 +4309,6 @@ function openGameLibrary(indexOrId) {
     currentSetName = selectedSet.name;
     cards = prepareCards(selectedSet.cards || []);
     displayScreen("gameLibraryScreen");
-}
-
-function closePlayChoice() {
-    if (currentScreenId !== "gameLibraryScreen") {
-        selectedPlaySetIndex = null;
-    }
-    document.getElementById("playChoiceModal").style.display = "none";
 }
 
 function openShareDialog(indexOrId) {
@@ -4388,8 +4369,8 @@ async function startChosenSetGame(mode) {
         currentSetName = selectedSet.name;
         cards = prepareCards(selectedSet.cards || []);
     }
-    closePlayChoice();
-    await startGame(mode, currentScreenId === "gameLibraryScreen" ? undefined : "dashboard");
+
+    await startGame(mode);
 }
 
 function showTeacherScreen() {
@@ -6281,47 +6262,15 @@ function returnToPreGameScreen() {
     navigateAfterGame();
 }
 
-async function startStudentGame(mode) {
-    await startGame(mode, "student");
-}
-
 function showStudentLoading() {
     document.getElementById("studentScreen").classList.add("student-loading-active");
     document.getElementById("studentLoadingPanel").style.display = "flex";
-    document.getElementById("studentSetTitle").style.display = "none";
-    document.getElementById("studentChoicePanel").style.display = "none";
     document.getElementById("studentUnavailable").style.display = "none";
-}
-
-function showStudentChoice(setName) {
-    document.getElementById("studentScreen").classList.remove("student-loading-active");
-    document.getElementById("studentLoadingPanel").style.display = "none";
-    document.getElementById("studentSetTitle").style.display = "block";
-    document.getElementById("studentSetTitle").textContent = setName;
-    document.getElementById("studentChoicePanel").style.display = "block";
-    document.getElementById("studentUnavailable").style.display = "none";
-    updateStudentPictureModeAvailability();
-}
-
-function updateStudentPictureModeAvailability() {
-    const pictureButton = document.getElementById("studentPictureButton");
-    const pictureUnavailableNote = document.getElementById("studentPictureUnavailable");
-
-    if (!pictureButton || !pictureUnavailableNote) return;
-
-    const playableCards = cleanCardsForSaving();
-    const hasAllImages = playableCards.length > 0
-        && playableCards.every((card) => card.imageUrl);
-
-    pictureButton.disabled = !hasAllImages;
-    pictureUnavailableNote.style.display = hasAllImages ? "none" : "block";
 }
 
 function showStudentUnavailable() {
     document.getElementById("studentScreen").classList.remove("student-loading-active");
     document.getElementById("studentLoadingPanel").style.display = "none";
-    document.getElementById("studentSetTitle").style.display = "none";
-    document.getElementById("studentChoicePanel").style.display = "none";
     document.getElementById("studentUnavailable").style.display = "block";
 }
 
