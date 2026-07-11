@@ -2787,6 +2787,113 @@ button:active {
     overflow: hidden;
 }
 
+.game-header,
+.game-content,
+.game-footer {
+    width: 100%;
+}
+
+.game-header {
+    margin-bottom: 1.5rem;
+}
+
+.game-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.game-picture-row {
+    display: none;
+}
+
+.game-picture-prompt {
+    display: none;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+#gameScreen[data-mode="picture"] .game-picture-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: clamp(40px, 8vw, 120px);
+    width: 100%;
+}
+
+#gameScreen[data-mode="picture"] .game-picture-prompt {
+    display: block;
+    width: auto;
+    height: auto;
+    max-height: clamp(140px, 22vh, 220px);
+    max-width: min(280px, 40vw);
+    flex-shrink: 0;
+}
+
+#gameScreen[data-mode="picture"] #currentPrompt {
+    display: none;
+}
+
+#gameScreen[data-mode="picture"] #gameImage {
+    margin: 0;
+}
+
+.game-translate-row {
+    display: block;
+    text-align: left;
+    width: 100%;
+}
+
+.game-translate-prompt {
+    display: none;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+#gameScreen[data-mode="picture"] .game-translate-row {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    #gameScreen[data-mode="translation"] .game-translate-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        justify-items: center;
+        gap: clamp(24px, 4vw, 48px);
+        width: 100%;
+    }
+
+    #gameScreen[data-mode="translation"] .game-translate-prompt {
+        display: block;
+        justify-self: start;
+        max-height: clamp(120px, 18vh, 180px);
+        max-width: min(200px, 18vw);
+    }
+
+    #gameScreen[data-mode="translation"] #currentPrompt {
+        justify-self: center;
+        padding: clamp(8px, 1.5vh, 14px) clamp(26px, 4.5vw, 54px);
+        margin: 0;
+        width: auto;
+        max-width: none;
+        white-space: nowrap;
+        word-break: normal;
+    }
+}
+
+.game-footer {
+    display: block;
+}
+
+#gameTitle {
+    color: var(--wf-ocean-ink);
+}
+
 #gameTitle,
 #feedback,
 #scoreText {
@@ -2797,15 +2904,50 @@ button:active {
     position: absolute;
     top: 18px;
     right: 18px;
-    width: 52px;
-    height: 52px;
-    min-height: 52px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     padding: 0;
+    margin: 0;
+    border: 1px solid rgba(120, 190, 215, 0.45);
     border-radius: 50%;
-    background: rgba(255,255,255,0.94);
-    color: var(--ink);
-    box-shadow: var(--wf-shadow-ink-18);
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--sea-deep);
+    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    flex-shrink: 0;
+    font-size: 22px;
+    line-height: 1;
+    font-weight: 700;
     z-index: 4;
+}
+
+.game-exit-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: #ffffff;
+    border-color: rgba(63, 169, 245, 0.45);
+    box-shadow: 0 3px 8px rgba(7, 59, 76, 0.12);
+}
+
+.game-exit-button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(7, 59, 76, 0.1);
+}
+
+.game-exit-button:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+.game-exit-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
 }
 
 #currentPrompt {
@@ -2879,6 +3021,15 @@ button:active {
 
 #scoreText {
     font-weight: 900;
+    color: var(--wf-aqua-soft);
+}
+
+#scoreText .score-label {
+    color: var(--wf-aqua-soft);
+}
+
+#scoreText .score-value {
+    color: var(--wf-aqua-soft);
 }
 
 #resultsScreen {
@@ -3171,6 +3322,44 @@ h2 {
     padding: clamp(22px, 3vw, 34px);
 }
 
+@media (min-width: 768px) {
+    #gameScreen {
+        width: min(900px, 92vw);
+        min-height: unset;
+        padding: clamp(12px, 1.5vh, 20px) clamp(18px, 2.5vw, 32px);
+    }
+
+    #gameScreen .game-header {
+        margin-bottom: clamp(6px, 1vh, 12px);
+    }
+
+    #gameScreen .game-content {
+        gap: clamp(8px, 1.2vh, 16px);
+        margin-bottom: clamp(8px, 1.2vh, 16px);
+    }
+
+    #gameScreen #gameTitle {
+        margin: 2px auto 4px;
+    }
+
+    #gameScreen #pearlBar {
+        padding: clamp(4px, 0.8vh, 8px) clamp(12px, 2vw, 20px);
+    }
+
+    #gameScreen #currentPrompt {
+        padding: clamp(10px, 1.5vh, 16px) clamp(18px, 3vw, 36px);
+        margin: clamp(6px, 1vh, 10px) auto;
+    }
+
+    #gameScreen #answerInput {
+        margin: clamp(4px, 0.8vh, 8px) auto;
+    }
+
+    #gameScreen #feedback {
+        margin: 0;
+    }
+}
+
 #gameTitle {
     font-size: var(--wf-font-size-game-title);
     max-width: 780px;
@@ -3178,14 +3367,14 @@ h2 {
     margin-right: auto;
 }
 
-#gameScreen > .game-exit-button {
+.game-header > .game-exit-button {
     position: absolute;
     top: 18px;
     right: 18px;
     left: auto;
-    width: 50px;
-    height: 50px;
-    min-height: 50px;
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
     padding: 0;
     margin: 0;
     display: inline-flex;
@@ -3285,7 +3474,7 @@ h2 {
         padding-right: 54px;
     }
 
-    #gameScreen > .game-exit-button {
+    .game-header > .game-exit-button {
         width: 44px;
         height: 44px;
         min-height: 44px;
@@ -3297,7 +3486,7 @@ h2 {
 @media (min-width: 1400px) {
     .screen,
     #gameScreen {
-        width: min(1120px, 92vw);
+        width: min(1000px, 92vw);
     }
 
     h1 {
@@ -3374,6 +3563,51 @@ h2 {
     justify-content: center;
     flex-wrap: wrap;
     width: 100%;
+}
+
+#gameScreen .game-button {
+    display: block;
+    height: 56px;
+    min-height: 56px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: transparent;
+    box-shadow: none;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    cursor: pointer;
+    transform: none;
+    transition: filter 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
+}
+
+#gameScreen .game-button:hover {
+    transform: none;
+    filter: brightness(1.05);
+}
+
+#gameScreen .game-button:active {
+    transform: none;
+    filter: brightness(0.95);
+}
+
+#gameScreen .game-button:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+#gameScreen .game-button--check {
+    width: calc(56px * 1483 / 498);
+    background-image: url("assets/decorations/games/game-button-check.png");
+}
+
+#gameScreen .game-button--show-answer {
+    width: calc(56px * 1609 / 485);
+    background-image: url("assets/decorations/games/game-button-show-answer.png");
 }
 
 #gameScreen .game-pronounce-button {
@@ -6970,17 +7204,23 @@ h2 {
 
 /* Picture Mode — balanced compact layout (laptop / board) */
 @media (min-width: 621px) {
-    #gameScreen:has(#gameImage[style*="display: block"]) {
+    #gameScreen[data-mode="picture"] {
         min-height: unset;
         padding: clamp(16px, 2.2vh, 28px) clamp(18px, 2.5vw, 32px);
         text-align: center;
     }
 
-    #gameScreen:has(#gameImage[style*="display: block"]) br {
-        display: none;
+    #gameScreen[data-mode="picture"] .game-header {
+        margin-bottom: 0;
     }
 
-    #gameScreen:has(#gameImage[style*="display: block"]) #gameTitle {
+    #gameScreen[data-mode="picture"] .game-content {
+        align-items: center;
+        gap: clamp(12px, 1.5vh, 20px);
+        margin-bottom: 0;
+    }
+
+    #gameScreen[data-mode="picture"] #gameTitle {
         font-size: clamp(26px, 3.6vh, 44px);
         max-width: 780px;
         margin: 0 auto clamp(4px, 0.5vh, 8px);
@@ -6988,7 +7228,7 @@ h2 {
         line-height: 1.12;
     }
 
-    #gameScreen:has(#gameImage[style*="display: block"]) #pearlBar {
+    #gameScreen[data-mode="picture"] #pearlBar {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -6998,62 +7238,107 @@ h2 {
         padding: 8px 16px;
     }
 
-    #gameScreen:has(#gameImage[style*="display: block"]) #gameImage {
+    #gameScreen[data-mode="picture"] .game-picture-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        justify-items: center;
+        gap: 0;
+        width: 100%;
+    }
+
+    #gameScreen[data-mode="picture"] .game-picture-prompt {
         display: block;
-        max-width: clamp(240px, 36vw, 300px);
-        max-height: clamp(180px, 27vh, 250px);
         width: auto;
         height: auto;
-        margin: clamp(8px, 1.2vh, 14px) auto;
+        max-height: clamp(140px, 22vh, 220px);
+        max-width: min(220px, 18vw);
+        object-fit: contain;
+        justify-self: start;
+    }
+
+    #gameScreen[data-mode="picture"] #gameImage {
+        display: block;
+        max-width: clamp(320px, 46vw, 460px);
+        max-height: clamp(280px, 36vh, 400px);
+        width: auto;
+        height: auto;
+        margin: 0;
         padding: 10px;
+        justify-self: center;
     }
 
-    #gameScreen:has(#gameImage[style*="display: block"]) #currentPrompt {
-        font-size: clamp(22px, 2.8vh, 32px);
-        padding: clamp(10px, 1.4vh, 16px) clamp(20px, 3vw, 36px);
-        margin: clamp(8px, 1vh, 14px) auto;
+    #gameScreen[data-mode="picture"] #currentPrompt {
+        display: none;
     }
 
-    #gameScreen:has(#gameImage[style*="display: block"]) #answerInput {
+    #gameScreen[data-mode="picture"] #answerInput {
         margin: clamp(6px, 0.8vh, 10px) auto;
     }
 
-    #gameScreen:has(#gameImage[style*="display: block"]) #feedback {
+    #gameScreen[data-mode="picture"] #feedback {
         min-height: 32px;
         margin: clamp(4px, 0.6vh, 8px) auto;
     }
 
-    #gameScreen:has(#gameImage[style*="display: block"]) #scoreText {
+    #gameScreen[data-mode="picture"] #scoreText {
         margin: clamp(2px, 0.4vh, 6px) auto;
     }
 }
 
 @media (max-height: 820px) and (min-width: 621px) {
-    #gameScreen:has(#gameImage[style*="display: block"]) {
+    #gameScreen[data-mode="picture"] {
         padding: clamp(12px, 1.6vh, 20px) clamp(16px, 2vw, 28px);
     }
 
-    #gameScreen:has(#gameImage[style*="display: block"]) #gameTitle {
+    #gameScreen[data-mode="picture"] #gameTitle {
         font-size: clamp(24px, 3.2vh, 36px);
     }
 
-    #gameScreen:has(#gameImage[style*="display: block"]) #gameImage {
-        max-width: clamp(230px, 32vw, 275px);
-        max-height: clamp(165px, 23vh, 215px);
-        margin: clamp(6px, 1vh, 10px) auto;
+    #gameScreen[data-mode="picture"] .game-picture-prompt {
+        max-height: clamp(120px, 18vh, 180px);
+        max-width: min(220px, 18vw);
     }
 
-    #gameScreen:has(#gameImage[style*="display: block"]) #currentPrompt {
-        font-size: clamp(20px, 2.5vh, 28px);
-        padding: 8px 22px;
-        margin: clamp(6px, 0.8vh, 10px) auto;
+    #gameScreen[data-mode="picture"] #gameImage {
+        max-width: clamp(280px, 40vw, 380px);
+        max-height: clamp(220px, 30vh, 300px);
+        margin: 0;
+    }
+
+    #gameScreen[data-mode="picture"] #currentPrompt {
+        display: none;
     }
 }
 
 @media (min-width: 1400px) {
-    #gameScreen:has(#gameImage[style*="display: block"]) #gameImage {
-        max-width: clamp(255px, 30vw, 300px);
-        max-height: clamp(195px, 25vh, 255px);
+    #gameScreen[data-mode="picture"] #gameImage {
+        max-width: clamp(360px, 40vw, 480px);
+        max-height: clamp(300px, 32vh, 420px);
+    }
+
+    #gameScreen[data-mode="picture"] .game-picture-prompt {
+        max-height: clamp(160px, 24vh, 240px);
+        max-width: min(220px, 18vw);
+    }
+}
+
+@media (max-width: 620px) {
+    #gameScreen[data-mode="picture"] .game-picture-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 1rem;
+    }
+
+    #gameScreen[data-mode="picture"] .game-picture-prompt {
+        max-height: clamp(100px, 14vh, 140px);
+        max-width: min(240px, 80vw);
+    }
+
+    #gameScreen[data-mode="picture"] #gameImage {
+        max-width: min(320px, 86vw);
+        max-height: min(260px, 30vh);
     }
 }
 

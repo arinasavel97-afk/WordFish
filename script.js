@@ -122,13 +122,13 @@ function initStudentShareLink() {
 }
 
 const praiseWords = [
-    "Great catch! 🐠",
+    "Great catch!",
     "Pearl found!",
-    "Splash-tastic! 🌊",
-    "Nice swimming! 🫧",
-    "You got it! ⭐",
-    "Fin-tastic! 🐟",
-    "Brilliant! 🐚"
+    "Splash-tastic!",
+    "Nice swimming!",
+    "You got it!",
+    "Fin-tastic!",
+    "Brilliant!"
 ];
 
 function hideAllScreens() {
@@ -6160,6 +6160,7 @@ async function startGame(mode, fromSource) {
     }
 
     currentGameMode = mode;
+    document.getElementById("gameScreen").dataset.mode = mode;
 
     await saveCardsBeforePlay();
 
@@ -6201,9 +6202,9 @@ async function startGame(mode, fromSource) {
     displayScreen("gameScreen");
 
     if (mode === "picture") {
-        document.getElementById("gameTitle").textContent = "🖼️ Look and Type the English Word";
+        document.getElementById("gameTitle").textContent = "Look and Type the English Word";
     } else {
-        document.getElementById("gameTitle").textContent = "🇹🇭 Translate and Type the English Word";
+        document.getElementById("gameTitle").textContent = "Translate and Type the English Word";
     }
 
     showCard();
@@ -6384,8 +6385,8 @@ function showCard() {
         gameImage.src = currentCard.imageUrl;
         gameImage.style.display = "block";
 
-        currentPrompt.textContent = "What is it?";
-        currentPrompt.style.fontSize = "";
+        currentPrompt.textContent = "";
+        currentPrompt.style.display = "none";
 
     } else {
         gameImage.style.display = "none";
@@ -6398,11 +6399,12 @@ function showCard() {
 
         currentPrompt.textContent = promptText;
         currentPrompt.style.fontSize = "";
+        currentPrompt.style.display = "";
     }
 
     document.getElementById("answerInput").value = "";
     document.getElementById("feedback").textContent = "";
-    document.getElementById("scoreText").textContent = "Score: " + score + " / " + gameCards.length;
+    document.getElementById("scoreText").innerHTML = '<span class="score-label">Score</span>: <span class="score-value">' + score + " / " + gameCards.length + "</span>";
 
     updatePearls();
     updateGamePronounceButton();
@@ -6422,7 +6424,7 @@ function checkAnswer() {
         let randomPraise = praiseWords[Math.floor(Math.random() * praiseWords.length)];
         document.getElementById("feedback").textContent = perfectAnswer
             ? randomPraise
-            : "Correct! Keep practising 🐚";
+            : "Correct! Keep practising";
 
         currentIndex++;
 
@@ -6435,7 +6437,7 @@ function checkAnswer() {
     } else {
         currentCardMistakes++;
         totalWrongAttempts++;
-        document.getElementById("feedback").textContent = "Try again! 🐠";
+        document.getElementById("feedback").textContent = "Try again!";
         document.getElementById("answerInput").value = "";
     }
 }
@@ -6459,7 +6461,7 @@ function updatePearls() {
     for (let i = 0; i < gameCards.length; i++) {
         if (i < score) {
             const shell = document.createElement("img");
-            shell.src = "assets/shell.png";
+            shell.src = "assets/decorations/games/game-shell-reward.png";
             shell.alt = "Shell collected";
             shell.className = "pearl-shell";
             pearlBar.appendChild(shell);
