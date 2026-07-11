@@ -6484,6 +6484,15 @@ function showResults() {
     let stars = getStars(accuracy);
     let title = getResultTitle(accuracy);
 
+    const resultsFinn = document.getElementById("resultsFinn");
+    if (accuracy >= 90) {
+        resultsFinn.src = "assets/decorations/results/results-finn-wow.png";
+    } else if (accuracy >= 50) {
+        resultsFinn.src = "assets/decorations/results/results-finn-proud.png";
+    } else {
+        resultsFinn.src = "assets/decorations/results/results-finn-upset.png";
+    }
+
     document.getElementById("resultTitle").textContent = title;
 
     document.getElementById("finalScore").innerHTML = `
@@ -6528,11 +6537,14 @@ function ensureResultsActions() {
 }
 
 function getStars(accuracy) {
-    if (accuracy >= 90) return "⭐ ⭐ ⭐ ⭐ ⭐";
-    if (accuracy >= 80) return "⭐ ⭐ ⭐ ⭐";
-    if (accuracy >= 70) return "⭐ ⭐ ⭐";
-    if (accuracy >= 60) return "⭐ ⭐";
-    return "⭐";
+    let count = 1;
+    if (accuracy >= 90) count = 5;
+    else if (accuracy >= 80) count = 4;
+    else if (accuracy >= 70) count = 3;
+    else if (accuracy >= 60) count = 2;
+
+    const star = '<img class="result-star" src="assets/decorations/results/results-star.png" alt="" aria-hidden="true">';
+    return star.repeat(count);
 }
 
 function getResultTitle(accuracy) {
