@@ -76,6 +76,7 @@ const CLASSROOM_VOCABULARY_BOARD_CARD_SIZE_STORAGE_KEY = "wordfishVocabularyBoar
 const CLASSROOM_VOCABULARY_BOARD_MODE_STORAGE_KEY = "wordfishVocabularyBoardMode";
 const CLASSROOM_VOCABULARY_BOARD_CARD_SIZES = ["small", "medium", "large"];
 const CLASSROOM_VOCABULARY_BOARD_MODES = ["pictureEnglish", "englishThai"];
+const SCREEN_CONTEXT_STORAGE_KEY = "wordfish_screen_context";
 const CLASSROOM_SHORTCUTS_HINT_STORAGE_KEY = "wordfish_hide_classroom_shortcuts_hint";
 const SETTINGS_KEYS = {
     trashAutoDelete: "wordfish_settings_trash_auto_delete",
@@ -200,6 +201,36 @@ function loadGameContext() {
 
 function clearGameContext() {
     sessionStorage.removeItem(GAME_CONTEXT_STORAGE_KEY);
+}
+
+function saveScreenContext(screenId) {
+    if (screenId === "appLoadingScreen" || screenId === "authScreen" || screenId === "resultsScreen") {
+        return;
+    }
+    try {
+        sessionStorage.setItem(SCREEN_CONTEXT_STORAGE_KEY, JSON.stringify({
+            screenId,
+            editingSetId: editingSetId || null,
+            classroomSelectedSetId: classroomSelectedSetId || null,
+            studentShareSetId: studentShareSetId || null,
+            selectedPlaySetIndex: selectedPlaySetIndex || null
+        }));
+    } catch (error) {
+        // Ignore storage errors.
+    }
+}
+
+function loadScreenContext() {
+    try {
+        const raw = sessionStorage.getItem(SCREEN_CONTEXT_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function clearScreenContext() {
+    sessionStorage.removeItem(SCREEN_CONTEXT_STORAGE_KEY);
 }
 
 function saveBuilderContext() {
@@ -428,6 +459,14 @@ function displayScreen(screenId, addToHistory = true) {
         || screenId === "classroomVocabularyBoardScreen"
     ) ? "grid" : "block";
     currentScreenId = screenId;
+    saveScreenContext(screenId);
+
+    if (screenId === "gameLibraryScreen") {
+        const backButton = screen.querySelector(".classroom-back-nav");
+        if (backButton) {
+            backButton.style.display = isStudentMode ? "none" : "";
+        }
+    }
 
     document.body.classList.toggle(
         "wf-page-shell--ocean-panel-active",
@@ -4274,6 +4313,8 @@ function openGameLibrary(indexOrId) {
     const index = resolveSetIndex(indexOrId);
     if (index < 0) return;
 
+    isStudentMode = false;
+    studentShareSetId = null;
     selectedPlaySetIndex = index;
     const selectedSet = savedSets[index];
     editingSetId = selectedSet.id;
@@ -4283,7 +4324,9 @@ function openGameLibrary(indexOrId) {
 }
 
 function closePlayChoice() {
-    selectedPlaySetIndex = null;
+    if (currentScreenId !== "gameLibraryScreen") {
+        selectedPlaySetIndex = null;
+    }
     document.getElementById("playChoiceModal").style.display = "none";
 }
 
@@ -4336,14 +4379,17 @@ async function copyShareLinkPlaceholder() {
 }
 
 async function startChosenSetGame(mode) {
-    if (selectedPlaySetIndex === null) return;
+    if (!isStudentMode && selectedPlaySetIndex === null) return;
+    if (isStudentMode && !cards.length) return;
 
-    const selectedSet = savedSets[selectedPlaySetIndex];
-    editingSetId = selectedSet.id;
-    currentSetName = selectedSet.name;
-    cards = prepareCards(selectedSet.cards || []);
+    if (selectedPlaySetIndex !== null) {
+        const selectedSet = savedSets[selectedPlaySetIndex];
+        editingSetId = selectedSet.id;
+        currentSetName = selectedSet.name;
+        cards = prepareCards(selectedSet.cards || []);
+    }
     closePlayChoice();
-    await startGame(mode, "dashboard");
+    await startGame(mode, currentScreenId === "gameLibraryScreen" ? undefined : "dashboard");
 }
 
 function showTeacherScreen() {
@@ -6124,7 +6170,9 @@ async function saveCardsBeforePlay() {
 }
 
 async function startGame(mode, fromSource) {
-    if (fromSource) {
+    if (currentScreenId === "gameLibraryScreen") {
+        gameLaunchSource = isStudentMode ? "student" : "library";
+    } else if (fromSource) {
         gameLaunchSource = fromSource;
     } else if (currentScreenId === "cardsScreen") {
         gameLaunchSource = "editor";
@@ -6212,10 +6260,12 @@ function exitGame() {
 
 function navigateAfterGame() {
     if (gameLaunchSource === "student" || isStudentMode) {
-        displayScreen("studentScreen", false);
-        if (currentSetName) {
-            showStudentChoice(currentSetName);
-        }
+        displayScreen("gameLibraryScreen", false);
+        return;
+    }
+
+    if (gameLaunchSource === "library" || gameLaunchSource === "gameLibrary") {
+        displayScreen("gameLibraryScreen", false);
         return;
     }
 
@@ -6277,6 +6327,7 @@ function showStudentUnavailable() {
 
 async function enterStudentMode(setId) {
     isStudentMode = true;
+    studentShareSetId = setId;
     editingSetId = null;
     displayScreen("studentScreen", false);
     history.replaceState({ screen: "studentScreen" }, "", "?play=" + encodeURIComponent(setId));
@@ -6295,7 +6346,8 @@ async function enterStudentMode(setId) {
         currentSetName = set.name;
         cards = prepareCards(set.cards);
 
-        showStudentChoice(set.name);
+        displayScreen("gameLibraryScreen", false);
+        history.replaceState({ screen: "gameLibraryScreen" }, "", "?play=" + encodeURIComponent(setId));
     } catch (error) {
         console.error("Student set load failed:", error);
         showStudentUnavailable();
@@ -6305,6 +6357,7 @@ async function enterStudentMode(setId) {
 function backToWordFishHome() {
     isStudentMode = false;
     studentShareSetId = null;
+    clearScreenContext();
     window.location.href = window.location.pathname;
 }
 
@@ -6568,6 +6621,7 @@ async function restoreGameFromRefresh(context) {
                 return false;
             }
 
+            studentShareSetId = set.id;
             editingSetId = set.id;
             currentSetName = set.name;
             cards = prepareCards(set.cards);
@@ -7105,89 +7159,383 @@ async function tryRestoreBuilderOnRefresh() {
     return restoreBuilderFromContext(context);
 }
 
+function getScreenIdFromHistory() {
+    const hash = window.location.hash.replace(/^#/, "");
+    const map = {
+        "game": "gameScreen",
+        "cards": "cardsScreen",
+        "dashboard": "dashboardScreen",
+        "teacher": "teacherScreen",
+        "student": "studentScreen",
+        "results": "resultsScreen",
+        "classroomPicker": "classroomPickerScreen",
+        "classroomActivityMenu": "classroomActivityMenuScreen",
+        "classroomPresentation": "classroomPresentationScreen",
+        "classroomFlashcards": "classroomFlashcardsScreen",
+        "classroomTextFlashcards": "classroomTextFlashcardsScreen",
+        "classroomVocabularyBoard": "classroomVocabularyBoardScreen",
+        "classroomNoCards": "classroomNoCardsScreen",
+        "gameLibrary": "gameLibraryScreen"
+    };
+    return map[hash] || null;
+}
+
+function replaceHistoryForCurrentScreen() {
+    if (!currentScreenId) return;
+    if (currentScreenId === "studentScreen") {
+        if (studentShareSetId) {
+            history.replaceState({ screen: "studentScreen" }, "", "?play=" + encodeURIComponent(studentShareSetId));
+        }
+        return;
+    }
+    const hashMap = {
+        "authScreen": "auth",
+        "gameScreen": "game",
+        "dashboardScreen": "dashboard",
+        "cardsScreen": "cards",
+        "teacherScreen": "teacher",
+        "classroomPickerScreen": "classroomPicker",
+        "classroomActivityMenuScreen": "classroomActivityMenu",
+        "classroomPresentationScreen": "classroomPresentation",
+        "classroomFlashcardsScreen": "classroomFlashcards",
+        "classroomTextFlashcardsScreen": "classroomTextFlashcards",
+        "classroomVocabularyBoardScreen": "classroomVocabularyBoard",
+        "classroomNoCardsScreen": "classroomNoCards",
+        "gameLibraryScreen": "gameLibrary"
+    };
+    const hash = hashMap[currentScreenId];
+    if (hash !== undefined) {
+        history.replaceState({ screen: currentScreenId }, "", "#" + hash);
+    }
+}
+
+function restoreGameLibraryScreenById(setId) {
+    const index = resolveSetIndex(setId);
+    if (index < 0) return false;
+    selectedPlaySetIndex = index;
+    editingSetId = setId;
+    currentSetName = savedSets[index].name;
+    currentSetAccentColor = normalizeSetAccentColor(savedSets[index].accentColor);
+    cards = prepareCards(savedSets[index].cards || []);
+    displayScreen("gameLibraryScreen", false);
+    return true;
+}
+
+function restoreCardsScreenById(setId) {
+    const index = resolveSetIndex(setId);
+    if (index < 0) return false;
+    editingSetId = setId;
+    currentSetName = savedSets[index].name;
+    currentSetAccentColor = normalizeSetAccentColor(savedSets[index].accentColor);
+    cards = prepareCards(savedSets[index].cards || []);
+    showCardsScreen(false);
+    return true;
+}
+
+async function tryRestoreScreen() {
+    const context = loadScreenContext();
+    let screenId = context?.screenId;
+    if (!screenId) {
+        screenId = getScreenIdFromHistory();
+    }
+    if (!screenId) {
+        return false;
+    }
+
+    if (screenId === "appLoadingScreen" || screenId === "authScreen") {
+        return false;
+    }
+
+    try {
+        if (screenId === "studentScreen" || screenId === "gameLibraryScreen") {
+            const setId = context?.studentShareSetId || studentShareSetId;
+            if (setId) {
+                studentShareSetId = setId;
+                await enterStudentMode(setId);
+                return true;
+            }
+        }
+
+        const { data } = await supabaseClient.auth.getSession();
+        const isAuthenticated = !!data.session;
+
+        if (!isAuthenticated && screenId !== "gameScreen" && screenId !== "resultsScreen") {
+            clearScreenContext();
+            displayScreen("authScreen", false);
+            replaceHistoryForCurrentScreen();
+            return true;
+        }
+
+        if (isAuthenticated) {
+            try {
+                savedSets = await dbLoadSetsWithCards();
+            } catch (error) {
+                console.error("Failed to load saved sets for restore:", error);
+                savedSets = [];
+            }
+        }
+
+        if (screenId === "gameScreen") {
+            const gameContext = loadGameContext();
+            if (!gameContext) {
+                if (studentShareSetId) {
+                    await enterStudentMode(studentShareSetId);
+                    return true;
+                }
+                clearGameContext();
+                clearScreenContext();
+                if (isAuthenticated) {
+                    showDashboard(false);
+                } else {
+                    displayScreen("authScreen", false);
+                }
+                replaceHistoryForCurrentScreen();
+                return true;
+            }
+
+            suppressHistoryPush = true;
+            let restored = false;
+            try {
+                restored = await restoreGameFromRefresh(gameContext);
+            } finally {
+                suppressHistoryPush = false;
+            }
+
+            if (!restored) {
+                clearGameContext();
+                clearScreenContext();
+                if (studentShareSetId || (gameContext.launchedFrom === "student" && gameContext.setId)) {
+                    await enterStudentMode(studentShareSetId || gameContext.setId);
+                    return true;
+                }
+                if (isAuthenticated && gameContext.setId) {
+                    if ((gameContext.launchedFrom === "library" || gameContext.launchedFrom === "gameLibrary") && restoreGameLibraryScreenById(gameContext.setId)) {
+                        replaceHistoryForCurrentScreen();
+                        return true;
+                    }
+                    if (gameContext.launchedFrom === "editor" && restoreCardsScreenById(gameContext.setId)) {
+                        replaceHistoryForCurrentScreen();
+                        return true;
+                    }
+                }
+                if (isAuthenticated) {
+                    showDashboard(false);
+                } else {
+                    displayScreen("authScreen", false);
+                }
+                replaceHistoryForCurrentScreen();
+                return true;
+            }
+
+            replaceHistoryForCurrentScreen();
+            return true;
+        }
+
+        if (screenId === "resultsScreen") {
+            const gameContext = loadGameContext();
+            if (gameContext) {
+                if (studentShareSetId || (gameContext.launchedFrom === "student" && gameContext.setId)) {
+                    await enterStudentMode(studentShareSetId || gameContext.setId);
+                    return true;
+                }
+                if (isAuthenticated && gameContext.setId) {
+                    if ((gameContext.launchedFrom === "library" || gameContext.launchedFrom === "gameLibrary") && restoreGameLibraryScreenById(gameContext.setId)) {
+                        replaceHistoryForCurrentScreen();
+                        return true;
+                    }
+                    if (gameContext.launchedFrom === "editor" && restoreCardsScreenById(gameContext.setId)) {
+                        replaceHistoryForCurrentScreen();
+                        return true;
+                    }
+                    suppressHistoryPush = true;
+                    let restored = false;
+                    try {
+                        restored = await restoreGameFromRefresh(gameContext);
+                    } finally {
+                        suppressHistoryPush = false;
+                    }
+                    if (restored) {
+                        replaceHistoryForCurrentScreen();
+                        return true;
+                    }
+                }
+            }
+            if (studentShareSetId) {
+                await enterStudentMode(studentShareSetId);
+                return true;
+            }
+            clearGameContext();
+            clearScreenContext();
+            if (isAuthenticated) {
+                showDashboard(false);
+            } else {
+                displayScreen("authScreen", false);
+            }
+            replaceHistoryForCurrentScreen();
+            return true;
+        }
+
+        if (!isAuthenticated) {
+            clearScreenContext();
+            displayScreen("authScreen", false);
+            replaceHistoryForCurrentScreen();
+            return true;
+        }
+
+        switch (screenId) {
+            case "dashboardScreen": {
+                showDashboard(false);
+                replaceHistoryForCurrentScreen();
+                return true;
+            }
+            case "teacherScreen": {
+                editingSetId = null;
+                currentSetName = "";
+                displayScreen("teacherScreen", false);
+                const setNameInput = document.getElementById("setName");
+                const wordListInput = document.getElementById("wordList");
+                if (setNameInput) setNameInput.value = "";
+                if (wordListInput) wordListInput.value = "";
+                replaceHistoryForCurrentScreen();
+                return true;
+            }
+            case "classroomPickerScreen": {
+                showClassroomPicker(false);
+                replaceHistoryForCurrentScreen();
+                return true;
+            }
+            case "classroomActivityMenuScreen": {
+                const restored = await restoreClassroomActivityMenuFromContext(loadClassroomActivityContext() || {});
+                if (!restored) {
+                    clearClassroomActivityContext();
+                    clearScreenContext();
+                    showClassroomPicker(false);
+                    replaceHistoryForCurrentScreen();
+                    return true;
+                }
+                return true;
+            }
+            case "classroomPresentationScreen": {
+                const restored = await restoreClassroomPresentationFromContext(loadClassroomPresentationContext() || {});
+                if (!restored) {
+                    clearClassroomPresentationContext();
+                    clearScreenContext();
+                    showClassroomPicker(false);
+                    replaceHistoryForCurrentScreen();
+                    return true;
+                }
+                return true;
+            }
+            case "classroomFlashcardsScreen": {
+                const restored = await restoreClassroomFlashcardsFromContext(loadClassroomFlashcardsContext() || {});
+                if (!restored) {
+                    clearClassroomFlashcardsContext();
+                    clearScreenContext();
+                    showClassroomPicker(false);
+                    replaceHistoryForCurrentScreen();
+                    return true;
+                }
+                return true;
+            }
+            case "classroomTextFlashcardsScreen": {
+                const restored = await restoreClassroomTextFlashcardsFromContext(loadClassroomTextFlashcardsContext() || {});
+                if (!restored) {
+                    clearClassroomTextFlashcardsContext();
+                    clearScreenContext();
+                    showClassroomPicker(false);
+                    replaceHistoryForCurrentScreen();
+                    return true;
+                }
+                return true;
+            }
+            case "classroomVocabularyBoardScreen": {
+                const restored = await restoreClassroomVocabularyBoardFromContext(loadClassroomVocabularyBoardContext() || {});
+                if (!restored) {
+                    clearClassroomVocabularyBoardContext();
+                    clearScreenContext();
+                    showClassroomPicker(false);
+                    replaceHistoryForCurrentScreen();
+                    return true;
+                }
+                return true;
+            }
+            case "classroomNoCardsScreen": {
+                if (classroomSelectedSetId) {
+                    const selectedSet = savedSets.find((set) => set.id === classroomSelectedSetId);
+                    if (selectedSet) {
+                        showClassroomNoCardsState(false);
+                        replaceHistoryForCurrentScreen();
+                        return true;
+                    }
+                }
+                clearScreenContext();
+                showClassroomPicker(false);
+                replaceHistoryForCurrentScreen();
+                return true;
+            }
+            case "gameLibraryScreen": {
+                const setId = context?.editingSetId;
+                if (setId && restoreGameLibraryScreenById(setId)) {
+                    replaceHistoryForCurrentScreen();
+                    return true;
+                }
+                clearScreenContext();
+                showDashboard(false);
+                replaceHistoryForCurrentScreen();
+                return true;
+            }
+            case "cardsScreen": {
+                const restored = await restoreBuilderFromContext(loadBuilderContext());
+                if (!restored) {
+                    clearBuilderContext();
+                    clearScreenContext();
+                    const setId = context?.editingSetId;
+                    if (setId && restoreCardsScreenById(setId)) {
+                        replaceHistoryForCurrentScreen();
+                        return true;
+                    }
+                    showDashboard(false);
+                    replaceHistoryForCurrentScreen();
+                    return true;
+                }
+                return true;
+            }
+            default:
+                return false;
+        }
+    } catch (error) {
+        console.error("Screen restore failed:", error);
+        clearScreenContext();
+        try {
+            const { data } = await supabaseClient.auth.getSession();
+            if (data.session) {
+                showDashboard(false);
+                replaceHistoryForCurrentScreen();
+            } else {
+                displayScreen("authScreen", false);
+                replaceHistoryForCurrentScreen();
+            }
+        } catch (authError) {
+            displayScreen("authScreen", false);
+            replaceHistoryForCurrentScreen();
+        }
+        return true;
+    }
+}
+
 async function checkAuth() {
     showAppLoading();
     initStudentShareLink();
+
+    if (await tryRestoreScreen()) {
+        hideAppLoading();
+        return;
+    }
 
     if (studentShareSetId) {
         hideAppLoading();
         await enterStudentMode(studentShareSetId);
         return;
-    }
-
-    if (await tryRestoreGameOnRefresh()) {
-        hideAppLoading();
-        return;
-    }
-
-    if (isGameRefreshRequested()) {
-        clearGameContext();
-        history.replaceState(null, "", window.location.pathname + window.location.search);
-    }
-
-    if (await tryRestoreClassroomPresentationOnRefresh()) {
-        hideAppLoading();
-        return;
-    }
-
-    if (isClassroomPresentationRefreshRequested()) {
-        hideAppLoading();
-        await handleFailedClassroomPresentationRefresh();
-        return;
-    }
-
-    if (await tryRestoreClassroomFlashcardsOnRefresh()) {
-        hideAppLoading();
-        return;
-    }
-
-    if (isClassroomFlashcardsRefreshRequested()) {
-        hideAppLoading();
-        await handleFailedClassroomFlashcardsRefresh();
-        return;
-    }
-
-    if (await tryRestoreClassroomTextFlashcardsOnRefresh()) {
-        hideAppLoading();
-        return;
-    }
-
-    if (isClassroomTextFlashcardsRefreshRequested()) {
-        hideAppLoading();
-        await handleFailedClassroomTextFlashcardsRefresh();
-        return;
-    }
-
-    if (await tryRestoreClassroomVocabularyBoardOnRefresh()) {
-        hideAppLoading();
-        return;
-    }
-
-    if (isClassroomVocabularyBoardRefreshRequested()) {
-        hideAppLoading();
-        await handleFailedClassroomVocabularyBoardRefresh();
-        return;
-    }
-
-    if (await tryRestoreClassroomActivityMenuOnRefresh()) {
-        hideAppLoading();
-        return;
-    }
-
-    if (isClassroomActivityMenuRefreshRequested()) {
-        hideAppLoading();
-        await handleFailedClassroomActivityMenuRefresh();
-        return;
-    }
-
-    if (await tryRestoreBuilderOnRefresh()) {
-        hideAppLoading();
-        return;
-    }
-
-    if (isBuilderRefreshRequested()) {
-        clearBuilderContext();
-        history.replaceState(null, "", window.location.pathname + window.location.search);
     }
 
     const { data } = await supabaseClient.auth.getSession();
@@ -7262,8 +7610,11 @@ async function logout() {
     gameCards = [];
     editingSetId = null;
     currentSetName = "";
+    isStudentMode = false;
+    studentShareSetId = null;
     isGameRunning = false;
     clearGameContext();
+    clearScreenContext();
 
     displayScreen("authScreen");
 }

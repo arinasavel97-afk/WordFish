@@ -8962,6 +8962,70 @@ button.activity-picker-button:focus-visible {
     }
 }
 
+/* Game Library — illustrated Play button */
+button.game-library-button {
+    display: inline-block;
+    background: transparent url("assets/decorations/game-library/game-library-button.png") center / contain no-repeat;
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    width: clamp(150px, 18vw, 230px);
+    aspect-ratio: 1629 / 565;
+    height: auto;
+    min-height: unset;
+    min-width: unset;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+    overflow: visible;
+    transform: none;
+    scale: 1;
+    filter: none;
+    transition: filter 0.16s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+button.game-library-button:hover {
+    background: transparent url("assets/decorations/game-library/game-library-button.png") center / contain no-repeat;
+    transform: none;
+    scale: 1;
+    box-shadow: none;
+    border: none;
+    outline: none;
+    filter: brightness(1.04);
+}
+
+button.game-library-button:active {
+    background: transparent url("assets/decorations/game-library/game-library-button.png") center / contain no-repeat;
+    transform: none;
+    scale: 1;
+    box-shadow: none;
+    border: none;
+    filter: brightness(0.96);
+}
+
+button.game-library-button:disabled {
+    background: transparent url("assets/decorations/game-library/game-library-button.png") center / contain no-repeat;
+    transform: none;
+    scale: 1;
+    box-shadow: none;
+    opacity: 0.45;
+    cursor: not-allowed;
+    filter: none;
+}
+
+button.game-library-button:focus-visible {
+    outline: 2px solid rgba(7, 59, 76, 0.45);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    Page Shell — immersive screens (Phase 2)
    Fullscreen hosts stay transparent; ocean PNG on :fullscreen stacking root.
