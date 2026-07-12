@@ -7179,6 +7179,7 @@ h2 {
 
 #appLoadingScreen .student-loading-panel {
     display: flex;
+    margin-top: clamp(42px, calc(4.8vw + 8px), 61px);
 }
 
 /* Student Mode 2D-1 — entry screen */
