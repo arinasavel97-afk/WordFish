@@ -41,12 +41,28 @@
 
             <input id="authPassword" type="password" placeholder="Password">
 
+            <button type="button" class="auth-forgot-password" onclick="requestPasswordReset()">Forgot password?</button>
+
             <br>
 
             <button class="green-button wf-cta-primary" onclick="login()">Log In</button>
             <button class="wf-cta-neutral" onclick="signUp()">Create Account</button>
 
             <p id="authMessage"></p>
+        </div>
+    </div>
+
+    <div id="resetPasswordScreen" class="screen wf-content-shell" style="display: none;">
+        <h2>Create a new password</h2>
+
+        <div class="auth-card">
+            <input id="resetPasswordNew" type="password" placeholder="New password">
+
+            <input id="resetPasswordConfirm" type="password" placeholder="Confirm new password">
+
+            <button class="green-button wf-cta-primary" type="button" onclick="updatePassword()">Save Password</button>
+
+            <p id="resetPasswordMessage"></p>
         </div>
     </div>
 

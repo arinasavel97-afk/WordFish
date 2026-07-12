@@ -2671,10 +2671,43 @@ button:active {
     flex-shrink: 0;
 }
 
-#authMessage {
+#authMessage,
+#resetPasswordMessage {
     font-weight: 900;
     color: var(--sea-deep);
     margin-top: 16px;
+}
+
+#authScreen .auth-forgot-password {
+    display: block;
+    width: fit-content;
+    margin: 8px auto 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--wf-ocean-deep);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+#authScreen .auth-forgot-password:hover:not(:disabled) {
+    color: var(--wf-ocean-ink);
+}
+
+#authScreen .auth-forgot-password:focus-visible {
+    outline: 2px solid var(--wf-ocean-blue);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+#authScreen .auth-forgot-password:disabled {
+    opacity: 0.6;
+    cursor: wait;
 }
 
 /* Toasts: fixed fully-hidden notification system */
@@ -8849,6 +8882,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     :is(
         #appLoadingScreen,
         #authScreen,
+        #resetPasswordScreen,
         #teacherScreen,
         #studentScreen,
         #cardsScreen,
@@ -8870,6 +8904,7 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     :is(
         #appLoadingScreen,
         #authScreen,
+        #resetPasswordScreen,
         #teacherScreen,
         #studentScreen,
         #cardsScreen,
@@ -8888,8 +8923,8 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     background: var(--wf-ocean-panel-wash);
 }
 
-/* Auth screen — reduced surface opacity so the card glass effect is visible */
-#authScreen.wf-content-shell {
+/* Auth and reset screens — reduced surface opacity so the card glass effect is visible */
+:is(#authScreen, #resetPasswordScreen).wf-content-shell {
     background-color: rgba(255, 255, 255, 0.18);
 }
 

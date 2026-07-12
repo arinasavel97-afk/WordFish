@@ -100,6 +100,7 @@ const SETTINGS_DEFAULTS = {
  */
 let studentShareSetId = null;
 let isStudentMode = false;
+let isPasswordRecovery = false;
 
 function initStudentShareLink() {
     studentShareSetId = null;
@@ -134,6 +135,7 @@ const praiseWords = [
 function hideAllScreens() {
     document.getElementById("appLoadingScreen").style.display = "none";
     document.getElementById("authScreen").style.display = "none";
+    document.getElementById("resetPasswordScreen").style.display = "none";
     document.getElementById("dashboardScreen").style.display = "none";
     const classroomPickerScreen = document.getElementById("classroomPickerScreen");
     const classroomActivityMenuScreen = document.getElementById("classroomActivityMenuScreen");
@@ -204,7 +206,7 @@ function clearGameContext() {
 }
 
 function saveScreenContext(screenId) {
-    if (screenId === "appLoadingScreen" || screenId === "authScreen" || screenId === "resultsScreen") {
+    if (screenId === "appLoadingScreen" || screenId === "authScreen" || screenId === "resetPasswordScreen" || screenId === "resultsScreen") {
         return;
     }
     try {
@@ -425,6 +427,7 @@ function isClassroomVocabularyBoardRefreshRequested() {
 const OCEAN_PANEL_SCREEN_IDS = new Set([
     "dashboardScreen",
     "authScreen",
+    "resetPasswordScreen",
     "teacherScreen",
     "cardsScreen",
     "classroomPickerScreen",
@@ -7487,6 +7490,11 @@ async function tryRestoreScreen() {
 }
 
 async function checkAuth() {
+    if (isPasswordRecovery) {
+        displayScreen("resetPasswordScreen", false);
+        return;
+    }
+
     showAppLoading();
     initStudentShareLink();
 
@@ -7504,6 +7512,11 @@ async function checkAuth() {
     const { data } = await supabaseClient.auth.getSession();
 
     if (data.session) {
+        if (isPasswordRecovery) {
+            displayScreen("resetPasswordScreen", false);
+            return;
+        }
+
         hideAppLoading();
         showDashboard();
     } else {
@@ -7541,6 +7554,79 @@ async function signUp() {
 
     document.getElementById("authMessage").textContent =
         "Account created! Check your email if confirmation is required.";
+}
+
+async function requestPasswordReset() {
+    const email = document.getElementById("authEmail").value.trim();
+    const resetControl = document.querySelector("#authScreen .auth-forgot-password");
+
+    if (email === "") {
+        document.getElementById("authMessage").textContent = "Enter your email first.";
+        return;
+    }
+
+    if (resetControl) {
+        resetControl.disabled = true;
+    }
+
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname
+    });
+
+    if (resetControl) {
+        resetControl.disabled = false;
+    }
+
+    if (error) {
+        document.getElementById("authMessage").textContent = error.message;
+        return;
+    }
+
+    document.getElementById("authMessage").textContent =
+        "Check your email for a password reset link.";
+}
+
+async function updatePassword() {
+    const newPassword = document.getElementById("resetPasswordNew").value;
+    const confirmPassword = document.getElementById("resetPasswordConfirm").value;
+    const messageEl = document.getElementById("resetPasswordMessage");
+
+    if (newPassword === "" || confirmPassword === "") {
+        messageEl.textContent = "Please enter both password fields.";
+        return;
+    }
+
+    if (newPassword !== confirmPassword) {
+        messageEl.textContent = "Passwords do not match.";
+        return;
+    }
+
+    if (newPassword.length < 6) {
+        messageEl.textContent = "Password must be at least 6 characters.";
+        return;
+    }
+
+    const { error } = await supabaseClient.auth.updateUser({
+        password: newPassword
+    });
+
+    if (error) {
+        messageEl.textContent = error.message;
+        return;
+    }
+
+    document.getElementById("resetPasswordNew").value = "";
+    document.getElementById("resetPasswordConfirm").value = "";
+
+    document.getElementById("authMessage").textContent = "Password updated successfully.";
+
+    history.replaceState(null, "", window.location.origin + window.location.pathname);
+
+    isPasswordRecovery = false;
+    clearScreenContext();
+    await supabaseClient.auth.signOut();
+    displayScreen("authScreen", false);
+    replaceHistoryForCurrentScreen();
 }
 
 async function login() {
@@ -7597,6 +7683,14 @@ function initApp() {
     initWordCardImagePopover();
     initWordCardImageTileDrop();
     initGameControls();
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (event === "PASSWORD_RECOVERY") {
+            isPasswordRecovery = true;
+            displayScreen("resetPasswordScreen", false);
+        }
+    });
+
     checkAuth();
 }
 
