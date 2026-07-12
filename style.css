@@ -8888,6 +8888,11 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     background: var(--wf-ocean-panel-wash);
 }
 
+/* Auth screen — reduced surface opacity so the card glass effect is visible */
+#authScreen.wf-content-shell {
+    background-color: rgba(255, 255, 255, 0.18);
+}
+
 /* Classroom Picker — underwater glass override */
 #classroomPickerScreen.wf-content-shell {
     background-color: transparent;
