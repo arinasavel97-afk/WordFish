@@ -2634,18 +2634,46 @@ button:active {
 }
 
 .auth-card {
-    background: var(--wf-card-white);
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.18) 0%,
+        rgba(255, 255, 255, 0.26) 45%,
+        rgba(255, 255, 255, 0.34) 100%
+    );
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     max-width: 500px;
     margin: 26px auto;
     padding: clamp(22px, 4vw, 32px);
     border-radius: 32px;
-    box-shadow: var(--soft-shadow);
+    box-shadow: 0 12px 30px rgba(26, 123, 160, 0.08);
     border: 2px solid var(--line);
 }
 
 .auth-card input {
     display: block;
     margin: 12px auto;
+}
+
+.auth-card button {
+    display: flex;
+    width: min(92%, 620px);
+    margin: var(--space-xs) auto;
+}
+
+#authScreen .auth-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45em;
+}
+
+#authScreen .auth-logo__finn {
+    height: 0.85em;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
 }
 
 #authMessage {

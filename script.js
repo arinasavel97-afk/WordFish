@@ -7540,7 +7540,7 @@ async function signUp() {
     }
 
     document.getElementById("authMessage").textContent =
-        "Account created! Check your email if confirmation is required. 🐚";
+        "Account created! Check your email if confirmation is required.";
 }
 
 async function login() {
