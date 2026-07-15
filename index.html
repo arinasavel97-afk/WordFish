@@ -643,10 +643,11 @@
                 <div class="game-library-card-body">
                     <h2 class="game-library-card-name">Unscramble</h2>
                     <p class="game-library-card-description">Rearrange the letters to build the correct English word.</p>
-                    <p class="game-library-card-status game-library-card-status--coming-soon">Coming Soon</p>
+
+                    <p class="game-library-card-status game-library-card-status--available">Available</p>
                 </div>
                 <div class="game-library-card-action">
-                    <button type="button" class="game-library-button" aria-label="Play Unscramble" disabled>Play</button>
+                    <button type="button" class="game-library-button" aria-label="Play Unscramble" onclick="startChosenSetGame('unscramble')">Play</button>
                 </div>
             </article>
 
@@ -926,6 +927,13 @@
                 <img id="translateModePrompt" class="game-translate-prompt" src="assets/decorations/games/translate-mode-prompt.png" alt="" aria-hidden="true">
                 <div id="currentPrompt"></div>
             </div>
+            <div class="unscramble-area">
+                <img id="unscrambleModePrompt" class="game-unscramble-prompt" src="assets/decorations/games/unscramble/banner_unscramble.png" alt="Unscramble" aria-hidden="false">
+                <div class="unscramble-content">
+                    <div id="unscrambleTiles" class="unscramble-tiles"></div>
+                    <div id="unscrambleSlots" class="unscramble-slots"></div>
+                </div>
+            </div>
             <input id="answerInput" placeholder="Type English word">
         </div>
 
@@ -943,6 +951,8 @@
                 </button>
                 <button type="button" class="game-button game-button--check" onclick="checkAnswer()" aria-label="Check answer"></button>
                 <button type="button" class="game-button game-button--show-answer" onclick="showAnswer()" aria-label="Show answer"></button>
+                <button type="button" class="game-button game-button--clue" aria-label="Clue">Clue</button>
+                <button type="button" class="game-button game-button--shuffle" aria-label="Shuffle tiles"></button>
             </div>
 
             <p id="feedback"></p>

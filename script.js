@@ -31,6 +31,8 @@ let pendingPermanentDeleteSetIds = [];
 let pendingBulkDuplicateSetIds = [];
 let currentCardMistakes = 0;
 let totalWrongAttempts = 0;
+let unscrambleClueIndex = -1;
+let unscrambleClueUsed = false;
 let lastGameOrderSignature = "";
 let currentScreenId = "";
 let suppressHistoryPush = false;
@@ -6205,8 +6207,13 @@ async function startGame(mode, fromSource) {
     displayScreen("gameScreen");
 
     if (mode === "picture") {
+        document.getElementById("gameTitle").style.display = "";
         document.getElementById("gameTitle").textContent = "Look and Type the English Word";
+    } else if (mode === "unscramble") {
+        document.getElementById("gameTitle").style.display = "none";
+        document.getElementById("gameTitle").textContent = "";
     } else {
+        document.getElementById("gameTitle").style.display = "";
         document.getElementById("gameTitle").textContent = "Translate and Type the English Word";
     }
 
@@ -6374,6 +6381,9 @@ function showCard() {
     stopGamePronunciation();
     answerShown = false;
     currentCardMistakes = 0;
+    unscrambleClueIndex = -1;
+    unscrambleClueUsed = false;
+    clearUnscrambleClue();
 
     if (gameCards.length === 0) {
         returnToPreGameScreen();
@@ -6383,6 +6393,11 @@ function showCard() {
     let currentCard = gameCards[currentIndex];
     let gameImage = document.getElementById("gameImage");
     let currentPrompt = document.getElementById("currentPrompt");
+    let checkButton = document.querySelector(".game-button--check");
+    let clueButton = document.querySelector(".game-button--clue");
+    let shuffleButton = document.querySelector(".game-button--shuffle");
+
+    checkButton.onclick = checkAnswer;
 
     if (currentGameMode === "picture") {
         gameImage.src = currentCard.imageUrl;
@@ -6390,6 +6405,23 @@ function showCard() {
 
         currentPrompt.textContent = "";
         currentPrompt.style.display = "none";
+
+    } else if (currentGameMode === "unscramble") {
+        gameImage.style.display = "none";
+        currentPrompt.style.display = "none";
+
+        renderUnscrambleCard(currentCard);
+        checkButton.onclick = function () { checkUnscrambleAnswer(); updateUnscrambleShuffleButton(); };
+
+        if (clueButton) {
+            clueButton.disabled = false;
+            clueButton.onclick = showUnscrambleClue;
+        }
+
+        if (shuffleButton) {
+            shuffleButton.onclick = startUnscrambleShuffle;
+            updateUnscrambleShuffleButton();
+        }
 
     } else {
         gameImage.style.display = "none";
@@ -6411,6 +6443,418 @@ function showCard() {
 
     updatePearls();
     updateGamePronounceButton();
+}
+
+function shuffleWordLetters(letters) {
+    if (letters.length <= 1) return [...letters];
+
+    let shuffled = [...letters];
+    const original = letters.join("");
+    let attempts = 0;
+
+    do {
+        shuffled = [...letters];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        attempts++;
+    } while (shuffled.join("") === original && attempts < 8);
+
+    return shuffled;
+}
+
+function renderUnscrambleCard(card) {
+    const tilesContainer = document.getElementById("unscrambleTiles");
+    const slotsContainer = document.getElementById("unscrambleSlots");
+
+    tilesContainer.innerHTML = "";
+    slotsContainer.innerHTML = "";
+
+    const letters = card.english.trim().split("").filter(char => char.trim() !== "");
+    const shuffledLetters = shuffleWordLetters(letters);
+
+    tilesContainer.style.setProperty('--tile-count', shuffledLetters.length);
+
+    shuffledLetters.forEach((letter, index) => {
+        const tile = document.createElement("div");
+        tile.className = "unscramble-tile";
+        tile.textContent = letter.toUpperCase();
+        tile.style.gridColumn = (index + 1).toString();
+        tilesContainer.appendChild(tile);
+    });
+
+    letters.forEach((letter) => {
+        const slot = document.createElement("div");
+        slot.className = "unscramble-slot";
+        slot.textContent = "";
+        slot.dataset.expected = letter.toUpperCase();
+        slotsContainer.appendChild(slot);
+    });
+}
+
+function checkUnscrambleAnswer() {
+    const slots = document.querySelectorAll("#unscrambleSlots .unscramble-slot");
+    let allCorrect = true;
+
+    slots.forEach((slot) => {
+        const tile = slot.querySelector(".unscramble-tile");
+        const expected = slot.dataset.expected || "";
+
+        if (tile && tile.textContent.trim().toUpperCase() === expected.toUpperCase()) {
+            tile.classList.add("unscramble-tile--correct");
+            slot.classList.add("unscramble-slot--correct");
+        } else {
+            allCorrect = false;
+            if (tile) {
+                tile.classList.remove("unscramble-tile--correct");
+            }
+            slot.classList.remove("unscramble-slot--correct");
+        }
+    });
+
+    if (!allCorrect) {
+        currentCardMistakes++;
+        totalWrongAttempts++;
+        document.getElementById("feedback").textContent = "Try again!";
+        return;
+    }
+
+    const perfectAnswer = !answerShown && currentCardMistakes === 0 && !unscrambleClueUsed;
+
+    if (perfectAnswer) {
+        score++;
+    }
+
+    let randomPraise = praiseWords[Math.floor(Math.random() * praiseWords.length)];
+    document.getElementById("feedback").textContent = perfectAnswer
+        ? randomPraise
+        : "Correct! Keep practising";
+
+    currentIndex++;
+
+    if (currentIndex < gameCards.length) {
+        setTimeout(showCard, 900);
+    } else {
+        setTimeout(showResults, 900);
+    }
+}
+
+function clearUnscrambleClue() {
+    const tiles = document.querySelectorAll(".unscramble-tile--clue");
+    const slots = document.querySelectorAll(".unscramble-slot--clue");
+    tiles.forEach((tile) => tile.classList.remove("unscramble-tile--clue"));
+    slots.forEach((slot) => slot.classList.remove("unscramble-slot--clue"));
+}
+
+function showUnscrambleClue() {
+    const slots = document.querySelectorAll("#unscrambleSlots .unscramble-slot");
+    const clueButton = document.querySelector(".game-button--clue");
+
+    clearUnscrambleClue();
+
+    function isSlotSolved(slot) {
+        if (slot.classList.contains("unscramble-slot--correct")) return true;
+        const tile = slot.querySelector(".unscramble-tile");
+        const expected = slot.dataset.expected || "";
+        return tile && tile.textContent.trim().toUpperCase() === expected.toUpperCase();
+    }
+
+    const start = unscrambleClueIndex + 1;
+    let targetIndex = -1;
+    for (let i = 0; i < slots.length; i++) {
+        const index = (start + i) % slots.length;
+        if (!isSlotSolved(slots[index])) {
+            targetIndex = index;
+            break;
+        }
+    }
+
+    if (targetIndex === -1) {
+        if (clueButton) clueButton.disabled = true;
+        return;
+    }
+
+    hintsUsed++;
+    unscrambleClueUsed = true;
+    unscrambleClueIndex = targetIndex;
+
+    const targetSlot = slots[targetIndex];
+    const expected = targetSlot.dataset.expected || "";
+    const allTiles = document.querySelectorAll(".unscramble-tile");
+
+    let matchingTile = null;
+    for (let i = 0; i < allTiles.length; i++) {
+        const tile = allTiles[i];
+        if (tile.classList.contains("unscramble-tile--correct")) continue;
+        if (tile.textContent.trim().toUpperCase() !== expected.toUpperCase()) continue;
+
+        const slot = tile.closest(".unscramble-slot");
+        if (slot && slot.dataset.expected && tile.textContent.trim().toUpperCase() === slot.dataset.expected.toUpperCase()) continue;
+
+        matchingTile = tile;
+        break;
+    }
+
+    if (matchingTile) {
+        matchingTile.classList.add("unscramble-tile--clue");
+        targetSlot.classList.add("unscramble-slot--clue");
+    }
+}
+
+function updateUnscrambleShuffleButton() {
+    const shuffleButton = document.querySelector(".game-button--shuffle");
+    if (!shuffleButton) return;
+
+    const unlockedTiles = document.querySelectorAll(".unscramble-tile:not(.unscramble-tile--correct)");
+    shuffleButton.disabled = unlockedTiles.length < 2;
+}
+
+function shuffleUnscrambleTiles() {
+    const tilesContainer = document.getElementById("unscrambleTiles");
+    const slots = document.querySelectorAll("#unscrambleSlots .unscramble-slot");
+    if (!tilesContainer) return;
+
+    // Return unlocked tiles from answer slots to the available tile row.
+    slots.forEach((slot) => {
+        const tile = slot.querySelector(".unscramble-tile");
+        if (tile && !tile.classList.contains("unscramble-tile--correct")) {
+            tilesContainer.appendChild(tile);
+        }
+    });
+
+    const unlockedTiles = Array.from(tilesContainer.querySelectorAll(".unscramble-tile:not(.unscramble-tile--correct)"));
+    if (unlockedTiles.length < 2) {
+        updateUnscrambleShuffleButton();
+        return;
+    }
+
+    // Current visible order is determined by the gridColumn style.
+    const currentOrder = [...unlockedTiles].sort((a, b) => {
+        const colA = parseInt(a.style.gridColumn, 10) || 0;
+        const colB = parseInt(b.style.gridColumn, 10) || 0;
+        return colA - colB;
+    });
+
+    function arraysEqual(a, b) {
+        if (a.length !== b.length) return false;
+        for (let i = 0; i < a.length; i++) {
+            if (a[i] !== b[i]) return false;
+        }
+        return true;
+    }
+
+    function shuffleArray(array) {
+        const a = [...array];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    let shuffled = shuffleArray(unlockedTiles);
+    let attempts = 0;
+    while (unlockedTiles.length > 1 && arraysEqual(shuffled, currentOrder) && attempts < 8) {
+        shuffled = shuffleArray(unlockedTiles);
+        attempts++;
+    }
+
+    shuffled.forEach((tile, index) => {
+        tile.style.gridColumn = (index + 1).toString();
+        tilesContainer.appendChild(tile);
+    });
+
+    updateUnscrambleShuffleButton();
+}
+
+function startUnscrambleShuffle() {
+    const unlockedTiles = Array.from(document.querySelectorAll(".unscramble-tile:not(.unscramble-tile--correct)"));
+    if (unlockedTiles.length < 2) {
+        updateUnscrambleShuffleButton();
+        return;
+    }
+
+    const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reducedMotion) {
+        unlockedTiles.forEach(tile => {
+            tile.style.opacity = "0";
+        });
+        document.getElementById("unscrambleTiles").offsetHeight;
+    }
+
+    shuffleUnscrambleTiles();
+
+    if (!reducedMotion) {
+        requestAnimationFrame(() => {
+            unlockedTiles.forEach(tile => {
+                tile.style.opacity = "";
+            });
+        });
+    }
+}
+
+function initUnscrambleDragAndDrop() {
+    const area = document.querySelector(".unscramble-area");
+    if (!area) return;
+    area.addEventListener("pointerdown", onUnscrambleTilePointerDown);
+}
+
+function onUnscrambleTilePointerDown(event) {
+    if (!event.isPrimary || event.button !== 0) return;
+
+    const tile = event.target.closest(".unscramble-tile");
+    if (!tile) return;
+    if (tile.classList.contains("unscramble-tile--correct")) return;
+
+    const area = tile.closest(".unscramble-area");
+    if (!area) return;
+
+    event.preventDefault();
+
+    const rect = tile.getBoundingClientRect();
+    const offsetX = event.clientX - rect.left;
+    const offsetY = event.clientY - rect.top;
+    const originalParent = tile.parentElement;
+    const originalNextSibling = tile.nextElementSibling;
+
+    const ghost = tile.cloneNode(true);
+    ghost.classList.remove("unscramble-tile--drop-bounce", "unscramble-tile--clue");
+    ghost.classList.add("unscramble-tile-ghost");
+    ghost.style.position = "fixed";
+    ghost.style.left = rect.left + "px";
+    ghost.style.top = rect.top + "px";
+    ghost.style.width = rect.width + "px";
+    ghost.style.height = rect.height + "px";
+    ghost.style.margin = "0";
+    ghost.style.zIndex = "1000";
+    ghost.style.pointerEvents = "none";
+    ghost.style.boxShadow = "0 8px 24px rgba(7, 59, 76, 0.25)";
+    ghost.style.transform = "scale(1.05)";
+    ghost.style.transition = "box-shadow 0.15s ease";
+
+    document.body.appendChild(ghost);
+    tile.classList.add("unscramble-tile--dragging-source");
+
+    tile.setPointerCapture(event.pointerId);
+
+    let dragTargetSlot = null;
+
+    function updateDragTarget(clientX, clientY) {
+        const target = document.elementFromPoint(clientX, clientY);
+        const slot = target && target.closest(".unscramble-slot");
+
+        if (dragTargetSlot) {
+            dragTargetSlot.classList.remove("unscramble-slot--drag-target");
+            dragTargetSlot = null;
+        }
+
+        if (slot && !slot.classList.contains("unscramble-slot--correct") && !slot.querySelector(".unscramble-tile--correct")) {
+            slot.classList.add("unscramble-slot--drag-target");
+            dragTargetSlot = slot;
+        }
+    }
+
+    function clearDragTarget() {
+        if (dragTargetSlot) {
+            dragTargetSlot.classList.remove("unscramble-slot--drag-target");
+            dragTargetSlot = null;
+        }
+    }
+
+    function onPointerMove(e) {
+        e.preventDefault();
+        const x = e.clientX - offsetX - rect.left;
+        const y = e.clientY - offsetY - rect.top;
+        ghost.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
+        updateDragTarget(e.clientX, e.clientY);
+    }
+
+    function onPointerUp(e) {
+        finish(e.clientX, e.clientY);
+    }
+
+    function onPointerCancel() {
+        finish(rect.left + offsetX, rect.top + offsetY);
+    }
+
+    function finish(clientX, clientY) {
+        tile.removeEventListener("pointermove", onPointerMove);
+        tile.removeEventListener("pointerup", onPointerUp);
+        tile.removeEventListener("pointercancel", onPointerCancel);
+        if (tile.releasePointerCapture) {
+            tile.releasePointerCapture(event.pointerId);
+        }
+
+        clearDragTarget();
+        clearUnscrambleClue();
+
+        const target = document.elementFromPoint(clientX, clientY);
+        const slot = target && target.closest(".unscramble-slot");
+        const tileArea = target && target.closest(".unscramble-tiles");
+
+        if (slot) {
+            const existingTile = slot.querySelector(".unscramble-tile");
+            if (existingTile && existingTile !== tile) {
+                if (existingTile.classList.contains("unscramble-tile--correct")) {
+                    cleanup();
+                    return;
+                }
+                if (originalParent && originalParent.classList.contains("unscramble-slot")) {
+                    originalParent.appendChild(existingTile);
+                } else {
+                    document.getElementById("unscrambleTiles").appendChild(existingTile);
+                }
+            }
+            slot.appendChild(tile);
+            if (tile.__dropBounceTimer) clearTimeout(tile.__dropBounceTimer);
+            tile.classList.remove("unscramble-tile--drop-bounce");
+            tile.offsetWidth;
+            tile.classList.add("unscramble-tile--drop-bounce");
+            tile.__dropBounceTimer = setTimeout(() => {
+                tile.classList.remove("unscramble-tile--drop-bounce");
+                tile.__dropBounceTimer = null;
+            }, 300);
+        } else if (tileArea) {
+            const targetTile = target && target.closest(".unscramble-tile");
+            if (targetTile && targetTile !== tile && !targetTile.classList.contains("unscramble-tile--correct")) {
+                tileArea.insertBefore(tile, targetTile);
+            } else {
+                tileArea.appendChild(tile);
+            }
+        } else {
+            if (originalNextSibling) {
+                originalParent.insertBefore(tile, originalNextSibling);
+            } else if (originalParent) {
+                originalParent.appendChild(tile);
+            }
+        }
+
+        const targetRect = tile.getBoundingClientRect();
+        ghost.style.transition = "transform 0.2s ease, box-shadow 0.2s ease";
+        ghost.style.boxShadow = "0 2px 6px rgba(7, 59, 76, 0.12)";
+        ghost.style.transform = `translate(${targetRect.left - rect.left}px, ${targetRect.top - rect.top}px) scale(1)`;
+
+        const fallbackTimer = setTimeout(() => {
+            if (ghost.parentNode) cleanup();
+        }, 300);
+
+        ghost.addEventListener("transitionend", function onEnd() {
+            clearTimeout(fallbackTimer);
+            ghost.removeEventListener("transitionend", onEnd);
+            cleanup();
+        }, { once: true });
+    }
+
+    function cleanup() {
+        if (ghost.parentNode) ghost.remove();
+        tile.classList.remove("unscramble-tile--dragging-source");
+        clearDragTarget();
+    }
+
+    tile.addEventListener("pointermove", onPointerMove);
+    tile.addEventListener("pointerup", onPointerUp);
+    tile.addEventListener("pointercancel", onPointerCancel);
 }
 
 function checkAnswer() {
@@ -7683,6 +8127,7 @@ function initApp() {
     initWordCardImagePopover();
     initWordCardImageTileDrop();
     initGameControls();
+    initUnscrambleDragAndDrop();
 
     supabaseClient.auth.onAuthStateChange((event, session) => {
         if (event === "PASSWORD_RECOVERY") {
