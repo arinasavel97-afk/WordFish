@@ -9374,7 +9374,7 @@ button.game-library-button:focus-visible {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(12px, 2vh, 20px);
+    gap: 24px;
     width: max-content;
     max-width: 100%;
     padding-top: 12px;
@@ -9464,13 +9464,13 @@ button.game-library-button:focus-visible {
 }
 
 .unscramble-tile--clue:not(.unscramble-tile--correct) {
-    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.12), 0 0 0 4px var(--wf-color-sun-glow), 0 0 18px var(--wf-color-sun-glow);
+    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.12), 0 0 0 4px rgba(179, 109, 231, 0.22), 0 0 18px rgba(179, 109, 231, 0.22);
     animation: unscrambleCluePulse 1.4s ease-in-out infinite;
     transition: opacity 0.2s ease;
 }
 
 .unscramble-slot--clue:not(.unscramble-slot--correct) {
-    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.12), 0 0 0 4px var(--wf-color-sun-glow), 0 0 18px var(--wf-color-sun-glow);
+    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.12), 0 0 0 4px rgba(179, 109, 231, 0.22), 0 0 18px rgba(179, 109, 231, 0.22);
     animation: unscrambleCluePulse 1.4s ease-in-out infinite;
     transition: opacity 0.2s ease;
 }
@@ -9506,8 +9506,8 @@ button.game-library-button:focus-visible {
 }
 
 @keyframes unscrambleCluePulse {
-    0%, 100% { box-shadow: 0 2px 6px rgba(7, 59, 76, 0.12), 0 0 0 4px var(--wf-color-sun-glow), 0 0 18px var(--wf-color-sun-glow); }
-    50% { box-shadow: 0 2px 6px rgba(7, 59, 76, 0.12), 0 0 0 6px var(--wf-color-sun-glow), 0 0 26px var(--wf-color-sun-glow); }
+    0%, 100% { box-shadow: 0 2px 6px rgba(7, 59, 76, 0.12), 0 0 0 4px rgba(179, 109, 231, 0.22), 0 0 18px rgba(179, 109, 231, 0.22); }
+    50% { box-shadow: 0 2px 6px rgba(7, 59, 76, 0.12), 0 0 0 6px rgba(179, 109, 231, 0.22), 0 0 26px rgba(179, 109, 231, 0.22); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -9561,7 +9561,7 @@ button.game-library-button:focus-visible {
     #gameScreen[data-mode="unscramble"] .unscramble-content {
         width: max-content;
         max-width: 100%;
-        gap: clamp(8px, 1.2vh, 14px);
+        gap: 24px;
         padding-top: 4px;
     }
 
