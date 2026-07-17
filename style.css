@@ -3004,6 +3004,10 @@ button:active {
     cursor: not-allowed;
 }
 
+#gameBackButton {
+    display: none;
+}
+
 #currentPrompt {
     font-size: clamp(34px, 6vw, 64px);
     background: #FFD166;
@@ -3651,6 +3655,11 @@ h2 {
     width: 100%;
 }
 
+.game-actions-bar {
+    display: block;
+    width: 100%;
+}
+
 #gameScreen .game-button {
     display: block;
     height: 56px;
@@ -3688,12 +3697,12 @@ h2 {
 
 #gameScreen .game-button--check {
     width: calc(56px * 1483 / 498);
-    background-image: url("assets/decorations/games/game-button-check.png");
+    background-image: url("assets/decorations/games/common/btn_check.png");
 }
 
 #gameScreen .game-button--show-answer {
     width: calc(56px * 1609 / 485);
-    background-image: url("assets/decorations/games/game-button-show-answer.png");
+    background-image: url("assets/decorations/games/common/btn_hint.png");
 }
 
 #gameScreen .game-button--shuffle {
@@ -9312,17 +9321,15 @@ button.game-library-button:focus-visible {
     display: block;
 }
 
+#gameScreen[data-mode="unscramble"] .game-pronounce-button {
+    display: none;
+}
+
 #gameScreen .game-button--clue {
     display: none;
     min-width: 120px;
     padding: 0 24px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.9);
-    color: var(--wf-ocean-ink);
-    font-size: 18px;
-    font-weight: 700;
-    text-align: center;
-    background-image: none;
+    background-image: url("assets/decorations/games/common/btn_hint.png");
 }
 
 #gameScreen .game-button--clue:disabled {
@@ -9516,26 +9523,150 @@ button.game-library-button:focus-visible {
 }
 
 @media (min-width: 768px) {
+    #gameScreen[data-mode="unscramble"] {
+        padding: clamp(8px, 1vh, 12px) clamp(18px, 2.5vw, 32px);
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-header {
+        margin-bottom: 0;
+        padding: 0;
+        min-height: 0;
+        height: auto;
+    }
+
+    #gameScreen[data-mode="unscramble"] #pearlBar {
+        padding: clamp(2px, 0.4vh, 4px) clamp(12px, 2vw, 20px);
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-content {
+        gap: clamp(8px, 1.2vh, 16px);
+        margin-bottom: clamp(8px, 1.2vh, 16px);
+    }
+
     #gameScreen[data-mode="unscramble"] .unscramble-area {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: clamp(12px, 2vh, 20px);
+        width: 100%;
+        margin: clamp(12px, 2vh, 24px) 0;
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-unscramble-prompt {
+        display: none;
     }
 
     #gameScreen[data-mode="unscramble"] .unscramble-content {
         width: max-content;
         max-width: 100%;
+        gap: clamp(8px, 1.2vh, 14px);
+        padding-top: 4px;
+    }
+
+    #gameScreen[data-mode="unscramble"] .unscramble-tiles,
+    #gameScreen[data-mode="unscramble"] .unscramble-slots {
+        width: auto;
+        gap: clamp(2px, 0.3vw, 4px);
+        overflow: visible;
+    }
+
+    #gameScreen[data-mode="unscramble"] .unscramble-tiles {
+        grid-template-columns: repeat(var(--tile-count, 1), clamp(50px, 6.4vw, 62px));
+    }
+
+    #gameScreen[data-mode="unscramble"] .unscramble-slots {
+        padding: 0 6px;
+    }
+
+    #gameScreen[data-mode="unscramble"] .unscramble-slot {
+        background: transparent;
+        border: none;
+    }
+
+    #gameScreen[data-mode="unscramble"] .unscramble-slot--correct {
+        background: var(--color-success);
+        border: 2px solid var(--color-success-dark);
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-actions-row {
+        gap: clamp(6px, 1vw, 10px);
+    }
+
+    #gameScreen[data-mode="unscramble"] #feedback {
+        min-height: 32px;
+    }
+
+    #gameScreen[data-mode="unscramble"] #scoreText {
+        display: none;
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-exit-button {
+        display: none;
+    }
+
+    #gameScreen[data-mode="unscramble"] {
+        overflow: visible;
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-footer {
+        position: static;
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-actions-bar {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        margin-top: clamp(24px, 3vh, 32px);
+        display: flex;
+        justify-content: center;
+        z-index: 2;
+    }
+
+    #gameBackButton {
+        position: fixed;
+        top: clamp(14px, 2vw, 22px);
+        left: clamp(14px, 2vw, 22px);
+        z-index: 100;
+        height: 44px;
+        min-height: 44px;
+        padding: 0;
+        background: none;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #gameBackButton img {
+        height: 44px;
+        width: auto;
+        display: block;
+        object-fit: contain;
+    }
+
+    #gameBackButton:hover {
+        filter: brightness(1.05);
+    }
+
+    #gameBackButton:active {
+        filter: brightness(0.95);
+    }
+
+    #gameScreen[data-mode="unscramble"]:not([style*="display: none"]) ~ #gameBackButton {
+        display: inline-flex;
     }
 
     .unscramble-tile,
     .unscramble-slot {
-        min-width: clamp(48px, 6vw, 64px);
-        height: clamp(56px, 7vw, 72px);
+        min-width: clamp(50px, 6.4vw, 62px);
+        height: clamp(50px, 6.4vw, 62px);
     }
 
     .unscramble-slot {
-        min-width: clamp(20px, 2.5vw, 32px);
-        max-width: clamp(48px, 6vw, 64px);
+        min-width: clamp(50px, 6.4vw, 62px);
+        max-width: clamp(50px, 6.4vw, 62px);
     }
 }

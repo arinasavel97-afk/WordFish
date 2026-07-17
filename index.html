@@ -938,9 +938,10 @@
         </div>
 
         <div class="game-footer">
-            <div class="game-actions-row">
-                <button
-                    id="gamePronounceButton"
+            <div class="game-actions-bar">
+                <div class="game-actions-row">
+                    <button
+                        id="gamePronounceButton"
                     type="button"
                     class="game-pronounce-button wf-icon-button"
                     aria-label="Pronounce word"
@@ -953,12 +954,17 @@
                 <button type="button" class="game-button game-button--show-answer" onclick="showAnswer()" aria-label="Show answer"></button>
                 <button type="button" class="game-button game-button--clue" aria-label="Clue">Clue</button>
                 <button type="button" class="game-button game-button--shuffle" aria-label="Shuffle tiles"></button>
+                </div>
             </div>
 
             <p id="feedback"></p>
             <p id="scoreText"></p>
         </div>
     </div>
+
+    <button id="gameBackButton" class="game-back-nav" type="button" onclick="exitGame()" aria-label="Back">
+        <img src="assets/decorations/games/common/btn_back.png" alt="" height="44">
+    </button>
 
     <div id="resultsScreen" class="screen" style="display: none;">
         <div class="results-header">
