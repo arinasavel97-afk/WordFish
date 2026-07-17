@@ -9370,6 +9370,10 @@ button.game-library-button:focus-visible {
     pointer-events: none;
 }
 
+.game-unscramble-banner {
+    display: none;
+}
+
 .unscramble-content {
     display: flex;
     flex-direction: column;
@@ -9552,10 +9556,31 @@ button.game-library-button:focus-visible {
         gap: clamp(12px, 2vh, 20px);
         width: 100%;
         margin: clamp(12px, 2vh, 24px) 0;
+        top: -60px;
     }
 
     #gameScreen[data-mode="unscramble"] .game-unscramble-prompt {
         display: none;
+    }
+
+    #gameScreen[data-mode="unscramble"] {
+        margin-top: 164px;
+        top: 0;
+    }
+
+    body:has(#gameScreen[data-mode="unscramble"]:not([style*="display: none"])) > .game-unscramble-banner {
+        display: block;
+        position: absolute;
+        top: 28px;
+        left: 50%;
+        transform: translate(-50%, calc(-100% + 100px));
+        max-width: min(560px, 85vw);
+        max-height: min(120px, 18vh);
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        z-index: 2;
+        pointer-events: none;
     }
 
     #gameScreen[data-mode="unscramble"] .unscramble-content {
@@ -9613,6 +9638,7 @@ button.game-library-button:focus-visible {
 
     #gameScreen[data-mode="unscramble"] .game-footer {
         position: static;
+        margin-bottom: -84.703125px;
     }
 
     #gameScreen[data-mode="unscramble"] .game-actions-bar {
@@ -9620,7 +9646,7 @@ button.game-library-button:focus-visible {
         top: 100%;
         left: 0;
         width: 100%;
-        margin-top: clamp(24px, 3vh, 32px);
+        margin-top: 72.703125px;
         display: flex;
         justify-content: center;
         z-index: 2;
