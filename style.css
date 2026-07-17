@@ -9381,9 +9381,11 @@ button.game-library-button:focus-visible {
 }
 
 .unscramble-tiles {
-    display: grid;
-    grid-template-columns: repeat(var(--tile-count, 1), clamp(40px, 9vw, 56px));
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
     justify-content: center;
+    align-items: center;
     gap: clamp(2px, 0.6vw, 6px);
     width: 100%;
     overflow-x: auto;
@@ -9571,7 +9573,8 @@ button.game-library-button:focus-visible {
     }
 
     #gameScreen[data-mode="unscramble"] .unscramble-tiles {
-        grid-template-columns: repeat(var(--tile-count, 1), clamp(50px, 6.4vw, 62px));
+        display: flex;
+        flex-wrap: nowrap;
     }
 
     #gameScreen[data-mode="unscramble"] .unscramble-slots {

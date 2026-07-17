@@ -6474,13 +6474,10 @@ function renderUnscrambleCard(card) {
     const letters = card.english.trim().split("").filter(char => char.trim() !== "");
     const shuffledLetters = shuffleWordLetters(letters);
 
-    tilesContainer.style.setProperty('--tile-count', shuffledLetters.length);
-
-    shuffledLetters.forEach((letter, index) => {
+    shuffledLetters.forEach((letter) => {
         const tile = document.createElement("div");
         tile.className = "unscramble-tile";
         tile.textContent = letter.toUpperCase();
-        tile.style.gridColumn = (index + 1).toString();
         tilesContainer.appendChild(tile);
     });
 
@@ -6718,27 +6715,13 @@ function onUnscrambleTilePointerDown(event) {
     const originalParent = tile.parentElement;
     const originalNextSibling = tile.nextElementSibling;
 
-    const ghost = tile.cloneNode(true);
-    ghost.classList.remove("unscramble-tile--drop-bounce", "unscramble-tile--clue");
-    ghost.classList.add("unscramble-tile-ghost");
-    ghost.style.position = "fixed";
-    ghost.style.left = rect.left + "px";
-    ghost.style.top = rect.top + "px";
-    ghost.style.width = rect.width + "px";
-    ghost.style.height = rect.height + "px";
-    ghost.style.margin = "0";
-    ghost.style.zIndex = "1000";
-    ghost.style.pointerEvents = "none";
-    ghost.style.boxShadow = "0 8px 24px rgba(7, 59, 76, 0.25)";
-    ghost.style.transform = "scale(1.05)";
-    ghost.style.transition = "box-shadow 0.15s ease";
-
-    document.body.appendChild(ghost);
-    tile.classList.add("unscramble-tile--dragging-source");
+    const startX = event.clientX;
+    const startY = event.clientY;
+    let isDragging = false;
+    let ghost = null;
+    let dragTargetSlot = null;
 
     tile.setPointerCapture(event.pointerId);
-
-    let dragTargetSlot = null;
 
     function updateDragTarget(clientX, clientY) {
         const target = document.elementFromPoint(clientX, clientY);
@@ -6762,51 +6745,138 @@ function onUnscrambleTilePointerDown(event) {
         }
     }
 
+    function startDrag(e) {
+        isDragging = true;
+
+        ghost = tile.cloneNode(true);
+        ghost.classList.remove("unscramble-tile--drop-bounce", "unscramble-tile--clue");
+        ghost.classList.add("unscramble-tile-ghost");
+        ghost.style.position = "fixed";
+        ghost.style.left = rect.left + "px";
+        ghost.style.top = rect.top + "px";
+        ghost.style.width = rect.width + "px";
+        ghost.style.height = rect.height + "px";
+        ghost.style.margin = "0";
+        ghost.style.zIndex = "1000";
+        ghost.style.pointerEvents = "none";
+        ghost.style.boxShadow = "0 8px 24px rgba(7, 59, 76, 0.25)";
+        ghost.style.transform = "scale(1.05)";
+        ghost.style.transition = "box-shadow 0.15s ease";
+
+        document.body.appendChild(ghost);
+
+        tile.classList.add("unscramble-tile--dragging-source");
+        tile.style.display = "none";
+
+        updateGhostPosition(e.clientX, e.clientY);
+    }
+
+    function updateGhostPosition(clientX, clientY) {
+        if (!ghost) return;
+        const x = clientX - offsetX - rect.left;
+        const y = clientY - offsetY - rect.top;
+        ghost.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
+    }
+
     function onPointerMove(e) {
         e.preventDefault();
-        const x = e.clientX - offsetX - rect.left;
-        const y = e.clientY - offsetY - rect.top;
-        ghost.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
+        if (!isDragging) {
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            if (Math.abs(dx) <= 4 && Math.abs(dy) <= 4) return;
+            startDrag(e);
+        }
+        updateGhostPosition(e.clientX, e.clientY);
         updateDragTarget(e.clientX, e.clientY);
     }
 
-    function onPointerUp(e) {
-        finish(e.clientX, e.clientY);
-    }
-
-    function onPointerCancel() {
-        finish(rect.left + offsetX, rect.top + offsetY);
-    }
-
-    function finish(clientX, clientY) {
+    function endInteraction() {
         tile.removeEventListener("pointermove", onPointerMove);
         tile.removeEventListener("pointerup", onPointerUp);
         tile.removeEventListener("pointercancel", onPointerCancel);
         if (tile.releasePointerCapture) {
             tile.releasePointerCapture(event.pointerId);
         }
+    }
 
+    function onPointerUp(e) {
+        endInteraction();
+        if (!isDragging) {
+            cleanup();
+            return;
+        }
+        finish(e.clientX, e.clientY);
+    }
+
+    function onPointerCancel() {
+        endInteraction();
+        if (!isDragging) {
+            cleanup();
+            return;
+        }
+        finish(rect.left + offsetX, rect.top + offsetY);
+    }
+
+    function computeSourceInsertBefore(tileArea, clientX) {
+        const tiles = Array.from(tileArea.children).filter(child => child !== tile && child.classList.contains("unscramble-tile"));
+        for (const child of tiles) {
+            const childRect = child.getBoundingClientRect();
+            const childCenter = childRect.left + childRect.width / 2;
+            if (clientX < childCenter) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    function finish(clientX, clientY) {
         clearDragTarget();
-        clearUnscrambleClue();
 
         const target = document.elementFromPoint(clientX, clientY);
         const slot = target && target.closest(".unscramble-slot");
         const tileArea = target && target.closest(".unscramble-tiles");
 
+        let destinationParent = originalParent;
+        let insertBeforeNode = originalNextSibling;
+        let dropIntoSlot = false;
+
         if (slot) {
             const existingTile = slot.querySelector(".unscramble-tile");
             if (existingTile && existingTile !== tile) {
-                if (existingTile.classList.contains("unscramble-tile--correct")) {
-                    cleanup();
-                    return;
+                if (!existingTile.classList.contains("unscramble-tile--correct")) {
+                    if (originalParent && originalParent.classList.contains("unscramble-slot")) {
+                        originalParent.appendChild(existingTile);
+                    } else {
+                        document.getElementById("unscrambleTiles").appendChild(existingTile);
+                    }
+                    destinationParent = slot;
+                    insertBeforeNode = null;
+                    dropIntoSlot = true;
                 }
-                if (originalParent && originalParent.classList.contains("unscramble-slot")) {
-                    originalParent.appendChild(existingTile);
-                } else {
-                    document.getElementById("unscrambleTiles").appendChild(existingTile);
-                }
+            } else {
+                destinationParent = slot;
+                insertBeforeNode = null;
+                dropIntoSlot = true;
             }
-            slot.appendChild(tile);
+        } else if (tileArea) {
+            destinationParent = tileArea;
+            insertBeforeNode = computeSourceInsertBefore(tileArea, clientX);
+        }
+
+        if (destinationParent) {
+            if (insertBeforeNode) {
+                destinationParent.insertBefore(tile, insertBeforeNode);
+            } else {
+                destinationParent.appendChild(tile);
+            }
+        }
+
+        tile.classList.add("unscramble-tile--dragging-source");
+        tile.style.display = "";
+
+        clearUnscrambleClue();
+
+        if (dropIntoSlot) {
             if (tile.__dropBounceTimer) clearTimeout(tile.__dropBounceTimer);
             tile.classList.remove("unscramble-tile--drop-bounce");
             tile.offsetWidth;
@@ -6815,19 +6885,11 @@ function onUnscrambleTilePointerDown(event) {
                 tile.classList.remove("unscramble-tile--drop-bounce");
                 tile.__dropBounceTimer = null;
             }, 300);
-        } else if (tileArea) {
-            const targetTile = target && target.closest(".unscramble-tile");
-            if (targetTile && targetTile !== tile && !targetTile.classList.contains("unscramble-tile--correct")) {
-                tileArea.insertBefore(tile, targetTile);
-            } else {
-                tileArea.appendChild(tile);
-            }
-        } else {
-            if (originalNextSibling) {
-                originalParent.insertBefore(tile, originalNextSibling);
-            } else if (originalParent) {
-                originalParent.appendChild(tile);
-            }
+        }
+
+        if (!ghost) {
+            cleanup();
+            return;
         }
 
         const targetRect = tile.getBoundingClientRect();
@@ -6836,7 +6898,7 @@ function onUnscrambleTilePointerDown(event) {
         ghost.style.transform = `translate(${targetRect.left - rect.left}px, ${targetRect.top - rect.top}px) scale(1)`;
 
         const fallbackTimer = setTimeout(() => {
-            if (ghost.parentNode) cleanup();
+            if (ghost && ghost.parentNode) cleanup();
         }, 300);
 
         ghost.addEventListener("transitionend", function onEnd() {
@@ -6847,7 +6909,8 @@ function onUnscrambleTilePointerDown(event) {
     }
 
     function cleanup() {
-        if (ghost.parentNode) ghost.remove();
+        if (ghost && ghost.parentNode) ghost.remove();
+        tile.style.display = "";
         tile.classList.remove("unscramble-tile--dragging-source");
         clearDragTarget();
     }
