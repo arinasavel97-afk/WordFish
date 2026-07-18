@@ -6521,6 +6521,7 @@ function checkUnscrambleAnswer() {
 
     if (perfectAnswer) {
         score++;
+        updateGameScoreCounter();
     }
 
     let randomPraise = praiseWords[Math.floor(Math.random() * praiseWords.length)];
@@ -6929,6 +6930,7 @@ function checkAnswer() {
 
         if (perfectAnswer) {
             score++;
+            updateGameScoreCounter();
         }
 
         let randomPraise = praiseWords[Math.floor(Math.random() * praiseWords.length)];
@@ -6964,9 +6966,44 @@ function showAnswer() {
     document.getElementById("feedback").textContent = "Answer: " + correctAnswer;
 }
 
+function updateGameScoreCounter() {
+    const counter = document.getElementById("gameScoreCounterValue");
+    if (!counter) {
+        return;
+    }
+
+    const text = `${score}/${gameCards.length}`;
+    counter.textContent = text;
+
+    const len = text.length;
+    if (len >= 7) {
+        counter.style.fontSize = "11px";
+    } else if (len >= 6) {
+        counter.style.fontSize = "12px";
+    } else if (len === 5) {
+        counter.style.fontSize = "17px";
+    } else if (len === 4) {
+        counter.style.fontSize = "19px";
+    } else {
+        counter.style.fontSize = "";
+    }
+}
+
 function updatePearls() {
     const pearlBar = document.getElementById("pearlBar");
     pearlBar.innerHTML = "";
+
+    updateGameScoreCounter();
+
+    if (currentGameMode === "unscramble") {
+        for (let i = 0; i < gameCards.length; i++) {
+            const spacer = document.createElement("span");
+            spacer.className = "pearl-empty";
+            spacer.setAttribute("aria-hidden", "true");
+            pearlBar.appendChild(spacer);
+        }
+        return;
+    }
 
     for (let i = 0; i < gameCards.length; i++) {
         if (i < score) {

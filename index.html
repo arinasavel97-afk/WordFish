@@ -915,6 +915,7 @@
     <p class="game-unscramble-subtitle">Unscramble the letters<br>to make a correct word!</p>
 
     <div id="gameScreen" style="display: none;">
+        <img id="unscrambleFinn" class="game-unscramble-finn" src="assets/mascot/games/unscramble-mode-prompt.png" alt="" aria-hidden="true">
         <div class="game-header">
             <button class="game-exit-button" onclick="exitGame()">✕</button>
             <h1 id="gameTitle">Type the English Word</h1>
@@ -968,6 +969,11 @@
     <button id="gameBackButton" class="game-back-nav" type="button" onclick="exitGame()" aria-label="Back">
         <img src="assets/decorations/games/common/btn_back.png" alt="" height="44">
     </button>
+
+    <div id="gameScoreCounter" class="game-score-counter" aria-live="polite" aria-atomic="true">
+        <img src="assets/decorations/games/common/counter_shell.png" alt="" aria-hidden="true">
+        <span id="gameScoreCounterValue" class="game-score-counter-value">0</span>
+    </div>
 
     <div id="resultsScreen" class="screen" style="display: none;">
         <div class="results-header">

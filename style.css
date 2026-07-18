@@ -3004,7 +3004,8 @@ button:active {
     cursor: not-allowed;
 }
 
-#gameBackButton {
+#gameBackButton,
+.game-score-counter {
     display: none;
 }
 
@@ -9371,7 +9372,8 @@ button.game-library-button:focus-visible {
 }
 
 .game-unscramble-banner,
-.game-unscramble-subtitle {
+.game-unscramble-subtitle,
+.game-unscramble-finn {
     display: none;
 }
 
@@ -9393,6 +9395,7 @@ button.game-library-button:focus-visible {
     align-items: center;
     gap: clamp(2px, 0.6vw, 6px);
     width: 100%;
+    min-height: clamp(48px, 11vw, 64px);
     overflow-x: auto;
 }
 
@@ -9403,6 +9406,7 @@ button.game-library-button:focus-visible {
     justify-content: safe center;
     gap: clamp(2px, 0.6vw, 6px);
     width: 100%;
+    min-height: clamp(48px, 11vw, 64px);
     overflow-x: auto;
 }
 
@@ -9607,6 +9611,18 @@ button.game-library-button:focus-visible {
         pointer-events: none;
     }
 
+    #gameScreen[data-mode="unscramble"] .game-unscramble-finn {
+        display: block;
+        position: absolute;
+        top: -72px;
+        left: -67px;
+        width: 150px;
+        height: auto;
+        z-index: 3;
+        object-fit: contain;
+        pointer-events: none;
+    }
+
     #gameScreen[data-mode="unscramble"] .unscramble-content {
         width: max-content;
         max-width: 100%;
@@ -9645,7 +9661,13 @@ button.game-library-button:focus-visible {
     }
 
     #gameScreen[data-mode="unscramble"] #feedback {
-        min-height: 32px;
+        position: absolute;
+        top: calc(100% + 2.703125px + 56px + 40px);
+        left: 0;
+        width: 100%;
+        min-height: 0;
+        margin: 0;
+        text-align: center;
     }
 
     #gameScreen[data-mode="unscramble"] #scoreText {
@@ -9663,6 +9685,7 @@ button.game-library-button:focus-visible {
     #gameScreen[data-mode="unscramble"] .game-footer {
         position: static;
         margin-bottom: -84.703125px;
+        min-height: 32px;
     }
 
     #gameScreen[data-mode="unscramble"] .game-actions-bar {
@@ -9710,6 +9733,45 @@ button.game-library-button:focus-visible {
 
     #gameScreen[data-mode="unscramble"]:not([style*="display: none"]) ~ #gameBackButton {
         display: inline-flex;
+    }
+
+    body:has(#gameScreen[data-mode="unscramble"]:not([style*="display: none"])) .game-score-counter {
+        display: inline-flex;
+        position: fixed;
+        top: clamp(14px, 2vw, 22px);
+        right: clamp(14px, 2vw, 22px);
+        z-index: 100;
+        pointer-events: none;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .game-score-counter img {
+        height: 44px;
+        width: auto;
+        display: block;
+        object-fit: contain;
+    }
+
+    .game-score-counter-value {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #FFFFFF;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 22.5px;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        text-shadow: 0 1px 2px rgba(7, 59, 76, 0.45);
+        pointer-events: none;
+        margin-left: 12px;
+    }
+
+    #gameScreen[data-mode="unscramble"] #pearlBar {
+        visibility: hidden;
+        pointer-events: none;
     }
 
     .unscramble-tile,
