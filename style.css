@@ -9405,7 +9405,9 @@ button.game-library-button:focus-visible {
 .game-unscramble-subtitle,
 .game-unscramble-finn,
 .game-picture-banner,
-.game-picture-subtitle {
+.game-picture-subtitle,
+.game-translate-banner,
+.game-translate-subtitle {
     display: none;
 }
 
@@ -9703,12 +9705,14 @@ button.game-library-button:focus-visible {
     }
 
     #gameScreen[data-mode="unscramble"] #scoreText,
-    #gameScreen[data-mode="picture"] #scoreText {
+    #gameScreen[data-mode="picture"] #scoreText,
+    #gameScreen[data-mode="translation"] #scoreText {
         display: none;
     }
 
     #gameScreen[data-mode="unscramble"] .game-exit-button,
-    #gameScreen[data-mode="picture"] .game-exit-button {
+    #gameScreen[data-mode="picture"] .game-exit-button,
+    #gameScreen[data-mode="translation"] .game-exit-button {
         display: none;
     }
 
@@ -9766,12 +9770,14 @@ button.game-library-button:focus-visible {
     }
 
     #gameScreen[data-mode="unscramble"]:not([style*="display: none"]) ~ #gameBackButton,
-    #gameScreen[data-mode="picture"]:not([style*="display: none"]) ~ #gameBackButton {
+    #gameScreen[data-mode="picture"]:not([style*="display: none"]) ~ #gameBackButton,
+    #gameScreen[data-mode="translation"]:not([style*="display: none"]) ~ #gameBackButton {
         display: inline-flex;
     }
 
     body:has(#gameScreen[data-mode="unscramble"]:not([style*="display: none"])) .game-score-counter,
-    body:has(#gameScreen[data-mode="picture"]:not([style*="display: none"])) .game-score-counter {
+    body:has(#gameScreen[data-mode="picture"]:not([style*="display: none"])) .game-score-counter,
+    body:has(#gameScreen[data-mode="translation"]:not([style*="display: none"])) .game-score-counter {
         display: inline-flex;
         position: fixed;
         top: clamp(14px, 2vw, 22px);
@@ -9806,7 +9812,8 @@ button.game-library-button:focus-visible {
     }
 
     #gameScreen[data-mode="unscramble"] #pearlBar,
-    #gameScreen[data-mode="picture"] #pearlBar {
+    #gameScreen[data-mode="picture"] #pearlBar,
+    #gameScreen[data-mode="translation"] #pearlBar {
         visibility: hidden;
         pointer-events: none;
     }
@@ -9910,4 +9917,100 @@ button.game-library-button:focus-visible {
 /* Picture Mode: remove the bottom border of #gameScreen */
 #gameScreen[data-mode="picture"] {
     border-bottom: 0 !important;
+}
+
+/* Translation Mode — compact panel without header instruction */
+#gameScreen[data-mode="translation"] #gameTitle,
+#gameScreen[data-mode="translation"] #pearlBar {
+    display: none;
+}
+
+#gameScreen[data-mode="translation"] .game-header {
+    margin: 0;
+    padding: 0;
+    min-height: 0;
+    height: auto;
+}
+
+#gameScreen[data-mode="translation"] {
+    min-height: unset;
+    overflow: visible;
+}
+
+@media (min-width: 768px) {
+    #gameScreen[data-mode="translation"] .game-content {
+        margin-bottom: 0;
+    }
+
+    #gameScreen[data-mode="translation"] .game-actions-bar {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        z-index: 2;
+    }
+
+    #gameScreen[data-mode="translation"] .game-actions-row {
+        gap: clamp(6px, 1vw, 10px);
+    }
+
+    #gameScreen[data-mode="translation"] .game-button--check {
+        transform: translateX(25px);
+    }
+
+    #gameScreen[data-mode="translation"] #feedback {
+        position: absolute;
+        top: calc(100% + 25px + 56px + 20px);
+        left: 0;
+        width: 100%;
+        min-height: 0;
+        margin: 0;
+        text-align: center;
+    }
+
+    #gameScreen[data-mode="translation"] {
+        margin-top: 148px;
+        top: 0;
+    }
+
+    body:has(#gameScreen[data-mode="translation"]:not([style*="display: none"])) > .game-translate-banner {
+        display: block;
+        position: absolute;
+        top: 28px;
+        left: 50%;
+        transform: translate(-50%, calc(-100% + 100px));
+        max-width: min(560px, 85vw);
+        max-height: min(120px, 18vh);
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    body:has(#gameScreen[data-mode="translation"]:not([style*="display: none"])) > .game-translate-subtitle {
+        display: block;
+        position: absolute;
+        top: 146px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        width: max-content;
+        max-width: 90vw;
+        margin: 0;
+        padding: 0;
+        color: var(--wf-ocean-ink);
+        font-family: 'Fredoka', sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.15;
+        text-align: center;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        pointer-events: none;
+    }
 }
