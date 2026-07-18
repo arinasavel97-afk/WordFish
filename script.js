@@ -5280,10 +5280,10 @@ function resetWordCardImageDeleteConfirmPosition(confirm) {
 }
 
 function positionWordCardImageDeleteConfirm(index) {
-    const tile = document.getElementById(`wordCardImageTile-${index}`);
+    const trigger = document.getElementById(`wordCardDeleteButton-${index}`);
     const confirm = document.getElementById(`wordCardImageDeleteConfirm-${index}`);
 
-    if (!tile || !confirm) {
+    if (!trigger || !confirm) {
         return;
     }
 
@@ -5292,21 +5292,42 @@ function positionWordCardImageDeleteConfirm(index) {
     confirm.hidden = false;
     confirm.style.visibility = "hidden";
 
-    const tileRect = tile.getBoundingClientRect();
+    const triggerRect = trigger.getBoundingClientRect();
     const confirmRect = confirm.getBoundingClientRect();
 
-    let top = tileRect.bottom + WORD_CARD_IMAGE_POPOVER_GAP;
-    let left = tileRect.right - confirmRect.width;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const gap = WORD_CARD_IMAGE_POPOVER_GAP;
+    const padding = WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING;
 
-    const maxLeft = window.innerWidth - confirmRect.width - WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING;
-    left = Math.max(WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING, Math.min(left, maxLeft));
-    top = Math.max(
-        WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING,
-        Math.min(top, window.innerHeight - confirmRect.height - WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING)
+    // The confirmation is position:fixed, but .screen (cardsScreen) is its
+    // fixed-position containing block because of backdrop-filter. Offset the
+    // final coordinates by that container's padding-box origin.
+    const container = confirm.offsetParent || document.documentElement;
+    const containerRect = container.getBoundingClientRect();
+    const containerStyle = window.getComputedStyle(container);
+    const containerBorderTop = Number.parseFloat(containerStyle.borderTopWidth) || 0;
+    const containerBorderLeft = Number.parseFloat(containerStyle.borderLeftWidth) || 0;
+    const containerOffsetTop = containerRect.top + containerBorderTop;
+    const containerOffsetLeft = containerRect.left + containerBorderLeft;
+
+    const spaceBelow = viewportHeight - triggerRect.bottom - padding;
+    const spaceAbove = triggerRect.top - padding;
+    const placeBelow = spaceBelow >= confirmRect.height + gap || spaceBelow >= spaceAbove;
+
+    let desiredTop = placeBelow
+        ? triggerRect.bottom + gap
+        : triggerRect.top - confirmRect.height - gap;
+    let desiredLeft = triggerRect.right - confirmRect.width;
+
+    desiredLeft = Math.max(padding, Math.min(desiredLeft, viewportWidth - confirmRect.width - padding));
+    desiredTop = Math.max(
+        padding,
+        Math.min(desiredTop, viewportHeight - confirmRect.height - padding)
     );
 
-    confirm.style.top = `${top}px`;
-    confirm.style.left = `${left}px`;
+    confirm.style.top = `${desiredTop - containerOffsetTop}px`;
+    confirm.style.left = `${desiredLeft - containerOffsetLeft}px`;
     confirm.style.visibility = "";
 }
 
@@ -5355,16 +5376,7 @@ function openWordCardImageDeleteConfirm(index) {
     bindWordCardImageDeleteConfirmReposition(cardIndex);
 }
 
-function handleWordCardImageDeleteClick(event, index) {
-    if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-    }
-
-    openWordCardImageDeleteConfirm(index);
-}
-
-function confirmWordCardImageDelete(index) {
+function deleteWordCardImage(index) {
     const cardIndex = normalizeCardIndex(index);
 
     if (cardIndex === null) {
@@ -5420,24 +5432,8 @@ function buildWordCardImageSectionMarkup(index, imageUrl) {
                                 type="button"
                                 class="word-card-image-tile-delete"
                                 aria-label="Delete image"
-                                onclick="handleWordCardImageDeleteClick(event, ${index})"
+                                onclick="event.stopPropagation(); event.preventDefault(); deleteWordCardImage(${index})"
                             >${WORD_CARD_IMAGE_TRASH_ICON}</button>`
-        : "";
-
-    const deleteConfirmMarkup = hasDisplayImage
-        ? `<div
-                                id="wordCardImageDeleteConfirm-${index}"
-                                class="word-card-image-delete-confirm"
-                                role="dialog"
-                                aria-label="Delete image confirmation"
-                                hidden
-                            >
-                                <p class="word-card-image-delete-confirm__message">Delete image?</p>
-                                <div class="word-card-image-delete-confirm__actions">
-                                    <button type="button" class="word-card-image-delete-confirm__cancel" onclick="closeWordCardImageDeleteConfirm()">Cancel</button>
-                                    <button type="button" class="word-card-image-delete-confirm__confirm wf-cta-danger" onclick="confirmWordCardImageDelete(${index})">Delete</button>
-                                </div>
-                            </div>`
         : "";
 
     return `
@@ -5459,7 +5455,6 @@ function buildWordCardImageSectionMarkup(index, imageUrl) {
                                 <span class="word-card-image-tile__drop-hint" aria-hidden="true">Drop image here</span>
                             </button>
                             ${deleteButtonMarkup}
-                            ${deleteConfirmMarkup}
                             <div
                                 id="wordCardImagePopover-${index}"
                                 class="word-card-image-popover"
@@ -5505,7 +5500,7 @@ function initWordCardImagePopover() {
     document.addEventListener("click", (event) => {
         if (activeWordCardImageDeleteConfirmIndex !== null) {
             if (!event.target.closest(".word-card-image-delete-confirm")
-                && !event.target.closest(".word-card-image-tile-delete")) {
+                && !event.target.closest(".word-card-delete-button")) {
                 closeWordCardImageDeleteConfirm();
             }
 
@@ -5891,7 +5886,20 @@ function renderCards() {
                         ↕ Drag
                     </div>
 
-                    <button class="red-button wf-cta-danger" onclick="deleteWord(${i})">Delete</button>
+                    <button id="wordCardDeleteButton-${i}" type="button" class="red-button wf-cta-danger word-card-delete-button" onclick="openWordCardImageDeleteConfirm(${i})">Delete</button>
+                    <div
+                        id="wordCardImageDeleteConfirm-${i}"
+                        class="word-card-image-delete-confirm"
+                        role="dialog"
+                        aria-label="Delete card confirmation"
+                        hidden
+                    >
+                        <p class="word-card-image-delete-confirm__message">Delete this card?<br>This action cannot be undone.</p>
+                        <div class="word-card-image-delete-confirm__actions">
+                            <button type="button" class="word-card-image-delete-confirm__cancel" onclick="closeWordCardImageDeleteConfirm()">Cancel</button>
+                            <button type="button" class="word-card-image-delete-confirm__confirm wf-cta-danger" onclick="deleteWord(${i})">Delete</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="word-card-body">
@@ -5982,6 +5990,7 @@ function addNewWord() {
 }
 
 function deleteWord(index) {
+    closeWordCardImageDeleteConfirm();
     cards.splice(index, 1);
     renderCards();
     scheduleAutoSave();
