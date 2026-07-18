@@ -8751,6 +8751,19 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active {
     background-size: var(--wf-ocean-bg-size);
 }
 
+body.wf-page-shell:has(#gameScreen:not([style*="display: none"])),
+body.wf-page-shell:has(#resultsScreen:not([style*="display: none"])) {
+    background-image: url("assets/backgrounds/game-bg-desktop.png");
+    background-image: -webkit-image-set(
+        url("assets/backgrounds/game-bg-desktop.png") 1x,
+        url("assets/backgrounds/game-bg-retina.png") 2x
+    );
+    background-image: image-set(
+        url("assets/backgrounds/game-bg-desktop.png") 1x,
+        url("assets/backgrounds/game-bg-retina.png") 2x
+    );
+}
+
 
 @media (max-width: 620px) {
     body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])),
@@ -8769,6 +8782,13 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active {
     ):is([style*="display: block"], [style*="display:block"])),
     body.wf-page-shell.wf-page-shell--ocean-panel-active {
         background-image: url("assets/backgrounds/dashboard-bg-mobile.png");
+    }
+}
+
+@media (max-width: 620px) {
+    body.wf-page-shell:has(#gameScreen:not([style*="display: none"])),
+    body.wf-page-shell:has(#resultsScreen:not([style*="display: none"])) {
+        background-image: url("assets/backgrounds/game-bg-mobile.png");
     }
 }
 
