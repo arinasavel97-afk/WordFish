@@ -6995,7 +6995,7 @@ function updatePearls() {
 
     updateGameScoreCounter();
 
-    if (currentGameMode === "unscramble") {
+    if (currentGameMode === "unscramble" || currentGameMode === "picture") {
         for (let i = 0; i < gameCards.length; i++) {
             const spacer = document.createElement("span");
             spacer.className = "pearl-empty";
