@@ -2780,16 +2780,31 @@ button:active {
     padding: 0;
     border: none;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.85);
+    background: transparent;
     color: var(--sea-deep);
     font-size: 20px;
     line-height: 1;
     cursor: pointer;
+    box-shadow: none;
+    text-shadow: none;
+    filter: none;
+    -webkit-text-stroke: none;
 }
 
 .classroom-shortcuts-hint-close:hover {
     background: var(--wf-foam);
     color: var(--color-primary);
+    box-shadow: none;
+    text-shadow: none;
+    filter: none;
+    -webkit-text-stroke: none;
+}
+
+.classroom-shortcuts-hint-close:active {
+    box-shadow: none;
+    text-shadow: none;
+    filter: none;
+    -webkit-text-stroke: none;
 }
 
 .classroom-shortcuts-hint-title {
