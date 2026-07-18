@@ -1665,7 +1665,6 @@ function restoreClassroomPresentationShuffleState(context, cardCount) {
 }
 
 function applyClassroomPresentationCardContent(options = {}) {
-    const preserveTranslation = options.preserveTranslation === true;
     const card = getClassroomPresentationCurrentCard();
     const total = classroomPresentationCards.length;
     const current = classroomPresentationIndex + 1;
@@ -1676,10 +1675,6 @@ function applyClassroomPresentationCardContent(options = {}) {
 
     const translationEl = document.getElementById("classroomPresentationTranslation");
     translationEl.textContent = getClassroomCardTranslation(card) || "—";
-
-    if (!preserveTranslation) {
-        classroomTranslationVisible = false;
-    }
 
     updateClassroomTranslationUI();
 
@@ -1769,11 +1764,11 @@ function renderClassroomPresentationCard(options = {}) {
 
 function updateClassroomTranslationUI() {
     const translationEl = document.getElementById("classroomPresentationTranslation");
-    const toggleButton = document.getElementById("classroomToggleTranslationButton");
+    const toggleButton = document.getElementById("classroomPresentationTranslationButton");
 
     translationEl.hidden = !classroomTranslationVisible;
-    toggleButton.textContent = classroomTranslationVisible ? "Hide Translation" : "Show Translation";
-    toggleButton.classList.toggle("classroom-toggle-translation-button-active", classroomTranslationVisible);
+    toggleButton.textContent = "Translation";
+    toggleButton.classList.toggle("classroom-translation-button-active", classroomTranslationVisible);
     toggleButton.classList.toggle("wf-toggle-button--active", classroomTranslationVisible);
     toggleButton.setAttribute("aria-pressed", classroomTranslationVisible ? "true" : "false");
 }
@@ -1808,7 +1803,6 @@ function classroomPresentationPrevious() {
     if (classroomPresentationIndex <= 0) {
         if (classroomPresentationLoopEnabled) {
             classroomPresentationIndex = classroomPresentationCards.length - 1;
-            classroomTranslationVisible = false;
             renderClassroomPresentationCard({ animate: true });
         }
 
@@ -1816,7 +1810,6 @@ function classroomPresentationPrevious() {
     }
 
     classroomPresentationIndex -= 1;
-    classroomTranslationVisible = false;
     renderClassroomPresentationCard({ animate: true });
 }
 
@@ -1826,7 +1819,6 @@ function classroomPresentationJumpToFirst() {
     }
 
     classroomPresentationIndex = 0;
-    classroomTranslationVisible = false;
     renderClassroomPresentationCard({ animate: true });
 }
 
@@ -1838,7 +1830,6 @@ function classroomPresentationJumpToLast() {
     }
 
     classroomPresentationIndex = lastIndex;
-    classroomTranslationVisible = false;
     renderClassroomPresentationCard({ animate: true });
 }
 
@@ -1854,7 +1845,6 @@ function classroomPresentationAdvance() {
     if (isClassroomPresentationOnLastCard()) {
         if (classroomPresentationLoopEnabled) {
             classroomPresentationIndex = 0;
-            classroomTranslationVisible = false;
             renderClassroomPresentationCard({ animate: true });
         }
 
@@ -1862,7 +1852,6 @@ function classroomPresentationAdvance() {
     }
 
     classroomPresentationIndex += 1;
-    classroomTranslationVisible = false;
     renderClassroomPresentationCard({ animate: true });
 }
 
@@ -4004,11 +3993,11 @@ function handleClassroomPresentationKeydown(event) {
 function initClassroomPresentationControls() {
     const prevButton = document.getElementById("classroomPrevButton");
     const nextButton = document.getElementById("classroomNextButton");
-    const toggleButton = document.getElementById("classroomToggleTranslationButton");
     const fullscreenButton = document.getElementById("classroomFullscreenButton");
     const backButton = document.getElementById("classroomBackToPickerButton");
     const loopButton = document.getElementById("classroomPresentationLoopButton");
     const shuffleButton = document.getElementById("classroomPresentationShuffleButton");
+    const translationButton = document.getElementById("classroomPresentationTranslationButton");
     const pronounceButton = document.getElementById("classroomPresentationPronounceButton");
     const autoPronounceButton = document.getElementById("classroomPresentationAutoPronounceButton");
 
@@ -4042,9 +4031,9 @@ function initClassroomPresentationControls() {
         nextButton.addEventListener("click", classroomPresentationNextButtonClick);
     }
 
-    if (toggleButton && toggleButton.dataset.handlerAttached !== "true") {
-        toggleButton.dataset.handlerAttached = "true";
-        toggleButton.addEventListener("click", toggleClassroomTranslation);
+    if (translationButton && translationButton.dataset.handlerAttached !== "true") {
+        translationButton.dataset.handlerAttached = "true";
+        translationButton.addEventListener("click", toggleClassroomTranslation);
     }
 
     if (fullscreenButton && fullscreenButton.dataset.handlerAttached !== "true") {
