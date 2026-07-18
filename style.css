@@ -9370,7 +9370,8 @@ button.game-library-button:focus-visible {
     pointer-events: none;
 }
 
-.game-unscramble-banner {
+.game-unscramble-banner,
+.game-unscramble-subtitle {
     display: none;
 }
 
@@ -9583,6 +9584,29 @@ button.game-library-button:focus-visible {
         pointer-events: none;
     }
 
+    body:has(#gameScreen[data-mode="unscramble"]:not([style*="display: none"])) > .game-unscramble-subtitle {
+        display: block;
+        position: absolute;
+        top: calc(130px + clamp(12px, 3vw, 28px) / 2);
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        width: max-content;
+        max-width: 90vw;
+        margin: 0;
+        padding: 0;
+        color: var(--wf-ocean-ink);
+        font-family: 'Fredoka', sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.15;
+        text-align: center;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        pointer-events: none;
+    }
+
     #gameScreen[data-mode="unscramble"] .unscramble-content {
         width: max-content;
         max-width: 100%;
@@ -9646,7 +9670,7 @@ button.game-library-button:focus-visible {
         top: 100%;
         left: 0;
         width: 100%;
-        margin-top: 72.703125px;
+        margin-top: 2.703125px;
         display: flex;
         justify-content: center;
         z-index: 2;
