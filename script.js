@@ -4381,12 +4381,12 @@ async function createSetAndOpenCards() {
     let words = document.getElementById("wordList").value;
 
     if (setName.trim() === "") {
-        showToast("🐚 Please give this set a name.", "warning");
+        showToast("Please give this set a name.", "warning");
         return;
     }
 
     if (words.trim() === "") {
-        showToast("🐟 Add at least one English word.", "warning");
+        showToast("Add at least one English word.", "warning");
         return;
     }
 

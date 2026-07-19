@@ -461,6 +461,10 @@ textarea {
     padding-top: var(--space-md);
 }
 
+#teacherScreen #wordList {
+    resize: none;
+}
+
 input:focus,
 textarea:focus {
     border-color: var(--color-primary);
@@ -9339,8 +9343,9 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     background-color: rgba(255, 255, 255, 0.18);
 }
 
-/* Classroom Picker — underwater glass override */
-#classroomPickerScreen.wf-content-shell {
+/* Classroom Picker / Create Vocabulary Set — underwater glass override */
+#classroomPickerScreen.wf-content-shell,
+#teacherScreen.wf-content-shell {
     background-color: transparent;
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
@@ -9348,7 +9353,8 @@ body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
     box-shadow: 0 12px 30px rgba(26, 123, 160, 0.08);
 }
 
-#classroomPickerScreen.wf-content-shell::before {
+#classroomPickerScreen.wf-content-shell::before,
+#teacherScreen.wf-content-shell::before {
     background: linear-gradient(
         180deg,
         rgba(255, 255, 255, 0.18) 0%,
@@ -10367,4 +10373,63 @@ button.game-library-button:focus-visible {
         box-shadow: none;
         pointer-events: none;
     }
+}
+
+/* Create Vocabulary Set — tighter top spacing and Classroom Mode-style back button */
+#teacherScreen {
+    padding-top: clamp(8px, 1.5vw, 14px);
+}
+
+#teacherScreen button.soft-button.classroom-nav-button.classroom-back-nav {
+    background: none;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    min-height: unset;
+    padding: 4px 2px;
+    margin: 0;
+    width: auto;
+    max-width: none;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(7, 59, 76, 0.52);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.16s ease, transform 0.16s ease;
+    overflow: visible;
+    position: absolute;
+    top: clamp(14px, 2vw, 22px);
+    left: clamp(14px, 2vw, 22px);
+    z-index: 2;
+}
+
+#teacherScreen button.soft-button.classroom-nav-button.classroom-back-nav::before,
+#teacherScreen button.soft-button.classroom-nav-button.classroom-back-nav::after {
+    display: none !important;
+    content: none !important;
+}
+
+#teacherScreen button.soft-button.classroom-nav-button.classroom-back-nav:hover {
+    background: none;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    color: rgba(7, 59, 76, 0.82);
+    transform: translateX(-2px);
+}
+
+#teacherScreen button.soft-button.classroom-nav-button.classroom-back-nav:active {
+    background: none;
+    box-shadow: none;
+    color: rgba(7, 59, 76, 0.96);
+    transform: translateX(0);
+}
+
+#teacherScreen button.soft-button.classroom-nav-button.classroom-back-nav:focus-visible {
+    outline: 2px solid rgba(7, 59, 76, 0.35);
+    outline-offset: 4px;
+    border-radius: 4px;
+    box-shadow: none;
 }
