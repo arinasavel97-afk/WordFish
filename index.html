@@ -5,6 +5,7 @@
 
     <title>Word Fish</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
     <style>
         #authScreen, #dashboardScreen { display: none; }
         #appLoadingScreen { display: block; }
@@ -1013,9 +1014,45 @@
         </label>
     </div>
 
+    <div id="wordCardImageCropModal" class="word-card-image-crop-modal" role="dialog" aria-label="Crop image" hidden>
+        <div class="word-card-image-crop-modal__overlay"></div>
+        <div class="word-card-image-crop-modal__content">
+            <h3 class="word-card-image-crop-modal__title">Crop image</h3>
+            <div class="word-card-image-crop-modal__body">
+                <div class="word-card-image-crop-modal__stage">
+                    <img id="wordCardImageCropImage" src="" alt="" crossorigin="anonymous">
+                </div>
+                <div class="word-card-image-crop-modal__sidebar">
+                    <div class="word-card-image-crop-modal__preview-wrap">
+                        <div class="word-card-image-crop-modal__preview-label">Preview</div>
+                        <div class="word-card-image-crop-modal__preview-frame"></div>
+                    </div>
+                    <div class="word-card-image-crop-modal__controls">
+                        <button type="button" id="wordCardImageCropZoomOut" class="word-card-image-crop-modal__zoom" aria-label="Zoom out">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14"/>
+                            </svg>
+                        </button>
+                        <button type="button" id="wordCardImageCropZoomIn" class="word-card-image-crop-modal__zoom" aria-label="Zoom in">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="word-card-image-crop-modal__actions">
+                <button type="button" id="wordCardImageCropCancel" class="word-card-image-crop-modal__cancel">Cancel</button>
+                <button type="button" id="wordCardImageCropSave" class="word-card-image-crop-modal__save wf-cta-primary">Save Crop</button>
+            </div>
+            <div id="wordCardImageCropStatus" class="word-card-image-crop-modal__status" hidden></div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
     <script src="database.js"></script>
     <script src="pronunciation.js"></script>
     <script src="script.js"></script>

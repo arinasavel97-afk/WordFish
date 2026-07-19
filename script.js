@@ -4988,6 +4988,13 @@ document.addEventListener("keydown", (event) => {
 
     if (event.key !== "Escape") return;
 
+    const cropModal = document.getElementById("wordCardImageCropModal");
+
+    if (cropModal && !cropModal.hidden) {
+        closeWordCardImageCropEditor(false);
+        return;
+    }
+
     if (activeWordCardImageDeleteConfirmIndex !== null) {
         closeWordCardImageDeleteConfirm();
         return;
@@ -5133,11 +5140,15 @@ function initBuilderHeaderColorPicker() {
 
 const WORD_CARD_IMAGE_PLUS_ICON = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>`;
 const WORD_CARD_IMAGE_TRASH_ICON = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>`;
+const WORD_CARD_IMAGE_CROP_ICON = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5v8a2 2 0 0 0 2 2h8M5 9h8a2 2 0 0 1 2 2v8"/></svg>`;
 const WORD_CARD_IMAGE_POPOVER_GAP = 8;
 const WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING = 12;
 
 let wordCardImagePopoverRepositionHandler = null;
 let wordCardImageDeleteConfirmRepositionHandler = null;
+let wordCardImageCropper = null;
+let wordCardImageCropIndex = null;
+let wordCardImageCropCardId = null;
 
 function unbindWordCardImagePopoverReposition() {
     if (!wordCardImagePopoverRepositionHandler) {
@@ -5177,27 +5188,41 @@ function positionWordCardImagePopover(index) {
 
     const tileRect = tile.getBoundingClientRect();
     const popoverRect = popover.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - tileRect.bottom - WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING;
-    const spaceAbove = tileRect.top - WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING;
-    const openAbove = spaceBelow < popoverRect.height + WORD_CARD_IMAGE_POPOVER_GAP
-        && spaceAbove >= popoverRect.height + WORD_CARD_IMAGE_POPOVER_GAP;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const gap = WORD_CARD_IMAGE_POPOVER_GAP;
+    const padding = WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING;
 
-    popover.classList.add(openAbove ? "word-card-image-popover--above" : "word-card-image-popover--below");
+    // The popover is position:fixed, but .screen (cardsScreen) is its
+    // fixed-position containing block because of backdrop-filter. Offset the
+    // final coordinates by that container's padding-box origin.
+    const container = popover.offsetParent || document.documentElement;
+    const containerRect = container.getBoundingClientRect();
+    const containerStyle = window.getComputedStyle(container);
+    const containerBorderTop = Number.parseFloat(containerStyle.borderTopWidth) || 0;
+    const containerBorderLeft = Number.parseFloat(containerStyle.borderLeftWidth) || 0;
+    const containerOffsetTop = containerRect.top + containerBorderTop;
+    const containerOffsetLeft = containerRect.left + containerBorderLeft;
 
-    let top = openAbove
-        ? tileRect.top - popoverRect.height - WORD_CARD_IMAGE_POPOVER_GAP
-        : tileRect.bottom + WORD_CARD_IMAGE_POPOVER_GAP;
+    const spaceBelow = viewportHeight - tileRect.bottom - padding;
+    const spaceAbove = tileRect.top - padding;
+    const placeBelow = spaceBelow >= popoverRect.height + gap || spaceBelow >= spaceAbove;
 
+    popover.classList.add(placeBelow ? "word-card-image-popover--below" : "word-card-image-popover--above");
+
+    let top = placeBelow
+        ? tileRect.bottom + gap
+        : tileRect.top - popoverRect.height - gap;
     let left = tileRect.right - popoverRect.width;
-    const maxLeft = window.innerWidth - popoverRect.width - WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING;
-    left = Math.max(WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING, Math.min(left, maxLeft));
+
+    left = Math.max(padding, Math.min(left, viewportWidth - popoverRect.width - padding));
     top = Math.max(
-        WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING,
-        Math.min(top, window.innerHeight - popoverRect.height - WORD_CARD_IMAGE_POPOVER_VIEWPORT_PADDING)
+        padding,
+        Math.min(top, viewportHeight - popoverRect.height - padding)
     );
 
-    popover.style.top = `${top}px`;
-    popover.style.left = `${left}px`;
+    popover.style.top = `${top - containerOffsetTop}px`;
+    popover.style.left = `${left - containerOffsetLeft}px`;
     popover.style.visibility = "";
 }
 
@@ -5427,6 +5452,15 @@ function buildWordCardImageSectionMarkup(index, imageUrl) {
         ? `<span class="word-card-image-tile__uploading">Uploading...</span>`
         : "";
 
+    const cropButtonMarkup = hasDisplayImage
+        ? `<button
+                                type="button"
+                                class="word-card-image-tile-crop"
+                                aria-label="Crop image"
+                                onclick="event.stopPropagation(); event.preventDefault(); openWordCardImageCropEditor(${index})"
+                            >${WORD_CARD_IMAGE_CROP_ICON}</button>`
+        : "";
+
     const deleteButtonMarkup = hasDisplayImage
         ? `<button
                                 type="button"
@@ -5454,6 +5488,7 @@ function buildWordCardImageSectionMarkup(index, imageUrl) {
                                 ${uploadingMarkup}
                                 <span class="word-card-image-tile__drop-hint" aria-hidden="true">Drop image here</span>
                             </button>
+                            ${cropButtonMarkup}
                             ${deleteButtonMarkup}
                             <div
                                 id="wordCardImagePopover-${index}"
@@ -6001,11 +6036,11 @@ async function uploadCardImageFile(index, file) {
 
     if (uploadIndex === null) {
         showToast("Could not upload image: card was not found", "error");
-        return;
+        return false;
     }
 
     if (!file) {
-        return;
+        return false;
     }
 
     const cardId = cards[uploadIndex].id;
@@ -6021,13 +6056,14 @@ async function uploadCardImageFile(index, file) {
 
         if (targetIndex === null) {
             showToast("Could not upload image: card was not found", "error");
-            return;
+            return false;
         }
 
         cards[targetIndex].imageUrl = imageUrl;
         renderCards();
         scheduleAutoSave(100);
         showToast("Image uploaded", "success");
+        return true;
     } catch (error) {
         showToast("Could not upload image: " + error.message, "error");
 
@@ -6037,6 +6073,8 @@ async function uploadCardImageFile(index, file) {
             cards[targetIndex].imageUrl = "";
             renderCards();
         }
+
+        return false;
     }
 }
 
@@ -6046,6 +6084,284 @@ async function uploadImage(event, index) {
     const uploadIndex = resolveWordCardImageUploadIndex(index, fileInput);
 
     await uploadCardImageFile(uploadIndex, file);
+}
+
+function initWordCardImageCropEditor() {
+    const modal = document.getElementById("wordCardImageCropModal");
+    const cancelButton = document.getElementById("wordCardImageCropCancel");
+    const saveButton = document.getElementById("wordCardImageCropSave");
+    const zoomInButton = document.getElementById("wordCardImageCropZoomIn");
+    const zoomOutButton = document.getElementById("wordCardImageCropZoomOut");
+    const overlay = modal?.querySelector(".word-card-image-crop-modal__overlay");
+
+    if (cancelButton && !cancelButton.dataset.wordCardCropBound) {
+        cancelButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            closeWordCardImageCropEditor(false);
+        });
+        cancelButton.dataset.wordCardCropBound = "true";
+    }
+
+    if (saveButton && !saveButton.dataset.wordCardCropBound) {
+        saveButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            saveWordCardImageCrop();
+        });
+        saveButton.dataset.wordCardCropBound = "true";
+    }
+
+    if (zoomInButton && !zoomInButton.dataset.wordCardCropBound) {
+        zoomInButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            if (wordCardImageCropper) {
+                wordCardImageCropper.zoom(0.1);
+            }
+        });
+        zoomInButton.dataset.wordCardCropBound = "true";
+    }
+
+    if (zoomOutButton && !zoomOutButton.dataset.wordCardCropBound) {
+        zoomOutButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            if (wordCardImageCropper) {
+                wordCardImageCropper.zoom(-0.1);
+            }
+        });
+        zoomOutButton.dataset.wordCardCropBound = "true";
+    }
+
+    if (overlay && !overlay.dataset.wordCardCropBound) {
+        overlay.addEventListener("click", () => closeWordCardImageCropEditor(false));
+        overlay.dataset.wordCardCropBound = "true";
+    }
+}
+
+function setWordCardImageCropLoading(isLoading, message) {
+    const saveButton = document.getElementById("wordCardImageCropSave");
+    const cancelButton = document.getElementById("wordCardImageCropCancel");
+    const zoomInButton = document.getElementById("wordCardImageCropZoomIn");
+    const zoomOutButton = document.getElementById("wordCardImageCropZoomOut");
+    const status = document.getElementById("wordCardImageCropStatus");
+
+    if (saveButton) {
+        saveButton.disabled = isLoading;
+        saveButton.textContent = isLoading ? "Saving..." : "Save Crop";
+    }
+
+    if (cancelButton) {
+        cancelButton.disabled = isLoading;
+    }
+
+    if (zoomInButton) {
+        zoomInButton.disabled = isLoading;
+    }
+
+    if (zoomOutButton) {
+        zoomOutButton.disabled = isLoading;
+    }
+
+    if (status) {
+        status.textContent = message || "";
+        status.hidden = !message;
+    }
+}
+
+function destroyWordCardImageCropper() {
+    if (wordCardImageCropper) {
+        wordCardImageCropper.destroy();
+        wordCardImageCropper = null;
+    }
+
+    const image = document.getElementById("wordCardImageCropImage");
+
+    if (image) {
+        image.onload = null;
+        image.onerror = null;
+        image.removeAttribute("src");
+        image.removeAttribute("alt");
+    }
+}
+
+function openWordCardImageCropEditor(index) {
+    if (typeof Cropper === "undefined") {
+        showToast("Crop editor is not available. Please check your connection and try again.", "error");
+        return;
+    }
+
+    closeWordCardImagePopover();
+    destroyWordCardImageCropper();
+
+    const cardIndex = normalizeCardIndex(index);
+
+    if (cardIndex === null) {
+        return;
+    }
+
+    const imageUrl = cards[cardIndex].imageUrl;
+
+    if (!imageUrl || imageUrl === "Uploading...") {
+        showToast("No image available to crop", "error");
+        return;
+    }
+
+    const tile = document.getElementById(`wordCardImageTile-${cardIndex}`);
+    const tileImg = tile?.querySelector(".word-card-image-tile__img");
+    const targetElement = tileImg || tile;
+    let aspectRatio = 1;
+
+    if (targetElement) {
+        const rect = targetElement.getBoundingClientRect();
+
+        if (rect.height > 0) {
+            aspectRatio = rect.width / rect.height;
+        }
+    }
+
+    wordCardImageCropIndex = cardIndex;
+    wordCardImageCropCardId = cards[cardIndex]?.id || null;
+
+    const modal = document.getElementById("wordCardImageCropModal");
+    const image = document.getElementById("wordCardImageCropImage");
+
+    if (!modal || !image) {
+        return;
+    }
+
+    setWordCardImageCropLoading(false, "");
+    modal.hidden = false;
+    image.alt = `Crop preview for ${escapeAttribute(cards[cardIndex].english || "card")}`;
+
+    function onImageLoad() {
+        if (wordCardImageCropper) {
+            wordCardImageCropper.destroy();
+            wordCardImageCropper = null;
+        }
+
+        wordCardImageCropper = new Cropper(image, {
+            aspectRatio: aspectRatio,
+            viewMode: 1,
+            dragMode: "move",
+            autoCropArea: 0.9,
+            restore: false,
+            guides: false,
+            center: true,
+            highlight: false,
+            cropBoxMovable: true,
+            cropBoxResizable: true,
+            toggleDragModeOnDblclick: false,
+            minContainerWidth: 200,
+            minContainerHeight: 200,
+            minCropBoxWidth: 40,
+            minCropBoxHeight: 40,
+            zoomable: true,
+            scalable: false,
+            rotatable: false,
+            background: false,
+            preview: ".word-card-image-crop-modal__preview-frame",
+        });
+    }
+
+    function onImageError() {
+        showToast("Could not load image for cropping", "error");
+        closeWordCardImageCropEditor(false);
+    }
+
+    image.onload = onImageLoad;
+    image.onerror = onImageError;
+    image.crossOrigin = "anonymous";
+    image.src = imageUrl;
+
+    if (image.complete && image.naturalWidth > 0) {
+        onImageLoad();
+    }
+}
+
+function closeWordCardImageCropEditor(saved = false) {
+    if (!saved) {
+        destroyWordCardImageCropper();
+    } else {
+        if (wordCardImageCropper) {
+            wordCardImageCropper.destroy();
+            wordCardImageCropper = null;
+        }
+
+        const image = document.getElementById("wordCardImageCropImage");
+
+        if (image) {
+            image.onload = null;
+            image.onerror = null;
+            image.removeAttribute("src");
+            image.removeAttribute("alt");
+        }
+    }
+
+    const modal = document.getElementById("wordCardImageCropModal");
+
+    if (modal) {
+        modal.hidden = true;
+    }
+
+    wordCardImageCropIndex = null;
+    wordCardImageCropCardId = null;
+    setWordCardImageCropLoading(false, "");
+}
+
+async function saveWordCardImageCrop() {
+    if (wordCardImageCropper === null || wordCardImageCropIndex === null) {
+        return;
+    }
+
+    let targetIndex = wordCardImageCropIndex;
+
+    if (wordCardImageCropCardId) {
+        const indexById = cards.findIndex((card) => card.id === wordCardImageCropCardId);
+
+        if (indexById !== -1) {
+            targetIndex = indexById;
+        }
+    }
+
+    if (normalizeCardIndex(targetIndex) === null) {
+        showToast("Could not save crop: card was not found", "error");
+        closeWordCardImageCropEditor(false);
+        return;
+    }
+
+    setWordCardImageCropLoading(true, "Saving crop...");
+
+    try {
+        const canvas = wordCardImageCropper.getCroppedCanvas({
+            fillColor: "#fff",
+            maxWidth: 2048,
+            maxHeight: 2048,
+        });
+
+        if (!canvas) {
+            throw new Error("Could not generate crop");
+        }
+
+        const blob = await new Promise((resolve, reject) => {
+            canvas.toBlob((result) => {
+                if (result) {
+                    resolve(result);
+                } else {
+                    reject(new Error("Could not process image"));
+                }
+            }, "image/png");
+        });
+
+        const file = new File([blob], `cropped-${Date.now()}.png`, { type: "image/png" });
+        const imageUrl = await dbUploadImage(file);
+
+        cards[targetIndex].imageUrl = imageUrl;
+        renderCards();
+        scheduleAutoSave(100);
+        showToast("Image cropped and saved", "success");
+        closeWordCardImageCropEditor(true);
+    } catch (error) {
+        showToast("Could not save crop: " + error.message, "error");
+        setWordCardImageCropLoading(false, "");
+    }
 }
 
 async function translateAllToThai() {
@@ -8223,6 +8539,7 @@ function initApp() {
     initSetCardOverflowMenus();
     initBuilderHeaderColorPicker();
     initWordCardImagePopover();
+    initWordCardImageCropEditor();
     initWordCardImageTileDrop();
     initGameControls();
     initUnscrambleDragAndDrop();
