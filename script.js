@@ -33,6 +33,8 @@ let currentCardMistakes = 0;
 let totalWrongAttempts = 0;
 let unscrambleClueIndex = -1;
 let unscrambleClueUsed = false;
+let listenWriteHintUsed = false;
+let listenWriteChecking = false;
 let lastGameOrderSignature = "";
 let currentScreenId = "";
 let suppressHistoryPush = false;
@@ -6542,6 +6544,9 @@ async function startGame(mode, fromSource) {
     } else if (mode === "unscramble") {
         document.getElementById("gameTitle").style.display = "none";
         document.getElementById("gameTitle").textContent = "";
+    } else if (mode === "listenWrite") {
+        document.getElementById("gameTitle").style.display = "";
+        document.getElementById("gameTitle").textContent = "Listen and Write";
     } else {
         document.getElementById("gameTitle").style.display = "";
         document.getElementById("gameTitle").textContent = "Translate and Type the English Word";
@@ -6713,6 +6718,8 @@ function showCard() {
     currentCardMistakes = 0;
     unscrambleClueIndex = -1;
     unscrambleClueUsed = false;
+    listenWriteHintUsed = false;
+    listenWriteChecking = false;
     clearUnscrambleClue();
 
     if (gameCards.length === 0) {
@@ -6751,6 +6758,26 @@ function showCard() {
         if (shuffleButton) {
             shuffleButton.onclick = startUnscrambleShuffle;
             updateUnscrambleShuffleButton();
+        }
+
+    } else if (currentGameMode === "listenWrite") {
+        gameImage.style.display = "none";
+        currentPrompt.style.display = "none";
+
+        renderListenWriteCard(currentCard);
+        checkButton.onclick = checkListenWriteAnswer;
+
+        if (clueButton) {
+            clueButton.disabled = false;
+            clueButton.onclick = showListenWriteClue;
+        }
+
+        if (shuffleButton) {
+            shuffleButton.style.display = "none";
+        }
+
+        if (typeof pronounceGameWord === "function") {
+            pronounceGameWord();
         }
 
     } else {
@@ -6818,6 +6845,307 @@ function renderUnscrambleCard(card) {
         slot.dataset.expected = letter.toUpperCase();
         slotsContainer.appendChild(slot);
     });
+}
+
+function renderListenWriteCard(card) {
+    const lettersContainer = document.getElementById("listenWriteLetters");
+    const input = document.getElementById("listenWriteInput");
+
+    if (!lettersContainer || !input) {
+        return;
+    }
+
+    lettersContainer.innerHTML = "";
+    input.value = "";
+    input.disabled = false;
+    input.readOnly = false;
+
+    const word = (card?.english || "").trim();
+    const letters = word.split("").filter((char) => /[A-Za-z0-9]/.test(char));
+
+    letters.forEach((letter) => {
+        const box = document.createElement("div");
+        box.className = "listen-write-letter";
+        box.dataset.expected = letter.toUpperCase();
+        box.dataset.locked = "false";
+        lettersContainer.appendChild(box);
+    });
+
+    updateListenWriteBoxes();
+    updateListenWriteActiveBox();
+
+    if (input) {
+        input.focus();
+        input.setSelectionRange(0, 0);
+        updateListenWriteActiveBox();
+    }
+}
+
+function updateListenWriteBoxes() {
+    const input = document.getElementById("listenWriteInput");
+    const boxes = document.querySelectorAll("#listenWriteLetters .listen-write-letter");
+    const value = (input?.value || "").toUpperCase();
+
+    let userIndex = 0;
+    boxes.forEach((box) => {
+        if (box.dataset.locked === "true") {
+            box.textContent = (box.dataset.expected || "").toUpperCase();
+            box.classList.add("listen-write-letter--hint", "listen-write-letter--filled");
+            box.classList.remove("listen-write-letter--correct");
+            return;
+        }
+
+        const letter = value[userIndex] || "";
+        box.textContent = letter;
+        box.classList.toggle("listen-write-letter--filled", userIndex < value.length);
+        box.classList.remove("listen-write-letter--hint", "listen-write-letter--correct");
+        userIndex++;
+    });
+}
+
+function updateListenWriteActiveBox() {
+    const input = document.getElementById("listenWriteInput");
+    const boxes = document.querySelectorAll("#listenWriteLetters .listen-write-letter");
+    const editableBoxes = Array.from(boxes).filter((box) => box.dataset.locked !== "true");
+    const cursor = input ? input.selectionStart : 0;
+    const activeBox = editableBoxes[cursor] || null;
+
+    boxes.forEach((box) => {
+        box.classList.toggle("listen-write-letter--active", box === activeBox);
+    });
+}
+
+function handleListenWriteKeyDown(event) {
+    const input = document.getElementById("listenWriteInput");
+    if (!input) {
+        return;
+    }
+
+    if (currentGameMode === "listenWrite") {
+        event.stopPropagation();
+    }
+
+    const boxes = document.querySelectorAll("#listenWriteLetters .listen-write-letter");
+    const maxLength = boxes.length;
+    let cursor = input.selectionStart || 0;
+    const value = input.value;
+
+    switch (event.key) {
+        case "ArrowLeft":
+            event.preventDefault();
+            if (cursor > 0) {
+                cursor--;
+                input.setSelectionRange(cursor, cursor);
+                updateListenWriteActiveBox();
+            }
+            return;
+
+        case "ArrowRight":
+            event.preventDefault();
+            if (cursor < value.length) {
+                cursor++;
+                input.setSelectionRange(cursor, cursor);
+                updateListenWriteActiveBox();
+            }
+            return;
+
+        case "Home":
+            event.preventDefault();
+            input.setSelectionRange(0, 0);
+            updateListenWriteActiveBox();
+            return;
+
+        case "End":
+            event.preventDefault();
+            input.setSelectionRange(value.length, value.length);
+            updateListenWriteActiveBox();
+            return;
+
+        case "Backspace":
+            event.preventDefault();
+            if (cursor > 0) {
+                input.value = value.slice(0, cursor - 1) + value.slice(cursor);
+                input.setSelectionRange(cursor - 1, cursor - 1);
+                updateListenWriteBoxes();
+                updateListenWriteActiveBox();
+            }
+            return;
+
+        case "Delete":
+            event.preventDefault();
+            if (cursor < value.length) {
+                input.value = value.slice(0, cursor) + value.slice(cursor + 1);
+                input.setSelectionRange(cursor, cursor);
+                updateListenWriteBoxes();
+                updateListenWriteActiveBox();
+            }
+            return;
+
+        case "Enter":
+            event.preventDefault();
+            checkListenWriteAnswer();
+            return;
+    }
+}
+
+function handleListenWriteInput(event) {
+    const input = document.getElementById("listenWriteInput");
+    if (!input) {
+        return;
+    }
+
+    const boxes = document.querySelectorAll("#listenWriteLetters .listen-write-letter");
+    const editableBoxes = Array.from(boxes).filter((box) => box.dataset.locked !== "true");
+    const maxLength = editableBoxes.length;
+    let cursor = input.selectionStart || 0;
+
+    let value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (value.length > maxLength) {
+        value = value.substring(0, maxLength);
+    }
+
+    input.value = value;
+    if (cursor > value.length) {
+        cursor = value.length;
+    }
+    input.setSelectionRange(cursor, cursor);
+
+    updateListenWriteBoxes();
+    updateListenWriteActiveBox();
+}
+
+function initListenWriteControls() {
+    const input = document.getElementById("listenWriteInput");
+    if (!input || input.dataset.handlerAttached === "true") {
+        return;
+    }
+
+    input.dataset.handlerAttached = "true";
+    input.addEventListener("keydown", handleListenWriteKeyDown);
+    input.addEventListener("input", handleListenWriteInput);
+    input.addEventListener("focus", updateListenWriteActiveBox);
+    input.addEventListener("click", updateListenWriteActiveBox);
+
+    const lettersContainer = document.getElementById("listenWriteLetters");
+    if (lettersContainer && !lettersContainer.dataset.clickBound) {
+        lettersContainer.dataset.clickBound = "true";
+        lettersContainer.addEventListener("click", () => {
+            input.focus();
+        });
+    }
+
+    const listenButton = document.getElementById("listenWriteListenButton");
+    if (listenButton && listenButton.dataset.handlerAttached !== "true") {
+        listenButton.dataset.handlerAttached = "true";
+        listenButton.addEventListener("click", () => {
+            pronounceGameWord();
+            const input = document.getElementById("listenWriteInput");
+            if (input) {
+                input.focus();
+                updateListenWriteActiveBox();
+            }
+        });
+    }
+}
+
+function showListenWriteClue() {
+    if (listenWriteChecking || currentGameMode !== "listenWrite") {
+        return;
+    }
+
+    const boxes = document.querySelectorAll("#listenWriteLetters .listen-write-letter");
+    const input = document.getElementById("listenWriteInput");
+    let target = null;
+
+    boxes.forEach((box) => {
+        if (!target && box.textContent.trim() === "" && box.dataset.locked !== "true") {
+            target = box;
+        }
+    });
+
+    if (!target) {
+        return;
+    }
+
+    if (!listenWriteHintUsed) {
+        listenWriteHintUsed = true;
+    }
+    hintsUsed++;
+
+    target.textContent = (target.dataset.expected || "").toUpperCase();
+    target.dataset.locked = "true";
+
+    updateListenWriteBoxes();
+    updateListenWriteActiveBox();
+
+    if (input) {
+        input.focus();
+    }
+}
+
+function checkListenWriteAnswer() {
+    if (listenWriteChecking || currentGameMode !== "listenWrite") {
+        return;
+    }
+
+    const boxes = document.querySelectorAll("#listenWriteLetters .listen-write-letter");
+    const input = document.getElementById("listenWriteInput");
+    const feedback = document.getElementById("feedback");
+    let allCorrect = true;
+
+    boxes.forEach((box) => {
+        const expected = (box.dataset.expected || "").toUpperCase();
+        const actual = (box.textContent || "").toUpperCase();
+        if (actual !== expected) {
+            allCorrect = false;
+        }
+    });
+
+    if (allCorrect) {
+        listenWriteChecking = true;
+
+        boxes.forEach((box) => {
+            box.classList.add("listen-write-letter--correct");
+        });
+
+        const perfectAnswer = !answerShown && currentCardMistakes === 0 && !listenWriteHintUsed;
+
+        if (perfectAnswer) {
+            score++;
+            updateGameScoreCounter();
+        }
+
+        const randomPraise = praiseWords[Math.floor(Math.random() * praiseWords.length)];
+        if (feedback) {
+            feedback.textContent = perfectAnswer ? randomPraise : "Correct! Keep practising";
+        }
+
+        currentIndex++;
+
+        if (currentIndex < gameCards.length) {
+            setTimeout(showCard, 900);
+        } else {
+            setTimeout(showResults, 900);
+        }
+    } else {
+        currentCardMistakes++;
+        totalWrongAttempts++;
+
+        if (feedback) {
+            feedback.textContent = "Try again!";
+        }
+
+        if (input) {
+            input.value = "";
+        }
+
+        updateListenWriteBoxes();
+        updateListenWriteActiveBox();
+
+        if (input) {
+            input.focus();
+        }
+    }
 }
 
 function checkUnscrambleAnswer() {
@@ -7325,7 +7653,7 @@ function updatePearls() {
 
     updateGameScoreCounter();
 
-    if (currentGameMode === "unscramble" || currentGameMode === "picture" || currentGameMode === "translation") {
+    if (currentGameMode === "unscramble" || currentGameMode === "picture" || currentGameMode === "translation" || currentGameMode === "listenWrite") {
         for (let i = 0; i < gameCards.length; i++) {
             const spacer = document.createElement("span");
             spacer.className = "pearl-empty";
@@ -8559,6 +8887,7 @@ function initApp() {
     initWordCardImageTileDrop();
     initGameControls();
     initUnscrambleDragAndDrop();
+    initListenWriteControls();
 
     supabaseClient.auth.onAuthStateChange((event, session) => {
         if (event === "PASSWORD_RECOVERY") {

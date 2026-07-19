@@ -662,10 +662,10 @@
                 <div class="game-library-card-body">
                     <h2 class="game-library-card-name">Listen and Write</h2>
                     <p class="game-library-card-description">Listen carefully and type the English word you hear.</p>
-                    <p class="game-library-card-status game-library-card-status--coming-soon">Coming Soon</p>
+                    <p class="game-library-card-status game-library-card-status--available">Available</p>
                 </div>
                 <div class="game-library-card-action">
-                    <button type="button" class="game-library-button" aria-label="Play Listen and Write" disabled>Play</button>
+                    <button type="button" class="game-library-button" aria-label="Play Listen and Write" onclick="startChosenSetGame('listenWrite')">Play</button>
                 </div>
             </article>
         </div>
@@ -923,6 +923,9 @@
     <img id="translateModeBanner" class="game-translate-banner" src="assets/decorations/games/translate/banner_translate.png" alt="Translation" aria-hidden="false">
     <p class="game-translate-subtitle">Translate and write the English word!</p>
 
+    <img id="listenWriteModeBanner" class="game-listen-write-banner" src="assets/decorations/games/listen/banner_listen.png" alt="Listen and Write" aria-hidden="false">
+    <p class="game-listen-write-subtitle">Listen to the word<br>and write it down!</p>
+
     <div id="gameScreen" style="display: none;">
         <img id="unscrambleFinn" class="game-unscramble-finn" src="assets/mascot/games/unscramble-mode-prompt.png" alt="" aria-hidden="true">
         <div class="game-header">
@@ -946,6 +949,13 @@
                     <div id="unscrambleTiles" class="unscramble-tiles"></div>
                     <div id="unscrambleSlots" class="unscramble-slots"></div>
                 </div>
+            </div>
+            <div class="listen-write-area">
+                <input type="text" class="listen-write-input" id="listenWriteInput" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Type the word">
+                <button type="button" class="listen-write-listen-button" id="listenWriteListenButton" aria-label="Listen to the word" title="Listen to the word">
+                    <img src="assets/decorations/games/listen/icon-listen.png" alt="" aria-hidden="true">
+                </button>
+                <div id="listenWriteLetters" class="listen-write-letters" aria-label="Letter boxes"></div>
             </div>
             <input id="answerInput" placeholder="Type English word">
         </div>
