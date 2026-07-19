@@ -9793,7 +9793,7 @@ button.game-library-button:focus-visible {
     gap: 24px;
     width: max-content;
     max-width: 100%;
-    padding-top: 12px;
+    padding-top: 32px;
 }
 
 .unscramble-tiles {
@@ -10036,7 +10036,7 @@ button.game-library-button:focus-visible {
         width: max-content;
         max-width: 100%;
         gap: 24px;
-        padding-top: 4px;
+        padding-top: 28px;
     }
 
     #gameScreen[data-mode="unscramble"] .unscramble-tiles,
