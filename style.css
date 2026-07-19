@@ -1047,8 +1047,9 @@ button:active {
 #dashboardScreen .dashboard-header-import-tooltip {
     position: absolute;
     bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
+    left: auto;
+    right: 0;
+    transform: translateX(0);
     padding: 6px 10px;
     border-radius: 8px;
     background: var(--wf-ocean-ink);
@@ -6959,9 +6960,9 @@ h2 {
     margin: 0 auto;
     padding: 3px;
     border-radius: var(--radius-lg);
-    border: 2px solid var(--color-input-border);
-    background: rgba(255, 255, 255, 0.75);
-    box-shadow: var(--soft-shadow);
+    border: none;
+    background: transparent;
+    box-shadow: none;
 }
 
 .classroom-vocabulary-board-mode-tab {
@@ -7007,9 +7008,9 @@ h2 {
     width: min(100%, 400px);
     padding: 3px;
     border-radius: var(--radius-lg);
-    border: 2px solid var(--color-input-border);
-    background: rgba(255, 255, 255, 0.75);
-    box-shadow: var(--soft-shadow);
+    border: none;
+    background: transparent;
+    box-shadow: none;
 }
 
 .classroom-vocabulary-board-size-label {
@@ -8647,7 +8648,9 @@ h2 {
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton,
 #classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton,
-#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton,
+.classroom-vocabulary-board-mode-tab,
+.classroom-vocabulary-board-size-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -8682,7 +8685,9 @@ h2 {
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton:hover:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton:hover:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton:hover:not(:disabled),
-#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton:hover:not(:disabled) {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton:hover:not(:disabled),
+.classroom-vocabulary-board-mode-tab:hover:not(:disabled),
+.classroom-vocabulary-board-size-button:hover:not(:disabled) {
   background: #f8fcff;
   transform: translateY(-1px);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.10);
@@ -8693,7 +8698,9 @@ h2 {
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton:active:not(:disabled),
 #classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton:active:not(:disabled),
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton:active:not(:disabled),
-#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton:active:not(:disabled) {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton:active:not(:disabled),
+.classroom-vocabulary-board-mode-tab:active:not(:disabled),
+.classroom-vocabulary-board-size-button:active:not(:disabled) {
   transform: translateY(1px);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
@@ -8703,7 +8710,9 @@ h2 {
 #classroomFlashcardsScreen #classroomFlashcardsLoopButton:focus-visible,
 #classroomFlashcardsScreen #classroomFlashcardsAutoPronounceButton:focus-visible,
 #classroomTextFlashcardsScreen #classroomTextFlashcardsShuffleButton:focus-visible,
-#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton:focus-visible {
+#classroomTextFlashcardsScreen #classroomTextFlashcardsLoopButton:focus-visible,
+.classroom-vocabulary-board-mode-tab:focus-visible,
+.classroom-vocabulary-board-size-button:focus-visible {
   outline: 2px solid var(--wf-color-aqua-outline);
   outline-offset: 2px;
 }
@@ -8725,7 +8734,9 @@ h2 {
 #classroomPresentationScreen #classroomPresentationShuffleButton.wf-toggle-button--active,
 #classroomPresentationScreen #classroomPresentationLoopButton.wf-toggle-button--active,
 #classroomPresentationScreen #classroomPresentationTranslationButton.wf-toggle-button--active,
-#classroomPresentationScreen #classroomPresentationAutoPronounceButton.wf-toggle-button--active {
+#classroomPresentationScreen #classroomPresentationAutoPronounceButton.wf-toggle-button--active,
+.classroom-vocabulary-board-mode-tab.classroom-vocabulary-board-mode-tab-active,
+.classroom-vocabulary-board-size-button.classroom-vocabulary-board-size-button-active {
   background: linear-gradient(180deg, #75DC58 0%, #16AE4A 100%);
   border-color: rgba(10, 120, 45, 0.28);
   color: #ffffff;
@@ -8748,7 +8759,9 @@ h2 {
 #classroomPresentationScreen #classroomPresentationShuffleButton.wf-toggle-button--active:hover:not(:disabled),
 #classroomPresentationScreen #classroomPresentationLoopButton.wf-toggle-button--active:hover:not(:disabled),
 #classroomPresentationScreen #classroomPresentationTranslationButton.wf-toggle-button--active:hover:not(:disabled),
-#classroomPresentationScreen #classroomPresentationAutoPronounceButton.wf-toggle-button--active:hover:not(:disabled) {
+#classroomPresentationScreen #classroomPresentationAutoPronounceButton.wf-toggle-button--active:hover:not(:disabled),
+.classroom-vocabulary-board-mode-tab.classroom-vocabulary-board-mode-tab-active:hover:not(:disabled),
+.classroom-vocabulary-board-size-button.classroom-vocabulary-board-size-button-active:hover:not(:disabled) {
   background: linear-gradient(180deg, #7BE661 0%, #18B84E 100%);
   transform: translateY(-1px);
   box-shadow: 0 3px 6px rgba(22, 174, 74, 0.18);
@@ -8771,7 +8784,9 @@ h2 {
 #classroomPresentationScreen #classroomPresentationShuffleButton.wf-toggle-button--active:active:not(:disabled),
 #classroomPresentationScreen #classroomPresentationLoopButton.wf-toggle-button--active:active:not(:disabled),
 #classroomPresentationScreen #classroomPresentationTranslationButton.wf-toggle-button--active:active:not(:disabled),
-#classroomPresentationScreen #classroomPresentationAutoPronounceButton.wf-toggle-button--active:active:not(:disabled) {
+#classroomPresentationScreen #classroomPresentationAutoPronounceButton.wf-toggle-button--active:active:not(:disabled),
+.classroom-vocabulary-board-mode-tab.classroom-vocabulary-board-mode-tab-active:active:not(:disabled),
+.classroom-vocabulary-board-size-button.classroom-vocabulary-board-size-button-active:active:not(:disabled) {
   transform: translateY(1px);
   box-shadow: 0 1px 2px rgba(22, 174, 74, 0.12);
 }

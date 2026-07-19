@@ -3024,7 +3024,7 @@ function startClassroomTextFlashcards(set, addToHistory = true) {
 
 function showClassroomTextFlashcards(addToHistory = true) {
     displayScreen("classroomTextFlashcardsScreen", addToHistory);
-    updateClassroomTextFlashcardDirectionButtonLabel();
+    updateClassroomTextFlashcardDirectionControl();
     updateClassroomTextFlashcardsShuffleButton();
     updateClassroomTextFlashcardsLoopButton();
     renderClassroomTextFlashcard();
@@ -3049,12 +3049,20 @@ function getClassroomTextFlashcardDirectionLabel() {
         : "English → Translation";
 }
 
-function updateClassroomTextFlashcardDirectionButtonLabel() {
-    const directionButton = document.getElementById("classroomTextFlashcardDirectionButton");
+function updateClassroomTextFlashcardDirectionControl() {
+    const control = document.getElementById("classroomTextFlashcardDirectionControl");
 
-    if (directionButton) {
-        directionButton.textContent = getClassroomTextFlashcardDirectionLabel();
+    if (!control) {
+        return;
     }
+
+    const direction = classroomTextFlashcardDirection;
+
+    control.querySelectorAll("[data-text-flashcard-direction]").forEach((button) => {
+        const isActive = button.dataset.textFlashcardDirection === direction;
+        button.classList.toggle("classroom-vocabulary-board-mode-tab-active", isActive);
+        button.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
 }
 
 function getClassroomTextFlashcardFrontText(card) {
@@ -3188,16 +3196,18 @@ function toggleClassroomTextFlashcard() {
     saveClassroomTextFlashcardsContext();
 }
 
-function toggleClassroomTextFlashcardDirection() {
+function setClassroomTextFlashcardDirection(direction) {
     if (currentScreenId !== "classroomTextFlashcardsScreen") {
         return;
     }
 
-    classroomTextFlashcardDirection = classroomTextFlashcardDirection === "translationToEnglish"
-        ? "englishToTranslation"
-        : "translationToEnglish";
+    if (direction !== "translationToEnglish" && direction !== "englishToTranslation") {
+        return;
+    }
+
+    classroomTextFlashcardDirection = direction;
     classroomTextFlashcardSide = "front";
-    updateClassroomTextFlashcardDirectionButtonLabel();
+    updateClassroomTextFlashcardDirectionControl();
     renderClassroomTextFlashcard();
 }
 
@@ -3384,7 +3394,7 @@ function initClassroomTextFlashcardsControls() {
     const shuffleButton = document.getElementById("classroomTextFlashcardsShuffleButton");
     const loopButton = document.getElementById("classroomTextFlashcardsLoopButton");
     const flashcardButton = document.getElementById("classroomTextFlashcard");
-    const directionButton = document.getElementById("classroomTextFlashcardDirectionButton");
+    const directionControl = document.getElementById("classroomTextFlashcardDirectionControl");
     const fullscreenButton = document.getElementById("classroomTextFlashcardsFullscreenButton");
     const backButton = document.getElementById("classroomTextFlashcardsBackButton");
     const pronounceButtons = document.querySelectorAll(".classroom-text-flashcards-pronounce-button");
@@ -3417,9 +3427,15 @@ function initClassroomTextFlashcardsControls() {
         });
     }
 
-    if (directionButton && directionButton.dataset.handlerAttached !== "true") {
-        directionButton.dataset.handlerAttached = "true";
-        directionButton.addEventListener("click", toggleClassroomTextFlashcardDirection);
+    if (directionControl && directionControl.dataset.handlerAttached !== "true") {
+        directionControl.dataset.handlerAttached = "true";
+        directionControl.addEventListener("click", (event) => {
+            const button = event.target.closest("[data-text-flashcard-direction]");
+
+            if (button) {
+                setClassroomTextFlashcardDirection(button.dataset.textFlashcardDirection);
+            }
+        });
     }
 
     if (fullscreenButton && fullscreenButton.dataset.handlerAttached !== "true") {
@@ -7677,7 +7693,7 @@ async function restoreClassroomTextFlashcardsFromContext(context) {
         classroomTextFlashcardsLoopEnabled = !!context.loopEnabled;
 
         displayScreen("classroomTextFlashcardsScreen", false);
-        updateClassroomTextFlashcardDirectionButtonLabel();
+        updateClassroomTextFlashcardDirectionControl();
         updateClassroomTextFlashcardsShuffleButton();
         updateClassroomTextFlashcardsLoopButton();
         renderClassroomTextFlashcard({ preserveSide: true });

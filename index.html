@@ -481,7 +481,10 @@
         </header>
 
         <div class="classroom-text-flashcards-toolbar">
-            <button id="classroomTextFlashcardDirectionButton" type="button" class="soft-button classroom-text-flashcard-direction-button">Translation → English</button>
+            <div id="classroomTextFlashcardDirectionControl" class="classroom-vocabulary-board-mode-control" role="tablist" aria-label="Flashcard direction" style="flex: 0 0 auto; width: auto; max-width: 100%;">
+                <button type="button" role="tab" class="classroom-vocabulary-board-mode-tab" data-text-flashcard-direction="translationToEnglish" aria-selected="true">Translation → English</button>
+                <button type="button" role="tab" class="classroom-vocabulary-board-mode-tab" data-text-flashcard-direction="englishToTranslation" aria-selected="false">English → Translation</button>
+            </div>
         </div>
 
         <main class="classroom-text-flashcards-main">
