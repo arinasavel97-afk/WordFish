@@ -4070,6 +4070,7 @@ h2 {
 }
 
 #gameScreen .game-pronounce-button {
+    order: -2;
     width: 44px;
     height: 44px;
     min-width: 44px;
@@ -10172,6 +10173,24 @@ button.game-library-button:focus-visible {
         gap: clamp(6px, 1vw, 10px);
     }
 
+    #gameScreen[data-mode="unscramble"] .game-button--shuffle {
+        order: -2;
+        width: calc(56px * 1483 / 498);
+        min-width: 0;
+        padding: 0;
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-button--clue {
+        order: -1;
+        width: calc(56px * 1483 / 498);
+        min-width: 0;
+        padding: 0;
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-button--check {
+        order: 0;
+    }
+
     #gameScreen[data-mode="unscramble"] #feedback {
         position: absolute;
         top: calc(100% + 2.703125px + 56px + 40px);
@@ -10372,8 +10391,14 @@ button.game-library-button:focus-visible {
         gap: clamp(6px, 1vw, 10px);
     }
 
+    #gameScreen[data-mode="picture"] .game-button--show-answer {
+        order: -1;
+        width: calc(56px * 1483 / 498);
+    }
+
     #gameScreen[data-mode="picture"] .game-button--check {
-        transform: translateX(25px);
+        order: 1;
+        transform: none;
     }
 
     #gameScreen[data-mode="picture"] #feedback {
@@ -10441,8 +10466,14 @@ button.game-library-button:focus-visible {
         gap: clamp(6px, 1vw, 10px);
     }
 
+    #gameScreen[data-mode="translation"] .game-button--show-answer {
+        order: -1;
+        width: calc(56px * 1483 / 498);
+    }
+
     #gameScreen[data-mode="translation"] .game-button--check {
-        transform: translateX(25px);
+        order: 1;
+        transform: none;
     }
 
     #gameScreen[data-mode="translation"] #feedback {
