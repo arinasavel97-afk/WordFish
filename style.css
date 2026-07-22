@@ -969,6 +969,16 @@ button:active {
     width: 100%;
 }
 
+/* Dashboard v2 — mobile off-canvas sidebar drawer */
+.dashboard-mobile-menu-button,
+.dashboard-sidebar-close {
+    display: none;
+}
+
+.dashboard-mobile-sidebar-backdrop {
+    display: none;
+}
+
 /* Dashboard v2 — Phase 3 compact header */
 .dashboard-v2-header {
     display: flex;
@@ -1076,11 +1086,97 @@ button:active {
         flex-direction: column;
     }
 
+    .dashboard-mobile-menu-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        margin: 0;
+        border: 1px solid rgba(120, 190, 215, 0.45);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.94);
+        color: var(--wf-ocean-ink);
+        box-shadow: 0 2px 6px rgba(7, 59, 76, 0.1);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .dashboard-mobile-menu-button svg,
+    .dashboard-sidebar-close svg {
+        width: 24px;
+        height: 24px;
+        display: block;
+    }
+
     .dashboard-sidebar {
-        flex: 0 0 auto;
-        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: min(85vw, 340px);
         min-width: 0;
         max-width: none;
+        flex: none;
+        border-radius: 0 var(--wf-radius-lg) var(--wf-radius-lg) 0;
+        transform: translateX(-110%);
+        transition: transform 0.25s ease;
+        z-index: 100;
+        overflow-y: auto;
+        box-shadow: 4px 0 18px rgba(7, 59, 76, 0.15);
+    }
+
+    .dashboard-sidebar.is-open {
+        transform: translateX(0);
+    }
+
+    .dashboard-sidebar-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        margin: 0;
+        border: 1px solid rgba(120, 190, 215, 0.45);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.94);
+        color: var(--wf-ocean-ink);
+        box-shadow: 0 2px 6px rgba(7, 59, 76, 0.1);
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .dashboard-sidebar-content {
+        height: auto;
+        min-height: 100vh;
+        padding-top: 60px;
+    }
+
+    .dashboard-sidebar-decoration {
+        display: none;
+    }
+
+    .dashboard-mobile-sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(7, 59, 76, 0.45);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+        z-index: 99;
+    }
+
+    .dashboard-mobile-sidebar-backdrop.is-open {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
     }
 
     .dashboard-sidebar-bottom {
@@ -1090,10 +1186,9 @@ button:active {
     }
 }
 
-@media (max-width: 620px) {
-    .dashboard-sidebar {
-        display: none;
-    }
+html.mobile-sidebar-open,
+html.mobile-sidebar-open body {
+    overflow: hidden;
 }
 
 .dashboard-header-actions {
@@ -2562,34 +2657,17 @@ button:active {
     justify-content: center;
 }
 
-#cardsList .word-card-image-delete-confirm__cancel {
+#cardsList .word-card-image-delete-confirm__actions .wf-cta-neutral {
     flex: 1 1 0;
-    min-height: 40px;
+    min-width: 0;
     margin: 0;
-    padding: 6px 12px;
-    border: 1px solid rgba(120, 190, 215, 0.45);
-    border-radius: 6px;
-    background: transparent;
-    color: rgba(7, 59, 76, 0.88);
-    font-family: inherit;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    box-shadow: none;
-    transform: none;
-    transition: background 0.15s ease, color 0.15s ease;
 }
 
-#cardsList .word-card-image-delete-confirm__cancel:hover {
-    background: rgba(7, 59, 76, 0.05);
-}
 
 #cardsList .word-card-image-delete-confirm__confirm {
     flex: 1 1 0;
-    min-height: 40px;
+    min-width: 0;
     margin: 0;
-    padding: 6px 12px;
-    font-size: 0.875rem;
 }
 
 #cardsList .word-card-image-popover {
@@ -2873,79 +2951,18 @@ button:active {
 .word-card-image-crop-modal__actions {
     display: flex;
     justify-content: center;
+    align-items: stretch;
     gap: 12px;
 }
 
-.word-card-image-crop-modal__cancel {
-    position: relative;
-    overflow: hidden;
-    min-height: 44px;
-    padding: 10px 22px;
-    border: 1px solid rgba(120, 190, 215, 0.45);
-    border-radius: 14px;
-    background: linear-gradient(180deg, #FFFFFF 0%, #EAF7FF 100%);
-    color: #073B4C;
-    font-family: inherit;
-    font-size: 0.95rem;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow:
-        0 3px 6px rgba(0, 0, 0, 0.12),
-        0 7px 12px rgba(120, 190, 215, 0.18);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+.word-card-image-crop-modal__actions button {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    width: auto;
 }
 
-.word-card-image-crop-modal__cancel::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: 28%;
-    background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.22),
-        rgba(255, 255, 255, 0)
-    );
-    pointer-events: none;
-}
-
-.word-card-image-crop-modal__cancel::after {
-    content: "";
-    position: absolute;
-    inset: auto 0 0 0;
-    height: 22%;
-    background: linear-gradient(
-        180deg,
-        rgba(0, 0, 0, 0),
-        rgba(7, 59, 76, 0.08)
-    );
-    pointer-events: none;
-}
-
-.word-card-image-crop-modal__cancel:hover {
-    background: linear-gradient(180deg, #FFFFFF 0%, #F0FAFF 100%);
-    transform: translateY(-1px);
-}
-
-.word-card-image-crop-modal__cancel:active {
-    transform: translateY(2px);
-    box-shadow:
-        0 2px 4px rgba(0, 0, 0, 0.10),
-        0 4px 8px rgba(120, 190, 215, 0.14);
-}
-
-.word-card-image-crop-modal__save {
-    min-height: 44px;
-    padding: 10px 22px;
-    border: none;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.word-card-image-crop-modal__save:disabled,
-.word-card-image-crop-modal__cancel:disabled {
+.word-card-image-crop-modal__actions button:disabled {
     opacity: 0.55;
     cursor: not-allowed;
 }
@@ -4406,14 +4423,33 @@ h2 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: stretch;
     gap: var(--space-sm);
 }
 
-.delete-confirm-actions button {
-    flex: 1 1 140px;
-    max-width: 180px;
+.delete-confirm-modal .delete-confirm-actions button {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    width: auto;
     min-height: 48px;
     margin: 0;
+}
+
+@media (max-width: 620px) {
+    #deleteConfirmModal.is-anchored {
+        padding: 0;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    #deleteConfirmModal.is-anchored .modal-card {
+        position: absolute;
+        width: auto;
+        min-width: 240px;
+        max-width: calc(100vw - 24px);
+        margin: 0;
+    }
 }
 
 /* Settings modal */
@@ -4964,6 +5000,26 @@ h2 {
     }
 }
 
+/* Mobile portrait safe area for Classroom Mode .screen pages so the
+   absolutely positioned Back button does not overlap header artwork. */
+@media (max-width: 620px) and (orientation: portrait) {
+    #classroomPickerScreen.wf-content-shell,
+    #classroomActivityMenuScreen.wf-content-shell,
+    #classroomNoCardsScreen.wf-content-shell {
+        padding-top: 54px;
+    }
+
+    /* Push the main content of fixed-fullscreen classroom subpages
+       (Presentation/Flashcards/Text Flashcards/Vocabulary Board) down
+       so the Back button in the header has clear space. */
+    .classroom-presentation-main,
+    .classroom-flashcards-main,
+    .classroom-text-flashcards-toolbar,
+    .classroom-vocabulary-board-controls {
+        margin-top: 24px;
+    }
+}
+
 .classroom-sets-list {
     display: flex;
     flex-direction: column;
@@ -5356,6 +5412,33 @@ h2 {
 
 .classroom-activity-card-disabled {
     opacity: 0.72;
+}
+
+/* Mobile portrait: stack activity cards so illustration, body, and Start button
+   each fit within the card width and nothing is clipped by the viewport. */
+@media (max-width: 620px) and (orientation: portrait) {
+    .classroom-activity-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 10px 16px;
+    }
+
+    .classroom-activity-card .activity-card-illustration {
+        flex: 0 0 clamp(94px, 12vw, 160px);
+        width: clamp(94px, 12vw, 160px);
+        height: clamp(94px, 12vw, 160px);
+        align-self: center;
+    }
+
+    .classroom-activity-card .activity-card-body {
+        text-align: center;
+    }
+
+    .classroom-activity-card .activity-card-action {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 .classroom-activity-name {
@@ -7547,9 +7630,10 @@ h2 {
 }
 
 @media (max-width: 620px) {
-    .delete-confirm-actions button {
+    .delete-confirm-modal .delete-confirm-actions button {
         flex: 1 1 100%;
         max-width: none;
+        width: auto;
     }
 }
 
@@ -9084,6 +9168,36 @@ body:has(#dashboardScreen[style*="display:block"]) .dashboard-fish-layer {
         flex-wrap: wrap;
         width: 100%;
         justify-content: flex-start;
+    }
+}
+
+/* Dashboard portrait-only header and toolbar adjustments */
+@media (max-width: 900px) and (orientation: portrait) {
+    #dashboardScreen .dashboard-v2-header-actions {
+        margin-left: 0;
+        gap: 8px 14px;
+    }
+
+    #dashboardScreen .dashboard-v2-header-actions .dashboard-classroom-button {
+        flex: 1 0 100%;
+        width: 100%;
+    }
+
+    #dashboardScreen .dashboard-v2-header-actions button[onclick="showTeacherScreen()"] {
+        flex: 0 0 auto;
+        width: min(75%, calc(100% - 74px));
+        height: 48px;
+        white-space: nowrap;
+    }
+
+    #dashboardScreen .dashboard-header-import-wrap {
+        flex: 0 0 auto;
+    }
+
+    #dashboardScreen .dashboard-select-button {
+        min-height: 48px;
+        height: auto;
+        padding: 12px var(--space-lg);
     }
 }
 
@@ -10738,5 +10852,342 @@ button.game-library-button:focus-visible {
         min-height: 0;
         margin: 0;
         text-align: center;
+    }
+}
+
+/* Shared compact mobile portrait header for Classroom Mode activity screens.
+   Left: circular icon-only Back button. Center: card progress. Right: Settings. */
+.classroom-mobile-header {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    width: 100%;
+    min-width: 0;
+}
+
+.classroom-mobile-progress {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    font-size: clamp(16px, 4.2vw, 20px);
+    font-weight: var(--font-weight-button);
+    color: var(--sea-deep);
+    text-align: center;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.classroom-mobile-icon-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    margin: 0;
+    border: 1px solid rgba(120, 190, 215, 0.45);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--sea-deep);
+    box-shadow: 0 2px 6px rgba(7, 59, 76, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.classroom-mobile-icon-button svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.classroom-mobile-icon-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: #ffffff;
+    border-color: rgba(63, 169, 245, 0.45);
+    box-shadow: 0 3px 8px rgba(7, 59, 76, 0.12);
+}
+
+.classroom-mobile-icon-button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(7, 59, 76, 0.1);
+}
+
+.classroom-mobile-icon-button:focus-visible {
+    outline: 2px solid var(--wf-color-aqua-outline);
+    outline-offset: 2px;
+}
+
+.classroom-settings-popover {
+    display: none;
+}
+
+@media (max-width: 620px) and (orientation: portrait) {
+    .classroom-presentation-main {
+        display: grid !important;
+        grid-template-rows: auto auto !important;
+        grid-template-columns: 1fr !important;
+        row-gap: 61px !important;
+        column-gap: 0 !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        transform: none !important;
+        overflow: visible !important;
+        align-items: start !important;
+        align-content: start !important;
+    }
+
+    .classroom-presentation-image-column {
+        grid-row: 1 !important;
+    }
+
+    .classroom-presentation-text-column {
+        grid-row: 2 !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 12px !important;
+    }
+
+    .classroom-presentation-header,
+    .classroom-flashcards-header,
+    .classroom-text-flashcards-header,
+    .classroom-vocabulary-board-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-sm);
+    }
+
+    .classroom-presentation-header > :not(.classroom-mobile-header),
+    .classroom-flashcards-header > :not(.classroom-mobile-header),
+    .classroom-text-flashcards-header > :not(.classroom-mobile-header),
+    .classroom-vocabulary-board-header > :not(.classroom-mobile-header) {
+        display: none;
+    }
+
+    .classroom-presentation-header .classroom-mobile-header,
+    .classroom-flashcards-header .classroom-mobile-header,
+    .classroom-text-flashcards-header .classroom-mobile-header,
+    .classroom-vocabulary-board-header .classroom-mobile-header {
+        display: flex;
+    }
+
+    /* The Translation direction toolbar is hidden on mobile portrait; its control is surfaced through the Settings popover. */
+    .classroom-text-flashcards-toolbar {
+        display: none;
+    }
+
+    .classroom-mobile-header {
+        position: relative;
+    }
+
+    .classroom-nav-arrow {
+        display: none;
+    }
+
+    .classroom-settings-popover {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: auto;
+        min-width: 0;
+        max-width: calc(100vw - 24px);
+        max-height: calc(100vh - 24px);
+        padding: 10px;
+        background: #ffffff;
+        border: 1px solid rgba(160, 215, 240, 0.55);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 8px 24px rgba(7, 59, 76, 0.18);
+        z-index: 10000;
+        display: none;
+        overflow: auto;
+    }
+
+    .classroom-settings-popover.classroom-settings-popover-open {
+        display: inline-block;
+    }
+
+    .classroom-settings-popover-content {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .classroom-mobile-settings-button[aria-expanded="true"] {
+        background: #ffffff;
+        border-color: rgba(63, 169, 245, 0.55);
+        box-shadow: 0 3px 8px rgba(7, 59, 76, 0.12);
+    }
+
+    /* Direction-control container is a compact vertical group inside the popover. */
+    .classroom-settings-popover-content > .classroom-vocabulary-board-mode-control {
+        display: inline-flex !important;
+        width: auto !important;
+        min-width: 0 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        box-sizing: border-box;
+    }
+
+    /* Reused header controls become compact pill-shaped menu items inside the popover. */
+    .classroom-settings-popover-content > .wf-toolbar-button,
+    .classroom-settings-popover-content > .classroom-flashcard-mode-toggle,
+    .classroom-settings-popover-content > .classroom-fullscreen-button,
+    .classroom-settings-popover-content .classroom-vocabulary-board-mode-tab {
+        display: inline-flex !important;
+        width: auto !important;
+        min-width: 0 !important;
+        height: 32px !important;
+        min-height: 0 !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+        padding: 6px 14px !important;
+        margin: 0 !important;
+        border-radius: 999px !important;
+        font-size: 14px !important;
+        font-weight: var(--font-weight-button) !important;
+        text-align: left !important;
+        gap: 6px !important;
+        white-space: nowrap;
+        box-sizing: border-box;
+    }
+
+    /* Show the Fullscreen button label inside the popover. */
+    .classroom-settings-popover-content > .classroom-fullscreen-button > span {
+        display: inline !important;
+    }
+
+    /* Mobile portrait: Previous / Speaker / Next navigation row.
+       The existing speaker button is inserted between Previous and Next. */
+    .classroom-presentation-footer,
+    .classroom-flashcards-footer,
+    .classroom-text-flashcards-footer {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-evenly !important;
+        gap: 0 !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        flex-wrap: nowrap !important;
+    }
+
+    .classroom-presentation-footer .classroom-nav-prev-button,
+    .classroom-presentation-footer .classroom-nav-next-button,
+    .classroom-flashcards-footer .classroom-nav-prev-button,
+    .classroom-flashcards-footer .classroom-nav-next-button,
+    .classroom-text-flashcards-footer .classroom-nav-prev-button,
+    .classroom-text-flashcards-footer .classroom-nav-next-button {
+        flex: 0 0 auto !important;
+        width: calc((100% - 96px) / 2) !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        min-height: 48px !important;
+        height: auto !important;
+        padding: 12px 6px !important;
+        margin: 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+    }
+
+    .classroom-presentation-footer .classroom-presentation-pronounce-button,
+    .classroom-flashcards-footer .classroom-flashcards-pronounce-button,
+    .classroom-text-flashcards-footer .classroom-text-flashcards-pronounce-button {
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        flex: 0 0 48px !important;
+    }
+
+    /* Mobile portrait: move the image-flashcard sentence below the card and
+       remove the speaker button from that row. */
+    .classroom-flashcard-back {
+        overflow: visible !important;
+    }
+
+    #classroomFlashcard:not(.classroom-flashcard-flipped) .classroom-flashcard-english-row {
+        display: none !important;
+    }
+
+    #classroomFlashcard.classroom-flashcard-flipped .classroom-flashcard-english-row {
+        position: absolute !important;
+        top: calc(100% + 16px) !important;
+        left: 0 !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0 !important;
+        flex-wrap: nowrap !important;
+        padding: 0 clamp(16px, 4vw, 24px) !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .classroom-flashcard-english-row .classroom-flashcards-pronounce-button {
+        display: none !important;
+    }
+
+    #classroomFlashcard.classroom-flashcard-flipped .classroom-flashcard-english {
+        flex: 0 1 auto !important;
+        min-width: 0 !important;
+        flex-shrink: 1 !important;
+        width: auto !important;
+        max-width: 100% !important;
+        text-align: center !important;
+    }
+
+    /* Mobile portrait Text Flashcards: keep the text inside the card and
+       remove the speaker button from the text row. */
+    .classroom-text-flashcard-text-row .classroom-text-flashcards-pronounce-button {
+        display: none !important;
+    }
+
+    /* Mobile portrait Presentation: keep the sentence below the image card
+       and remove the speaker button from the sentence row. */
+    #classroomPresentationScreen .classroom-presentation-text-column {
+        justify-content: flex-start !important;
+        padding-top: 0 !important;
+        padding-bottom: 12px !important;
+    }
+
+    #classroomPresentationScreen .classroom-presentation-english-row {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0 !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .classroom-presentation-english-row .classroom-presentation-pronounce-button {
+        display: none !important;
+    }
+
+    #classroomPresentationScreen .classroom-presentation-english {
+        flex: 0 1 auto !important;
+        min-width: 0 !important;
+        width: auto !important;
+        max-width: 100% !important;
+        text-align: center !important;
     }
 }

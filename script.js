@@ -29,6 +29,8 @@ let deleteConfirmMode = "single";
 let pendingBulkDeleteSetIds = [];
 let pendingPermanentDeleteSetIds = [];
 let pendingBulkDuplicateSetIds = [];
+let pendingDeleteAnchorButton = null;
+let deleteConfirmRepositionHandler = null;
 let currentCardMistakes = 0;
 let totalWrongAttempts = 0;
 let unscrambleClueIndex = -1;
@@ -38,6 +40,10 @@ let listenWriteChecking = false;
 let lastGameOrderSignature = "";
 let currentScreenId = "";
 let suppressHistoryPush = false;
+
+const DELETE_CONFIRM_MOBILE_MAX_WIDTH = 620;
+const DELETE_CONFIRM_ANCHOR_GAP = 8;
+const DELETE_CONFIRM_VIEWPORT_PADDING = 12;
 let gameLaunchSource = "editor";
 let classroomSelectedSetId = null;
 let classroomPresentationCards = [];
@@ -69,6 +75,7 @@ let classroomVocabularyBoardSetName = "";
 let classroomVocabularyBoardMode = "pictureEnglish";
 let classroomVocabularyBoardCards = [];
 let classroomVocabularyBoardCardSize = "medium";
+const classroomMobileSpeakerOrigins = new Map();
 const GAME_CONTEXT_STORAGE_KEY = "wordfish_game_context";
 const BUILDER_CONTEXT_STORAGE_KEY = "wordfish_builder_context";
 const CLASSROOM_PRESENTATION_CONTEXT_STORAGE_KEY = "wordfish_classroom_presentation_context";
@@ -1051,7 +1058,7 @@ function buildSetCardOverflowMenuPanelHtml(setId, disabledAttr) {
                 ${duplicateItem}
                 ${menuRow("export", "Export", ` onclick="closeAllSetCardOverflowMenus(); exportSet('${escapeAttribute(setId)}')"`)}
                 <div class="set-overflow-menu-divider" role="separator"></div>
-                <button type="button" class="set-overflow-menu-item set-overflow-menu-item--danger" role="menuitem" onclick="closeAllSetCardOverflowMenus(); deleteSet('${escapeAttribute(setId)}')"${disabledAttr}>
+                <button type="button" class="set-overflow-menu-item set-overflow-menu-item--danger" role="menuitem" onclick="deleteSet('${escapeAttribute(setId)}', this)"${disabledAttr}>
                     <span class="set-overflow-menu-item__icon" aria-hidden="true">${menuIcons.delete}</span>
                     <span class="set-overflow-menu-item__label">Delete</span>
                 </button>
@@ -1666,6 +1673,16 @@ function restoreClassroomPresentationShuffleState(context, cardCount) {
     }
 }
 
+function updateClassroomMobileProgress(screenId, current, total) {
+    const progress = document.querySelector(`.classroom-mobile-progress[data-screen="${screenId}"]`);
+    if (!progress) return;
+    if (screenId === "classroomVocabularyBoardScreen") {
+        progress.textContent = `${current} cards`;
+    } else {
+        progress.textContent = `${current} of ${total}`;
+    }
+}
+
 function applyClassroomPresentationCardContent(options = {}) {
     const card = getClassroomPresentationCurrentCard();
     const total = classroomPresentationCards.length;
@@ -1673,6 +1690,7 @@ function applyClassroomPresentationCardContent(options = {}) {
 
     document.getElementById("classroomPresentationHeaderMeta").textContent =
         `${classroomPresentationSetName} • Card ${current} of ${total}`;
+    updateClassroomMobileProgress("classroomPresentationScreen", current, total);
     document.getElementById("classroomPresentationEnglish").textContent = card.english;
 
     const translationEl = document.getElementById("classroomPresentationTranslation");
@@ -1794,7 +1812,16 @@ function updateClassroomPresentationNav() {
 
     prevButton.disabled = loopEnabled ? false : isFirst;
     prevButton.classList.toggle("disabled-button", loopEnabled ? false : isFirst);
-    nextButton.textContent = isLast && !loopEnabled ? "Finish" : "Next →";
+
+    const nextLabel = nextButton.querySelector(".classroom-nav-label");
+    const nextArrow = nextButton.querySelector(".classroom-nav-arrow");
+    if (isLast && !loopEnabled) {
+        if (nextLabel) nextLabel.textContent = "Finish";
+        if (nextArrow) nextArrow.hidden = true;
+    } else {
+        if (nextLabel) nextLabel.textContent = "Next";
+        if (nextArrow) nextArrow.hidden = false;
+    }
 }
 
 function classroomPresentationPrevious() {
@@ -2583,6 +2610,7 @@ function applyClassroomFlashcardContent(options = {}) {
 
     document.getElementById("classroomFlashcardsHeaderMeta").textContent =
         `${classroomFlashcardsSetName} • Card ${current} of ${total}`;
+    updateClassroomMobileProgress("classroomFlashcardsScreen", current, total);
 
     const english = card.english;
     const translation = getClassroomCardTranslation(card) || "—";
@@ -2701,8 +2729,9 @@ function updateClassroomFlashcardsPronounceButton() {
     const isAvailable = typeof isEnglishPronunciationAvailable === "function"
         && isEnglishPronunciationAvailable();
     const englishWord = getClassroomFlashcardsEnglishWord();
+    const isBack = classroomFlashcardSide === "back";
 
-    pronounceButton.hidden = !isAvailable;
+    pronounceButton.hidden = !isAvailable || !isBack;
     pronounceButton.disabled = !isAvailable || englishWord === "";
 }
 
@@ -2748,6 +2777,7 @@ function toggleClassroomFlashcard() {
 
     classroomFlashcardSide = classroomFlashcardSide === "front" ? "back" : "front";
     updateClassroomFlashcardFlipUI();
+    updateClassroomFlashcardsPronounceButton();
     saveClassroomFlashcardsContext();
 
     if (classroomFlashcardSide === "back") {
@@ -3002,6 +3032,8 @@ function initClassroomFlashcardsControls() {
         document.documentElement.dataset.classroomFlashcardsFullscreenListenerAttached = "true";
         document.addEventListener("fullscreenchange", updateClassroomFlashcardsFullscreenButtonLabel);
     }
+
+    initClassroomMobileSpeakerLayout();
 }
 
 function startClassroomTextFlashcards(set, addToHistory = true) {
@@ -3099,6 +3131,7 @@ function applyClassroomTextFlashcardContent(options = {}) {
 
     document.getElementById("classroomTextFlashcardsHeaderMeta").textContent =
         `${classroomTextFlashcardsSetName} • Card ${current} of ${total}`;
+    updateClassroomMobileProgress("classroomTextFlashcardsScreen", current, total);
 
     document.getElementById("classroomTextFlashcardFrontText").textContent =
         getClassroomTextFlashcardFrontText(card);
@@ -3141,14 +3174,17 @@ function updateClassroomTextFlashcardsPronounceButton() {
     const englishWord = getClassroomTextFlashcardsEnglishWord();
     const englishOnFront = isClassroomTextFlashcardEnglishOnFront();
     const isDisabled = !isAvailable || englishWord === "";
+    const side = classroomTextFlashcardSide;
 
     if (frontButton) {
-        frontButton.hidden = !isAvailable || !englishOnFront;
+        const frontVisible = side === "front" && englishOnFront;
+        frontButton.hidden = !isAvailable || !frontVisible;
         frontButton.disabled = isDisabled;
     }
 
     if (backButton) {
-        backButton.hidden = !isAvailable || englishOnFront;
+        const backVisible = side === "back" && !englishOnFront;
+        backButton.hidden = !isAvailable || !backVisible;
         backButton.disabled = isDisabled;
     }
 }
@@ -3195,6 +3231,7 @@ function toggleClassroomTextFlashcard() {
 
     classroomTextFlashcardSide = classroomTextFlashcardSide === "front" ? "back" : "front";
     updateClassroomTextFlashcardFlipUI();
+    updateClassroomTextFlashcardsPronounceButton();
     saveClassroomTextFlashcardsContext();
 }
 
@@ -3464,6 +3501,8 @@ function initClassroomTextFlashcardsControls() {
         document.documentElement.dataset.classroomTextFlashcardsFullscreenListenerAttached = "true";
         document.addEventListener("fullscreenchange", updateClassroomTextFlashcardsFullscreenButtonLabel);
     }
+
+    initClassroomMobileSpeakerLayout();
 }
 
 function getClassroomVocabularyBoardModeLabel(boardMode) {
@@ -3810,6 +3849,11 @@ function updateClassroomVocabularyBoardModeTabs() {
 
 function renderClassroomVocabularyBoard() {
     document.getElementById("classroomVocabularyBoardSetName").textContent = classroomVocabularyBoardSetName;
+    updateClassroomMobileProgress(
+        "classroomVocabularyBoardScreen",
+        classroomVocabularyBoardCards.length,
+        classroomVocabularyBoardCards.length
+    );
     updateClassroomVocabularyBoardModeTabs();
     updateClassroomVocabularyBoardCardSizeSelector();
     renderClassroomVocabularyBoardGrid();
@@ -4068,6 +4112,8 @@ function initClassroomPresentationControls() {
         document.documentElement.dataset.classroomFullscreenListenerAttached = "true";
         document.addEventListener("fullscreenchange", updateClassroomFullscreenButtonLabel);
     }
+
+    initClassroomMobileSpeakerLayout();
 }
 
 function initClassroomModeButton() {
@@ -4837,21 +4883,24 @@ async function confirmBulkDuplicate() {
     }
 }
 
-function deleteSet(indexOrId) {
+function deleteSet(indexOrId, anchorButton) {
     if (dashboardSelectionMode) return;
 
     const index = resolveSetIndex(indexOrId);
     if (index < 0) return;
 
-    openDeleteConfirm(index);
+    openDeleteConfirm(index, anchorButton);
+    closeAllSetCardOverflowMenus();
 }
 
-function openDeleteConfirm(index) {
+function openDeleteConfirm(index, anchorButton) {
     deleteConfirmMode = "single";
     pendingDeleteSetIndex = index;
+    pendingDeleteAnchorButton = anchorButton || null;
     pendingBulkDeleteSetIds = [];
     pendingPermanentDeleteSetIds = [];
 
+    const modal = document.getElementById("deleteConfirmModal");
     const setNameEl = document.getElementById("deleteConfirmSetName");
     document.getElementById("deleteConfirmTitle").textContent = "Delete vocabulary set?";
     document.getElementById("deleteConfirmBody").textContent = "Are you sure you want to delete";
@@ -4859,7 +4908,16 @@ function openDeleteConfirm(index) {
     setNameEl.style.display = "block";
     document.getElementById("deleteConfirmWarning").textContent = "This action cannot be undone.";
     document.getElementById("deleteConfirmActionButton").textContent = "Delete";
-    document.getElementById("deleteConfirmModal").style.display = "flex";
+
+    modal.style.display = "flex";
+    modal.classList.remove("is-anchored");
+    resetDeleteConfirmPosition();
+
+    if (pendingDeleteAnchorButton && isMobileDeleteConfirmAnchor()) {
+        modal.classList.add("is-anchored");
+        positionDeleteConfirmModal();
+        bindDeleteConfirmReposition();
+    }
 }
 
 function openBulkDeleteConfirm() {
@@ -4869,6 +4927,7 @@ function openBulkDeleteConfirm() {
 
     deleteConfirmMode = "bulk";
     pendingDeleteSetIndex = null;
+    pendingDeleteAnchorButton = null;
     pendingBulkDeleteSetIds = Array.from(dashboardSelectedSetIds);
     pendingPermanentDeleteSetIds = [];
 
@@ -4895,6 +4954,7 @@ function deleteForeverSet(setId) {
 
     deleteConfirmMode = "forever";
     pendingDeleteSetIndex = null;
+    pendingDeleteAnchorButton = null;
     pendingBulkDeleteSetIds = [];
     pendingPermanentDeleteSetIds = [setId];
     configureDeleteForeverModal();
@@ -4908,6 +4968,7 @@ function openBulkDeleteForeverConfirm() {
 
     deleteConfirmMode = "foreverBulk";
     pendingDeleteSetIndex = null;
+    pendingDeleteAnchorButton = null;
     pendingBulkDeleteSetIds = [];
     pendingPermanentDeleteSetIds = Array.from(dashboardSelectedSetIds);
     configureDeleteForeverModal();
@@ -4918,14 +4979,109 @@ function closeDeleteConfirm() {
     pendingDeleteSetIndex = null;
     pendingBulkDeleteSetIds = [];
     pendingPermanentDeleteSetIds = [];
+    pendingDeleteAnchorButton = null;
     deleteConfirmMode = "single";
-    document.getElementById("deleteConfirmModal").style.display = "none";
+    const modal = document.getElementById("deleteConfirmModal");
+    modal.style.display = "none";
+    modal.classList.remove("is-anchored");
+    resetDeleteConfirmPosition();
+    unbindDeleteConfirmReposition();
 }
 
 function closeDeleteConfirmOnBackdrop(event) {
     if (event.target === event.currentTarget) {
         closeDeleteConfirm();
     }
+}
+
+function isMobileDeleteConfirmAnchor() {
+    return window.innerWidth <= DELETE_CONFIRM_MOBILE_MAX_WIDTH;
+}
+
+function resetDeleteConfirmPosition(card) {
+    const target = card || document.querySelector("#deleteConfirmModal .modal-card");
+    if (!target) {
+        return;
+    }
+    target.style.position = "";
+    target.style.top = "";
+    target.style.left = "";
+    target.style.width = "";
+    target.style.maxWidth = "";
+    target.style.margin = "";
+    target.style.visibility = "";
+}
+
+function positionDeleteConfirmModal() {
+    const modal = document.getElementById("deleteConfirmModal");
+    const card = modal && modal.querySelector(".modal-card");
+    const anchor = pendingDeleteAnchorButton;
+    if (!modal || !card || !anchor) {
+        return;
+    }
+
+    if (!isMobileDeleteConfirmAnchor()) {
+        modal.classList.remove("is-anchored");
+        resetDeleteConfirmPosition(card);
+        return;
+    }
+
+    const anchorRect = anchor.getBoundingClientRect();
+    if (anchorRect.width === 0 || anchorRect.height === 0) {
+        return;
+    }
+
+    resetDeleteConfirmPosition(card);
+    card.style.position = "absolute";
+    card.style.width = "auto";
+    card.style.maxWidth = `calc(100vw - ${DELETE_CONFIRM_VIEWPORT_PADDING * 2}px)`;
+    card.style.margin = "0";
+    card.style.visibility = "hidden";
+
+    const cardRect = card.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const gap = DELETE_CONFIRM_ANCHOR_GAP;
+    const padding = DELETE_CONFIRM_VIEWPORT_PADDING;
+
+    const spaceAbove = anchorRect.top - padding;
+    const spaceBelow = viewportHeight - anchorRect.bottom - padding;
+
+    let desiredTop;
+    if (spaceAbove >= cardRect.height + gap) {
+        desiredTop = anchorRect.top - cardRect.height - gap;
+    } else if (spaceBelow >= cardRect.height + gap) {
+        desiredTop = anchorRect.bottom + gap;
+    } else if (spaceAbove > spaceBelow) {
+        desiredTop = anchorRect.top - cardRect.height - gap;
+    } else {
+        desiredTop = anchorRect.bottom + gap;
+    }
+
+    let desiredLeft = anchorRect.left + (anchorRect.width - cardRect.width) / 2;
+    desiredLeft = Math.max(padding, Math.min(desiredLeft, viewportWidth - cardRect.width - padding));
+
+    desiredTop = Math.max(padding, Math.min(desiredTop, viewportHeight - cardRect.height - padding));
+
+    card.style.top = `${desiredTop}px`;
+    card.style.left = `${desiredLeft}px`;
+    card.style.visibility = "";
+}
+
+function bindDeleteConfirmReposition() {
+    unbindDeleteConfirmReposition();
+    deleteConfirmRepositionHandler = () => positionDeleteConfirmModal();
+    window.addEventListener("resize", deleteConfirmRepositionHandler);
+    window.addEventListener("scroll", deleteConfirmRepositionHandler, true);
+}
+
+function unbindDeleteConfirmReposition() {
+    if (!deleteConfirmRepositionHandler) {
+        return;
+    }
+    window.removeEventListener("resize", deleteConfirmRepositionHandler);
+    window.removeEventListener("scroll", deleteConfirmRepositionHandler, true);
+    deleteConfirmRepositionHandler = null;
 }
 
 async function confirmDeleteAction() {
@@ -5949,7 +6105,7 @@ function renderCards() {
                     >
                         <p class="word-card-image-delete-confirm__message">Delete this card?<br>This action cannot be undone.</p>
                         <div class="word-card-image-delete-confirm__actions">
-                            <button type="button" class="word-card-image-delete-confirm__cancel" onclick="closeWordCardImageDeleteConfirm()">Cancel</button>
+                            <button type="button" class="soft-button wf-cta-neutral" onclick="closeWordCardImageDeleteConfirm()">Cancel</button>
                             <button type="button" class="word-card-image-delete-confirm__confirm wf-cta-danger" onclick="deleteWord(${i})">Delete</button>
                         </div>
                     </div>
@@ -8870,6 +9026,337 @@ async function logout() {
     displayScreen("authScreen");
 }
 
+function openDashboardMobileSidebar() {
+    const sidebar = document.getElementById("dashboardSidebar");
+    const backdrop = document.querySelector(".dashboard-mobile-sidebar-backdrop");
+    const menuButton = document.querySelector(".dashboard-mobile-menu-button");
+    if (!sidebar) return;
+
+    sidebar.classList.add("is-open");
+    if (backdrop) backdrop.classList.add("is-open");
+    if (menuButton) menuButton.setAttribute("aria-expanded", "true");
+    document.documentElement.classList.add("mobile-sidebar-open");
+}
+
+function closeDashboardMobileSidebar() {
+    const sidebar = document.getElementById("dashboardSidebar");
+    const backdrop = document.querySelector(".dashboard-mobile-sidebar-backdrop");
+    const menuButton = document.querySelector(".dashboard-mobile-menu-button");
+    if (!sidebar) return;
+
+    sidebar.classList.remove("is-open");
+    if (backdrop) backdrop.classList.remove("is-open");
+    if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+    document.documentElement.classList.remove("mobile-sidebar-open");
+}
+
+function toggleDashboardMobileSidebar() {
+    const sidebar = document.getElementById("dashboardSidebar");
+    if (!sidebar) return;
+
+    if (sidebar.classList.contains("is-open")) {
+        closeDashboardMobileSidebar();
+    } else {
+        openDashboardMobileSidebar();
+    }
+}
+
+function initDashboardMobileSidebar() {
+    const sidebar = document.getElementById("dashboardSidebar");
+    const backdrop = document.querySelector(".dashboard-mobile-sidebar-backdrop");
+    if (!sidebar) return;
+
+    sidebar.addEventListener("click", (event) => {
+        const item = event.target.closest(".wf-sidebar-item");
+        if (item) {
+            closeDashboardMobileSidebar();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && sidebar.classList.contains("is-open")) {
+            closeDashboardMobileSidebar();
+        }
+    });
+
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 900 && sidebar.classList.contains("is-open")) {
+            closeDashboardMobileSidebar();
+        }
+    });
+}
+
+function isClassroomMobilePortrait() {
+    return window.matchMedia('(max-width: 620px) and (orientation: portrait)').matches;
+}
+
+function getClassroomMobileSpeakerConfig() {
+    return [
+        {
+            screenId: "classroomPresentationScreen",
+            footerSelector: ".classroom-presentation-footer",
+            nextButtonId: "classroomNextButton",
+            buttons: ["classroomPresentationPronounceButton"],
+            originalParents: [".classroom-presentation-english-row"],
+        },
+        {
+            screenId: "classroomFlashcardsScreen",
+            footerSelector: ".classroom-flashcards-footer",
+            nextButtonId: "classroomFlashcardsNextButton",
+            buttons: ["classroomFlashcardsPronounceButton"],
+            originalParents: [".classroom-flashcard-english-row"],
+        },
+        {
+            screenId: "classroomTextFlashcardsScreen",
+            footerSelector: ".classroom-text-flashcards-footer",
+            nextButtonId: "classroomTextFlashcardsNextButton",
+            buttons: ["classroomTextFlashcardsPronounceButtonFront", "classroomTextFlashcardsPronounceButtonBack"],
+            originalParents: [".classroom-text-flashcard-front .classroom-text-flashcard-text-row", ".classroom-text-flashcard-back .classroom-text-flashcard-text-row"],
+        },
+    ];
+}
+
+function updateClassroomMobileSpeakerLayout() {
+    const isMobilePortrait = isClassroomMobilePortrait();
+
+    getClassroomMobileSpeakerConfig().forEach(({ screenId, footerSelector, nextButtonId, buttons, originalParents }) => {
+        const screen = document.getElementById(screenId);
+        if (!screen) {
+            return;
+        }
+
+        const footer = screen.querySelector(footerSelector);
+        const nextButton = document.getElementById(nextButtonId);
+        if (!footer || !nextButton) {
+            return;
+        }
+
+        buttons.forEach((buttonId, index) => {
+            const button = document.getElementById(buttonId);
+            if (!button) {
+                return;
+            }
+
+            const originalSelector = originalParents[index];
+            const originalParent = originalSelector ? document.querySelector(originalSelector) : null;
+
+            if (isMobilePortrait) {
+                if (originalParent && !classroomMobileSpeakerOrigins.has(buttonId)) {
+                    classroomMobileSpeakerOrigins.set(buttonId, {
+                        originalParent,
+                        originalNextSibling: button.nextElementSibling,
+                    });
+                }
+
+                if (button.parentElement !== footer) {
+                    footer.insertBefore(button, nextButton);
+                }
+            } else {
+                const origin = classroomMobileSpeakerOrigins.get(buttonId);
+                if (origin && origin.originalParent && button.parentElement !== origin.originalParent) {
+                    if (origin.originalNextSibling && origin.originalNextSibling.parentElement === origin.originalParent) {
+                        origin.originalParent.insertBefore(button, origin.originalNextSibling);
+                    } else {
+                        origin.originalParent.appendChild(button);
+                    }
+                }
+            }
+        });
+    });
+}
+
+function initClassroomMobileSpeakerLayout() {
+    updateClassroomMobileSpeakerLayout();
+
+    if (window.classroomMobileSpeakerResizeListenerAttached === "true") {
+        return;
+    }
+
+    window.classroomMobileSpeakerResizeListenerAttached = "true";
+    window.addEventListener("resize", updateClassroomMobileSpeakerLayout);
+    window.addEventListener("orientationchange", updateClassroomMobileSpeakerLayout);
+}
+
+function findClassroomScreenForSettingsPopover(mobileHeader) {
+    return mobileHeader.closest('[id$="Screen"]');
+}
+
+function findClassroomHeaderActions(screenElement) {
+    if (!screenElement) return null;
+    return screenElement.querySelector('[class$="-header-actions"]');
+}
+
+let activeClassroomSettingsHeader = null;
+let activeClassroomSettingsPopover = null;
+
+function closeAllClassroomSettingsPopovers() {
+    if (activeClassroomSettingsHeader) {
+        closeClassroomSettingsPopover(activeClassroomSettingsHeader);
+    }
+}
+
+function positionClassroomSettingsPopover(settingsButton, popover) {
+    const rect = settingsButton.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const right = Math.max(12, viewportWidth - rect.right);
+    const top = rect.bottom + 8;
+    const maxWidth = viewportWidth - right - 12;
+    const maxHeight = viewportHeight - top - 12;
+
+    popover.style.position = 'fixed';
+    popover.style.top = `${top}px`;
+    popover.style.right = `${right}px`;
+    popover.style.left = 'auto';
+    popover.style.maxWidth = `${maxWidth}px`;
+    popover.style.maxHeight = `${maxHeight}px`;
+    popover.style.zIndex = '10000';
+}
+
+function repositionActiveClassroomSettingsPopover() {
+    if (activeClassroomSettingsPopover && activeClassroomSettingsHeader) {
+        const settingsButton = activeClassroomSettingsHeader.querySelector('.classroom-mobile-settings-button');
+        if (settingsButton) positionClassroomSettingsPopover(settingsButton, activeClassroomSettingsPopover);
+    }
+}
+
+function openClassroomSettingsPopover(mobileHeader) {
+    if (!isClassroomMobilePortrait()) return;
+
+    const popover = mobileHeader.querySelector('.classroom-settings-popover');
+    const content = popover ? popover.querySelector('.classroom-settings-popover-content') : null;
+    const settingsButton = mobileHeader.querySelector('.classroom-mobile-settings-button');
+    const screenElement = findClassroomScreenForSettingsPopover(mobileHeader);
+    if (!popover || !content || !settingsButton || !screenElement) return;
+
+    closeAllClassroomSettingsPopovers();
+
+    const actions = findClassroomHeaderActions(screenElement);
+    if (actions) {
+        // Move the actual control buttons, leaving Back and any jump/search widget in place.
+        const buttons = Array.from(actions.querySelectorAll(':scope > button:not(.classroom-back-button)'));
+        buttons.forEach((button) => {
+            button.dataset.wfSettingsOriginalParent = 'actions';
+            content.appendChild(button);
+        });
+    }
+
+    if (screenElement.id === 'classroomTextFlashcardsScreen') {
+        const toolbar = screenElement.querySelector('.classroom-text-flashcards-toolbar');
+        const directionControl = toolbar ? toolbar.querySelector('.classroom-vocabulary-board-mode-control') : null;
+        if (directionControl) {
+            directionControl.dataset.wfSettingsOriginalParent = 'toolbar';
+            content.appendChild(directionControl);
+        }
+    }
+
+    document.body.appendChild(popover);
+    activeClassroomSettingsHeader = mobileHeader;
+    activeClassroomSettingsPopover = popover;
+
+    positionClassroomSettingsPopover(settingsButton, popover);
+
+    popover.classList.add('classroom-settings-popover-open');
+    popover.setAttribute('aria-hidden', 'false');
+    settingsButton.setAttribute('aria-expanded', 'true');
+}
+
+function closeClassroomSettingsPopover(mobileHeader) {
+    const header = activeClassroomSettingsHeader || mobileHeader;
+    const popover = activeClassroomSettingsPopover || (header ? header.querySelector('.classroom-settings-popover') : null);
+    if (!header || !popover) return;
+
+    const content = popover.querySelector('.classroom-settings-popover-content');
+    const settingsButton = header.querySelector('.classroom-mobile-settings-button');
+    const screenElement = findClassroomScreenForSettingsPopover(header);
+    if (!content || !screenElement) {
+        popover.classList.remove('classroom-settings-popover-open');
+        popover.setAttribute('aria-hidden', 'true');
+        if (settingsButton) settingsButton.setAttribute('aria-expanded', 'false');
+        return;
+    }
+
+    const actions = findClassroomHeaderActions(screenElement);
+    const toolbar = screenElement.querySelector('.classroom-text-flashcards-toolbar');
+
+    const children = Array.from(content.children);
+    children.forEach((child) => {
+        const original = child.dataset.wfSettingsOriginalParent;
+        delete child.dataset.wfSettingsOriginalParent;
+        if (original === 'toolbar' && toolbar) {
+            toolbar.appendChild(child);
+        } else if (actions) {
+            actions.appendChild(child);
+        } else if (original === 'toolbar' && !toolbar && actions) {
+            actions.appendChild(child);
+        }
+    });
+
+    popover.classList.remove('classroom-settings-popover-open');
+    popover.setAttribute('aria-hidden', 'true');
+    if (settingsButton) settingsButton.setAttribute('aria-expanded', 'false');
+
+    popover.style.position = '';
+    popover.style.top = '';
+    popover.style.right = '';
+    popover.style.left = '';
+    popover.style.maxWidth = '';
+    popover.style.maxHeight = '';
+    popover.style.zIndex = '';
+
+    header.appendChild(popover);
+
+    activeClassroomSettingsHeader = null;
+    activeClassroomSettingsPopover = null;
+}
+
+function toggleClassroomSettingsPopover(mobileHeader) {
+    if (activeClassroomSettingsHeader === mobileHeader) {
+        closeClassroomSettingsPopover(mobileHeader);
+    } else {
+        openClassroomSettingsPopover(mobileHeader);
+    }
+}
+
+function initClassroomMobileSettingsPopovers() {
+    document.addEventListener('click', (event) => {
+        const inside = event.target.closest('.classroom-mobile-header') || event.target.closest('.classroom-settings-popover');
+        if (!inside) {
+            closeAllClassroomSettingsPopovers();
+        }
+    });
+
+    window.addEventListener('resize', repositionActiveClassroomSettingsPopover);
+    window.addEventListener('orientationchange', repositionActiveClassroomSettingsPopover);
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeAllClassroomSettingsPopovers();
+        }
+    });
+
+    const mobileQuery = window.matchMedia('(max-width: 620px) and (orientation: portrait)');
+    const handleMediaChange = () => {
+        if (!mobileQuery.matches) {
+            closeAllClassroomSettingsPopovers();
+        }
+    };
+    if (mobileQuery.addEventListener) {
+        mobileQuery.addEventListener('change', handleMediaChange);
+    } else if (mobileQuery.addListener) {
+        mobileQuery.addListener(handleMediaChange);
+    }
+
+    document.body.addEventListener('click', (event) => {
+        const settingsButton = event.target.closest('.classroom-mobile-settings-button');
+        if (!settingsButton) return;
+        if (!isClassroomMobilePortrait()) return;
+        event.stopPropagation();
+        const mobileHeader = settingsButton.closest('.classroom-mobile-header');
+        if (mobileHeader) toggleClassroomSettingsPopover(mobileHeader);
+    });
+}
+
 function initApp() {
     initClassroomModeButton();
     initClassroomPresentationControls();
@@ -8879,6 +9366,7 @@ function initApp() {
     initClassroomFlashcardsControls();
     initClassroomTextFlashcardsControls();
     initClassroomVocabularyBoardControls();
+    initClassroomMobileSettingsPopovers();
     initClassroomShortcutsHint();
     initSetCardOverflowMenus();
     initBuilderHeaderColorPicker();
@@ -8888,6 +9376,7 @@ function initApp() {
     initGameControls();
     initUnscrambleDragAndDrop();
     initListenWriteControls();
+    initDashboardMobileSidebar();
 
     supabaseClient.auth.onAuthStateChange((event, session) => {
         if (event === "PASSWORD_RECOVERY") {
