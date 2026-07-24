@@ -1136,25 +1136,30 @@ button:active {
         align-items: center;
         justify-content: center;
         position: absolute;
-        top: 12px;
-        right: 12px;
-        width: 36px;
-        height: 36px;
+        top: 8px;
+        right: 8px;
+        width: 28px;
+        height: 28px;
         padding: 0;
         margin: 0;
-        border: 1px solid rgba(120, 190, 215, 0.45);
-        border-radius: 10px;
-        background: rgba(255, 255, 255, 0.94);
+        border: none;
+        border-radius: 0;
+        background: transparent;
         color: var(--wf-ocean-ink);
-        box-shadow: 0 2px 6px rgba(7, 59, 76, 0.1);
+        box-shadow: none;
         cursor: pointer;
         z-index: 2;
+    }
+
+    .dashboard-sidebar-close svg {
+        width: 20px;
+        height: 20px;
     }
 
     .dashboard-sidebar-content {
         height: auto;
         min-height: 100vh;
-        padding-top: 60px;
+        padding-top: 48px;
     }
 
     .dashboard-sidebar-decoration {
@@ -3277,7 +3282,7 @@ html.mobile-sidebar-open body {
     display: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px), (orientation: landscape) and (max-height: 500px) {
     #gameScreen[data-mode="translation"] .game-translate-row {
         display: grid;
         grid-template-columns: 1fr auto 1fr;
@@ -3775,7 +3780,7 @@ h2 {
     padding: clamp(22px, 3vw, 34px);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px), (orientation: landscape) and (max-height: 500px) {
     #gameScreen {
         width: min(800px, 92vw);
         min-height: unset;
@@ -7323,6 +7328,63 @@ h2 {
     }
 }
 
+/* Mobile Small cards: scale content and fit more columns. */
+@media (max-width: 620px) and (orientation: portrait), (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+    .classroom-vocabulary-board-grid-size-small {
+        --vocab-board-gap: 0.4rem;
+        --vocab-board-card-radius: 0.4rem;
+        --vocab-board-card-border-width: 1px;
+        --vocab-board-label-font: clamp(13px, 0.8rem + 0.12vw, 14px);
+        --vocab-board-label-padding-y: 0.25rem;
+        --vocab-board-label-padding-x: 0.35rem;
+        --vocab-board-label-radius: 0.3rem;
+        --vocab-board-label-inset: 0.25rem;
+        --vocab-board-english-font: clamp(15px, 0.96rem + 0.16vw, 17px);
+        --vocab-board-thai-font: clamp(10px, 0.65rem + 0.08vw, 11px);
+        --vocab-board-text-gap: 0.2rem;
+        --vocab-board-text-padding: 0.4rem;
+        --vocab-board-placeholder-icon: 1.6rem;
+        --vocab-board-placeholder-label: 0.6rem;
+    }
+
+    #classroomVocabularyBoardScreen .classroom-vocabulary-board-grid-size-small .classroom-vocabulary-board-pronounce-button {
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        min-height: 30px;
+    }
+
+    #classroomVocabularyBoardScreen .classroom-vocabulary-board-grid-size-small .classroom-vocabulary-board-pronounce-button svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+@media (max-width: 620px) and (orientation: portrait) {
+    .classroom-vocabulary-board-grid-size-small {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .classroom-vocabulary-board-grid-size-medium,
+    .classroom-vocabulary-board-grid-size-large {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+    .classroom-vocabulary-board-grid-size-small {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .classroom-vocabulary-board-grid-size-medium {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .classroom-vocabulary-board-grid-size-large {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 .classroom-vocabulary-board-card {
     min-width: 0;
 }
@@ -7760,7 +7822,7 @@ h2 {
 }
 
 /* Picture Mode — balanced compact layout (laptop / board) */
-@media (min-width: 621px) {
+@media (min-width: 621px), (orientation: landscape) and (max-height: 500px) {
     #gameScreen[data-mode="picture"] {
         min-height: unset;
         padding: clamp(16px, 2.2vh, 28px) clamp(18px, 2.5vw, 32px);
@@ -7843,7 +7905,7 @@ h2 {
     }
 }
 
-@media (max-height: 820px) and (min-width: 621px) {
+@media (max-height: 820px) and (min-width: 621px), (orientation: landscape) and (max-height: 500px) {
     #gameScreen[data-mode="picture"] {
         padding: clamp(12px, 1.6vh, 20px) clamp(16px, 2vw, 28px);
     }
@@ -9159,7 +9221,7 @@ body:has(#dashboardScreen[style*="display:block"]) .dashboard-fish-layer {
     z-index: 1;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (orientation: landscape) and (max-height: 500px) {
     #dashboardScreen .dashboard-v2-header {
         flex-wrap: wrap;
     }
@@ -9171,8 +9233,8 @@ body:has(#dashboardScreen[style*="display:block"]) .dashboard-fish-layer {
     }
 }
 
-/* Dashboard portrait-only header and toolbar adjustments */
-@media (max-width: 900px) and (orientation: portrait) {
+/* Dashboard mobile header and toolbar adjustments (portrait + phone landscape) */
+@media (max-width: 900px) and (orientation: portrait), (orientation: landscape) and (max-height: 500px) {
     #dashboardScreen .dashboard-v2-header-actions {
         margin-left: 0;
         gap: 8px 14px;
@@ -10160,7 +10222,7 @@ button.game-library-button:focus-visible {
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px), (orientation: landscape) and (max-height: 500px) {
     #gameScreen[data-mode="unscramble"] {
         padding: clamp(8px, 1vh, 12px) clamp(18px, 2.5vw, 32px);
     }
@@ -10560,7 +10622,7 @@ button.game-library-button:focus-visible {
     overflow: visible;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px), (orientation: landscape) and (max-height: 500px) {
     #gameScreen[data-mode="translation"] .game-content {
         margin-bottom: 0;
     }
@@ -10793,7 +10855,7 @@ button.game-library-button:focus-visible {
     cursor: not-allowed;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px), (orientation: landscape) and (max-height: 500px) {
     #gameScreen[data-mode="listenWrite"] {
         margin-top: 164px;
         top: 0;
@@ -10926,12 +10988,12 @@ button.game-library-button:focus-visible {
     display: none;
 }
 
-@media (max-width: 620px) and (orientation: portrait) {
+@media (max-width: 620px) and (orientation: portrait), (max-width: 900px) and (orientation: landscape) {
     .classroom-presentation-main {
         display: grid !important;
         grid-template-rows: auto auto !important;
         grid-template-columns: 1fr !important;
-        row-gap: 61px !important;
+        row-gap: min(61px, 15dvh) !important;
         column-gap: 0 !important;
         margin-top: 0 !important;
         padding-top: 0 !important;
@@ -10939,6 +11001,12 @@ button.game-library-button:focus-visible {
         overflow: visible !important;
         align-items: start !important;
         align-content: start !important;
+    }
+
+    .classroom-flashcard,
+    .classroom-text-flashcard {
+        width: 100% !important;
+        height: min(62vh, 480px) !important;
     }
 
     .classroom-presentation-image-column {
@@ -10949,7 +11017,7 @@ button.game-library-button:focus-visible {
         grid-row: 2 !important;
         margin-top: 0 !important;
         padding-top: 0 !important;
-        padding-bottom: 12px !important;
+        padding-bottom: min(12px, 3dvh) !important;
     }
 
     .classroom-presentation-header,
@@ -10981,13 +11049,23 @@ button.game-library-button:focus-visible {
         display: none;
     }
 
+    /* Vocabulary Board controls are surfaced through the Settings popover on mobile. */
+    .classroom-vocabulary-board-controls {
+        display: none !important;
+    }
+
+    .classroom-vocabulary-board-screen {
+        grid-template-rows: auto minmax(0, 1fr) !important;
+    }
+
+    .classroom-text-flashcards-screen {
+        grid-template-rows: auto minmax(0, 1fr) auto !important;
+    }
+
     .classroom-mobile-header {
         position: relative;
     }
 
-    .classroom-nav-arrow {
-        display: none;
-    }
 
     .classroom-settings-popover {
         position: fixed;
@@ -11044,11 +11122,39 @@ button.game-library-button:focus-visible {
         box-sizing: border-box;
     }
 
-    /* Reused header controls become compact pill-shaped menu items inside the popover. */
+    /* Card-size control is a compact group inside the popover. */
+    .classroom-settings-popover-content > .classroom-vocabulary-board-size-control {
+        display: inline-flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 6px !important;
+        width: auto !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        box-sizing: border-box;
+    }
+
+    .classroom-settings-popover-content .classroom-vocabulary-board-size-label {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        padding: 0 0 2px 0 !important;
+        text-align: left !important;
+        white-space: nowrap;
+    }
+
+    /* Reused header controls and card-size buttons become compact pill-shaped menu items inside the popover. */
     .classroom-settings-popover-content > .wf-toolbar-button,
     .classroom-settings-popover-content > .classroom-flashcard-mode-toggle,
     .classroom-settings-popover-content > .classroom-fullscreen-button,
-    .classroom-settings-popover-content .classroom-vocabulary-board-mode-tab {
+    .classroom-settings-popover-content .classroom-vocabulary-board-mode-tab,
+    .classroom-settings-popover-content .classroom-vocabulary-board-size-button {
         display: inline-flex !important;
         width: auto !important;
         min-width: 0 !important;
@@ -11064,6 +11170,18 @@ button.game-library-button:focus-visible {
         text-align: left !important;
         gap: 6px !important;
         white-space: nowrap;
+        box-sizing: border-box;
+    }
+
+    /* Vocabulary Board Settings popover: Fullscreen and mode tabs share the same
+       height and vertical alignment; card-size buttons keep their own height. */
+    .classroom-settings-popover-content:has(> .classroom-vocabulary-board-size-control) > .classroom-fullscreen-button,
+    .classroom-settings-popover-content:has(> .classroom-vocabulary-board-size-control) .classroom-vocabulary-board-mode-tab {
+        height: 40px !important;
+        min-height: 40px !important;
+        line-height: 1.2 !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
         box-sizing: border-box;
     }
 
@@ -11097,9 +11215,9 @@ button.game-library-button:focus-visible {
         width: calc((100% - 96px) / 2) !important;
         min-width: 0 !important;
         max-width: none !important;
-        min-height: 48px !important;
+        min-height: min(48px, 12dvh) !important;
         height: auto !important;
-        padding: 12px 6px !important;
+        padding: min(12px, 3dvh) 6px !important;
         margin: 0 !important;
         white-space: nowrap !important;
         overflow: hidden !important;
@@ -11108,19 +11226,20 @@ button.game-library-button:focus-visible {
     .classroom-presentation-footer .classroom-presentation-pronounce-button,
     .classroom-flashcards-footer .classroom-flashcards-pronounce-button,
     .classroom-text-flashcards-footer .classroom-text-flashcards-pronounce-button {
-        width: 48px !important;
-        height: 48px !important;
-        min-width: 48px !important;
-        min-height: 48px !important;
+        width: min(48px, 12dvh) !important;
+        height: min(48px, 12dvh) !important;
+        min-width: min(48px, 12dvh) !important;
+        min-height: min(48px, 12dvh) !important;
         padding: 0 !important;
         margin: 0 !important;
-        flex: 0 0 48px !important;
+        flex: 0 0 min(48px, 12dvh) !important;
     }
 
-    /* Mobile portrait: move the image-flashcard sentence below the card and
-       remove the speaker button from that row. */
+    /* Mobile Flashcards: keep the English word and Thai translation inside the
+       flipped card. Hide the speaker button that remains inside the card so the
+       existing footer speaker (moved by JS) is the only one. */
     .classroom-flashcard-back {
-        overflow: visible !important;
+        overflow: hidden !important;
     }
 
     #classroomFlashcard:not(.classroom-flashcard-flipped) .classroom-flashcard-english-row {
@@ -11128,16 +11247,13 @@ button.game-library-button:focus-visible {
     }
 
     #classroomFlashcard.classroom-flashcard-flipped .classroom-flashcard-english-row {
-        position: absolute !important;
-        top: calc(100% + 16px) !important;
-        left: 0 !important;
-        width: 100% !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         gap: 0 !important;
-        flex-wrap: nowrap !important;
-        padding: 0 clamp(16px, 4vw, 24px) !important;
+        flex-wrap: wrap !important;
+        width: 100% !important;
+        padding: 0 !important;
         margin: 0 !important;
         box-sizing: border-box !important;
     }
@@ -11150,7 +11266,13 @@ button.game-library-button:focus-visible {
         flex: 0 1 auto !important;
         min-width: 0 !important;
         flex-shrink: 1 !important;
-        width: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        text-align: center !important;
+    }
+
+    #classroomFlashcard.classroom-flashcard-flipped .classroom-flashcard-translation {
+        width: 100% !important;
         max-width: 100% !important;
         text-align: center !important;
     }
@@ -11166,7 +11288,7 @@ button.game-library-button:focus-visible {
     #classroomPresentationScreen .classroom-presentation-text-column {
         justify-content: flex-start !important;
         padding-top: 0 !important;
-        padding-bottom: 12px !important;
+        padding-bottom: min(12px, 3dvh) !important;
     }
 
     #classroomPresentationScreen .classroom-presentation-english-row {
@@ -11189,5 +11311,830 @@ button.game-library-button:focus-visible {
         width: auto !important;
         max-width: 100% !important;
         text-align: center !important;
+    }
+}
+
+/* Landscape mobile Presentation: two-column layout (card left, English/speaker/translation right). */
+@media (orientation: landscape) and (max-height: 500px) {
+    .classroom-presentation-main {
+        display: grid !important;
+        grid-template-columns: minmax(0, 45fr) minmax(0, 55fr) !important;
+        grid-template-rows: 1fr !important;
+        column-gap: clamp(16px, 2vw, 28px) !important;
+        row-gap: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        align-items: center !important;
+        align-content: center !important;
+    }
+
+    .classroom-presentation-image-column {
+        grid-row: 1 !important;
+        grid-column: 1 !important;
+        height: 100% !important;
+        min-height: 0 !important;
+    }
+
+    .classroom-presentation-image-card {
+        width: 100% !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        padding: clamp(8px, 1.2vw, 12px) !important;
+    }
+
+    .classroom-presentation-image,
+    .classroom-presentation-image-card .classroom-image-placeholder {
+        max-width: 100% !important;
+        max-height: 100% !important;
+        height: auto !important;
+    }
+
+    .classroom-presentation-text-column {
+        grid-row: 1 !important;
+        grid-column: 2 !important;
+        height: 100% !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: clamp(8px, 2vw, 16px) !important;
+    }
+
+    .classroom-presentation-word-group {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: clamp(10px, 1.8vh, 14px) !important;
+        width: 100% !important;
+        max-width: 520px !important;
+    }
+
+    .classroom-presentation-english-row {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: clamp(8px, 1.5vh, 12px) !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .classroom-presentation-english {
+        flex: 0 1 auto !important;
+        min-width: 0 !important;
+        width: auto !important;
+        max-width: 100% !important;
+        text-align: center !important;
+        font-size: clamp(20px, 4vw, 32px) !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
+    }
+
+    .classroom-presentation-translation {
+        text-align: center !important;
+    }
+}
+
+/* Activity Picker — mobile landscape horizontal layout */
+@media (orientation: landscape) and (max-height: 500px) {
+    #classroomActivityMenuScreen .classroom-activity-list {
+        gap: 6px;
+    }
+
+    #classroomActivityMenuScreen .classroom-activity-card {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+        grid-template-areas:
+            "ill body"
+            "ill action";
+        gap: 8px 12px;
+        padding: 8px 12px;
+        align-content: center;
+        align-items: center;
+    }
+
+    #classroomActivityMenuScreen .activity-card-illustration {
+        grid-area: ill;
+        align-self: center;
+        width: clamp(88px, 11vw, 140px);
+        height: clamp(88px, 11vw, 140px);
+    }
+
+    #classroomActivityMenuScreen .classroom-activity-card .activity-card-illustration img {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    #classroomActivityMenuScreen .activity-card-body {
+        grid-area: body;
+        min-width: 0;
+        align-self: center;
+    }
+
+    #classroomActivityMenuScreen .activity-card-action {
+        grid-area: action;
+        justify-self: start;
+        align-self: center;
+    }
+
+    #classroomActivityMenuScreen .activity-picker-button {
+        width: clamp(110px, 16vw, 160px);
+    }
+}
+
+/* Mobile landscape — scaled-down desktop game layout for all modes.
+   Applies ONLY to landscape viewports 500px tall or less. */
+@media (orientation: landscape) and (max-height: 500px) {
+    body:has(#gameScreen:not([style*="display: none"])) {
+        padding: 0;
+    }
+
+    body.wf-page-shell:has(#gameScreen:not([style*="display: none"])) {
+        background-image: url("assets/backgrounds/game-bg-desktop.png");
+        background-image: -webkit-image-set(
+            url("assets/backgrounds/game-bg-desktop.png") 1x,
+            url("assets/backgrounds/game-bg-retina.png") 2x
+        );
+        background-image: image-set(
+            url("assets/backgrounds/game-bg-desktop.png") 1x,
+            url("assets/backgrounds/game-bg-retina.png") 2x
+        );
+        background-repeat: var(--wf-ocean-bg-repeat);
+        background-position: var(--wf-ocean-bg-position);
+        background-size: var(--wf-ocean-bg-size);
+    }
+
+    #gameScreen {
+        --game-landscape-button: clamp(36px, 9vh, 48px);
+        width: min(900px, 98vw);
+        min-height: unset;
+        height: auto;
+        border-radius: clamp(16px, 4vh, 24px);
+    }
+
+    #gameScreen[data-mode] {
+        margin-top: clamp(72px, 22vh, 120px);
+        padding: clamp(8px, 2vh, 14px) clamp(12px, 3vw, 24px);
+    }
+
+    #gameScreen .game-header {
+        margin: 0;
+        padding: 0;
+        min-height: 0;
+        height: auto;
+    }
+
+    #gameScreen #gameTitle {
+        font-size: clamp(18px, 4vh, 26px);
+        margin: 0 auto clamp(2px, 0.5vh, 4px);
+    }
+
+    #gameScreen #pearlBar,
+    #gameScreen #scoreText {
+        display: none;
+    }
+
+    #gameScreen[data-mode] .game-exit-button {
+        display: none;
+    }
+
+    #gameScreen[data-mode] .game-footer {
+        position: static;
+        margin: 0;
+        min-height: 0;
+    }
+
+    #gameBackButton,
+    .game-score-counter {
+        top: clamp(4px, 1vh, 8px);
+    }
+
+    #gameBackButton {
+        left: clamp(8px, 2vw, 14px);
+        width: auto;
+        max-width: none;
+        height: clamp(32px, 7vh, 40px);
+        min-height: clamp(32px, 7vh, 40px);
+    }
+
+    #gameBackButton img {
+        height: clamp(32px, 7vh, 40px);
+    }
+
+    .game-score-counter {
+        right: clamp(8px, 2vw, 14px);
+    }
+
+    .game-score-counter img {
+        height: clamp(32px, 7vh, 40px);
+    }
+
+    .game-score-counter-value {
+        font-size: clamp(14px, 3.5vh, 20px);
+        margin-left: clamp(6px, 1.5vw, 10px);
+    }
+
+    body:has(#gameScreen[data-mode="picture"]:not([style*="display: none"])) > .game-picture-banner,
+    body:has(#gameScreen[data-mode="translation"]:not([style*="display: none"])) > .game-translate-banner,
+    body:has(#gameScreen[data-mode="unscramble"]:not([style*="display: none"])) > .game-unscramble-banner,
+    body:has(#gameScreen[data-mode="listenWrite"]:not([style*="display: none"])) > .game-listen-write-banner {
+        max-height: clamp(40px, 10vh, 70px);
+        max-width: min(360px, 50vw);
+        top: clamp(4px, 1vh, 8px);
+        transform: translate(-50%, 0);
+    }
+
+    body:has(#gameScreen[data-mode="listenWrite"]:not([style*="display: none"])) > .game-listen-write-banner {
+        height: clamp(40px, 10vh, 70px);
+        max-height: none;
+        aspect-ratio: 1939 / 421;
+        object-fit: cover;
+        top: clamp(4px, 1vh, 8px);
+    }
+
+    body:has(#gameScreen[data-mode="picture"]:not([style*="display: none"])) > .game-picture-subtitle,
+    body:has(#gameScreen[data-mode="translation"]:not([style*="display: none"])) > .game-translate-subtitle,
+    body:has(#gameScreen[data-mode="unscramble"]:not([style*="display: none"])) > .game-unscramble-subtitle {
+        top: clamp(48px, 12vh, 78px);
+        font-size: clamp(12px, 3vh, 18px);
+    }
+
+    body:has(#gameScreen[data-mode="listenWrite"]:not([style*="display: none"])) > .game-listen-write-subtitle {
+        top: calc(clamp(40px, 10vh, 70px) + clamp(4px, 1vh, 8px));
+        font-size: clamp(12px, 3vh, 18px);
+        transform: translate(-50%, 0);
+    }
+
+    #gameScreen .game-content {
+        gap: clamp(6px, 1.2vh, 10px);
+        margin-bottom: clamp(6px, 1.2vh, 10px);
+    }
+
+    #gameScreen #answerInput {
+        min-height: clamp(28px, 16vh, 80px);
+        font-size: clamp(16px, 4vh, 22px);
+        padding: clamp(6px, 1.5vh, 10px) clamp(10px, 2vw, 16px);
+        margin: clamp(4px, 0.8vh, 8px) auto;
+        width: min(92%, 600px);
+    }
+
+    #gameScreen #feedback {
+        min-height: clamp(20px, 5vh, 30px);
+        font-size: clamp(16px, 3.5vh, 22px);
+        margin: clamp(2px, 0.5vh, 6px) auto;
+    }
+
+    #gameScreen[data-mode] .game-actions-bar {
+        position: fixed;
+        left: 0;
+        width: 100%;
+        bottom: clamp(40px, 14vh, 90px);
+        top: auto;
+        margin: 0;
+        z-index: 2;
+    }
+
+    #gameScreen[data-mode] .game-actions-row {
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: clamp(4px, 1vw, 8px);
+    }
+
+    #gameScreen .game-button,
+    #gameScreen .game-pronounce-button {
+        margin: 0;
+    }
+
+    #gameScreen .game-button {
+        height: var(--game-landscape-button);
+        min-height: var(--game-landscape-button);
+    }
+
+    #gameScreen .game-button--check,
+    #gameScreen .game-button--show-answer,
+    #gameScreen .game-button--shuffle,
+    #gameScreen .game-button--clue {
+        width: calc(var(--game-landscape-button) * 1483 / 498);
+        min-width: 0;
+        padding: 0;
+    }
+
+    #gameScreen .game-pronounce-button {
+        width: clamp(32px, 8vh, 44px);
+        height: clamp(32px, 8vh, 44px);
+        min-width: clamp(32px, 8vh, 44px);
+        min-height: clamp(32px, 8vh, 44px);
+    }
+
+    #gameScreen .game-pronounce-button svg {
+        width: clamp(16px, 4vh, 22px);
+        height: clamp(16px, 4vh, 22px);
+    }
+
+    /* Picture Mode — mobile-landscape vertical stack */
+    #gameScreen[data-mode="picture"] .game-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(4px, 1vh, 8px);
+        margin-bottom: clamp(4px, 1vh, 8px);
+    }
+
+    #gameScreen[data-mode="picture"] .game-picture-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: start;
+        column-gap: clamp(16px, 4vw, 32px);
+        min-height: clamp(80px, 14vh, 100px);
+        margin-top: calc(clamp(28px, 10vh, 50px) + clamp(4px, 1vh, 8px) - clamp(0px, 4vh, 12px) - 20px);
+    }
+
+    #gameScreen[data-mode="picture"] .game-picture-prompt {
+        max-height: clamp(28px, 10vh, 50px);
+        max-width: min(140px, 35vw);
+        justify-self: end;
+        align-self: start;
+        margin-top: 20px;
+        transform: translateX(clamp(-10px, -2vw, -6px));
+    }
+
+    #gameScreen[data-mode="picture"] #gameImage {
+        max-width: clamp(120px, 30vw, 180px);
+        max-height: clamp(80px, 14vh, 100px);
+        padding: clamp(2px, 0.6vh, 4px);
+        border-width: clamp(2px, 0.5vh, 3px);
+        border-radius: clamp(10px, 3vh, 18px);
+        margin: 0;
+        justify-self: center;
+        align-self: start;
+        transform-origin: bottom center;
+    }
+
+    #gameScreen[data-mode="picture"] #gameTitle {
+        font-size: clamp(14px, 3vh, 20px);
+        margin: 0 auto clamp(2px, 0.5vh, 4px);
+    }
+
+    #gameScreen[data-mode="picture"] #answerInput {
+        min-height: clamp(32px, 12vh, 44px);
+        font-size: clamp(14px, 3.5vh, 18px);
+        padding: clamp(4px, 1vh, 8px) clamp(8px, 1.5vw, 12px);
+        margin: clamp(2px, 0.5vh, 4px) auto;
+    }
+
+    /* Translation Mode */
+    #gameScreen[data-mode="translation"] .game-translate-row {
+        gap: clamp(8px, 2vw, 16px);
+    }
+
+    #gameScreen[data-mode="translation"] .game-translate-prompt {
+        max-height: clamp(40px, 14vh, 90px);
+        max-width: min(180px, 22vw);
+    }
+
+    #gameScreen[data-mode="translation"] #currentPrompt {
+        font-size: clamp(18px, 4.5vh, 28px);
+        padding: clamp(6px, 1.5vh, 10px) clamp(14px, 3vw, 24px);
+        margin: clamp(4px, 1vh, 8px);
+        border-radius: clamp(24px, 6vh, 48px);
+        box-shadow: 0 clamp(3px, 0.8vh, 6px) 0 #E9A92B;
+    }
+
+    #gameScreen[data-mode="translation"] #feedback {
+        top: calc(100% + clamp(4px, 1vh, 8px) + var(--game-landscape-button) + clamp(4px, 1vh, 8px));
+    }
+
+    /* Unscramble Mode — reuse corrected Picture Mode mobile-landscape layout */
+    body:has(#gameScreen[data-mode="unscramble"]:not([style*="display: none"])) {
+        padding-top: 1px;
+    }
+
+    body:has(#gameScreen[data-mode="unscramble"]:not([style*="display: none"])) > .game-unscramble-banner {
+        max-height: clamp(36px, 8.8vh, 53px);
+        top: 10px;
+        transform: translate(-50%, 0);
+    }
+
+    body:has(#gameScreen[data-mode="unscramble"]:not([style*="display: none"])) > .game-unscramble-subtitle {
+        top: calc(clamp(36px, 10vh, 64px) + 10px);
+        transform: translate(-50%, 0);
+    }
+
+    #gameScreen[data-mode="unscramble"] {
+        --game-landscape-button: clamp(30px, 8vh, 36px);
+        margin-top: calc(clamp(72px, 22vh, 120px) - 1px + 12px);
+        padding: clamp(8px, 2vh, 14px) clamp(12px, 3vw, 24px);
+        padding-bottom: 0;
+    }
+
+    #gameScreen[data-mode="unscramble"] #gameTitle,
+    #gameScreen[data-mode="unscramble"] #pearlBar {
+        display: none;
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-footer {
+        position: static;
+        margin: 0;
+        min-height: 0;
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        margin-bottom: 0;
+        min-height: calc(clamp(80px, 14vh, 100px) + clamp(32px, 12vh, 44px) + clamp(12px, 3vh, 18px));
+    }
+
+    #gameScreen[data-mode="unscramble"] .unscramble-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(4px, 1vh, 8px);
+        width: 100%;
+        margin: 0;
+        position: static;
+        top: auto;
+    }
+
+    #gameScreen[data-mode="unscramble"] .unscramble-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(4px, 1vh, 8px);
+        width: max-content;
+        max-width: 100%;
+        padding-top: 0;
+    }
+
+    #gameScreen[data-mode="unscramble"] .unscramble-tiles,
+    #gameScreen[data-mode="unscramble"] .unscramble-slots {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        gap: clamp(2px, 0.6vw, 4px);
+        min-height: clamp(36px, 9vh, 48px);
+        overflow: visible;
+    }
+
+    #gameScreen[data-mode="unscramble"] .unscramble-tile,
+    #gameScreen[data-mode="unscramble"] .unscramble-slot {
+        box-sizing: border-box;
+        width: clamp(32px, 8vh, 44px);
+        min-width: clamp(32px, 8vh, 44px);
+        max-width: clamp(32px, 8vh, 44px);
+        height: clamp(36px, 9vh, 48px);
+        border-radius: clamp(8px, 1.5vh, 12px);
+        font-size: clamp(18px, 4.5vh, 26px);
+        line-height: normal;
+        padding: 0;
+    }
+
+    #gameScreen[data-mode="unscramble"] .unscramble-slot {
+        max-width: clamp(32px, 8vh, 44px);
+    }
+
+    .unscramble-tile-ghost {
+        box-sizing: border-box;
+        width: clamp(32px, 8vh, 44px);
+        min-width: clamp(32px, 8vh, 44px);
+        max-width: clamp(32px, 8vh, 44px);
+        height: clamp(36px, 9vh, 48px);
+        border-radius: clamp(8px, 1.5vh, 12px);
+        font-size: clamp(18px, 4.5vh, 26px);
+        line-height: normal;
+        padding: 0;
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-unscramble-finn {
+        width: clamp(64px, 18vh, 100px);
+        top: clamp(-32px, -10vh, -20px);
+        left: calc(clamp(-24px, -8vw, -12px) + 30px);
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-actions-bar {
+        position: absolute;
+        top: 100%;
+        bottom: auto;
+        left: 0;
+        width: 100%;
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        z-index: 2;
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-actions-row {
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: clamp(4px, 1vw, 8px);
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-button--shuffle {
+        order: -2;
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-button--clue {
+        order: -1;
+    }
+
+    #gameScreen[data-mode="unscramble"] .game-button--check {
+        order: 1;
+    }
+
+    #gameScreen[data-mode="unscramble"] #feedback {
+        position: absolute;
+        top: calc(100% + 25px + 32px + 4px);
+        bottom: auto;
+        left: 0;
+        width: 100%;
+        min-height: clamp(14px, 3.5vh, 20px);
+        margin: 0;
+        text-align: center;
+    }
+
+    /* Listen & Write Mode */
+    #gameScreen[data-mode="listenWrite"] .listen-write-area {
+        gap: clamp(4px, 1vh, 8px);
+    }
+
+    #gameScreen[data-mode="listenWrite"] .listen-write-listen-button,
+    #gameScreen[data-mode="listenWrite"] .listen-write-listen-button img {
+        width: clamp(44px, 11vh, 60px);
+        height: clamp(44px, 11vh, 60px);
+        margin-bottom: clamp(6px, 1.5vh, 12px);
+    }
+
+    #gameScreen[data-mode="listenWrite"] .listen-write-letters {
+        gap: clamp(2px, 0.6vw, 4px);
+        padding: clamp(4px, 1vh, 6px) 0;
+    }
+
+    #gameScreen[data-mode="listenWrite"] .listen-write-letter {
+        width: clamp(32px, 8vh, 44px);
+        min-width: clamp(32px, 8vh, 44px);
+        height: clamp(36px, 9vh, 48px);
+        border-radius: clamp(8px, 1.5vh, 12px);
+        font-size: clamp(18px, 4.5vh, 26px);
+    }
+
+    #gameScreen[data-mode="listenWrite"] #feedback {
+        top: calc(100% + clamp(4px, 1vh, 8px) + var(--game-landscape-button) + clamp(4px, 1vh, 8px));
+    }
+
+    /* Fixed-position feedback placed above the fixed action row so the two
+       are independent of the game panel's vertical position. */
+    #gameScreen[data-mode] #feedback {
+        position: fixed;
+        left: 0;
+        width: 100%;
+        top: auto;
+        bottom: clamp(80px, 25vh, 140px);
+        min-height: clamp(20px, 5vh, 30px);
+        margin: 0;
+        text-align: center;
+        z-index: 3;
+    }
+
+    /* Picture Mode — static action/feedback and external banner/subtitle spacing */
+    #gameScreen[data-mode="picture"] {
+        --game-landscape-button: clamp(30px, 8vh, 36px);
+        padding-bottom: 0;
+    }
+
+    #gameScreen[data-mode="picture"] .game-actions-bar {
+        position: absolute;
+        top: 100%;
+        bottom: auto;
+        left: 0;
+        width: 100%;
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        z-index: 2;
+    }
+
+    #gameScreen[data-mode="picture"] .game-actions-row {
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    #gameScreen[data-mode="picture"] .game-pronounce-button {
+        order: -2;
+    }
+
+    #gameScreen[data-mode="picture"] .game-button--show-answer {
+        order: -1;
+    }
+
+    #gameScreen[data-mode="picture"] .game-button--check {
+        order: 1;
+    }
+
+    #gameScreen[data-mode="picture"] #feedback {
+        position: absolute;
+        top: calc(100% + 25px + 32px + 4px);
+        bottom: auto;
+        left: 0;
+        width: 100%;
+        min-height: clamp(14px, 3.5vh, 20px);
+        margin: 0;
+        text-align: center;
+    }
+
+    body:has(#gameScreen[data-mode="picture"]:not([style*="display: none"])) {
+        padding-top: 1px;
+    }
+
+    body:has(#gameScreen[data-mode="picture"]:not([style*="display: none"])) > .game-picture-banner {
+        max-height: clamp(36px, 8.8vh, 53px);
+        top: 10px;
+        transform: translate(-50%, 0);
+    }
+
+    body:has(#gameScreen[data-mode="picture"]:not([style*="display: none"])) > .game-picture-subtitle {
+        top: calc(clamp(36px, 10vh, 64px) + 10px);
+        transform: translate(-50%, 0);
+    }
+
+    #gameScreen[data-mode="picture"] {
+        margin-top: calc(clamp(72px, 22vh, 120px) - 1px);
+    }
+
+    /* Translation Mode — reuse corrected Picture Mode mobile-landscape layout */
+    body:has(#gameScreen[data-mode="translation"]:not([style*="display: none"])) {
+        padding-top: 1px;
+    }
+
+    body:has(#gameScreen[data-mode="translation"]:not([style*="display: none"])) > .game-translate-banner {
+        max-height: clamp(36px, 8.8vh, 53px);
+        top: 10px;
+        transform: translate(-50%, 0);
+    }
+
+    body:has(#gameScreen[data-mode="translation"]:not([style*="display: none"])) > .game-translate-subtitle {
+        top: calc(clamp(36px, 10vh, 64px) + 10px);
+        transform: translate(-50%, 0);
+    }
+
+    #gameScreen[data-mode="translation"] {
+        --game-landscape-button: clamp(30px, 8vh, 36px);
+        padding: clamp(6px, 1.5vh, 10px) clamp(12px, 3vw, 24px);
+        border-bottom: 0 !important;
+        margin-top: calc(clamp(72px, 22vh, 120px) - 1px);
+    }
+
+    #gameScreen[data-mode="translation"] .game-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(2px, 0.5vh, 4px);
+        margin-bottom: 0;
+    }
+
+    #gameScreen[data-mode="translation"] .game-translate-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        column-gap: clamp(16px, 4vw, 32px);
+        min-height: clamp(44px, 9vh, 60px);
+        margin-top: 0;
+    }
+
+    #gameScreen[data-mode="translation"] .game-translate-prompt {
+        max-height: clamp(28px, 10vh, 50px);
+        max-width: min(140px, 35vw);
+        justify-self: end;
+        align-self: center;
+        margin-top: 0;
+        transform: translateX(clamp(-10px, -2vw, -6px));
+    }
+
+    #gameScreen[data-mode="translation"] #currentPrompt {
+        justify-self: center;
+        align-self: center;
+        margin: 0;
+        padding: clamp(8px, 2vh, 12px) clamp(16px, 3.5vw, 28px);
+        font-size: clamp(20px, 5vh, 32px);
+        text-align: center;
+        border-radius: clamp(26px, 6.5vh, 52px);
+        box-shadow: 0 clamp(3px, 0.8vh, 6px) 0 #E9A92B;
+        max-width: none;
+        width: auto;
+        white-space: nowrap;
+        word-break: normal;
+    }
+
+    #gameScreen[data-mode="translation"] #answerInput {
+        min-height: clamp(32px, 12vh, 44px);
+        font-size: clamp(14px, 3.5vh, 18px);
+        padding: clamp(4px, 1vh, 8px) clamp(8px, 1.5vw, 12px);
+        margin: 0 auto;
+    }
+
+    #gameScreen[data-mode="translation"] .game-actions-bar {
+        position: absolute;
+        top: 100%;
+        bottom: auto;
+        left: 0;
+        width: 100%;
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        z-index: 2;
+    }
+
+    #gameScreen[data-mode="translation"] .game-actions-row {
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    #gameScreen[data-mode="translation"] .game-pronounce-button {
+        order: -2;
+    }
+
+    #gameScreen[data-mode="translation"] .game-button--show-answer {
+        order: -1;
+    }
+
+    #gameScreen[data-mode="translation"] .game-button--check {
+        order: 1;
+    }
+
+    #gameScreen[data-mode="translation"] #feedback {
+        position: absolute;
+        top: calc(100% + 25px + 32px + 4px);
+        bottom: auto;
+        left: 0;
+        width: 100%;
+        min-height: clamp(14px, 3.5vh, 20px);
+        margin: 0;
+        text-align: center;
+    }
+
+    #gameScreen[data-mode="unscramble"] #feedback {
+        position: absolute;
+        top: calc(100% + 25px + 32px + 4px);
+        bottom: auto;
+        left: 0;
+        width: 100%;
+        min-height: clamp(14px, 3.5vh, 20px);
+        margin: 0;
+        text-align: center;
+    }
+
+    body:has(#gameScreen[data-mode="listenWrite"]:not([style*="display: none"])) {
+        padding-top: 1px;
+        height: 100vh;
+        min-height: 100vh;
+        overflow-y: hidden;
+    }
+
+    /* Listen & Write Mode — reuse corrected Unscramble Mode mobile-landscape layout */
+    #gameScreen[data-mode="listenWrite"] {
+        margin-top: calc(clamp(72px, 22vh, 120px) - 1px + 12px);
+        position: relative;
+        top: 0;
+        padding-bottom: 0;
+    }
+
+    #gameScreen[data-mode="listenWrite"] .game-content {
+        gap: 0;
+        margin-bottom: 0;
+        min-height: calc(clamp(80px, 14vh, 100px) + clamp(32px, 12vh, 44px) + clamp(12px, 3vh, 18px));
+    }
+
+    #gameScreen[data-mode="listenWrite"] .game-footer {
+        position: static;
+        margin: 0;
+        min-height: 0;
+    }
+
+    #gameScreen[data-mode="listenWrite"] .game-actions-bar {
+        position: absolute;
+        top: 100%;
+        bottom: auto;
+        left: 0;
+        width: 100%;
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        z-index: 2;
+    }
+
+    #gameScreen[data-mode="listenWrite"] #feedback {
+        position: absolute;
+        top: calc(100% + 7px);
+        bottom: auto;
+        left: 0;
+        width: 100%;
+        min-height: clamp(14px, 3.5vh, 20px);
+        margin: 0;
+        text-align: center;
     }
 }

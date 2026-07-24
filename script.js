@@ -1813,15 +1813,7 @@ function updateClassroomPresentationNav() {
     prevButton.disabled = loopEnabled ? false : isFirst;
     prevButton.classList.toggle("disabled-button", loopEnabled ? false : isFirst);
 
-    const nextLabel = nextButton.querySelector(".classroom-nav-label");
-    const nextArrow = nextButton.querySelector(".classroom-nav-arrow");
-    if (isLast && !loopEnabled) {
-        if (nextLabel) nextLabel.textContent = "Finish";
-        if (nextArrow) nextArrow.hidden = true;
-    } else {
-        if (nextLabel) nextLabel.textContent = "Next";
-        if (nextArrow) nextArrow.hidden = false;
-    }
+    nextButton.textContent = isLast && !loopEnabled ? "Finish" : "Next";
 }
 
 function classroomPresentationPrevious() {
@@ -2796,7 +2788,7 @@ function updateClassroomFlashcardsNav() {
 
     prevButton.disabled = loopEnabled ? false : isFirst;
     prevButton.classList.toggle("disabled-button", loopEnabled ? false : isFirst);
-    nextButton.textContent = isLast && !classroomFlashcardsLoopEnabled ? "Finish" : "Next →";
+    nextButton.textContent = isLast && !classroomFlashcardsLoopEnabled ? "Finish" : "Next";
 }
 
 function classroomFlashcardsPrevious() {
@@ -3259,7 +3251,7 @@ function updateClassroomTextFlashcardsNav() {
 
     prevButton.disabled = loopEnabled ? false : isFirst;
     prevButton.classList.toggle("disabled-button", loopEnabled ? false : isFirst);
-    nextButton.textContent = isLast && !classroomTextFlashcardsLoopEnabled ? "Finish" : "Next →";
+    nextButton.textContent = isLast && !classroomTextFlashcardsLoopEnabled ? "Finish" : "Next";
 }
 
 function classroomTextFlashcardsPrevious() {
@@ -7575,7 +7567,7 @@ function onUnscrambleTilePointerDown(event) {
         ghost.style.zIndex = "1000";
         ghost.style.pointerEvents = "none";
         ghost.style.boxShadow = "0 8px 24px rgba(7, 59, 76, 0.25)";
-        ghost.style.transform = "scale(1.05)";
+        ghost.style.transform = "scale(1)";
         ghost.style.transition = "box-shadow 0.15s ease";
 
         document.body.appendChild(ghost);
@@ -7590,7 +7582,7 @@ function onUnscrambleTilePointerDown(event) {
         if (!ghost) return;
         const x = clientX - offsetX - rect.left;
         const y = clientY - offsetY - rect.top;
-        ghost.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
+        ghost.style.transform = `translate(${x}px, ${y}px) scale(1)`;
     }
 
     function onPointerMove(e) {
@@ -9090,6 +9082,10 @@ function isClassroomMobilePortrait() {
     return window.matchMedia('(max-width: 620px) and (orientation: portrait)').matches;
 }
 
+function isClassroomMobile() {
+    return window.matchMedia('(max-width: 620px) and (orientation: portrait), (max-width: 900px) and (orientation: landscape)').matches;
+}
+
 function getClassroomMobileSpeakerConfig() {
     return [
         {
@@ -9117,7 +9113,7 @@ function getClassroomMobileSpeakerConfig() {
 }
 
 function updateClassroomMobileSpeakerLayout() {
-    const isMobilePortrait = isClassroomMobilePortrait();
+    const isMobile = isClassroomMobile();
 
     getClassroomMobileSpeakerConfig().forEach(({ screenId, footerSelector, nextButtonId, buttons, originalParents }) => {
         const screen = document.getElementById(screenId);
@@ -9140,7 +9136,7 @@ function updateClassroomMobileSpeakerLayout() {
             const originalSelector = originalParents[index];
             const originalParent = originalSelector ? document.querySelector(originalSelector) : null;
 
-            if (isMobilePortrait) {
+            if (isMobile) {
                 if (originalParent && !classroomMobileSpeakerOrigins.has(buttonId)) {
                     classroomMobileSpeakerOrigins.set(buttonId, {
                         originalParent,
@@ -9221,7 +9217,7 @@ function repositionActiveClassroomSettingsPopover() {
 }
 
 function openClassroomSettingsPopover(mobileHeader) {
-    if (!isClassroomMobilePortrait()) return;
+    if (!isClassroomMobile()) return;
 
     const popover = mobileHeader.querySelector('.classroom-settings-popover');
     const content = popover ? popover.querySelector('.classroom-settings-popover-content') : null;
@@ -9247,6 +9243,22 @@ function openClassroomSettingsPopover(mobileHeader) {
         if (directionControl) {
             directionControl.dataset.wfSettingsOriginalParent = 'toolbar';
             content.appendChild(directionControl);
+        }
+    }
+
+    if (screenElement.id === 'classroomVocabularyBoardScreen') {
+        const controls = screenElement.querySelector('.classroom-vocabulary-board-controls');
+        if (controls) {
+            const modeControl = controls.querySelector('.classroom-vocabulary-board-mode-control');
+            const sizeControl = controls.querySelector('.classroom-vocabulary-board-size-control');
+            if (modeControl) {
+                modeControl.dataset.wfSettingsOriginalParent = 'vocabulary-board-controls';
+                content.appendChild(modeControl);
+            }
+            if (sizeControl) {
+                sizeControl.dataset.wfSettingsOriginalParent = 'vocabulary-board-controls';
+                content.appendChild(sizeControl);
+            }
         }
     }
 
@@ -9278,6 +9290,7 @@ function closeClassroomSettingsPopover(mobileHeader) {
 
     const actions = findClassroomHeaderActions(screenElement);
     const toolbar = screenElement.querySelector('.classroom-text-flashcards-toolbar');
+    const vocabularyBoardControls = screenElement.querySelector('.classroom-vocabulary-board-controls');
 
     const children = Array.from(content.children);
     children.forEach((child) => {
@@ -9285,6 +9298,8 @@ function closeClassroomSettingsPopover(mobileHeader) {
         delete child.dataset.wfSettingsOriginalParent;
         if (original === 'toolbar' && toolbar) {
             toolbar.appendChild(child);
+        } else if (original === 'vocabulary-board-controls' && vocabularyBoardControls) {
+            vocabularyBoardControls.appendChild(child);
         } else if (actions) {
             actions.appendChild(child);
         } else if (original === 'toolbar' && !toolbar && actions) {
@@ -9335,7 +9350,7 @@ function initClassroomMobileSettingsPopovers() {
         }
     });
 
-    const mobileQuery = window.matchMedia('(max-width: 620px) and (orientation: portrait)');
+    const mobileQuery = window.matchMedia('(max-width: 620px) and (orientation: portrait), (max-width: 900px) and (orientation: landscape)');
     const handleMediaChange = () => {
         if (!mobileQuery.matches) {
             closeAllClassroomSettingsPopovers();
@@ -9350,7 +9365,7 @@ function initClassroomMobileSettingsPopovers() {
     document.body.addEventListener('click', (event) => {
         const settingsButton = event.target.closest('.classroom-mobile-settings-button');
         if (!settingsButton) return;
-        if (!isClassroomMobilePortrait()) return;
+        if (!isClassroomMobile()) return;
         event.stopPropagation();
         const mobileHeader = settingsButton.closest('.classroom-mobile-header');
         if (mobileHeader) toggleClassroomSettingsPopover(mobileHeader);
@@ -9393,3 +9408,4 @@ if (document.readyState === "loading") {
 } else {
     initApp();
 }
+
