@@ -9409,3 +9409,19 @@ if (document.readyState === "loading") {
     initApp();
 }
 
+/* Portrait orientation notice: prevent scrolling on the overlay,
+   keep the game state intact when rotating. */
+(function () {
+    const notice = document.getElementById("orientationNotice");
+    if (!notice) return;
+
+    function preventScrollWhileNoticeVisible(event) {
+        const rect = notice.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+            event.preventDefault();
+        }
+    }
+
+    notice.addEventListener("touchmove", preventScrollWhileNoticeVisible, { passive: false });
+})();
+
