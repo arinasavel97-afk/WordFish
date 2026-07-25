@@ -9444,6 +9444,22 @@ function initSidebarDebug() {
             html += '<div>transform: ' + cs.transform + '</div>';
             html += '</div>';
         });
+
+        // elementFromPoint probe to detect if another layer is painting above the left edge
+        const firstItem = document.querySelector('.dashboard-sidebar-nav-list .wf-sidebar-item');
+        const logout = document.querySelector('.wf-sidebar-logout');
+        function hitInfo(el) {
+            if (!el) return 'not found';
+            const r = el.getBoundingClientRect();
+            const x = r.left + 4;
+            const y = r.top + r.height / 2;
+            const top = document.elementFromPoint(x, y);
+            if (!top) return 'none';
+            return top.tagName + (top.id ? '#' + top.id : '') + (top.className ? '.' + top.className.split(/\s+/).slice(0,2).join('.') : '');
+        }
+        html += '<div style="margin-bottom:8px;border-top:1px solid #fff;padding-top:4px;color:#ff0">topmost @ firstItem L: ' + hitInfo(firstItem) + '</div>';
+        html += '<div style="margin-bottom:8px;border-top:1px solid #fff;padding-top:4px;color:#ff0">topmost @ logout L: ' + hitInfo(logout) + '</div>';
+
         panel.innerHTML = html;
     }
 
