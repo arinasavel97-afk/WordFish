@@ -1141,5 +1141,297 @@
     <script src="database.js"></script>
     <script src="pronunciation.js"></script>
     <script src="script.js"></script>
+
+<!-- === TEMPORARY SAFARI DIAGNOSTICS PANEL - REMOVE AFTER TESTING === -->
+<script>
+(function () {
+  if (new URLSearchParams(location.search).get('debug') !== '1') return;
+
+  function toKebab(name) {
+    return name.replace(/([A-Z])/g, '-$1').toLowerCase();
+  }
+
+  function setImportant(el, styles) {
+    for (const key of Object.keys(styles)) {
+      el.style.setProperty(toKebab(key), styles[key], 'important');
+    }
+  }
+
+  const debugButton = document.createElement('button');
+  debugButton.textContent = 'DEBUG';
+  setImportant(debugButton, {
+    position: 'fixed',
+    bottom: '10px',
+    right: '10px',
+    zIndex: '2147483647',
+    padding: '8px 12px',
+    background: '#ff0000',
+    color: '#ffffff',
+    border: '2px solid #000000',
+    borderRadius: '6px',
+    fontFamily: 'sans-serif',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.4)'
+  });
+  document.body.appendChild(debugButton);
+
+  const panel = document.createElement('div');
+  setImportant(panel, {
+    position: 'fixed',
+    top: '10px',
+    left: '10px',
+    right: '10px',
+    bottom: '10px',
+    zIndex: '2147483647',
+    background: '#ffffff',
+    color: '#000000',
+    border: '2px solid #000000',
+    borderRadius: '8px',
+    padding: '10px',
+    overflow: 'auto',
+    fontFamily: 'monospace',
+    fontSize: '12px',
+    lineHeight: '1.4',
+    display: 'none',
+    boxSizing: 'border-box',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
+  });
+
+  const header = document.createElement('div');
+  setImportant(header, {
+    position: 'sticky',
+    top: '0',
+    background: '#ffffff',
+    paddingBottom: '8px',
+    borderBottom: '1px solid #cccccc',
+    marginBottom: '10px',
+    textAlign: 'right'
+  });
+
+  const closeButton = document.createElement('button');
+  closeButton.textContent = 'Close';
+  setImportant(closeButton, {
+    padding: '6px 10px',
+    background: '#6c757d',
+    color: '#ffffff',
+    border: '2px solid #000000',
+    borderRadius: '4px',
+    fontFamily: 'sans-serif',
+    fontSize: '12px',
+    cursor: 'pointer',
+    marginLeft: '6px'
+  });
+
+  const copyButton = document.createElement('button');
+  copyButton.textContent = 'Copy diagnostics';
+  setImportant(copyButton, {
+    padding: '6px 10px',
+    background: '#007bff',
+    color: '#ffffff',
+    border: '2px solid #000000',
+    borderRadius: '4px',
+    fontFamily: 'sans-serif',
+    fontSize: '12px',
+    cursor: 'pointer'
+  });
+
+  header.appendChild(copyButton);
+  header.appendChild(closeButton);
+  panel.appendChild(header);
+
+  const content = document.createElement('div');
+  panel.appendChild(content);
+  document.body.appendChild(panel);
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(() => {});
+      return;
+    }
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    setImportant(ta, { position: 'fixed', opacity: '0' });
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  function mediaMatches(query) {
+    try { return window.matchMedia(query).matches; } catch (e) { return 'error'; }
+  }
+
+  function getVisibleScreen() {
+    const screens = Array.from(document.querySelectorAll('.screen'));
+    return screens.find(el => {
+      const s = getComputedStyle(el);
+      return s.display !== 'none' && s.visibility !== 'hidden';
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function describeSheets() {
+    const textLines = [];
+    const htmlParts = [];
+    try {
+      for (let i = 0; i < document.styleSheets.length; i++) {
+        const sheet = document.styleSheets[i];
+        const node = sheet.ownerNode;
+        let href = sheet.href || '';
+        if (!href && node) href = node.href || node.getAttribute('href') || '(inline)';
+        if (!href) href = '(inline)';
+        let status = '';
+        try {
+          status = 'loaded (' + sheet.cssRules.length + ' rules)';
+        } catch (e) {
+          status = 'loaded/inaccessible (cross-origin or CORS)';
+        }
+        if (sheet.disabled) status = 'disabled';
+        textLines.push('  ' + (i + 1) + '. ' + href + ' — ' + status);
+        htmlParts.push('<div>' + escapeHtml((i + 1) + '. ' + href) + ' — ' + escapeHtml(status) + '</div>');
+      }
+    } catch (e) {
+      textLines.push('  Error reading stylesheets: ' + e.message);
+      htmlParts.push('<div>Error reading stylesheets: ' + escapeHtml(e.message) + '</div>');
+    }
+    return { text: textLines.join('\n'), html: htmlParts.join('') };
+  }
+
+  const STYLE_PROPS = ['display', 'position', 'overflow', 'overflowX', 'overflowY', 'transform', 'flexDirection', 'gridTemplateColumns', 'backgroundImage', 'minWidth', 'maxWidth', 'minHeight', 'maxHeight'];
+
+  function inspectElement(entry) {
+    let el;
+    let label;
+    if (typeof entry === 'function') {
+      el = entry();
+      label = 'visible .screen';
+    } else if (typeof entry === 'string') {
+      el = document.querySelector(entry);
+      label = entry;
+    } else {
+      el = document.querySelector(entry.selector);
+      label = entry.label;
+    }
+    if (!el) return { text: '  ' + label + ': not found', html: '<div><b>' + escapeHtml(label) + '</b>: not found</div>' };
+
+    const rect = el.getBoundingClientRect();
+    const cs = getComputedStyle(el);
+    const idPart = el.id ? ' id=' + el.id : '';
+    const classPart = el.className ? ' class=' + el.className : '';
+    const heading = label + idPart + classPart;
+
+    const textLines = [
+      '  ' + heading,
+      '    x=' + rect.x.toFixed(1) + ' y=' + rect.y.toFixed(1) + ' width=' + rect.width.toFixed(1) + ' height=' + rect.height.toFixed(1)
+    ];
+    const htmlParts = [
+      '<div style="margin-top:8px;border-top:1px solid #dddddd;padding-top:4px;"><b>' + escapeHtml(heading) + '</b></div>',
+      '<div>x=' + rect.x.toFixed(1) + ' y=' + rect.y.toFixed(1) + ' width=' + rect.width.toFixed(1) + ' height=' + rect.height.toFixed(1) + '</div>'
+    ];
+
+    STYLE_PROPS.forEach(prop => {
+      const name = prop.replace(/([A-Z])/g, '-$1').toLowerCase();
+      const value = cs[prop] !== undefined ? cs[prop] : '';
+      textLines.push('    ' + name + ': ' + value);
+      htmlParts.push('<div>' + escapeHtml(name + ': ' + value) + '</div>');
+    });
+
+    return { text: textLines.join('\n'), html: htmlParts.join('') };
+  }
+
+  function buildReport() {
+    const blocks = [];
+    const htmlBlocks = [];
+
+    const vv = window.visualViewport;
+    const viewportText = [
+      'Viewport:',
+      '  window.innerWidth: ' + window.innerWidth,
+      '  window.innerHeight: ' + window.innerHeight,
+      '  document.documentElement.clientWidth: ' + document.documentElement.clientWidth,
+      '  document.documentElement.clientHeight: ' + document.documentElement.clientHeight,
+      '  window.devicePixelRatio: ' + window.devicePixelRatio,
+      '  screen.width: ' + screen.width,
+      '  screen.height: ' + screen.height,
+      '  screen.orientation.type: ' + (screen.orientation ? screen.orientation.type : 'n/a'),
+      '  visualViewport.width: ' + (vv ? vv.width : 'n/a'),
+      '  visualViewport.height: ' + (vv ? vv.height : 'n/a')
+    ].join('\n');
+    blocks.push(viewportText);
+    htmlBlocks.push('<h3 style="margin:10px 0 4px 0;font-size:14px;">Viewport</h3><pre style="margin:0;white-space:pre-wrap;">' + escapeHtml(viewportText) + '</pre>');
+
+    const mediaQueries = [
+      ['orientation: portrait', '(orientation: portrait)'],
+      ['orientation: landscape', '(orientation: landscape)'],
+      ['hover: none', '(hover: none)'],
+      ['hover: hover', '(hover: hover)'],
+      ['pointer: coarse', '(pointer: coarse)'],
+      ['pointer: fine', '(pointer: fine)'],
+      ['any-pointer: coarse', '(any-pointer: coarse)'],
+      ['max-width: 620px', '(max-width: 620px)'],
+      ['max-width: 900px', '(max-width: 900px)'],
+      ['max-height: 500px', '(max-height: 500px)']
+    ];
+    const mediaTextLines = ['Media queries:'];
+    const mediaHtmlParts = ['<h3 style="margin:10px 0 4px 0;font-size:14px;">Media queries</h3>'];
+    mediaQueries.forEach(function (item) {
+      const matches = mediaMatches(item[1]);
+      mediaTextLines.push('  ' + item[0] + ': ' + matches);
+      mediaHtmlParts.push('<div>' + escapeHtml(item[0]) + ': <b>' + escapeHtml(matches) + '</b></div>');
+    });
+    const mediaText = mediaTextLines.join('\n');
+    blocks.push(mediaText);
+    htmlBlocks.push(mediaHtmlParts.join(''));
+
+    const sheets = describeSheets();
+    blocks.push('Stylesheets:\n' + sheets.text);
+    htmlBlocks.push('<h3 style="margin:10px 0 4px 0;font-size:14px;">Stylesheets</h3>' + sheets.html);
+
+    const elementEntries = [
+      'body',
+      getVisibleScreen,
+      '#classroomActivityMenuScreen',
+      '#dashboardScreen',
+      '#dashboardSidebar',
+      '.wf-ocean-backdrop'
+    ];
+    const elementTextLines = ['Computed styles and bounding rectangles:'];
+    const elementHtmlParts = ['<h3 style="margin:10px 0 4px 0;font-size:14px;">Computed styles and bounding rectangles</h3>'];
+    elementEntries.forEach(function (entry) {
+      const result = inspectElement(entry);
+      elementTextLines.push(result.text);
+      elementHtmlParts.push(result.html);
+    });
+    const elementText = elementTextLines.join('\n');
+    blocks.push(elementText);
+    htmlBlocks.push(elementHtmlParts.join(''));
+
+    return { plainText: blocks.join('\n\n'), html: htmlBlocks.join('') };
+  }
+
+  function openPanel() {
+    const report = buildReport();
+    content.innerHTML = report.html;
+    panel.style.setProperty('display', 'block', 'important');
+    copyButton.onclick = function () {
+      copyText(report.plainText);
+      copyButton.textContent = 'Copied!';
+      setTimeout(function () { copyButton.textContent = 'Copy diagnostics'; }, 1200);
+    };
+  }
+
+  debugButton.addEventListener('click', openPanel);
+  closeButton.addEventListener('click', function () {
+    panel.style.setProperty('display', 'none', 'important');
+  });
+})();
+</script>
+<!-- === END TEMPORARY SAFARI DIAGNOSTICS PANEL === -->
+
 </body>
 </html>
