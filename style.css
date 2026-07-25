@@ -748,6 +748,8 @@ button:active {
 #dashboardScreen .wf-sidebar-item {
     position: relative;
     display: grid;
+    -webkit-appearance: none;
+    appearance: none;
     grid-template-columns: 20px minmax(0, 1fr);
     align-items: center;
     column-gap: 10px;
