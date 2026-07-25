@@ -1123,7 +1123,7 @@ button:active {
         transform: translateX(-110%);
         transition: transform 0.25s ease;
         z-index: 100;
-        overflow-y: auto;
+        overflow: visible;
         box-shadow: 4px 0 18px rgba(7, 59, 76, 0.15);
     }
 
@@ -1144,7 +1144,7 @@ button:active {
         margin: 0;
         border: none;
         border-radius: 0;
-        background: transparent;
+        background: var(--wf-card-white);
         color: var(--wf-ocean-ink);
         box-shadow: none;
         cursor: pointer;
@@ -1159,7 +1159,9 @@ button:active {
     .dashboard-sidebar-content {
         height: auto;
         min-height: 100vh;
+        max-height: 100vh;
         padding-top: 48px;
+        overflow-y: auto;
     }
 
     .dashboard-sidebar-decoration {
@@ -4290,7 +4292,7 @@ h2 {
 /* Mobile landscape — Share dialog viewport fit.
    The rounded .modal-card controls the dialog height. The header (title +
    close button) stays fixed; only .share-modal-body scrolls. */
-@media (orientation: landscape) and (max-height: 500px) {
+@media (orientation: landscape) and (max-height: 500px), (orientation: landscape) and (hover: none) {
     .modal-card.share-modal {
         max-height: calc(100dvh - 36px);
         display: flex;
@@ -7350,7 +7352,7 @@ h2 {
 }
 
 /* Mobile Small cards: scale content and fit more columns. */
-@media (max-width: 620px) and (orientation: portrait), (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+@media (max-width: 620px) and (orientation: portrait), (max-width: 900px) and (orientation: landscape) and (max-height: 500px), (orientation: landscape) and (hover: none) {
     .classroom-vocabulary-board-grid-size-small {
         --vocab-board-gap: 0.4rem;
         --vocab-board-card-radius: 0.4rem;
@@ -7392,7 +7394,7 @@ h2 {
     }
 }
 
-@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px), (orientation: landscape) and (hover: none) {
     .classroom-vocabulary-board-grid-size-small {
         grid-template-columns: repeat(5, minmax(0, 1fr));
     }
@@ -9050,6 +9052,21 @@ body:has(#dashboardScreen[style*="display:block"]) {
     body:has(#dashboardScreen[style*="display: block"]),
     body:has(#dashboardScreen[style*="display:block"]) {
         background-image: url("assets/backgrounds/dashboard-bg-mobile.png");
+    }
+}
+
+/* Touch devices — Dashboard portrait/landscape backgrounds override the desktop image-set. */
+@media (hover: none) and (orientation: portrait) {
+    body:has(#dashboardScreen[style*="display: block"]),
+    body:has(#dashboardScreen[style*="display:block"]) {
+        background-image: url("assets/backgrounds/dashboard-bg-mobile.png") !important;
+    }
+}
+
+@media (hover: none) and (orientation: landscape) {
+    body:has(#dashboardScreen[style*="display: block"]),
+    body:has(#dashboardScreen[style*="display:block"]) {
+        background-image: url("assets/backgrounds/dashboard-bg-landscape.png") !important;
     }
 }
 
@@ -11009,7 +11026,7 @@ button.game-library-button:focus-visible {
     display: none;
 }
 
-@media (max-width: 620px) and (orientation: portrait), (max-width: 900px) and (orientation: landscape) {
+@media (max-width: 620px) and (orientation: portrait), (max-width: 900px) and (orientation: landscape), (orientation: landscape) and (hover: none) {
     .classroom-presentation-main {
         display: grid !important;
         grid-template-rows: auto auto !important;
@@ -11336,7 +11353,7 @@ button.game-library-button:focus-visible {
 }
 
 /* Landscape mobile Presentation: two-column layout (card left, English/speaker/translation right). */
-@media (orientation: landscape) and (max-height: 500px) {
+@media (orientation: landscape) and (max-height: 500px), (orientation: landscape) and (hover: none) {
     .classroom-presentation-main {
         display: grid !important;
         grid-template-columns: minmax(0, 45fr) minmax(0, 55fr) !important;
@@ -11418,7 +11435,7 @@ button.game-library-button:focus-visible {
 }
 
 /* Activity Picker — mobile landscape horizontal layout */
-@media (orientation: landscape) and (max-height: 500px) {
+@media (max-width: 900px) and (orientation: landscape), (orientation: landscape) and (max-height: 500px), (orientation: landscape) and (hover: none) {
     #classroomActivityMenuScreen .classroom-activity-list {
         gap: 6px;
     }
@@ -12347,6 +12364,50 @@ button.game-library-button:focus-visible {
         #gameLibraryScreen
     ):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop {
         background-image: url("assets/backgrounds/dashboard-bg-landscape.png");
+        background-image: -webkit-image-set(
+            url("assets/backgrounds/dashboard-bg-landscape.png") 1x
+        );
+        background-image: image-set(
+            url("assets/backgrounds/dashboard-bg-landscape.png") 1x
+        );
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+        background-attachment: fixed;
+    }
+}
+
+/* Mobile landscape — shared non-game ocean panel background for touch devices (excluding Dashboard). */
+@media (orientation: landscape) and (hover: none) {
+    body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
+        #authScreen,
+        #resetPasswordScreen,
+        #teacherScreen,
+        #studentScreen,
+        #cardsScreen,
+        #classroomPickerScreen,
+        #classroomActivityMenuScreen,
+        #classroomNoCardsScreen,
+        #gameLibraryScreen
+    ):is([style*="display: block"], [style*="display:block"])),
+    body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
+        #authScreen,
+        #resetPasswordScreen,
+        #teacherScreen,
+        #studentScreen,
+        #cardsScreen,
+        #classroomPickerScreen,
+        #classroomActivityMenuScreen,
+        #classroomNoCardsScreen,
+        #gameLibraryScreen
+    ):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop {
+        background-image: url("assets/backgrounds/dashboard-bg-landscape.png");
+        background-image: -webkit-image-set(
+            url("assets/backgrounds/dashboard-bg-landscape.png") 1x
+        );
+        background-image: image-set(
+            url("assets/backgrounds/dashboard-bg-landscape.png") 1x
+        );
         background-repeat: no-repeat;
         background-position: center center;
         background-size: cover;
@@ -12358,7 +12419,7 @@ button.game-library-button:focus-visible {
    Classroom activities run with any classroom*Screen visible and do not
    carry wf-page-shell--ocean-panel-active. Loading states are shown by
    #appLoadingScreen, which also does not carry the ocean-panel class. */
-@media (orientation: landscape) and (max-height: 500px) {
+@media (orientation: landscape) and (max-height: 500px), (orientation: landscape) and (hover: none) {
     body.wf-page-shell:has(:is(
         #classroomPresentationScreen,
         #classroomFlashcardsScreen,
@@ -12375,7 +12436,7 @@ button.game-library-button:focus-visible {
 }
 
 /* Mobile landscape — Create Vocabulary Set: drop the form content below the absolute Back button. */
-@media (orientation: landscape) and (max-height: 500px) {
+@media (orientation: landscape) and (max-height: 500px), (orientation: landscape) and (hover: none) {
     #teacherScreen h1 {
         margin-top: 40px;
     }
