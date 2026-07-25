@@ -4287,6 +4287,27 @@ h2 {
     }
 }
 
+/* Mobile landscape — Share dialog viewport fit.
+   The rounded .modal-card controls the dialog height. The header (title +
+   close button) stays fixed; only .share-modal-body scrolls. */
+@media (orientation: landscape) and (max-height: 500px) {
+    .modal-card.share-modal {
+        max-height: calc(100dvh - 36px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .share-modal-body {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        min-height: 0;
+    }
+
+    .share-modal h2 {
+        padding-right: 48px;
+    }
+}
+
 /* CTA Secondary prototype — shared selectors */
 .wf-cta-secondary,
 #savedSetsList .set-actions .share-button,
@@ -12279,5 +12300,83 @@ button.game-library-button:focus-visible {
         font-weight: 500;
         line-height: 1.3;
         color: #ffffff !important;
+    }
+}
+
+/* Mobile portrait Dashboard background — keep the body background fixed while scrolling */
+@media (max-width: 620px) and (orientation: portrait) {
+    body:has(#dashboardScreen[style*="display: block"]),
+    body:has(#dashboardScreen[style*="display:block"]) {
+        background-attachment: fixed;
+    }
+
+    /* Create Vocabulary Set — drop the form content below the absolute Back button */
+    #teacherScreen h1 {
+        margin-top: 32px;
+    }
+}
+
+/* Mobile landscape — shared non-game ocean panel background.
+   Applies to the ocean shell body and .wf-ocean-backdrop for all
+   OCEAN_PANEL_SCREEN_IDS (Dashboard, Game Library, Create Vocabulary Set,
+   Vocabulary Builder, Classroom/Activity Picker, Login/Register, etc.)
+   without touching gameplay screens. */
+@media (orientation: landscape) and (max-height: 500px) {
+    body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
+        #dashboardScreen,
+        #authScreen,
+        #resetPasswordScreen,
+        #teacherScreen,
+        #studentScreen,
+        #cardsScreen,
+        #classroomPickerScreen,
+        #classroomActivityMenuScreen,
+        #classroomNoCardsScreen,
+        #gameLibraryScreen
+    ):is([style*="display: block"], [style*="display:block"])),
+    body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
+        #dashboardScreen,
+        #authScreen,
+        #resetPasswordScreen,
+        #teacherScreen,
+        #studentScreen,
+        #cardsScreen,
+        #classroomPickerScreen,
+        #classroomActivityMenuScreen,
+        #classroomNoCardsScreen,
+        #gameLibraryScreen
+    ):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop {
+        background-image: url("assets/backgrounds/dashboard-bg-landscape.png");
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+        background-attachment: fixed;
+    }
+}
+
+/* Mobile landscape — Classroom Mode activities and loading states.
+   Classroom activities run with any classroom*Screen visible and do not
+   carry wf-page-shell--ocean-panel-active. Loading states are shown by
+   #appLoadingScreen, which also does not carry the ocean-panel class. */
+@media (orientation: landscape) and (max-height: 500px) {
+    body.wf-page-shell:has(:is(
+        #classroomPresentationScreen,
+        #classroomFlashcardsScreen,
+        #classroomTextFlashcardsScreen,
+        #classroomVocabularyBoardScreen
+    ):not([style*="display: none"])),
+    body.wf-page-shell:has(#appLoadingScreen:not([style*="display: none"])) {
+        background-image: url("assets/backgrounds/dashboard-bg-landscape.png");
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+        background-attachment: fixed;
+    }
+}
+
+/* Mobile landscape — Create Vocabulary Set: drop the form content below the absolute Back button. */
+@media (orientation: landscape) and (max-height: 500px) {
+    #teacherScreen h1 {
+        margin-top: 40px;
     }
 }

@@ -734,13 +734,15 @@
         <div class="modal-card share-modal">
             <button class="modal-close wf-close-button" onclick="closeShareDialog()">✕</button>
             <h2>Share with your students</h2>
-            <p class="subtitle">Share this vocabulary set with your students.<br>Students will be able to play but not edit the set.</p>
-            <div class="share-link-field">
-                <label for="shareLinkInput">Student Link</label>
-                <input id="shareLinkInput" type="text" readonly>
+            <div class="share-modal-body">
+                <p class="subtitle">Share this vocabulary set with your students.<br>Students will be able to play but not edit the set.</p>
+                <div class="share-link-field">
+                    <label for="shareLinkInput">Student Link</label>
+                    <input id="shareLinkInput" type="text" readonly>
+                </div>
+                <button class="green-button wf-cta-primary" onclick="copyShareLinkPlaceholder()">Copy Link</button>
+                <button class="wf-cta-neutral" onclick="closeShareDialog()">Close</button>
             </div>
-            <button class="green-button wf-cta-primary" onclick="copyShareLinkPlaceholder()">Copy Link</button>
-            <button class="wf-cta-neutral" onclick="closeShareDialog()">Close</button>
         </div>
     </div>
 
