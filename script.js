@@ -9372,6 +9372,85 @@ function initClassroomMobileSettingsPopovers() {
     });
 }
 
+function initSidebarDebug() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('debugSidebar') !== '1') return;
+
+    const colorFor = {
+        '#dashboardSidebar': '#ff00ff',
+        '.dashboard-sidebar-content': '#00ffff',
+        'firstItem': '#88ff00',
+        'firstIcon': '#00ffaa',
+        'logout': '#ff8888'
+    };
+
+    const tracked = [
+        { name: '#dashboardSidebar', sel: '#dashboardSidebar' },
+        { name: '.dashboard-sidebar-content', sel: '.dashboard-sidebar-content' },
+        { name: 'firstItem', sel: '.dashboard-sidebar-nav-list .wf-sidebar-item' },
+        { name: 'firstIcon', sel: '.dashboard-sidebar-nav-list .wf-sidebar-item .wf-sidebar-item__icon' },
+        { name: 'logout', sel: '.wf-sidebar-logout' }
+    ];
+
+    const panel = document.createElement('div');
+    panel.id = 'sidebarDebugPanel';
+    function setImp(el, styles) {
+        Object.keys(styles).forEach(function (key) {
+            el.style.setProperty(key, styles[key], 'important');
+        });
+    }
+    setImp(panel, {
+        position: 'fixed',
+        top: '8px',
+        right: '8px',
+        'z-index': '2147483647',
+        display: 'block',
+        visibility: 'visible',
+        background: 'rgba(0,0,0,0.92)',
+        color: '#00ff00',
+        'font-family': 'monospace',
+        'font-size': '11px',
+        'line-height': '1.3',
+        width: 'auto',
+        'max-width': '55vw',
+        'max-height': '92vh',
+        overflow: 'auto',
+        padding: '8px',
+        'border-radius': '6px',
+        border: '2px solid #00ff00',
+        'box-shadow': '0 4px 16px rgba(0,0,0,0.5)',
+        'pointer-events': 'auto',
+        '-webkit-overflow-scrolling': 'touch'
+    });
+    document.body.appendChild(panel);
+
+    function update() {
+        let html = '<div style="font-weight:bold;text-align:center;margin-bottom:6px;color:#fff">?debugSidebar=1</div>';
+        tracked.forEach(function (item) {
+            const el = document.querySelector(item.sel);
+            if (!el) return;
+            const c = colorFor[item.name] || '#0f0';
+            el.style.setProperty('outline', '2px dashed ' + c, 'important');
+            el.style.setProperty('outline-offset', '0px', 'important');
+            const r = el.getBoundingClientRect();
+            const cs = window.getComputedStyle(el);
+            const mask = cs.webkitMaskImage || cs.maskImage || 'none';
+            html += '<div style="margin-bottom:8px;border-top:1px solid #555;padding-top:4px">';
+            html += '<div style="color:' + c + ';font-weight:bold">' + item.name + '</div>';
+            html += '<div>L/R/W: ' + r.left.toFixed(1) + ' / ' + r.right.toFixed(1) + ' / ' + r.width.toFixed(1) + '</div>';
+            html += '<div>overflow: ' + cs.overflowX + ' / ' + cs.overflowY + '</div>';
+            html += '<div>clip-path: ' + cs.clipPath + '</div>';
+            html += '<div>mask: ' + mask + '</div>';
+            html += '<div>transform: ' + cs.transform + '</div>';
+            html += '</div>';
+        });
+        panel.innerHTML = html;
+    }
+
+    update();
+    setInterval(update, 500);
+}
+
 function initApp() {
     initClassroomModeButton();
     initClassroomPresentationControls();
@@ -9392,6 +9471,7 @@ function initApp() {
     initUnscrambleDragAndDrop();
     initListenWriteControls();
     initDashboardMobileSidebar();
+    initSidebarDebug();
 
     supabaseClient.auth.onAuthStateChange((event, session) => {
         if (event === "PASSWORD_RECOVERY") {
