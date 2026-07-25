@@ -9075,6 +9075,46 @@ body:has(#dashboardScreen[style*="display:block"])::before {
     opacity: 0;
 }
 
+/* iPhone Safari/Chrome: background-attachment: fixed on body is not honored,
+   so background-size: cover is resolved against the scrollable body and the
+   image is cropped to a narrow centered strip. Move the image to the fixed
+   .wf-ocean-backdrop layer where the painting rectangle is the viewport. */
+@supports (-webkit-touch-callout: none) {
+    @media (orientation: portrait) {
+        body:has(#dashboardScreen[style*="display: block"]),
+        body:has(#dashboardScreen[style*="display:block"]) {
+            background-image: none !important;
+        }
+
+        body:has(#dashboardScreen[style*="display: block"]) .wf-ocean-backdrop,
+        body:has(#dashboardScreen[style*="display:block"]) .wf-ocean-backdrop {
+            background-color: var(--wf-ocean-shell-bg);
+            background-image: url("assets/backgrounds/dashboard-bg-mobile.png");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: scroll;
+        }
+    }
+
+    @media (orientation: landscape) {
+        body:has(#dashboardScreen[style*="display: block"]),
+        body:has(#dashboardScreen[style*="display:block"]) {
+            background-image: none !important;
+        }
+
+        body:has(#dashboardScreen[style*="display: block"]) .wf-ocean-backdrop,
+        body:has(#dashboardScreen[style*="display:block"]) .wf-ocean-backdrop {
+            background-color: var(--wf-ocean-shell-bg);
+            background-image: url("assets/backgrounds/dashboard-bg-landscape.png");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: scroll;
+        }
+    }
+}
+
 #dashboardScreen.screen--dashboard {
     width: min(1490px, calc(100vw - 74px));
     padding: 16px 20px 22px;
