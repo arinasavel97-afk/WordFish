@@ -12481,3 +12481,42 @@ button.game-library-button:focus-visible {
         margin-top: 40px;
     }
 }
+
+/* iPhone Safari/Chrome — Classroom Mode landscape: the shared mobile-landscape
+   rules paint dashboard-bg-landscape.png on body with background-attachment: fixed,
+   which iOS ignores and sizes against the scrollable body (cropped strip). Move the
+   image to the fixed .wf-ocean-backdrop layer and make the set card fit the actual
+   available width so the Choose button is not clipped. */
+@supports (-webkit-touch-callout: none) {
+    @media (orientation: landscape) {
+        body.wf-page-shell:has(:is(
+            #classroomPickerScreen,
+            #classroomActivityMenuScreen,
+            #classroomNoCardsScreen
+        ):is([style*="display: block"], [style*="display:block"])),
+        body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
+            #classroomPickerScreen,
+            #classroomActivityMenuScreen,
+            #classroomNoCardsScreen
+        ):is([style*="display: block"], [style*="display:block"])) {
+            background-image: none !important;
+        }
+
+        body.wf-page-shell:has(:is(
+            #classroomPickerScreen,
+            #classroomActivityMenuScreen,
+            #classroomNoCardsScreen
+        ):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop,
+        body.wf-page-shell.wf-page-shell--ocean-panel-active:has(:is(
+            #classroomPickerScreen,
+            #classroomActivityMenuScreen,
+            #classroomNoCardsScreen
+        ):is([style*="display: block"], [style*="display:block"])) .wf-ocean-backdrop {
+            background-attachment: scroll !important;
+        }
+
+        .classroom-set-card {
+            width: min(100%, calc(100vw - 48px)) !important;
+        }
+    }
+}
