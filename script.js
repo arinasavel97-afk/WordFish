@@ -707,7 +707,6 @@ async function showDashboard(addToHistory = true) {
         if (isDashboardTrashFilterActive()) {
             trashedSets = await dbLoadTrashedSetsWithCards();
         }
-        return; // TEMPORARY: skip renderDashboard() to test whether final dashboard rendering contributes to sidebar clipping
         renderDashboard();
     } catch (error) {
         savedSetsList.innerHTML = `
