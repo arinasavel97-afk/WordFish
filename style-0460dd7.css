@@ -1124,7 +1124,10 @@ button:active {
         position: absolute;
         top: 0;
         left: 0;
+        display: flex;
+        flex-direction: column;
         height: 100vh;
+        height: 100dvh;
         width: min(85vw, 340px);
         min-width: 0;
         max-width: none;
@@ -1168,11 +1171,12 @@ button:active {
     }
 
     .dashboard-sidebar-content {
-        height: auto;
-        min-height: 100vh;
-        max-height: 100vh;
+        flex: 1 1 0;
+        min-height: 0;
+        max-height: none;
         padding-top: 48px;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .dashboard-sidebar-decoration {
