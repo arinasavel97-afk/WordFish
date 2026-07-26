@@ -745,7 +745,7 @@ button:active {
     width: 100%;
 }
 
-#dashboardScreen .wf-sidebar-item {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item {
     position: relative;
     display: grid;
     grid-template-columns: 20px minmax(0, 1fr);
@@ -774,7 +774,7 @@ button:active {
     -webkit-tap-highlight-color: transparent;
 }
 
-#dashboardScreen .wf-sidebar-item:not(.wf-sidebar-item--danger):hover {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item:not(.wf-sidebar-item--danger):hover {
     background: rgba(255, 255, 255, 0.36);
     border-color: rgba(255, 255, 255, 0.52);
     color: var(--wf-ocean-ink);
@@ -782,20 +782,20 @@ button:active {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-#dashboardScreen .wf-sidebar-item:not(.wf-sidebar-item--danger):active {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item:not(.wf-sidebar-item--danger):active {
     background: rgba(255, 255, 255, 0.44);
     border-color: rgba(255, 255, 255, 0.58);
     transform: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-#dashboardScreen .wf-sidebar-item:focus-visible {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item:focus-visible {
     outline: none;
     box-shadow: var(--wf-shadow-focus);
 }
 
-#dashboardScreen .wf-sidebar-item[aria-current="page"]:not(.wf-sidebar-item--danger),
-#dashboardScreen .wf-sidebar-item--active:not(.wf-sidebar-item--danger) {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item[aria-current="page"]:not(.wf-sidebar-item--danger),
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item--active:not(.wf-sidebar-item--danger) {
     background: rgba(255, 255, 255, 0.72);
     border-color: rgba(255, 255, 255, 0.85);
     color: var(--wf-ocean-ink);
@@ -805,8 +805,8 @@ button:active {
     transform: none;
 }
 
-#dashboardScreen .wf-sidebar-item[aria-current="page"]:not(.wf-sidebar-item--danger)::before,
-#dashboardScreen .wf-sidebar-item--active:not(.wf-sidebar-item--danger)::before {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item[aria-current="page"]:not(.wf-sidebar-item--danger)::before,
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item--active:not(.wf-sidebar-item--danger)::before {
     content: "";
     position: absolute;
     left: 6px;
@@ -820,8 +820,8 @@ button:active {
     z-index: 0;
 }
 
-#dashboardScreen .wf-sidebar-item[aria-current="page"]:not(.wf-sidebar-item--danger):hover,
-#dashboardScreen .wf-sidebar-item--active:not(.wf-sidebar-item--danger):hover {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item[aria-current="page"]:not(.wf-sidebar-item--danger):hover,
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item--active:not(.wf-sidebar-item--danger):hover {
     background: rgba(255, 255, 255, 0.78);
     border-color: rgba(255, 255, 255, 0.9);
     color: var(--wf-ocean-ink);
@@ -830,7 +830,7 @@ button:active {
         inset 0 0 0 1px rgba(255, 255, 255, 0.4);
 }
 
-#dashboardScreen .wf-sidebar-item__icon {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item__icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -840,33 +840,33 @@ button:active {
     color: rgba(11, 110, 138, 0.62);
 }
 
-#dashboardScreen .wf-sidebar-item__label {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item__label {
     display: block;
     min-width: 0;
     text-align: left;
     white-space: nowrap;
 }
 
-#dashboardScreen .wf-sidebar-item--active .wf-sidebar-item__icon,
-#dashboardScreen .wf-sidebar-item[aria-current="page"] .wf-sidebar-item__icon {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item--active .wf-sidebar-item__icon,
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item[aria-current="page"] .wf-sidebar-item__icon {
     position: relative;
     z-index: 1;
     color: var(--wf-ocean-ink);
 }
 
-#dashboardScreen .wf-sidebar-item--active .wf-sidebar-item__label,
-#dashboardScreen .wf-sidebar-item[aria-current="page"] .wf-sidebar-item__label {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item--active .wf-sidebar-item__label,
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item[aria-current="page"] .wf-sidebar-item__label {
     position: relative;
     z-index: 1;
 }
 
-#dashboardScreen .wf-sidebar-item__icon svg {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item__icon svg {
     display: block;
     width: 20px;
     height: 20px;
 }
 
-#dashboardScreen .wf-sidebar-item--danger {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item--danger {
     position: relative;
     overflow: hidden;
     min-height: 44px;
@@ -882,7 +882,7 @@ button:active {
         0 7px 12px rgba(236, 43, 45, 0.22);
 }
 
-#dashboardScreen .wf-sidebar-item--danger::before {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item--danger::before {
     content: "";
     position: absolute;
     inset: 0 0 auto 0;
@@ -895,7 +895,7 @@ button:active {
     pointer-events: none;
 }
 
-#dashboardScreen .wf-sidebar-item--danger::after {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item--danger::after {
     content: "";
     position: absolute;
     inset: auto 0 0 0;
@@ -908,7 +908,7 @@ button:active {
     pointer-events: none;
 }
 
-#dashboardScreen .wf-sidebar-item--danger:hover {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item--danger:hover {
     background: linear-gradient(180deg, #FC6860 0%, #EF2E30 100%);
     color: #ffffff;
     transform: none;
@@ -917,7 +917,7 @@ button:active {
         0 7px 12px rgba(236, 43, 45, 0.22);
 }
 
-#dashboardScreen .wf-sidebar-item--danger:active {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item--danger:active {
     opacity: 0.96;
     transform: none;
     box-shadow:
@@ -925,13 +925,13 @@ button:active {
         0 7px 12px rgba(236, 43, 45, 0.22);
 }
 
-#dashboardScreen .wf-sidebar-item--danger .wf-sidebar-item__icon {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item--danger .wf-sidebar-item__icon {
     position: relative;
     z-index: 1;
     color: #ffffff;
 }
 
-#dashboardScreen .wf-sidebar-item--danger .wf-sidebar-item__label {
+:is(#dashboardScreen, #dashboardMobileDrawerRoot) .wf-sidebar-item--danger .wf-sidebar-item__label {
     position: relative;
     z-index: 1;
 }
