@@ -3,8 +3,6 @@ const SUPABASE_KEY = "sb_publishable_xdhhXoyxJPfth8qMoS_ekQ_Vnd-CYOS";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-console.log("Supabase connected:", supabaseClient);
-
 async function dbGetCurrentUser() {
     const { data, error } = await supabaseClient.auth.getUser();
 

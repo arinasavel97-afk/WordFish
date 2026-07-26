@@ -332,8 +332,5 @@ window.__wordfishPronunciationDevRunTests = async function __wordfishPronunciati
         ])
     });
 
-    console.table(results);
-    console.info("WordFish pronunciation dev tests finished. You should hear only \"three\" from the rapid-call test.");
-
     return results;
 };
