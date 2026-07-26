@@ -9018,6 +9018,33 @@ async function logout() {
     displayScreen("authScreen");
 }
 
+function reconcileDashboardSidebarPortal() {
+    const root = document.getElementById("dashboardMobileDrawerRoot");
+    const sidebar = document.getElementById("dashboardSidebar");
+    const backdrop = document.querySelector(".dashboard-mobile-sidebar-backdrop");
+    const layout = document.querySelector("#dashboardScreen .dashboard-v2-layout");
+    if (!root || !sidebar || !backdrop || !layout) return;
+
+    const isMobile = window.innerWidth <= 900;
+    const inRoot = sidebar.parentElement === root;
+
+    if (isMobile && !inRoot) {
+        closeDashboardMobileSidebar();
+        root.appendChild(sidebar);
+        root.appendChild(backdrop);
+    } else if (!isMobile && inRoot) {
+        closeDashboardMobileSidebar();
+        const main = layout.querySelector(".dashboard-main");
+        if (main) {
+            layout.insertBefore(sidebar, main);
+            layout.insertBefore(backdrop, main);
+        } else {
+            layout.appendChild(sidebar);
+            layout.appendChild(backdrop);
+        }
+    }
+}
+
 function openDashboardMobileSidebar() {
     const sidebar = document.getElementById("dashboardSidebar");
     const backdrop = document.querySelector(".dashboard-mobile-sidebar-backdrop");
@@ -9071,11 +9098,9 @@ function initDashboardMobileSidebar() {
         }
     });
 
-    window.addEventListener("resize", () => {
-        if (window.innerWidth > 900 && sidebar.classList.contains("is-open")) {
-            closeDashboardMobileSidebar();
-        }
-    });
+    window.addEventListener("resize", reconcileDashboardSidebarPortal);
+
+    reconcileDashboardSidebarPortal();
 }
 
 function isClassroomMobilePortrait() {

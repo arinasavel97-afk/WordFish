@@ -975,7 +975,8 @@ button:active {
     display: none;
 }
 
-.dashboard-mobile-sidebar-backdrop {
+.dashboard-mobile-sidebar-backdrop,
+.dashboard-mobile-drawer-root {
     display: none;
 }
 
@@ -1086,6 +1087,15 @@ button:active {
         flex-direction: column;
     }
 
+    .dashboard-mobile-drawer-root {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        pointer-events: none;
+        overflow: visible;
+    }
+
     .dashboard-mobile-menu-button {
         display: inline-flex;
         align-items: center;
@@ -1125,6 +1135,7 @@ button:active {
         z-index: 100;
         overflow: visible;
         box-shadow: 4px 0 18px rgba(7, 59, 76, 0.15);
+        pointer-events: auto;
     }
 
     .dashboard-sidebar.is-open {
@@ -1170,7 +1181,7 @@ button:active {
 
     .dashboard-mobile-sidebar-backdrop {
         display: block;
-        position: fixed;
+        position: absolute;
         inset: 0;
         background: rgba(7, 59, 76, 0.45);
         opacity: 0;
