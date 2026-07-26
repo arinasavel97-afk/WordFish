@@ -947,7 +947,7 @@
 
                 <section class="help-section wf-panel-card" id="helpReportForm" style="display: none;">
                     <h3 class="settings-section-title">Report a Problem</h3>
-                    <form onsubmit="submitProblemReport(event)" novalidate>
+                    <form onsubmit="submitProblemReport(event)" oninput="hideHelpReportInlineError()" novalidate>
                         <label class="help-field-label" for="helpReportWhatHappened">What happened? <span class="help-required">*</span></label>
                         <textarea id="helpReportWhatHappened" class="help-textarea" rows="4" maxlength="2000" required placeholder="Describe the issue..."></textarea>
 
@@ -961,6 +961,7 @@
                             <button type="button" class="soft-button wf-cta-neutral" onclick="hideHelpReportForm()">Cancel</button>
                             <button type="submit" id="helpReportSubmitButton" class="green-button wf-cta-primary">Submit Report</button>
                         </div>
+                        <p id="helpReportError" class="help-error-message" style="display: none;"></p>
                     </form>
                 </section>
 

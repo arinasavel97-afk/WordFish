@@ -21,6 +21,7 @@ async function dbSubmitProblemReport(report) {
         .insert([report]);
 
     if (error) {
+        console.error("Problem report submission failed:", error);
         throw error;
     }
 }

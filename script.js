@@ -4324,17 +4324,26 @@ function formatReportReference(id) {
     return "WF-" + raw.substring(0, 8);
 }
 
+function isValidUuid(value) {
+    if (!value || typeof value !== "string") {
+        return false;
+    }
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+}
+
 async function buildProblemReportContext() {
     let userId = null;
     try {
         const { data } = await supabaseClient.auth.getUser();
-        userId = data.user?.id || null;
+        userId = data?.user?.id || null;
     } catch (error) {
         userId = null;
     }
 
+    const rawSetId = editingSetId || classroomSelectedSetId || studentShareSetId || null;
+
     return {
-        user_id: userId,
+        user_id: isValidUuid(userId) ? userId : null,
         full_url: window.location.href,
         current_hash: window.location.hash,
         current_screen: currentScreenId || window.location.hash.replace(/^#/, "") || null,
@@ -4344,7 +4353,7 @@ async function buildProblemReportContext() {
         viewport_width: window.innerWidth,
         viewport_height: window.innerHeight,
         app_version: APP_VERSION,
-        current_set_id: editingSetId || classroomSelectedSetId || studentShareSetId || null,
+        current_set_id: isValidUuid(rawSetId) ? rawSetId : null,
         current_activity: currentScreenId === "gameScreen" ? currentGameMode : null,
         error_message: null,
         error_stack: null
@@ -4369,6 +4378,7 @@ function closeHelpModal() {
         modal.style.display = "none";
     }
     hideHelpReportForm();
+    hideHelpReportInlineError();
 }
 
 function closeHelpModalOnBackdrop(event) {
@@ -4385,6 +4395,7 @@ function showHelpReportForm() {
     if (form) form.style.display = "block";
     if (intro) intro.style.display = "none";
     if (success) success.style.display = "none";
+    hideHelpReportInlineError();
 }
 
 function hideHelpReportForm() {
@@ -4406,14 +4417,34 @@ function resetHelpReportForm() {
         success.style.display = "none";
         success.textContent = "";
     }
+
+    hideHelpReportInlineError();
 }
 
 function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function hideHelpReportInlineError() {
+    const errorEl = document.getElementById("helpReportError");
+    if (errorEl) {
+        errorEl.style.display = "none";
+        errorEl.textContent = "";
+    }
+}
+
+function showHelpReportInlineError(message) {
+    const errorEl = document.getElementById("helpReportError");
+    if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.style.display = "block";
+    }
+}
+
 async function submitProblemReport(event) {
     event.preventDefault();
+
+    hideHelpReportInlineError();
 
     const whatHappenedInput = document.getElementById("helpReportWhatHappened");
     const whatHappened = whatHappenedInput ? whatHappenedInput.value.trim() : "";
@@ -4467,7 +4498,7 @@ async function submitProblemReport(event) {
             reportForm.reset();
         }
     } catch (error) {
-        showToast("Could not submit report: " + error.message, "error");
+        showHelpReportInlineError("Couldn't submit your report. Please try again.");
     } finally {
         if (submitButton) {
             submitButton.disabled = false;

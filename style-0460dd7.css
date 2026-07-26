@@ -3095,7 +3095,7 @@ html.mobile-sidebar-open body {
     padding: 14px 18px;
     box-shadow: var(--wf-shadow-toast);
     font-weight: 900;
-    z-index: 9999;
+    z-index: 10001;
     max-width: min(420px, calc(100vw - 32px));
     transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
 }
@@ -5050,6 +5050,17 @@ h2 {
     background: #E6FAF5;
     color: var(--sea-deep);
     font-size: 15px;
+    text-align: center;
+}
+
+.help-modal .help-error-message {
+    margin: 12px 0 0;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    background: #FDEDEC;
+    color: var(--wf-color-coral, #E63946);
+    font-size: 15px;
+    font-weight: 700;
     text-align: center;
 }
 
