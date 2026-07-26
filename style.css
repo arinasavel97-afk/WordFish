@@ -758,9 +758,8 @@ button:active {
     border: 1px solid rgba(255, 255, 255, 0.45);
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.28);
-    /* TEMPORARY: disabled for iOS compositing diagnosis */
-    /* backdrop-filter: blur(10px); */
-    /* -webkit-backdrop-filter: blur(10px); */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     color: rgba(7, 59, 76, 0.88);
     font-family: inherit;
