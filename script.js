@@ -44,6 +44,7 @@ let suppressHistoryPush = false;
 const DELETE_CONFIRM_MOBILE_MAX_WIDTH = 620;
 const DELETE_CONFIRM_ANCHOR_GAP = 8;
 const DELETE_CONFIRM_VIEWPORT_PADDING = 12;
+const APP_VERSION = "1.0 Beta";
 let gameLaunchSource = "editor";
 let classroomSelectedSetId = null;
 let classroomPresentationCards = [];
@@ -4315,6 +4316,163 @@ function closeSettingsModal() {
 function closeSettingsModalOnBackdrop(event) {
     if (event.target === event.currentTarget) {
         closeSettingsModal();
+    }
+}
+
+function formatReportReference(id) {
+    const raw = id.replace(/-/g, "").toUpperCase();
+    return "WF-" + raw.substring(0, 8);
+}
+
+async function buildProblemReportContext() {
+    let userId = null;
+    try {
+        const { data } = await supabaseClient.auth.getUser();
+        userId = data.user?.id || null;
+    } catch (error) {
+        userId = null;
+    }
+
+    return {
+        user_id: userId,
+        full_url: window.location.href,
+        current_hash: window.location.hash,
+        current_screen: currentScreenId || window.location.hash.replace(/^#/, "") || null,
+        user_agent: navigator.userAgent,
+        browser_platform: navigator.platform,
+        browser_language: navigator.language,
+        viewport_width: window.innerWidth,
+        viewport_height: window.innerHeight,
+        app_version: APP_VERSION,
+        current_set_id: editingSetId || classroomSelectedSetId || studentShareSetId || null,
+        current_activity: currentScreenId === "gameScreen" ? currentGameMode : null,
+        error_message: null,
+        error_stack: null
+    };
+}
+
+function openHelpModal() {
+    closeDashboardMobileSidebar();
+
+    const modal = document.getElementById("helpModal");
+    if (modal) {
+        modal.style.display = "flex";
+    }
+
+    hideHelpReportForm();
+    resetHelpReportForm();
+}
+
+function closeHelpModal() {
+    const modal = document.getElementById("helpModal");
+    if (modal) {
+        modal.style.display = "none";
+    }
+    hideHelpReportForm();
+}
+
+function closeHelpModalOnBackdrop(event) {
+    if (event.target === event.currentTarget) {
+        closeHelpModal();
+    }
+}
+
+function showHelpReportForm() {
+    const form = document.getElementById("helpReportForm");
+    const intro = document.getElementById("helpReportIntro");
+    const success = document.getElementById("helpReportSuccess");
+
+    if (form) form.style.display = "block";
+    if (intro) intro.style.display = "none";
+    if (success) success.style.display = "none";
+}
+
+function hideHelpReportForm() {
+    const form = document.getElementById("helpReportForm");
+    const intro = document.getElementById("helpReportIntro");
+
+    if (form) form.style.display = "none";
+    if (intro) intro.style.display = "block";
+}
+
+function resetHelpReportForm() {
+    const form = document.querySelector("#helpReportForm form");
+    if (form) {
+        form.reset();
+    }
+
+    const success = document.getElementById("helpReportSuccess");
+    if (success) {
+        success.style.display = "none";
+        success.textContent = "";
+    }
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+async function submitProblemReport(event) {
+    event.preventDefault();
+
+    const whatHappenedInput = document.getElementById("helpReportWhatHappened");
+    const whatHappened = whatHappenedInput ? whatHappenedInput.value.trim() : "";
+
+    if (!whatHappened) {
+        showToast("Please describe what happened.", "warning");
+        return;
+    }
+
+    const submitButton = document.getElementById("helpReportSubmitButton");
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting...";
+    }
+
+    try {
+        const reportId = crypto.randomUUID();
+        const context = await buildProblemReportContext();
+        const tryingToDo = document.getElementById("helpReportTryingToDo")?.value.trim() || null;
+        const contactEmail = document.getElementById("helpReportContactEmail")?.value.trim() || null;
+
+        if (contactEmail && !isValidEmail(contactEmail)) {
+            showToast("Please enter a valid email address.", "warning");
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = "Submit Report";
+            }
+            return;
+        }
+
+        const payload = {
+            id: reportId,
+            what_happened: whatHappened,
+            trying_to_do: tryingToDo,
+            contact_email: contactEmail,
+            ...context
+        };
+
+        await dbSubmitProblemReport(payload);
+
+        const reference = formatReportReference(reportId);
+        const successMessage = document.getElementById("helpReportSuccess");
+        if (successMessage) {
+            successMessage.innerHTML = "Thank you! Your report has been submitted.<br><br>Reference: " + reference + "<br><br>Please include this reference if you contact support.";
+            successMessage.style.display = "block";
+        }
+
+        hideHelpReportForm();
+        const reportForm = document.querySelector("#helpReportForm form");
+        if (reportForm) {
+            reportForm.reset();
+        }
+    } catch (error) {
+        showToast("Could not submit report: " + error.message, "error");
+    } finally {
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = "Submit Report";
+        }
     }
 }
 
@@ -9513,6 +9671,11 @@ function initApp() {
     initListenWriteControls();
     initDashboardMobileSidebar();
     initSidebarDebug();
+
+    const aboutVersion = document.getElementById("settingsAboutVersion");
+    if (aboutVersion) {
+        aboutVersion.textContent = "Version " + APP_VERSION;
+    }
 
     supabaseClient.auth.onAuthStateChange((event, session) => {
         if (event === "PASSWORD_RECOVERY") {

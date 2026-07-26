@@ -15,6 +15,16 @@ async function dbGetCurrentUser() {
     return data.user;
 }
 
+async function dbSubmitProblemReport(report) {
+    const { error } = await supabaseClient
+        .from("problem_reports")
+        .insert([report]);
+
+    if (error) {
+        throw error;
+    }
+}
+
 function mapDatabaseCard(card) {
     return {
         id: card.id,

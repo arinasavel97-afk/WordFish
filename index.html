@@ -5,7 +5,7 @@
 
     <title>Word Fish</title>
     <link rel="icon" href="assets/icons/favicon.png">
-    <link rel="stylesheet" href="style-0460dd7.css?v=drawer-portal-3">
+    <link rel="stylesheet" href="style-0460dd7.css?v=help-support-1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
     <style>
         #authScreen, #dashboardScreen { display: none; }
@@ -141,7 +141,7 @@
                         </span>
                         <span class="wf-sidebar-item__label">Settings</span>
                     </button>
-                    <button type="button" class="wf-sidebar-item">
+                    <button type="button" class="wf-sidebar-item" onclick="openHelpModal()">
                         <span class="wf-sidebar-item__icon" aria-hidden="true">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"/></svg>
                         </span>
@@ -909,9 +909,62 @@
                     About
                 </h3>
                 <p class="settings-about-name">WordFish</p>
-                <p class="settings-about-version">Version 1.0 Beta</p>
+                <p class="settings-about-version" id="settingsAboutVersion"></p>
                 <p class="settings-about-tagline">Made with ❤️ by teachers, for teachers.</p>
             </section>
+            </div>
+        </div>
+    </div>
+
+    <div id="helpModal" class="modal-backdrop" onclick="closeHelpModalOnBackdrop(event)" style="display: none;">
+        <div class="modal-card settings-modal help-modal" onclick="event.stopPropagation()">
+            <header class="settings-modal-header">
+                <h2 class="settings-modal-title">
+                    <span class="settings-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"/></svg>
+                    </span>
+                    Help &amp; Support
+                </h2>
+                <button type="button" class="modal-close wf-close-button" onclick="closeHelpModal()" aria-label="Close help">✕</button>
+            </header>
+
+            <div class="help-sections">
+                <section class="help-section wf-panel-card">
+                    <h3 class="settings-section-title">Quick Start</h3>
+                    <ol class="help-quick-start">
+                        <li>Create a vocabulary set.</li>
+                        <li>Add words or pictures.</li>
+                        <li>Share the student link.</li>
+                        <li>Start Classroom Mode.</li>
+                    </ol>
+                </section>
+
+                <section class="help-section wf-panel-card" id="helpReportIntro">
+                    <h3 class="settings-section-title">Report a Problem</h3>
+                    <p class="help-report-intro">Found a bug or have feedback? Let us know.</p>
+                    <button type="button" class="green-button wf-cta-primary" onclick="showHelpReportForm()">Report a Problem</button>
+                </section>
+
+                <section class="help-section wf-panel-card" id="helpReportForm" style="display: none;">
+                    <h3 class="settings-section-title">Report a Problem</h3>
+                    <form onsubmit="submitProblemReport(event)" novalidate>
+                        <label class="help-field-label" for="helpReportWhatHappened">What happened? <span class="help-required">*</span></label>
+                        <textarea id="helpReportWhatHappened" class="help-textarea" rows="4" maxlength="2000" required placeholder="Describe the issue..."></textarea>
+
+                        <label class="help-field-label" for="helpReportTryingToDo">What were you trying to do?</label>
+                        <textarea id="helpReportTryingToDo" class="help-textarea" rows="3" maxlength="2000" placeholder="Optional"></textarea>
+
+                        <label class="help-field-label" for="helpReportContactEmail">Contact email</label>
+                        <input id="helpReportContactEmail" type="email" class="help-input" maxlength="254" placeholder="Optional">
+
+                        <div class="help-form-actions">
+                            <button type="button" class="soft-button wf-cta-neutral" onclick="hideHelpReportForm()">Cancel</button>
+                            <button type="submit" id="helpReportSubmitButton" class="green-button wf-cta-primary">Submit Report</button>
+                        </div>
+                    </form>
+                </section>
+
+                <p id="helpReportSuccess" class="help-success-message" style="display: none;"></p>
             </div>
         </div>
     </div>
