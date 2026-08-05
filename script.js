@@ -450,6 +450,15 @@ const OCEAN_PANEL_SCREEN_IDS = new Set([
 ]);
 
 function displayScreen(screenId, addToHistory = true) {
+    clearTimeout(autoSaveTimer);
+
+    if (screenId !== "cardsScreen") {
+        const builderSetNameInput = document.getElementById("builderSetName");
+        if (builderSetNameInput) {
+            builderSetNameInput.value = "";
+        }
+    }
+
     const classroomShortcutsHintScreens = [
         "classroomPresentationScreen",
         "classroomFlashcardsScreen",
@@ -489,51 +498,72 @@ function displayScreen(screenId, addToHistory = true) {
     );
 
     if (addToHistory && !suppressHistoryPush) {
-        history.pushState({ screen: screenId }, "", "#" + screenId.replace("Screen", ""));
+        const historyState = { screen: screenId };
+        if (screenId === "cardsScreen" && editingSetId) {
+            historyState.editingSetId = editingSetId;
+        }
+        history.pushState(historyState, "", "#" + screenId.replace("Screen", ""));
     }
 }
 
-window.addEventListener("popstate", (event) => {
+window.addEventListener("popstate", async (event) => {
     if (!event.state || !event.state.screen) return;
 
     suppressHistoryPush = true;
+    clearTimeout(autoSaveTimer);
 
-    const screenId = event.state.screen;
-    if (screenId === "dashboardScreen") {
-        showDashboard(false);
-    } else if (screenId === "teacherScreen") {
-        hideAllScreens();
-        document.getElementById("teacherScreen").style.display = "block";
-    } else if (screenId === "cardsScreen") {
-        showCardsScreen(false);
-    } else if (screenId === "gameScreen") {
-        hideAllScreens();
-        document.getElementById("gameScreen").style.display = "block";
-    } else if (screenId === "authScreen") {
-        hideAllScreens();
-        document.getElementById("authScreen").style.display = "block";
-    } else if (screenId === "studentScreen") {
-        hideAllScreens();
-        document.getElementById("studentScreen").style.display = "block";
-    } else if (screenId === "classroomPickerScreen") {
-        showClassroomPicker(false);
-    } else if (screenId === "classroomActivityMenuScreen") {
-        showClassroomActivityMenuForSelectedSet(false);
-    } else if (screenId === "classroomPresentationScreen") {
-        showClassroomPresentationForSelectedSet(false);
-    } else if (screenId === "classroomFlashcardsScreen") {
-        showClassroomFlashcardsForSelectedSet(false);
-    } else if (screenId === "classroomTextFlashcardsScreen") {
-        showClassroomTextFlashcardsForSelectedSet(false);
-    } else if (screenId === "classroomNoCardsScreen") {
-        showClassroomNoCardsState(false);
-    } else if (screenId === "classroomVocabularyBoardScreen") {
-        showClassroomVocabularyBoardForSelectedSet(false);
-    } else if (screenId === "gameLibraryScreen") {
-        displayScreen("gameLibraryScreen", false);
+    const builderSetNameInput = document.getElementById("builderSetName");
+    if (builderSetNameInput) {
+        builderSetNameInput.value = "";
     }
 
-    suppressHistoryPush = false;
+    try {
+        const screenId = event.state.screen;
+        if (screenId === "dashboardScreen") {
+            showDashboard(false);
+        } else if (screenId === "teacherScreen") {
+            hideAllScreens();
+            document.getElementById("teacherScreen").style.display = "block";
+        } else if (screenId === "cardsScreen") {
+            const builderContext = loadBuilderContext();
+            const setId = event.state?.editingSetId || builderContext?.setId;
+            if (setId) {
+                const restored = await restoreBuilderFromContext({ setId });
+                if (!restored) {
+                    showCardsScreen(false);
+                }
+            } else {
+                showCardsScreen(false);
+            }
+        } else if (screenId === "gameScreen") {
+            hideAllScreens();
+            document.getElementById("gameScreen").style.display = "block";
+        } else if (screenId === "authScreen") {
+            hideAllScreens();
+            document.getElementById("authScreen").style.display = "block";
+        } else if (screenId === "studentScreen") {
+            hideAllScreens();
+            document.getElementById("studentScreen").style.display = "block";
+        } else if (screenId === "classroomPickerScreen") {
+            showClassroomPicker(false);
+        } else if (screenId === "classroomActivityMenuScreen") {
+            showClassroomActivityMenuForSelectedSet(false);
+        } else if (screenId === "classroomPresentationScreen") {
+            showClassroomPresentationForSelectedSet(false);
+        } else if (screenId === "classroomFlashcardsScreen") {
+            showClassroomFlashcardsForSelectedSet(false);
+        } else if (screenId === "classroomTextFlashcardsScreen") {
+            showClassroomTextFlashcardsForSelectedSet(false);
+        } else if (screenId === "classroomNoCardsScreen") {
+            showClassroomNoCardsState(false);
+        } else if (screenId === "classroomVocabularyBoardScreen") {
+            showClassroomVocabularyBoardForSelectedSet(false);
+        } else if (screenId === "gameLibraryScreen") {
+            displayScreen("gameLibraryScreen", false);
+        }
+    } finally {
+        suppressHistoryPush = false;
+    }
 });
 
 let toastTimer = null;
@@ -6773,7 +6803,11 @@ function scheduleAutoSave(delay = 1200) {
 async function autoSaveNow() {
     if (isStudentMode || !editingSetId || autoSaveInProgress) return;
 
-    let setName = document.getElementById("builderSetName")?.value || currentSetName;
+    let setName = currentSetName;
+    if (currentScreenId === "cardsScreen") {
+        const inputValue = document.getElementById("builderSetName")?.value?.trim();
+        if (inputValue) setName = inputValue;
+    }
 
     if (setName.trim() === "") {
         setSaveStatus("Add set name", "warning");
